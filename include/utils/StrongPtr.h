@@ -8,7 +8,7 @@
 #ifndef STRONGPTR_H_
 #define STRONGPTR_H_
 
-namespace plr {
+namespace pola {
 namespace utils {
 // ---------------------------------------------------------------------------
 

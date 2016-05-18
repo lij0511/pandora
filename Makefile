@@ -1,4 +1,4 @@
-INCLUDEFLAGS = -I ./src
+INCLUDEFLAGS = -I ./src -I ./include
 
 CC = gcc
 CXX = g++
@@ -29,7 +29,7 @@ include third_party/third_party.mk
 libpolaris.so: $(objs)
 	$(CXX) $(CXXFLAGS) $(CFLAGS) -shared $^ -o $(builddir)/$@ $(INCLUDEFLAGS)
 
-#include test/test.mk
+include test/test.mk
 
 $(src)/%.dir:
 	@mkdir -p $(dir $(subst $(src),$(obj),$@))

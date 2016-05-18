@@ -11,11 +11,13 @@
 #include "log/Log.h"
 #include <atomic>
 
+#include "utils/StrongPtr.h"
+
 using namespace std;
 
 //#define DEBUG_RP 1
 
-namespace plr {
+namespace pola {
 namespace utils {
 
 template<typename T> class RefBase;

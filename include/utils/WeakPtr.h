@@ -8,7 +8,7 @@
 #ifndef WEAKPTR_H_
 #define WEAKPTR_H_
 
-namespace plr {
+namespace pola {
 namespace utils {
 // ---------------------------------------------------------------------------
 
