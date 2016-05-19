@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef TASK_H_
-#define TASK_H_
+#ifndef POLA_TASK_H_
+#define POLA_TASK_H_
 
 #include <pthread.h>
 
@@ -73,4 +73,4 @@ private:
 }
 }
 
-#endif /* TASK_H_ */
+#endif /* POLA_TASK_H_ */

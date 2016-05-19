@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef FUNCTIONAL_H_
-#define FUNCTIONAL_H_
+#ifndef POLA_FUNCTIONAL_H_
+#define POLA_FUNCTIONAL_H_
 
 #include "utils/RefBase.h"
 #include "utils/WeakPtr.h"
@@ -602,4 +602,4 @@ typedef Function<void()> Closure;
 }
 }
 
-#endif /* FUNCTIONAL_H_ */
+#endif /* POLA_FUNCTIONAL_H_ */

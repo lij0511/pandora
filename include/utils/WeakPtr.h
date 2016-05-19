@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef WEAKPTR_H_
-#define WEAKPTR_H_
+#ifndef POLA_WEAKPTR_H_
+#define POLA_WEAKPTR_H_
 
 namespace pola {
 namespace utils {
@@ -249,4 +249,4 @@ void wp<T>::clear() {
 }
 }
 
-#endif /* WEAKPTR_H_ */
+#endif /* POLA_WEAKPTR_H_ */

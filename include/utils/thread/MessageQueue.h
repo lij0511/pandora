@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef MESSAGEQUEUE_H_
-#define MESSAGEQUEUE_H_
+#ifndef POLA_MESSAGEQUEUE_H_
+#define POLA_MESSAGEQUEUE_H_
 
 #include "utils/thread/Message.h"
 #include "utils/Times.h"
@@ -49,4 +49,4 @@ private:
 }
 }
 
-#endif /* MESSAGEQUEUE_H_  */
+#endif /* POLA_MESSAGEQUEUE_H_  */

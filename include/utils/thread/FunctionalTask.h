@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef FUNCTIONALTASK_H_
-#define FUNCTIONALTASK_H_
+#ifndef POLA_FUNCTIONALTASK_H_
+#define POLA_FUNCTIONALTASK_H_
 
 #include "utils/thread/Task.h"
 #include "utils/Functional.h"
@@ -30,4 +30,4 @@ private:
 }
 }
 
-#endif /* FUNCTIONALTASK_H_ */
+#endif /* POLA_FUNCTIONALTASK_H_ */

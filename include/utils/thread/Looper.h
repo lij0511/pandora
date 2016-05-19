@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef WS_LOOPER_H_
-#define WS_LOOPER_H_
+#ifndef POLA_LOOPER_H_
+#define POLA_LOOPER_H_
 
 #include "utils/thread/MessageQueue.h"
 
@@ -43,4 +43,4 @@ private:
 }
 }
 
-#endif /* LOOPER_H_ */
+#endif /* POLA_LOOPER_H_ */

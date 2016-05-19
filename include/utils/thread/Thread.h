@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef THREAD_H_
-#define THREAD_H_
+#ifndef POLA_THREAD_H_
+#define POLA_THREAD_H_
 
 #include <pthread.h>
 
@@ -94,4 +94,4 @@ inline bool Thread::isActive() {
 }
 }
 
-#endif /* THREAD_H_ */
+#endif /* POLA_THREAD_H_ */

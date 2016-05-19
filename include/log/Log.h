@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef LOG_H_
-#define LOG_H_
+#ifndef POLA_LOG_H_
+#define POLA_LOG_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,4 +63,4 @@ inline void polaris_printAssert(bool cond, const char* str, ...) {
 	: (void)0
 #endif
 
-#endif /* LOG_H_ */
+#endif /* POLA_LOG_H_ */

@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef WS_TIMES_H_
-#define WS_TIMES_H_
+#ifndef POLA_TIMES_H_
+#define POLA_TIMES_H_
 
 #include <stdint.h>
 #include <time.h>
@@ -70,4 +70,4 @@ static inline nsecs_t microseconds(nsecs_t v) { return us2ns(v); }
 static nsecs_t uptimeMillis() {
 	return nanoseconds_to_milliseconds(systemTime(1));
 }
-#endif /* WS_TIMES_H_ */
+#endif /* POLA_TIMES_H_ */

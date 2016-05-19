@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef HANDLER_H_
-#define HANDLER_H_
+#ifndef POLA_HANDLER_H_
+#define POLA_HANDLER_H_
 
 #include "utils/thread/Task.h"
 #include "utils/thread/Looper.h"
@@ -52,4 +52,4 @@ private:
 }
 }
 
-#endif /* HANDLER_H_ */
+#endif /* POLA_HANDLER_H_ */

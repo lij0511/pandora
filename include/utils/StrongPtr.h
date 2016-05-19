@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef STRONGPTR_H_
-#define STRONGPTR_H_
+#ifndef POLA_STRONGPTR_H_
+#define POLA_STRONGPTR_H_
 
 namespace pola {
 namespace utils {
@@ -183,4 +183,4 @@ void sp<T>::set_pointer(T* ptr) {
 
 }
 
-#endif /* STRONGPTR_H_ */
+#endif /* POLA_STRONGPTR_H_ */

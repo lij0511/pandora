@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef MESSAGE_H_
-#define MESSAGE_H_
+#ifndef POLA_MESSAGE_H_
+#define POLA_MESSAGE_H_
 
 #include "utils/Times.h"
 #include "utils/thread/Task.h"
@@ -41,4 +41,4 @@ public:
 }
 }
 
-#endif /* MESSAGE_H_ */
+#endif /* POLA_MESSAGE_H_ */

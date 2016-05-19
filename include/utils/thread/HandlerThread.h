@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef HANDLERTHREAD_H_
-#define HANDLERTHREAD_H_
+#ifndef POLA_HANDLERTHREAD_H_
+#define POLA_HANDLERTHREAD_H_
 
 #include "utils/thread/Thread.h"
 #include "utils/thread/Looper.h"
@@ -33,4 +33,4 @@ private:
 
 }
 
-#endif /* HANDLERTHREAD_H_ */
+#endif /* POLA_HANDLERTHREAD_H_ */
