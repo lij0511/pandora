@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef REFBASE_H_
-#define REFBASE_H_
+#ifndef POLA_REFBASE_H_
+#define POLA_REFBASE_H_
 
 #include "log/Log.h"
 #include <atomic>
@@ -118,4 +118,4 @@ private:
 }
 }
 
-#endif /* REFBASE_H_ */
+#endif /* POLA_REFBASE_H_ */

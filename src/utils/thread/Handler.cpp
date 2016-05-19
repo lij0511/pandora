@@ -42,6 +42,17 @@ bool Handler::sendMessageDelayed(int what, int arg1, int arg2, nsecs_t delayMill
 	return mLooper->mQueue.enqueueMessage(new Message(this, what, arg1, arg2), uptimeMillis() + delayMillis);
 }
 
+void Handler::removeTask(Task* task) {
+}
+
+void Handler::removeMessages(int what) {
+	mLooper->mQueue.removeMessages(this, what);
+}
+
+void Handler::removeTasksAndMessages() {
+	mLooper->mQueue.removeMessages(this);
+}
+
 void Handler::dispatchMessage(Message* msg) {
 	if (msg->task != nullptr) {
 		msg->task->run();

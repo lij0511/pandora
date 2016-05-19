@@ -78,12 +78,112 @@ void MessageQueue::wake() {
 	} while (nWrite == -1 && errno == EINTR);
 }
 
+void MessageQueue::removeMessages(Handler* h, int what) {
+	if (h == nullptr) {
+		return;
+	}
+
+	pthread_mutex_lock(&mutex);
+	Message* p = mMessages;
+
+	// Remove all messages at front.
+	while (p != nullptr && p->target == h && p->what == what) {
+		Message* n = p->next;
+		mMessages = n;
+		delete p;
+		p = n;
+	}
+
+	// Remove all messages after front.
+	while (p != nullptr) {
+		Message* n = p->next;
+		if (n != nullptr) {
+			if (n->target == h && n->what == what) {
+				Message* nn = n->next;
+				delete n;
+				p->next = nn;
+				continue;
+			}
+		}
+		p = n;
+	}
+	pthread_mutex_unlock(&mutex);
+}
+
+void MessageQueue::removeMessages(Handler* h, Task* task) {
+	if (h == nullptr) {
+		return;
+	}
+
+	pthread_mutex_lock(&mutex);
+	Message* p = mMessages;
+
+	// Remove all messages at front.
+	while (p != nullptr && p->target == h && p->task == task) {
+		Message* n = p->next;
+		mMessages = n;
+		delete p;
+		p = n;
+	}
+
+	// Remove all messages after front.
+	while (p != nullptr) {
+		Message* n = p->next;
+		if (n != nullptr) {
+			if (n->target == h && p->task == task) {
+				Message* nn = n->next;
+				delete n;
+				p->next = nn;
+				continue;
+			}
+		}
+		p = n;
+	}
+	pthread_mutex_unlock(&mutex);
+}
+
+void MessageQueue::removeMessages(Handler* h) {
+	if (h == nullptr) {
+		return;
+	}
+
+	pthread_mutex_lock(&mutex);
+	Message* p = mMessages;
+
+	// Remove all messages at front.
+	while (p != nullptr && p->target == h) {
+		Message* n = p->next;
+		mMessages = n;
+		delete p;
+		p = n;
+	}
+
+	// Remove all messages after front.
+	while (p != nullptr) {
+		Message* n = p->next;
+		if (n != nullptr) {
+			if (n->target == h) {
+				Message* nn = n->next;
+				delete n;
+				p->next = nn;
+				continue;
+			}
+		}
+		p = n;
+	}
+	pthread_mutex_unlock(&mutex);
+}
+
 bool MessageQueue::enqueueMessage(Message* msg, nsecs_t when) {
 	if (!msg->target) {
 		throw "Message must have a target.";
 	}
 	pthread_mutex_lock(&mutex);
 	{
+		if (mQuitting) {
+			LOGE("sending message to a Handler on a dead thread\n");
+			return false;
+		}
 		msg->when = when;
 		Message* p = mMessages;
 		bool needWake;

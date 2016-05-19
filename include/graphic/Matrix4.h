@@ -172,8 +172,6 @@ public:
 
     void decomposeScale(float& sx, float& sy) const;
 
-    void dump(const char* label = NULL) const;
-
     static const Matrix4& identity();
 
 private:

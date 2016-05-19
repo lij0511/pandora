@@ -27,6 +27,9 @@ public:
 
 	void quit(bool safe);
 
+	void removeMessages(Handler* h, int what);
+	void removeMessages(Handler* h, Task* task);
+	void removeMessages(Handler* h);
 	bool enqueueMessage(Message* msg, nsecs_t when);
 
 private:

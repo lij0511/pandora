@@ -35,6 +35,10 @@ public:
 	}
 	bool sendMessageDelayed(int what, int arg1 = 0, int arg2 = 0, nsecs_t delayMillis = 0);
 
+	void removeTask(Task* task);
+	void removeMessages(int what);
+	void removeTasksAndMessages();
+
 	void dispatchMessage(Message* msg);
 
 	virtual void handleMessage(Message* msg);

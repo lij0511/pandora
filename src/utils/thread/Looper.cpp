@@ -60,7 +60,9 @@ void Looper::loop() {
 		if (!msg) {
 			break;
 		}
-		msg->target->dispatchMessage(msg);
+		if (msg->target != nullptr) {
+			msg->target->dispatchMessage(msg);
+		}
 		delete msg;
 	}
 }
