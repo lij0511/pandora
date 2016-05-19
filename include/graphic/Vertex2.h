@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#include "graphic/Color.h"
+
 namespace pola {
 namespace graphic {
 
@@ -40,9 +42,10 @@ struct ColorTextureVertex2 : TextureVertex2 {
     float r, g, b, a;
 
     static inline void set(ColorTextureVertex2* vertex, float x, float y,
-            float u, float v, int32_t color) {
+            float u, float v, Color c) {
         TextureVertex2::set(vertex, x, y, u, v);
 
+        RGBA32 color = c.color;
         // RGBA
         const float a = ((color) & 0xff) / 255.0f;
         vertex[0].r = a * ((color >> 24) & 0xff) / 255.0f;
@@ -51,14 +54,14 @@ struct ColorTextureVertex2 : TextureVertex2 {
         vertex[0].a = a;
     }
     static inline void set(ColorTextureVertex2* vertex, float x, float y,
-    			float u, float v, float r, float g, float b, float a) {
+    			float u, float v, FColor color) {
 		TextureVertex2::set(vertex, x, y, u, v);
 
 		// RGBA
-		vertex[0].r = r;
-		vertex[0].g = g;
-		vertex[0].b = b;
-		vertex[0].a = a;
+		vertex[0].r = color.r;
+		vertex[0].g = color.g;
+		vertex[0].b = color.b;
+		vertex[0].a = color.a;
 	}
 };
 

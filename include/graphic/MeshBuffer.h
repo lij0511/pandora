@@ -11,6 +11,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "utils/Vector.h"
+
 namespace pola {
 namespace graphic {
 
@@ -20,15 +22,15 @@ public:
 	MeshBuffer();
 	virtual ~MeshBuffer();
 
-	virtual size_t getVertexCount() const;
-	virtual size_t getIndexCount() const;
+	size_t getIndexCount() const;
+	size_t getVertexCount() const;
 
 	const TYPE* getVertexBuffer() const;
 	const uint16_t* getIndexBuffer() const;
 
 private:
-	TYPE* mVertexBuffer;
-	uint16_t* mIndexBuffer;
+	pola::utils::Vector<TYPE> mVertexBuffer;
+	pola::utils::Vector<uint16_t> mIndexBuffer;
 };
 
 } /* namespace graphic */
