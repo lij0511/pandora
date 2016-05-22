@@ -44,7 +44,7 @@ StringBuffer::~StringBuffer() {
 
 void StringBuffer::append(char cc) {
 	if (m_length +1 >= m_capacity) {
-		ensureCapacity((m_length + 1) * 2);
+		ensureCapacity(_grow(m_length + 1));
 	}
 	*(m_buffer + (m_length++)) = cc;
 	*(m_buffer + m_length) = 0;
@@ -52,7 +52,7 @@ void StringBuffer::append(char cc) {
 void StringBuffer::append(char* data, size_t len) {
 	if (len > 0) {
 		if (m_length +len >= m_capacity) {
-			ensureCapacity((m_length + len) * 2);
+			ensureCapacity(_grow(m_length + len + 1));
 		}
 		memcpy(m_buffer + m_length, data, len * sizeof(char));
 		m_length += len;
@@ -62,7 +62,7 @@ void StringBuffer::append(char* data, size_t len) {
 void StringBuffer::append(const char* data, size_t len) {
 	if (len > 0) {
 		if (m_length +len >= m_capacity) {
-			ensureCapacity((m_length + len) * 2);
+			ensureCapacity(_grow(m_length + len + 1));
 		}
 		memcpy(m_buffer + m_length, data, len * sizeof(char));
 		m_length += len;
@@ -130,6 +130,10 @@ void StringBuffer::ensureCapacity(size_t minimumCapacity) {
 		}
 		m_capacity = minimumCapacity;
 	}
+}
+
+size_t StringBuffer::_grow(size_t newSize) {
+	return newSize * 3 / 2;
 }
 
 }

@@ -95,6 +95,8 @@ public:
     void loadMultiply(const Matrix4& u, const Matrix4& v);
 
     void loadOrtho(float left, float right, float bottom, float top, float near, float far);
+    void loadPerspective(float fovy, float aspect, float near, float far);
+    void loadLookAt(vec3& position, vec3& target, vec3& upper);
 
     uint8_t getType() const;
 

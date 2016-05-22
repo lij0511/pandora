@@ -8,19 +8,27 @@
 #ifndef POLA_SCENE_H_
 #define POLA_SCENE_H_
 
+#include <stdint.h>
+
+#include "graphic/GraphicContext.h"
+
 namespace pola {
 namespace scene {
 
-#include <stdint.h>
-
 class Scene {
 public:
-	Scene();
+	Scene(graphic::GraphicContext* graphic);
 	virtual ~Scene();
 
 	virtual void setViewport(int32_t width, int32_t height);
 
+	int32_t getWidth() const;
+	int32_t getHeight() const;
+
+	graphic::GraphicContext* graphic() const;
+
 private:
+	graphic::GraphicContext* m_graphic;
 	int32_t m_width;
 	int32_t m_height;
 };

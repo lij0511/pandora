@@ -10,7 +10,7 @@
 namespace pola {
 namespace scene {
 
-Scene::Scene() : m_width(0), m_height(0) {
+Scene::Scene(graphic::GraphicContext* graphic) : m_graphic(graphic), m_width(0), m_height(0) {
 }
 
 Scene::~Scene() {
@@ -19,6 +19,19 @@ Scene::~Scene() {
 void Scene::setViewport(int32_t width, int32_t height) {
 	m_width = width;
 	m_height = height;
+	m_graphic->setViewport(width, height);
+}
+
+int32_t Scene::getWidth() const {
+	return m_width;
+}
+
+int32_t Scene::getHeight() const {
+	return m_height;
+}
+
+graphic::GraphicContext* Scene::graphic() const {
+	return m_graphic;
 }
 
 } /* namespace scene */

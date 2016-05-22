@@ -93,6 +93,12 @@ struct Vector3 {
     float y;
     float z;
 
+    Vector3(float x, float y, float z) {
+    	this->x = x;
+    	this->y = y;
+    	this->z = z;
+    }
+
     float lengthSquared() const {
 		return x * x + y * y;
 	}
@@ -167,6 +173,21 @@ struct Vector3 {
 	Vector3 copyNormalized() const {
 		Vector3 v = {x, y, z};
 		v.normalize();
+		return v;
+	}
+
+	void cross(const Vector3& vector) {
+		float x = this->y * vector.z - this->z * vector.y;
+		float y = this->z * vector.x - this->x * vector.z;
+		float z = this->x * vector.y - this->y * vector.x;
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
+
+	Vector3 copyCross(const Vector3& vector) {
+		Vector3 v = {x, y, z};
+		v.cross(vector);
 		return v;
 	}
 

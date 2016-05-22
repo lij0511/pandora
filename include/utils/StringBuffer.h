@@ -45,6 +45,7 @@ public:
 private:
 
 	void ensureCapacity(size_t minimumCapacity);
+	size_t _grow(size_t newSize);
 
 private:
 	char* m_buffer;

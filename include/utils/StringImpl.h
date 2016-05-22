@@ -150,7 +150,7 @@ public:
 			}
 			size_t len = length();
 			for (size_t index = 0; index < len; index ++) {
-				hash = JenkinsHashMix(hash, hash_type(charAt(index)));
+				hash = JenkinsHashMix(hash, charAt(index));
 			}
 			hash = JenkinsHashWhiten(hash);
 			m_hash = hash;

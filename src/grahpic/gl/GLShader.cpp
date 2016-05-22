@@ -1,0 +1,104 @@
+/*
+ * GLShader.cpp
+ *
+ *  Created on: 2016年3月31日
+ *      Author: lijing
+ */
+
+#include "graphic/gl/GLCaches.h"
+#include "graphic/gl/GLShader.h"
+
+#include "utils/JenkinsHash.h"
+
+namespace pola {
+namespace graphic {
+
+GLShader::GLShader() : mProgram(nullptr), mHash(0) {
+}
+
+GLShader::~GLShader() {
+}
+
+void GLShader::makeCurrent() {
+	mProgram = GLCaches::get().programCache.get(this);
+	mProgram->use();
+}
+
+const utils::String GLShader::getVertexShader() {
+	return generateVertexShader();
+}
+
+const utils::String GLShader::getFragmentShader() {
+	return generateFragmentShader();
+}
+
+void GLShader::set(const Matrix4& projectionMatrix, const Matrix4& transformMatrix) {
+	GLint u_projection, u_transform;
+	if (mProgram->fetchUniform("u_projection", u_projection)) {
+		glUniformMatrix4fv(u_projection, 1, GL_FALSE, &projectionMatrix.data[0]);
+	}
+	if (mProgram->fetchUniform("u_transform", u_transform)) {
+		glUniformMatrix4fv(u_transform, 1, GL_FALSE, &transformMatrix.data[0]);
+	}
+}
+
+bool GLShader::fetchAttribute(const char* name, GLint& location) {
+	return mProgram->fetchAttribute(name, location);
+}
+
+bool GLShader::fetchUniform(const char* name, GLint& location) {
+	return mProgram->fetchUniform(name, location);
+}
+
+utils::hash_t GLShader::hash() {
+	utils::hash_t hash = mHash;
+	if (hash == 0) {
+		const char* vertexGLShader = getVertexShader().characters();
+		const char* fragmentGLShader = getFragmentShader().characters();
+		size_t vlen = strlen(vertexGLShader);
+		size_t flen = strlen(fragmentGLShader);
+		if (vlen <= 0 && flen <= 0) return 0;
+		while (vlen --) {
+			hash = utils::JenkinsHashMix(hash, *vertexGLShader);
+			vertexGLShader ++;
+		}
+		while (flen --) {
+			hash = utils::JenkinsHashMix(hash, *fragmentGLShader);
+			fragmentGLShader ++;
+		}
+		hash = utils::JenkinsHashWhiten(hash);
+		mHash = hash;
+	}
+	return hash;
+}
+
+void GLShader::invalidate() {
+	mHash = 0;
+}
+
+const utils::String GLShader::generateVertexShader() {
+	return utils::String("attribute vec4 a_position;\n"
+			"uniform mat4 u_projection;\n"
+			"uniform mat4 u_transform;\n"
+			"void main()\n"
+			"{\n"
+			"  gl_Position = u_projection * u_transform * a_position;\n"
+			"}\n", true);
+}
+
+const utils::String GLShader::generateFragmentShader() {
+	return utils::String("#ifdef GL_ES\n"
+			"#define LOWP lowp\n"
+			"precision mediump float;\n"
+			"#else\n"
+			"#define LOWP \n"
+			"#endif\n"
+			"uniform vec4 u_color;\n"
+			"void main()\n"
+			"{\n"
+			"  gl_FragColor = u_color;\n"
+			"}\n", true);
+}
+
+}
+}

@@ -9,12 +9,11 @@
 #define POLA_MESH_H_
 
 namespace pola {
-namespace graphic {
+namespace scene {
 
 class Mesh {
 public:
-	Mesh();
-	virtual ~Mesh();
+	virtual ~Mesh() {};
 };
 
 }
