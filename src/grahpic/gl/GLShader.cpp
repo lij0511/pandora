@@ -32,13 +32,10 @@ const utils::String GLShader::getFragmentShader() {
 	return generateFragmentShader();
 }
 
-void GLShader::set(const Matrix4& projectionMatrix, const Matrix4& transformMatrix) {
-	GLint u_projection, u_transform;
-	if (mProgram->fetchUniform("u_projection", u_projection)) {
-		glUniformMatrix4fv(u_projection, 1, GL_FALSE, &projectionMatrix.data[0]);
-	}
-	if (mProgram->fetchUniform("u_transform", u_transform)) {
-		glUniformMatrix4fv(u_transform, 1, GL_FALSE, &transformMatrix.data[0]);
+void GLShader::set(const mat4& MVPMatrix) {
+	GLint u_projection;
+	if (mProgram->fetchUniform("u_MVPMatrix", u_projection)) {
+		glUniformMatrix4fv(u_projection, 1, GL_FALSE, &MVPMatrix.data[0]);
 	}
 }
 
@@ -78,11 +75,10 @@ void GLShader::invalidate() {
 
 const utils::String GLShader::generateVertexShader() {
 	return utils::String("attribute vec4 a_position;\n"
-			"uniform mat4 u_projection;\n"
-			"uniform mat4 u_transform;\n"
+			"uniform mat4 u_MVPMatrix;\n"
 			"void main()\n"
 			"{\n"
-			"  gl_Position = u_projection * u_transform * a_position;\n"
+			"  gl_Position = u_MVPMatrix * a_position;\n"
 			"}\n", true);
 }
 

@@ -26,7 +26,7 @@ public:
 
 	void makeCurrent();
 
-	virtual void set(const mat4& projectionMatrix, const mat4& transformMatrix);
+	virtual void set(const mat4& MVPMatrix);
 	bool fetchAttribute(const char* name, GLint& outLocation);
 	bool fetchUniform(const char* name, GLint& outLocation);
 

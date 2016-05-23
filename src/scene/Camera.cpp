@@ -37,7 +37,7 @@ void Camera::recalculateProjection() {
 }
 
 void Camera::recalculateView() {
-	m_view.loadLookAt(m_translation, m_target, m_upper);
+	m_view.loadLookAt(m_position, m_target, m_upper);
 }
 
 } /* namespace scene */

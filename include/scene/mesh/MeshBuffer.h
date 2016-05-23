@@ -30,27 +30,12 @@ public:
 				if (m_buffer) {
 					free(m_buffer);
 				}
-				m_buffer = malloc(item_size * vertexCount);
+				m_buffer = malloc(m_vertexInfo.item_size * vertexCount);
 			}
 			m_vertexCount = vertexCount;
 		}
 		return m_buffer;
 	};
-
-	template<class TYPE>
-	void set(uint32_t index, const TYPE& vertex) {
-		LOG_FATAL_IF((m_type != TYPE::type()), "Type dismatch in MeshBuffer::set\n");
-		LOG_FATAL_IF((index > m_vertexCount), "Index out of bound in MeshBuffer::set\n");
-		TYPE* buffer = (TYPE*) m_buffer;
-		*(buffer + index) = vertex;
-	}
-
-	template<class TYPE>
-	void set(const TYPE* vertex, size_t vertexCount) {
-		LOG_FATAL_IF((m_type != TYPE::type()), "Type dismatch in MeshBuffer::set\n");
-		TYPE* buffer = (TYPE*) alloca(vertexCount);
-		memcpy(buffer, vertex, sizeof(TYPE) * vertexCount);
-	}
 
 	void pushIndex(uint16_t index);
 	void setIndices(const uint16_t* indices, size_t indexCount);
@@ -63,12 +48,7 @@ public:
 
 public:
 	graphic::VertexType m_type;
-	int item_size;
-	int offset_position;
-	int count_position;
-	int offset_texcoord;
-	int offset_color;
-	int count_color;
+	graphic::VertexInfo m_vertexInfo;
 private:
 	void* m_buffer;
 	pola::utils::Vector<uint16_t> m_indexBuffer;

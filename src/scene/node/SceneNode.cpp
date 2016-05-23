@@ -6,14 +6,19 @@
  */
 
 #include "scene/node/SceneNode.h"
+#include "graphic/GraphicContext.h"
 
 namespace pola {
 namespace scene {
 
-SceneNode::SceneNode(const graphic::vec3& position) : m_translation(position) {
+SceneNode::SceneNode(const graphic::vec3& position) : m_position(position) {
 }
 
 SceneNode::~SceneNode() {
+}
+
+void SceneNode::render(graphic::GraphicContext* graphic) {
+
 }
 
 } /* namespace scene */

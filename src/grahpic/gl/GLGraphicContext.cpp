@@ -30,7 +30,9 @@ void GLGraphicContext::renderMeshBuffer(scene::MeshBuffer& meshBuffer) {
 	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
 	m_view.translate(0, 0, -500);
-	shader->set(m_projection, m_view);
+	mat4 m = m_projection;
+	m.multiply(m_view);
+	shader->set(m);
 	GLint u_color;
 	if (shader->fetchUniform("u_color", u_color)) {
 		glUniform4f(u_color, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -39,7 +41,7 @@ void GLGraphicContext::renderMeshBuffer(scene::MeshBuffer& meshBuffer) {
 	GLint a_position;
 	if (shader->fetchAttribute("a_position", a_position)) {
 		glEnableVertexAttribArray(a_position);
-		glVertexAttribPointer(a_position, meshBuffer.count_position, GL_FLOAT, GL_FALSE, meshBuffer.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.offset_position));
+		glVertexAttribPointer(a_position, meshBuffer.m_vertexInfo.count_position, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_position));
 	}
 	if (meshBuffer.getIndexCount() > 0) {
 		glDrawElements(GL_TRIANGLES, meshBuffer.getIndexCount(), GL_UNSIGNED_SHORT, meshBuffer.getIndexBuffer());
