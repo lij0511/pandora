@@ -117,11 +117,11 @@ AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 		// save keyframe scale and translation
 		FrameTransform* frameTransforms = mesh->frameTransforms.editArray();
 		frameTransforms[i].scale[0] = frame->scale[0];
-		frameTransforms[i].scale[1] = frame->scale[1];
-		frameTransforms[i].scale[2] = frame->scale[2];
+		frameTransforms[i].scale[2] = frame->scale[1];
+		frameTransforms[i].scale[1] = frame->scale[2];
 		frameTransforms[i].translate[0] = frame->translate[0];
-		frameTransforms[i].translate[1] = frame->translate[1];
-		frameTransforms[i].translate[2] = frame->translate[2];
+		frameTransforms[i].translate[2] = frame->translate[1];
+		frameTransforms[i].translate[1] = frame->translate[2];
 
 		mesh->frameList.editItemAt(i).resize(header.numTriangles * 3);
 		FrameItem* frameItems = mesh->frameList.editItemAt(i).editArray();
@@ -131,8 +131,8 @@ AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 				FrameItem v;
 				uint32_t num = triangles[j].vertexIndices[ti];
 				v.pos[0] = frame->vertices[num].vertex[0];
-				v.pos[1] = frame->vertices[num].vertex[1];
-				v.pos[2] = frame->vertices[num].vertex[2];
+				v.pos[2] = frame->vertices[num].vertex[1];
+				v.pos[1] = frame->vertices[num].vertex[2];
 				v.normal_index = frame->vertices[num].lightNormalIndex;
 
 				*(frameItems++) = v;

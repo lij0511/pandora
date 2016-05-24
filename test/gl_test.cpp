@@ -11,6 +11,7 @@
 #include "scene/mesh/MeshLoader.h"
 #include "io/FileInputStream.h"
 #include "scene/mesh/AnimatedMesh.h"
+#include "scene/FPS.h"
 
 #include "utils/thread/FunctionalTask.h"
 #include "utils/thread/Handler.h"
@@ -43,24 +44,8 @@ Scene* scene;
 AnimatedMesh* mesh;
 XEvent e;
 
-int mTotalCount;
-int mSecondCount = 0;
-int mFrameCount = 0;
-long mFrameCountingStart = 0;
 
-void fps() {
-	long now = uptimeMillis();
-	++mFrameCount;
-	if (mFrameCountingStart == 0) {
-		mFrameCountingStart = now;
-	} else if ((now - mFrameCountingStart) > 1000) {
-		printf("FPS:%f\n", (double) mFrameCount
-				* 1000 / (now - mFrameCountingStart));
-		mFrameCountingStart = now;
-		mFrameCount = 0;
-	}
-	++mTotalCount;
-}
+FPS fps;
 
 void display() {
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
@@ -83,12 +68,12 @@ void display() {
 
 	scene->graphic()->setCurrentCamera(c.projection(), c.view());
 	if (mesh) {
-//		for (int i = 0; i < 1000; i ++)
+	for (int i = 0; i < 1; i ++)
 		scene->graphic()->renderMeshBuffer(*(mesh->getMeshBuffer(0)));
 	}
 
 	glXSwapBuffers(display_, window_);
-	fps();
+	fps.fps();
 }
 void loop() {
 

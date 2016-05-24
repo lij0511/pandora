@@ -30,6 +30,7 @@ void GLGraphicContext::renderMeshBuffer(scene::MeshBuffer& meshBuffer) {
 	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
 	m_view.translate(0, 0, -50);
+//	m_view.rotate(30, 0, 1.0f, 0);
 	mat4 m = m_projection;
 	m.multiply(m_view);
 	shader->set(m);
