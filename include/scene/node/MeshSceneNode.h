@@ -17,6 +17,10 @@ class MeshSceneNode: public SceneNode {
 public:
 	MeshSceneNode();
 	virtual ~MeshSceneNode();
+
+	virtual uint32_t getMaterialCount() const;
+
+	virtual void render(graphic::GraphicContext* graphic);
 };
 
 } /* namespace scene */

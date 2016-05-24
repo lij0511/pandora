@@ -16,5 +16,9 @@ MeshSceneNode::MeshSceneNode() {
 MeshSceneNode::~MeshSceneNode() {
 }
 
+void MeshSceneNode::render(graphic::GraphicContext* graphic) {
+
+}
+
 } /* namespace scene */
 } /* namespace pola */

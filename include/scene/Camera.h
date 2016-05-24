@@ -8,8 +8,6 @@
 #ifndef POLA_CAMERA_H_
 #define POLA_CAMERA_H_
 
-#include "scene/node/SceneNode.h"
-
 #include "graphic/Matrix4.h"
 #include "graphic/Vector.h"
 
@@ -18,18 +16,19 @@ namespace scene {
 
 class Scene;
 
-class Camera: public SceneNode {
+class Camera {
 public:
 	Camera(Scene* scene, const graphic::vec3& pos = graphic::vec3(0.0f, 0.0f, 1.0f), const graphic::vec3& lookAt = graphic::vec3(0.0f, 0.0f, 0.0f));
 	virtual ~Camera();
 
+	const graphic::mat4& vpmatrix() const;
 	const graphic::mat4& projection() const;
 	const graphic::mat4& view() const;
 
 protected:
-	void recalculateProjection();
-	void recalculateView();
+	void recalculateVPMatrix();
 protected:
+	graphic::vec3 m_position;
 	graphic::vec3 m_target;
 	graphic::vec3 m_upper;
 
@@ -40,6 +39,7 @@ protected:
 
 	graphic::mat4 m_projection;
 	graphic::mat4 m_view;
+	graphic::mat4 m_VPMatrix;
 };
 
 } /* namespace scene */

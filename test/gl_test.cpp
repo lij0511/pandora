@@ -8,9 +8,9 @@
 #include "scene/Scene.h"
 #include "graphic/gl/GLGraphicContext.h"
 #include "scene/Camera.h"
-#include "scene/mesh/MD2MeshLoader.h"
+#include "scene/mesh/MeshLoader.h"
 #include "io/FileInputStream.h"
-#include "scene/mesh/AnimationMesh.h"
+#include "scene/mesh/AnimatedMesh.h"
 
 #include "utils/thread/FunctionalTask.h"
 #include "utils/thread/Handler.h"
@@ -40,7 +40,7 @@ int WINDOW_HEIGHT = 800;
 
 Handler* mHandler;
 Scene* scene;
-AnimationMesh* mesh;
+AnimatedMesh* mesh;
 XEvent e;
 
 int mTotalCount;
@@ -188,9 +188,8 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	 pola::scene::MD2MeshLoader loader;
 	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
-	mesh = loader.loadMesh(&is);
+	mesh = MeshLoader::loadMesh(&is);
 
 	 scene = new Scene(new GLGraphicContext);
 	 scene->setViewport(WINDOW_WIDTH, WINDOW_HEIGHT);

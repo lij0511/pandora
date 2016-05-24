@@ -8,12 +8,19 @@
 #ifndef POLA_MESH_H_
 #define POLA_MESH_H_
 
+#include "utils/RefBase.h"
+#include "scene/mesh/MeshBuffer.h"
+
 namespace pola {
 namespace scene {
 
-class Mesh {
+class Mesh : public utils::RefBase<Mesh> {
 public:
 	virtual ~Mesh() {};
+
+	virtual size_t getMeshBufferCount() = 0;
+	virtual MeshBuffer* getMesh(uint16_t index) = 0;
+
 };
 
 }

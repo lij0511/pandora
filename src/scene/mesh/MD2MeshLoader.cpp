@@ -64,7 +64,7 @@ MD2MeshLoader::MD2MeshLoader() {
 MD2MeshLoader::~MD2MeshLoader() {
 }
 
-AnimationMesh* MD2MeshLoader::loadMesh(io::InputStream* is) {
+AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 
 	MD2Header header;
 	is->read(&header, sizeof(MD2Header));
@@ -96,9 +96,9 @@ AnimationMesh* MD2MeshLoader::loadMesh(io::InputStream* is) {
 		printf("tx=%f, ty=%f, tz=%f\n", frame->translate[0] , frame->translate[1], frame->translate[2]);
 		printf("name=%s\n", frame->name);
 	}
-	AnimationMesh* mesh = new AnimationMesh;
+//	AnimatedMesh* mesh = new AnimatedMesh;
 	MeshBuffer* meshBuffer = new MeshBuffer(graphic::TYPE_VERTEX3);
-	mesh->m_mesh = meshBuffer;
+//	mesh->m_mesh = meshBuffer;
 	graphic::Vertex3* mm = (graphic::Vertex3*) meshBuffer->alloc(header.numTriangles * 3);
 	// add vertices
 	for (int32_t j=0; j<header.numTriangles; ++j)
@@ -123,7 +123,7 @@ AnimationMesh* MD2MeshLoader::loadMesh(io::InputStream* is) {
 
 	delete[] triangles;
 
-	return mesh;
+	return nullptr;
 }
 
 } /* namespace scene */

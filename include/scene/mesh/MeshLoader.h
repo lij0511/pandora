@@ -9,7 +9,7 @@
 #define POLA_MESHLOADER_H_
 
 #include "io/InputStream.h"
-#include "scene/mesh/AnimationMesh.h"
+#include "scene/mesh/AnimatedMesh.h"
 
 namespace pola {
 namespace scene {
@@ -18,7 +18,11 @@ class MeshLoader {
 public:
 	virtual ~MeshLoader() {};
 
-	virtual AnimationMesh* loadMesh(io::InputStream* is) = 0;
+	static AnimatedMesh* loadMesh(const char* meshFile);
+	static AnimatedMesh* loadMesh(io::InputStream* is);
+
+protected:
+	virtual AnimatedMesh* doLoadMesh(io::InputStream* is) = 0;
 };
 
 } /* namespace scene */

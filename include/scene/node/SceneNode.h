@@ -9,11 +9,9 @@
 #define POLA_SCENENODE_H_
 
 #include "graphic/Vector.h"
+#include "graphic/GraphicContext.h"
 
 namespace pola {
-namespace graphic {
-class GraphicContext;
-}
 namespace scene {
 
 class SceneNode {
