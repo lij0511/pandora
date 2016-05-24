@@ -83,7 +83,8 @@ void display() {
 
 	scene->graphic()->setCurrentCamera(c.projection(), c.view());
 	if (mesh) {
-		scene->graphic()->renderMeshBuffer(*(mesh->m_mesh));
+//		for (int i = 0; i < 1000; i ++)
+		scene->graphic()->renderMeshBuffer(*(mesh->getMeshBuffer(0)));
 	}
 
 	glXSwapBuffers(display_, window_);
@@ -188,7 +189,7 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
+	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
 	mesh = MeshLoader::loadMesh(&is);
 
 	 scene = new Scene(new GLGraphicContext);

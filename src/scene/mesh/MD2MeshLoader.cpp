@@ -9,6 +9,7 @@
 
 #include "log/Log.h"
 #include "scene/mesh/MD2MeshLoader.h"
+#include "scene/mesh/MD2AnimatedMesh.h"
 
 namespace pola {
 namespace scene {
@@ -90,40 +91,57 @@ AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 	MD2Frame* frame = (MD2Frame*)buffer;
 	is->seek(header.offsetFrames);
 
-	for (int32_t i = 0; i<header.numFrames; ++i) {
+	MD2AnimatedMesh* mesh = new MD2AnimatedMesh;
+	MeshBuffer* meshBuffer = &mesh->meshBuffer;
+	meshBuffer->alloc(header.numTriangles * 3);
+	const int16_t count = header.numTriangles * 3;
+	for (int16_t i = 0; i < count;  i+= 3) {
+		meshBuffer->pushIndex((int16_t) i);
+		meshBuffer->pushIndex((int16_t) i + 1);
+		meshBuffer->pushIndex((int16_t) i + 2);
+	}
+
+	mesh->frameTransforms.resize(header.numFrames);
+	mesh->frameList.resize(header.numFrames);
+	mesh->frameCount = header.numFrames;
+
+	is->seek(header.offsetFrames);
+
+	for (int32_t i = 0; i < header.numFrames; ++i) {
+
 		is->read(frame, header.frameSize);
 		printf("sx=%f, sy=%f, sz=%f, num=%d\n", frame->scale[0], frame->scale[1], frame->scale[2], header.numFrames);
 		printf("tx=%f, ty=%f, tz=%f\n", frame->translate[0] , frame->translate[1], frame->translate[2]);
 		printf("name=%s\n", frame->name);
-	}
-//	AnimatedMesh* mesh = new AnimatedMesh;
-	MeshBuffer* meshBuffer = new MeshBuffer(graphic::TYPE_VERTEX3);
-//	mesh->m_mesh = meshBuffer;
-	graphic::Vertex3* mm = (graphic::Vertex3*) meshBuffer->alloc(header.numTriangles * 3);
-	// add vertices
-	for (int32_t j=0; j<header.numTriangles; ++j)
-	{
-		for (int32_t ti=0; ti<3; ++ti)
-		{
-			graphic::Vertex3 v;
-			uint32_t num = triangles[j].vertexIndices[ti];
-			v.x = frame->vertices[num].vertex[0];
-			v.z = frame->vertices[num].vertex[1];
-			v.y = frame->vertices[num].vertex[2];
-			*(mm ++) = v;
+
+		// save keyframe scale and translation
+		FrameTransform* frameTransforms = mesh->frameTransforms.editArray();
+		frameTransforms[i].scale[0] = frame->scale[0];
+		frameTransforms[i].scale[1] = frame->scale[1];
+		frameTransforms[i].scale[2] = frame->scale[2];
+		frameTransforms[i].translate[0] = frame->translate[0];
+		frameTransforms[i].translate[1] = frame->translate[1];
+		frameTransforms[i].translate[2] = frame->translate[2];
+
+		mesh->frameList.editItemAt(i).resize(header.numTriangles * 3);
+		FrameItem* frameItems = mesh->frameList.editItemAt(i).editArray();
+		// add vertices
+		for (int32_t j = 0; j < header.numTriangles; ++j) {
+			for (int32_t ti = 0; ti < 3; ++ti) {
+				FrameItem v;
+				uint32_t num = triangles[j].vertexIndices[ti];
+				v.pos[0] = frame->vertices[num].vertex[0];
+				v.pos[1] = frame->vertices[num].vertex[1];
+				v.pos[2] = frame->vertices[num].vertex[2];
+				v.normal_index = frame->vertices[num].lightNormalIndex;
+
+				*(frameItems++) = v;
+			}
 		}
 	}
-	const int32_t count = header.numTriangles*3;
-	for (int32_t i=0; i<count; i+=3)
-	{
-		meshBuffer->pushIndex(i);
-		meshBuffer->pushIndex(i + 1);
-		meshBuffer->pushIndex(i + 2);
-	}
-
 	delete[] triangles;
 
-	return nullptr;
+	return mesh;
 }
 
 } /* namespace scene */

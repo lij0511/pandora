@@ -18,8 +18,8 @@ class Mesh : public utils::RefBase<Mesh> {
 public:
 	virtual ~Mesh() {};
 
-	virtual size_t getMeshBufferCount() = 0;
-	virtual MeshBuffer* getMesh(uint16_t index) = 0;
+	virtual size_t getMeshBufferCount() const = 0;
+	virtual MeshBuffer* getMeshBuffer(uint16_t index) = 0;
 
 };
 

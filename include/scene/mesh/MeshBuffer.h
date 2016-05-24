@@ -24,26 +24,16 @@ public:
 	MeshBuffer(graphic::VertexType type);
 	virtual ~MeshBuffer();
 
-	void* alloc(size_t vertexCount) {
-		if (vertexCount > 0 && vertexCount != m_vertexCount) {
-			if (m_vertexCount < vertexCount) {
-				if (m_buffer) {
-					free(m_buffer);
-				}
-				m_buffer = malloc(m_vertexInfo.item_size * vertexCount);
-			}
-			m_vertexCount = vertexCount;
-		}
-		return m_buffer;
-	};
+	void* alloc(size_t vertexCount);
 
+	uint16_t* allocIndex(size_t indexCount);
 	void pushIndex(uint16_t index);
 	void setIndices(const uint16_t* indices, size_t indexCount);
 
 	size_t getIndexCount() const;
 	size_t getVertexCount() const;
 
-	const void* getVertexBuffer() const;
+	void* getVertexBuffer() const;
 	const uint16_t* getIndexBuffer() const;
 
 public:

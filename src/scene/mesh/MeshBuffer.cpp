@@ -31,6 +31,25 @@ MeshBuffer::~MeshBuffer() {
 	}
 }
 
+void* MeshBuffer::alloc(size_t vertexCount) {
+	if (vertexCount > 0 && vertexCount != m_vertexCount) {
+		if (m_vertexCount < vertexCount) {
+			if (m_buffer) {
+				free(m_buffer);
+			}
+			m_buffer = malloc(m_vertexInfo.item_size * vertexCount);
+		}
+		m_vertexCount = vertexCount;
+	}
+	return m_buffer;
+};
+
+uint16_t* MeshBuffer::allocIndex(size_t indexCount) {
+	m_indexBuffer.clear();
+	m_indexBuffer.setCapacity(indexCount);
+	return m_indexBuffer.editArray();
+}
+
 size_t MeshBuffer::getVertexCount() const {
 	return m_vertexCount;
 }
@@ -48,7 +67,7 @@ size_t MeshBuffer::getIndexCount() const {
 	return m_indexBuffer.size();
 }
 
-const void* MeshBuffer::getVertexBuffer() const {
+void* MeshBuffer::getVertexBuffer() const {
 	return m_buffer;
 }
 

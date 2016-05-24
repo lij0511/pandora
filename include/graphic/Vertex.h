@@ -24,6 +24,7 @@ enum VertexType {
 	TYPE_VERTEX2_ALPHA,
 	TYPE_VERTEX3,
 	TYPE_VERTEX3_TEXTURE,
+	TYPE_VERTEX3_TEXTURE_NORMAL,
 	TYPE_VERTEX3_TEXTURE_COLOR,
 	TYPE_VERTEX3_TEXTURE_COLOR_NORMAL,
 	TYPE_VERTEX3_TEXTURE_ALPHA,
@@ -150,6 +151,19 @@ struct TextureVertex3 : Vertex3 {
 	}
 };
 
+struct NormalTextureVertex3 : TextureVertex3 {
+    float nx, ny, nz;
+
+    static inline void set(NormalTextureVertex3* vertex, float x, float y, float z,
+            float u, float v, float nx, float ny, float nz) {
+    	TextureVertex3::set(vertex, x, y, z, u, v);
+
+    	vertex[0].nx = nx;
+		vertex[0].ny = ny;
+		vertex[0].nz = nz;
+    }
+};
+
 struct ColorTextureVertex3 : TextureVertex3 {
     float r, g, b, a;
 
@@ -251,7 +265,13 @@ inline VertexInfo makeVertexInfo(VertexType type) {
 	case TYPE_VERTEX3_TEXTURE:
 		vertexInfo.count_position = 3;
 		vertexInfo.offset_texcoord = 3 * float_size;
-		vertexInfo.item_size = sizeof(TextureVertex2);
+		vertexInfo.item_size = sizeof(TextureVertex3);
+		break;
+	case TYPE_VERTEX3_TEXTURE_NORMAL:
+		vertexInfo.count_position = 3;
+		vertexInfo.offset_texcoord = 3 * float_size;
+		vertexInfo.offset_normal = 5 * float_size;
+		vertexInfo.item_size = sizeof(NormalTextureVertex3);
 		break;
 	case TYPE_VERTEX2_TEXTURE_COLOR:
 		vertexInfo.offset_texcoord = 2 * float_size;

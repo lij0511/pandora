@@ -16,8 +16,11 @@ MeshSceneNode::MeshSceneNode() {
 MeshSceneNode::~MeshSceneNode() {
 }
 
-void MeshSceneNode::render(graphic::GraphicContext* graphic) {
+uint32_t MeshSceneNode::getMaterialCount() const {
+	return 0;
+}
 
+void MeshSceneNode::render(graphic::GraphicContext* graphic) {
 }
 
 } /* namespace scene */
