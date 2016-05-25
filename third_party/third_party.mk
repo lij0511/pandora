@@ -44,6 +44,12 @@ ft2_files = third_party/freetype/src/autofit/autofit.c\
 	third_party/freetype/src/type42/type42.c\
 	third_party/freetype/src/winfonts/winfnt.c
 
+ft2_objs := $(patsubst %.c, $(builddir)/%.o, $(notdir ${ft2_files}))
+$(builddir)/libft2.a: libft2.a
+libft2.a: $(ft2_files)
+#	$(CC) -O2 -g -Wall -fmessage-length=0  -fPIC -I ./third_party/freetype/include -DFT2_BUILD_LIBRARY $^ -o $(builddir)/$@
+	ar -rc $(builddir)/$@ $(ft2_objs)
+	${builddir}/%.o:%.c
 $(builddir)/libft2.so: libft2.so
 libft2.so: $(ft2_files)
 	$(CC) -O2 -g -Wall -fmessage-length=0  -fPIC -I ./third_party/freetype/include -DFT2_BUILD_LIBRARY -shared $^ -o $(builddir)/$@
@@ -67,6 +73,10 @@ zlib_files := \
 	third_party/zlib/trees.c \
 	third_party/zlib/uncompr.c \
 	third_party/zlib/zutil.c
+$(builddir)/libz.a: libz.a
+libz.a: $(zlib_files)
+#	$(CC) -O2 -g -Wall -fmessage-length=0 -fPIC -I ./third_party/zlib -DZ_BUILD_LIBRARY $^ -o $(builddir)/$@
+	ar r $(builddir)/$@ $^
 $(builddir)/libz.so: libz.so
 libz.so: $(zlib_files)
 	$(CC) -O2 -g -Wall -fmessage-length=0 -fPIC -I ./third_party/zlib -DZ_BUILD_LIBRARY -shared $^ -o $(builddir)/$@
@@ -86,9 +96,14 @@ png_files = third_party/libpng/png.c\
 	third_party/libpng/pngwutil.c\
 	third_party/libpng/pngwio.c\
 	third_party/libpng/pngwtran.c
+$(builddir)/libpng.a: libpng.a
+libpng.a: $(png_files)  $(builddir)/libz.a
+#	$(CC) -O2 -g -Wall -fmessage-length=0 -fPIC -I ./third_party/libpng -I ./third_party/zlib -DPNG_BUILD_LIBRARY $^ -o $(builddir)/$@
+	ar r $(builddir)/$@ $^
 $(builddir)/libpng.so: libpng.so
 libpng.so: $(png_files)  $(builddir)/libz.so
 	$(CC) -O2 -g -Wall -fmessage-length=0 -fPIC -I ./third_party/libpng -I ./third_party/zlib -DPNG_BUILD_LIBRARY -shared $^ -o $(builddir)/$@
+
 
 INCLUDEFLAGS += -I third_party/libjpeg
 jpeg_files := \
@@ -138,10 +153,13 @@ jpeg_files := \
 	third_party/libjpeg/jdarith.c\
 	third_party/libjpeg/jcarith.c\
 	third_party/libjpeg/jaricom.c
+$(builddir)/libjpeg.a: libjpeg.a
+libjpeg.a: $(jpeg_files)
+#	$(CC) -O2 -g -Wall -fmessage-length=0 -fPIC -I ./third_party/libjpeg $^ -o $(builddir)/$@
+	ar r $(builddir)/$@ $^
 $(builddir)/libjpeg.so: libjpeg.so
 libjpeg.so: $(jpeg_files)
 	$(CC) -O2 -g -Wall -fmessage-length=0 -fPIC -I ./third_party/libjpeg -shared $^ -o $(builddir)/$@
-
 
 # find  source/common -maxdepth 1  ! -type d  | egrep  '\.(c|cpp)$' | \
 # sort | sed "s/^\(.*\)$/      '\1',/"
@@ -149,8 +167,12 @@ INCLUDEFLAGS += -I third_party/icu/source/common
 icu_files := $(shell find third_party/icu/source/common -maxdepth 1  ! -type d  -name "*.cpp" -o -name "*.c")
 icu_files +=  third_party/icu/source/stubdata/stubdata.c
 
+$(builddir)/libicu.a: libicu.a
+libicu.a: $(icu_files)
+	echo $(icu_files)
+#	$(CC) -O2 -g -Wall -fmessage-length=0 -fPIC -I ./third_party/icu/source/common -DU_COMMON_IMPLEMENTATION $^ -o $(builddir)/$@
+	ar r $(builddir)/$@ $^
 $(builddir)/libicu.so: libicu.so
 libicu.so: $(icu_files)
-	echo $(icu_files)
 	$(CC) -O2 -g -Wall -fmessage-length=0 -fPIC -I ./third_party/icu/source/common -DU_COMMON_IMPLEMENTATION -shared $^ -o $(builddir)/$@
 	

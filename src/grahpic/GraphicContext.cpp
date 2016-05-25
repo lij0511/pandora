@@ -21,9 +21,8 @@ void GraphicContext::setViewport(int32_t width, int32_t height) {
 	m_height = height;
 }
 
-void GraphicContext::setCurrentCamera(const mat4& projection, const mat4& view) {
-	m_projection = projection;
-	m_view = view;
+void GraphicContext::setCurrentCamera(const mat4& camera) {
+	m_camera = camera;
 }
 
 } /* namespace graphic */

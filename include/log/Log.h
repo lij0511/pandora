@@ -24,7 +24,7 @@ inline void polaris_printAssert(bool cond, const char* str, ...) {
 	}
 }
 
-#ifndef LOGE
+#ifndef LOGD
 #ifdef DEBUG
 #define LOGD(str, ...) \
 		(void)fprintf(stdout, #str, ## __VA_ARGS__);

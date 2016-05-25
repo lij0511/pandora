@@ -7,7 +7,7 @@
 
 #include "scene/Scene.h"
 #include "graphic/gl/GLGraphicContext.h"
-#include "scene/Camera.h"
+#include "scene/Camera3D.h"
 #include "scene/mesh/MeshLoader.h"
 #include "io/FileInputStream.h"
 #include "scene/mesh/AnimatedMesh.h"
@@ -42,6 +42,7 @@ int WINDOW_HEIGHT = 800;
 Handler* mHandler;
 Scene* scene;
 AnimatedMesh* mesh;
+Camera3D* camera;
 XEvent e;
 
 
@@ -50,8 +51,6 @@ FPS fps;
 void display() {
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	Camera c(scene);
 
 	/*MeshBuffer m(Vertex3::type());
 	Vertex3* vertex= (Vertex3*) m.alloc(4);
@@ -65,8 +64,8 @@ void display() {
 	m.pushIndex(2);
 	m.pushIndex(1);
 	m.pushIndex(3);*/
-
-	scene->graphic()->setCurrentCamera(c.projection(), c.view());
+	camera->yaw(1);
+	scene->graphic()->setCurrentCamera(camera->matrix());
 	if (mesh) {
 	for (int i = 0; i < 1; i ++)
 		scene->graphic()->renderMeshBuffer(*(mesh->getMeshBuffer(0)));
@@ -82,12 +81,12 @@ void loop() {
 	while (XPending(display_)) {
 	  XEvent e;
 	  XNextEvent(display_, &e);
-	  printf("type=%d\n", e.type);
 	  switch (e.type) {
 		case Expose:
 		  break;
 		case ConfigureNotify:
 			scene->setViewport(e.xconfigure.width, e.xconfigure.height);
+			camera->setSize(e.xconfigure.width, e.xconfigure.height);
 		  break;
 		default:
 		  break;
@@ -174,11 +173,13 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
+	pola::io::FileInputStream is("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/sydney.md2");
 	mesh = MeshLoader::loadMesh(&is);
 
 	 scene = new Scene(new GLGraphicContext);
 	 scene->setViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
+	 camera = new Camera3D;
+	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());

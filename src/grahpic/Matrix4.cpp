@@ -323,62 +323,62 @@ void Matrix4::loadOrtho(float left, float right, float bottom, float top, float 
 
 void Matrix4::loadPerspective(float fovy, float aspect, float near, float far) {
 	loadIdentity();
-	const float f = 1.0f / tan(fovy);
-	const float rangeReciprocal = 1.0f / (near - far);
 
-	data[kScaleX] = f / aspect;
-	data[kSkewY] = 0;
+	const double h = 1.0 / (tan(fovy*0.5));
+	const float w = (h / aspect);
+
+	data[0] = w;
+	data[1] = 0;
 	data[2] = 0;
-	data[kPerspective0] = 0;
+	data[3] = 0;
 
-	data[kSkewX] = 0;
-	data[kScaleY] = f;
+	data[4] = 0;
+	data[5] = h;
 	data[6] = 0;
-	data[kPerspective1] = 0;
+	data[7] = 0;
 
 	data[8] = 0;
 	data[9] = 0;
-	data[kScaleZ] = (far + near) * rangeReciprocal;
-	data[11] = -1;
+	data[10] = ((far + near) / (near - far));
+	data[11] = - 1;
 
-	data[kTranslateX] = 0;
-	data[kTranslateY] = 0;
-	data[kTranslateZ] = 2.0f * far * near * rangeReciprocal;
-	data[kPerspective2] = 0;
+	data[12] = 0;
+	data[13] = 0;
+	data[14] = 2 * near * far / (near - far);
+	data[15] = 0;
 
 	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
 void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
-	vec3 zaxis = target - position;
-	zaxis.normalize();
 
-	vec3 xaxis = zaxis.copyCross(upper);
-	xaxis.normalize();
+	vec3 nvec = target - position;
+	nvec.normalize();
 
-	vec3 yaxis = xaxis.copyCross(zaxis);
+	vec3 uvec = nvec.copyCross(upper);
+	uvec.normalize();
 
-	data[0] = xaxis.x;
-	data[1] = yaxis.x;
-	data[2] = - zaxis.x;
-	data[3] = 0;
+	vec3 vvec = uvec.copyCross(nvec);
+//	vvec.normalize();
 
-	data[4] = xaxis.y;
-	data[5] = yaxis.y;
-	data[6] = - zaxis.y;
-	data[7] = 0;
+	memset(data, 0, sizeof(float) * 16);
 
-	data[8] = xaxis.z;
-	data[9] = yaxis.z;
-	data[10] = - zaxis.z;
-	data[11] = 0;
+	data[0] = uvec.x;
+	data[4] = uvec.y;
+	data[8] = uvec.z;
+	data[12] = - position.dot(uvec);
 
-	data[12] = 0;
-	data[13] = 0;
-	data[14] = 0;
+	data[1] = vvec.x;
+	data[5] = vvec.y;
+	data[9] = vvec.z;
+	data[13] = - position.dot(vvec);
+
+	data[2] = - nvec.x;
+	data[6] = - nvec.y;
+	data[10] = - nvec.z;
+	data[14] = - position.dot(nvec);
+
 	data[15] = 1;
-
-	translate(- position.x, - position.y, - position.z);
 
 	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }

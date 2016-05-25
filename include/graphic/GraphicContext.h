@@ -24,13 +24,12 @@ public:
 
 	virtual void setViewport(int32_t width, int32_t height);
 
-	void setCurrentCamera(const mat4& projection, const mat4& view);
+	void setCurrentCamera(const mat4& projection);
 
 	virtual void renderMeshBuffer(scene::MeshBuffer& meshBuffer) = 0;
 
 protected:
-	mat4 m_projection;
-	mat4 m_view;
+	mat4 m_camera;
 private:
 	int32_t m_width;
 	int32_t m_height;
