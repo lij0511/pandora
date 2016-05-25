@@ -31,17 +31,17 @@ private:
 };
 
 /////////////////////////////// jpeg_util //////////////////////////////////////
-static void ws_jpeg_init_source(j_decompress_ptr cinfo) {
-	ws_jpeg_source_mgr*  src = (ws_jpeg_source_mgr*) cinfo->src;
+static void pola_jpeg_init_source(j_decompress_ptr cinfo) {
+	pola_jpeg_source_mgr*  src = (pola_jpeg_source_mgr*) cinfo->src;
     src->next_input_byte = (const JOCTET*) src->fBuffer;
     src->bytes_in_buffer = 0;
     if (!src->fStream->rewind()) {
         cinfo->err->error_exit((j_common_ptr) cinfo);
     }
 }
-static boolean ws_jpeg_fill_input_buffer(j_decompress_ptr cinfo) {
-	ws_jpeg_source_mgr* src = (ws_jpeg_source_mgr*) cinfo->src;
-    size_t bytes = src->fStream->read(src->fBuffer, ws_jpeg_source_mgr::kBufferSize);
+static boolean pola_jpeg_fill_input_buffer(j_decompress_ptr cinfo) {
+	pola_jpeg_source_mgr* src = (pola_jpeg_source_mgr*) cinfo->src;
+    size_t bytes = src->fStream->read(src->fBuffer, pola_jpeg_source_mgr::kBufferSize);
     // note that JPEG is happy with less than the full read,
     // as long as the result is non-zero
     if (bytes == 0) {
@@ -51,8 +51,8 @@ static boolean ws_jpeg_fill_input_buffer(j_decompress_ptr cinfo) {
     src->bytes_in_buffer = bytes;
     return TRUE;
 }
-static void ws_jpeg_skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
-	ws_jpeg_source_mgr*  src = (ws_jpeg_source_mgr*) cinfo->src;
+static void pola_jpeg_skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
+	pola_jpeg_source_mgr*  src = (pola_jpeg_source_mgr*) cinfo->src;
     if (num_bytes > (long)src->bytes_in_buffer) {
         size_t bytesToSkip = num_bytes - src->bytes_in_buffer;
         while (bytesToSkip > 0) {
@@ -70,22 +70,21 @@ static void ws_jpeg_skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
         src->bytes_in_buffer -= num_bytes;
     }
 }
-static void ws_jpeg_term_source(j_decompress_ptr /*cinfo*/) {
+static void pola_jpeg_term_source(j_decompress_ptr /*cinfo*/) {
 }
-ws_jpeg_source_mgr::ws_jpeg_source_mgr(io::InputStream* is) :
+pola_jpeg_source_mgr::pola_jpeg_source_mgr(io::InputStream* is) :
 	fStream(is) {
-	init_source = ws_jpeg_init_source;
-	fill_input_buffer = ws_jpeg_fill_input_buffer;
-	skip_input_data = ws_jpeg_skip_input_data;
+	init_source = pola_jpeg_init_source;
+	fill_input_buffer = pola_jpeg_fill_input_buffer;
+	skip_input_data = pola_jpeg_skip_input_data;
 	resync_to_restart = jpeg_resync_to_restart;
-	term_source = ws_jpeg_term_source;
+	term_source = pola_jpeg_term_source;
 }
-ws_jpeg_source_mgr::~ws_jpeg_source_mgr() {
+pola_jpeg_source_mgr::~pola_jpeg_source_mgr() {
 }
 
-static void ws_jpeg_error_exit(j_common_ptr cinfo) {
-    ws_jpeg_error_mgr* error = (ws_jpeg_error_mgr*) cinfo->err;
-
+static void pola_jpeg_error_exit(j_common_ptr cinfo) {
+    pola_jpeg_error_mgr* error = (pola_jpeg_error_mgr*) cinfo->err;
     (*error->output_message) (cinfo);
 
     /* Let the memory manager delete any temp files before we die */
@@ -164,12 +163,11 @@ static void convert_CMYK_to_RGB(unsigned char* scanline, unsigned char* output, 
 
 Bitmap* JPEGImageDecoder::decode(io::InputStream* is, Bitmap::Format pref) {
 	JPEGAutoClean autoClean;
-	jpeg_decompress_struct  cinfo;
-	ws_jpeg_source_mgr       srcManager(is);
+	struct jpeg_decompress_struct  cinfo;
 
-	ws_jpeg_error_mgr errorManager;
+	struct pola_jpeg_error_mgr errorManager;
 	cinfo.err = jpeg_std_error(&errorManager);
-	errorManager.error_exit = ws_jpeg_error_exit;
+	errorManager.error_exit = pola_jpeg_error_exit;
 
 	// All objects need to be instantiated before this setjmp call so that
 	// they will be cleaned up properly if an error occurs.
@@ -177,6 +175,7 @@ Bitmap* JPEGImageDecoder::decode(io::InputStream* is, Bitmap::Format pref) {
 		LOGE("ReadJpegFile: Failed to setjmp.\n");
 		return nullptr;
 	}
+	pola_jpeg_source_mgr       srcManager(is);
 
 	jpeg_create_decompress(&cinfo);
 	cinfo.src = &srcManager;

@@ -76,8 +76,11 @@ void GLShader::invalidate() {
 const utils::String GLShader::generateVertexShader() {
 	return utils::String("attribute vec4 a_position;\n"
 			"uniform mat4 u_MVPMatrix;\n"
+			"attribute vec2 a_texCoords;\n"
+			"varying vec2 v_texCoords;\n"
 			"void main()\n"
 			"{\n"
+			"  v_texCoords = a_texCoords;"
 			"  gl_Position = u_MVPMatrix * a_position;\n"
 			"}\n", true);
 }
@@ -89,10 +92,12 @@ const utils::String GLShader::generateFragmentShader() {
 			"#else\n"
 			"#define LOWP \n"
 			"#endif\n"
-			"uniform vec4 u_color;\n"
+			"uniform sampler2D u_baseSampler;\n"
+			"varying vec2 v_texCoords;\n"
 			"void main()\n"
 			"{\n"
-			"  gl_FragColor = u_color;\n"
+			"  gl_FragColor = texture2D(u_baseSampler,  v_texCoords);\n"
+//			"  gl_FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
 			"}\n", true);
 }
 

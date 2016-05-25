@@ -59,6 +59,11 @@ struct MD2Triangle
 	uint16_t textureIndices[3];
 };
 
+struct MD2TextureCoordinate {
+	int16_t s;
+	int16_t t;
+};
+
 MD2MeshLoader::MD2MeshLoader() {
 }
 
@@ -110,9 +115,6 @@ AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 	for (int32_t i = 0; i < header.numFrames; ++i) {
 
 		is->read(frame, header.frameSize);
-		printf("sx=%f, sy=%f, sz=%f, num=%d\n", frame->scale[0], frame->scale[1], frame->scale[2], header.numFrames);
-		printf("tx=%f, ty=%f, tz=%f\n", frame->translate[0] , frame->translate[1], frame->translate[2]);
-		printf("name=%s\n", frame->name);
 
 		// save keyframe scale and translation
 		FrameTransform* frameTransforms = mesh->frameTransforms.editArray();
@@ -139,8 +141,26 @@ AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 			}
 		}
 	}
-	delete[] triangles;
 
+	is->seek(header.offsetTexcoords);
+	MD2TextureCoordinate* textureCoords = new MD2TextureCoordinate[header.numTexcoords];
+	is->read(textureCoords, sizeof(MD2TextureCoordinate)*header.numTexcoords);
+
+	if (header.numFrames > 0) {
+		float dmaxs = 1.0f / (header.skinWidth);
+		float dmaxt = 1.0f / (header.skinHeight);
+		graphic::NormalTextureVertex3* vertex = (graphic::NormalTextureVertex3*)meshBuffer->getVertexBuffer();
+		for (int32_t t = 0; t < header.numTriangles; ++t) {
+			for (int32_t n = 0; n < 3; ++n) {
+				int32_t index = t * 3 + n;
+				vertex[index].u = (textureCoords[triangles[t].textureIndices[n]].s + 0.5f) * dmaxs;
+				vertex[index].v = (textureCoords[triangles[t].textureIndices[n]].t + 0.5f) * dmaxt;
+			}
+		}
+	}
+
+	delete[] triangles;
+	delete[] textureCoords;
 	return mesh;
 }
 

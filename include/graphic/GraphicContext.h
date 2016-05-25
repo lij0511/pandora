@@ -12,6 +12,8 @@
 
 #include "scene/mesh/MeshBuffer.h"
 #include "graphic/Matrix4.h"
+#include "graphic/Texture.h"
+#include "io/InputStream.h"
 
 namespace pola {
 namespace graphic {
@@ -24,9 +26,15 @@ public:
 
 	virtual void setViewport(int32_t width, int32_t height);
 
+	Texture* loadTexture(const char* file);
+	Texture* loadTexture(io::InputStream* is);
+
 	void setCurrentCamera(const mat4& projection);
 
 	virtual void renderMeshBuffer(scene::MeshBuffer& meshBuffer) = 0;
+
+protected:
+	virtual Texture* doLoadTexture(io::InputStream* is) = 0;
 
 protected:
 	mat4 m_camera;

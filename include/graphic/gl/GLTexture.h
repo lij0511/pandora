@@ -8,8 +8,9 @@
 #ifndef POLA_GRAPHIC_GLTEXTURE_H_
 #define POLA_GRAPHIC_GLTEXTURE_H_
 
-#include "graphic/Texture.h"
 #include "graphic/gl/GL.h"
+#include "graphic/Texture.h"
+#include "graphic/Bitmap.h"
 
 namespace pola {
 namespace graphic {
@@ -44,6 +45,11 @@ public:
 	 * Indicates whether this texture will use trilinear filtering.
 	 */
 	bool mipMap;
+
+	Bitmap* m_bitmap;
+
+	bool generateTexture();
+
 };
 
 }

@@ -6,6 +6,7 @@
  */
 
 #include "graphic/GraphicContext.h"
+#include "io/FileInputStream.h"
 
 namespace pola {
 namespace graphic {
@@ -19,6 +20,14 @@ GraphicContext::~GraphicContext() {
 void GraphicContext::setViewport(int32_t width, int32_t height) {
 	m_width = width;
 	m_height = height;
+}
+
+Texture* GraphicContext::loadTexture(const char* file) {
+	io::FileInputStream is(file);
+	return loadTexture(&is);
+}
+Texture* GraphicContext::loadTexture(io::InputStream* is) {
+	return doLoadTexture(is);
 }
 
 void GraphicContext::setCurrentCamera(const mat4& camera) {

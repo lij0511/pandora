@@ -7,6 +7,7 @@
 
 #include "scene/Scene.h"
 #include "graphic/gl/GLGraphicContext.h"
+#include "graphic/gl/GLCaches.h"
 #include "scene/Camera3D.h"
 #include "scene/mesh/MeshLoader.h"
 #include "io/FileInputStream.h"
@@ -43,6 +44,7 @@ Handler* mHandler;
 Scene* scene;
 AnimatedMesh* mesh;
 Camera3D* camera;
+GLTexture* texture;
 XEvent e;
 
 
@@ -64,9 +66,12 @@ void display() {
 	m.pushIndex(2);
 	m.pushIndex(1);
 	m.pushIndex(3);*/
-	camera->yaw(1);
+//	camera->yaw(1);
 	scene->graphic()->setCurrentCamera(camera->matrix());
 	if (mesh) {
+		if (texture != nullptr && texture->generateTexture()) {
+			GLCaches::get().bindTexture(texture->id);
+		}
 	for (int i = 0; i < 1; i ++)
 		scene->graphic()->renderMeshBuffer(*(mesh->getMeshBuffer(0)));
 	}
@@ -173,13 +178,15 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/sydney.md2");
+	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
 	mesh = MeshLoader::loadMesh(&is);
 
 	 scene = new Scene(new GLGraphicContext);
 	 scene->setViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
 	 camera = new Camera3D;
 	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/gun.jpg");
 
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());

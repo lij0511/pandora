@@ -7,6 +7,7 @@
 
 #include "graphic/gl/GLGraphicContext.h"
 #include "graphic/gl/GLShader.h"
+#include "graphic/BitmapFactory.h"
 
 namespace pola {
 namespace graphic {
@@ -30,14 +31,15 @@ void GLGraphicContext::renderMeshBuffer(scene::MeshBuffer& meshBuffer) {
 	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
 	mat4 m = m_camera;
-//	m.translate(0, 0, -100);
+	m.translate(0, 0, -100);
 //	m.rotate(90, 0, 1, 0);
 	shader->set(m);
-	GLint u_color;
-	if (shader->fetchUniform("u_color", u_color)) {
-		glUniform4f(u_color, 1.0f, 1.0f, 1.0f, 1.0f);
-	}
 
+	GLint a_texCoords;
+	if (meshBuffer.m_vertexInfo.offset_texcoord >= 0 && shader->fetchAttribute("a_texCoords", a_texCoords)) {
+		glEnableVertexAttribArray(a_texCoords);
+		glVertexAttribPointer(a_texCoords, 2, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_texcoord));
+	}
 	GLint a_position;
 	if (shader->fetchAttribute("a_position", a_position)) {
 		glEnableVertexAttribArray(a_position);
@@ -48,6 +50,17 @@ void GLGraphicContext::renderMeshBuffer(scene::MeshBuffer& meshBuffer) {
 	} else {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, meshBuffer.getVertexCount());
 	}
+}
+
+Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
+	Bitmap* bitmap = BitmapFactory::decodeStream(is);
+	if (bitmap == nullptr) {
+		return nullptr;
+	}
+	GLTexture* texture = new GLTexture;
+	texture->m_bitmap = bitmap;
+
+	return texture;
 }
 
 } /* namespace graphic */

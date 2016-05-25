@@ -9,6 +9,7 @@
 #define POLA_BITMAPFACTORY_H_
 
 #include "graphic/Bitmap.h"
+#include "io/InputStream.h"
 
 namespace pola {
 namespace graphic {
@@ -16,6 +17,7 @@ namespace graphic {
 class BitmapFactory {
 public:
 	static Bitmap* decodeFile(const char *file);
+	static Bitmap* decodeStream(io::InputStream* is);
 };
 
 }

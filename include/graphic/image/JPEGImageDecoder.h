@@ -20,21 +20,21 @@ extern "C" {
 namespace pola {
 namespace graphic {
 
-struct ws_jpeg_source_mgr : jpeg_source_mgr {
-	ws_jpeg_source_mgr(io::InputStream* is);
-	~ws_jpeg_source_mgr();
+struct pola_jpeg_source_mgr : jpeg_source_mgr {
+	pola_jpeg_source_mgr(io::InputStream* is);
+	~pola_jpeg_source_mgr();
 
 	// fStream is ref'ed and unref'ed
 	io::InputStream*       fStream;
 	enum {
-		kBufferSize = 1024
+		kBufferSize = /*TODO 有些jpg解析汇报异常(Miscellaneous marker 0xe1, length 14952) Why?              1024*/1024 * 500
 	};
 	char    fBuffer[kBufferSize];
 };
 /* Our error-handling struct.
  *
 */
-struct ws_jpeg_error_mgr : jpeg_error_mgr {
+struct pola_jpeg_error_mgr : jpeg_error_mgr {
     jmp_buf fJmpBuf;
 };
 

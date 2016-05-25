@@ -11,6 +11,7 @@
 #include "graphic/gl/GL.h"
 #include "graphic/GraphicContext.h"
 #include "graphic/Matrix4.h"
+#include "graphic/gl/GLTexture.h"
 
 namespace pola {
 namespace graphic {
@@ -23,6 +24,9 @@ public:
 	virtual void setViewport(int32_t width, int32_t height);
 
 	virtual void renderMeshBuffer(scene::MeshBuffer& meshBuffer);
+
+protected:
+	virtual Texture* doLoadTexture(io::InputStream* is);
 };
 
 } /* namespace graphic */

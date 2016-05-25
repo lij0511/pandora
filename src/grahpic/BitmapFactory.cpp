@@ -17,15 +17,20 @@ namespace pola {
 namespace graphic {
 
 Bitmap* BitmapFactory::decodeFile(const char *file) {
-	Bitmap* bitmap = nullptr;
 	io::InputStream* is = new io::FileInputStream(file);
+	Bitmap* bitmap = decodeStream(is);
+	is->close();
+	delete is;
+	return bitmap;
+}
+
+Bitmap* BitmapFactory::decodeStream(io::InputStream* is) {
+	Bitmap* bitmap = nullptr;
 	ImageDecoder* decoder = ImageDecoder::Factory(is);
 	if (decoder) {
 		bitmap = decoder->decode(is);
 		delete decoder;
 	}
-	is->close();
-	delete is;
 	return bitmap;
 }
 

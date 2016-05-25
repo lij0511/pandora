@@ -27,7 +27,7 @@ inline void polaris_printAssert(bool cond, const char* str, ...) {
 #ifndef LOGD
 #ifdef DEBUG
 #define LOGD(str, ...) \
-		(void)fprintf(stdout, #str, ## __VA_ARGS__);
+		(void)fprintf(stdout, str, ## __VA_ARGS__);
 #else
 #define LOGD(...) \
 	;
@@ -36,7 +36,7 @@ inline void polaris_printAssert(bool cond, const char* str, ...) {
 
 #ifndef LOGE
 #define LOGE(str, ...) \
-	(void)fprintf(stderr, #str, ## __VA_ARGS__);
+	(void)fprintf(stderr, str, ## __VA_ARGS__);
 #endif
 
 #ifndef LOGI
@@ -47,19 +47,19 @@ inline void polaris_printAssert(bool cond, const char* str, ...) {
 #ifndef LOG_FATAL_IF
 #define LOG_FATAL_IF(cond, str, ...)  \
 	(cond) \
-    ? ((void)polaris_printAssert(#cond, #str, ##__VA_ARGS__)) \
+    ? ((void)polaris_printAssert(#cond, str, ##__VA_ARGS__)) \
     : (void)0
 #endif
 
 #ifndef LOG_ALWAYS_FATAL
 #define LOG_ALWAYS_FATAL(str, ...)  \
-    ((void)polaris_printAssert(true, #str, ##__VA_ARGS__))
+    ((void)polaris_printAssert(true, str, ##__VA_ARGS__))
 #endif
 
 #ifndef LOG_IF
 #define LOG_IF(cond, str, ...)  \
 	(cond) \
-	? ((void)fprintf(stdout, #str, ##__VA_ARGS__)) \
+	? ((void)fprintf(stdout, str, ##__VA_ARGS__)) \
 	: (void)0
 #endif
 
