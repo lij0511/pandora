@@ -20,6 +20,7 @@ FileInputStream::FileInputStream(FILE* fp) : mFP(fp) {
 }
 
 FileInputStream::~FileInputStream() {
+	close();
 }
 
 size_t FileInputStream::read(void* buffer, size_t length) {
@@ -27,8 +28,9 @@ size_t FileInputStream::read(void* buffer, size_t length) {
 	return fread(buffer, 1, length, mFP);
 }
 
-uint8_t FileInputStream::read() {
-	return 0;
+int FileInputStream::read() {
+	if (!mFP) return EOF;
+	return fgetc(mFP);
 }
 
 size_t FileInputStream::skip(size_t length) {
@@ -51,6 +53,12 @@ void FileInputStream::close() {
 	InputStream::close();
 	if (!mFP) return;
 	fclose(mFP);
+	mFP = 0;
+}
+
+size_t FileInputStream::getPosition() const {
+	if (!mFP) return 0;
+	return ftell(mFP);
 }
 
 size_t FileInputStream::getLength() const {
@@ -58,9 +66,7 @@ size_t FileInputStream::getLength() const {
 	size_t cursor = ftell(mFP);
 	fseek(mFP, 0, SEEK_END);
 	size_t bytes = ftell(mFP);
-	if (cursor > 0) {
-		fseek(mFP, cursor, SEEK_SET);
-	}
+	fseek(mFP, cursor, SEEK_SET);
 	return bytes;
 }
 

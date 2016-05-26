@@ -351,6 +351,7 @@ void Matrix4::loadPerspective(float fovy, float aspect, float near, float far) {
 }
 
 void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
+	loadIdentity();
 
 	vec3 nvec = target - position;
 	nvec.normalize();
@@ -359,28 +360,29 @@ void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
 	uvec.normalize();
 
 	vec3 vvec = uvec.copyCross(nvec);
-//	vvec.normalize();
+	vvec.normalize();
 
 	memset(data, 0, sizeof(float) * 16);
 
 	data[0] = uvec.x;
 	data[4] = uvec.y;
 	data[8] = uvec.z;
-	data[12] = - position.dot(uvec);
+//	data[12] = - position.dot(uvec);
 
 	data[1] = vvec.x;
 	data[5] = vvec.y;
 	data[9] = vvec.z;
-	data[13] = - position.dot(vvec);
+//	data[13] = - position.dot(vvec);
 
 	data[2] = - nvec.x;
 	data[6] = - nvec.y;
 	data[10] = - nvec.z;
-	data[14] = - position.dot(nvec);
+//	data[14] = - position.dot(nvec);
 
 	data[15] = 1;
 
 	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
+	translate(- position.x, - position.y, - position.z);
 }
 
 float Matrix4::mapZ(const Vector3& orig) const {

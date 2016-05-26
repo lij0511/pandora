@@ -22,11 +22,13 @@ public:
 	virtual ~FileInputStream();
 
 	virtual size_t read(void* buffer, size_t length) override;
-	virtual uint8_t read() override;
+	virtual int read() override;
 	virtual size_t skip(size_t length) override;
 	virtual size_t seek(size_t size) override;
 	virtual bool rewind() override;
 	virtual void close() override;
+
+	virtual size_t getPosition() const override;
 
 	virtual bool hasLength() const override {return true;};
 	virtual size_t getLength() const override;

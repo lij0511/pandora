@@ -18,7 +18,7 @@ namespace scene {
  */
 class Camera3D: public Camera {
 public:
-	Camera3D(const graphic::vec3& pos = graphic::vec3(0.0f, 0.0f, -50.0f), const graphic::vec3& lookAt = graphic::vec3(0.0f, 0.0f, -51.0f));
+	Camera3D(const graphic::vec3& pos = graphic::vec3(0.0f, 0.0f, 11.0f), const graphic::vec3& lookAt = graphic::vec3(0.0f, 0.0f, 10.0f));
 	virtual ~Camera3D();
 
 	virtual void setSize(int32_t width, int32_t height);

@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <assert.h>
 
 namespace pola {
@@ -21,10 +22,12 @@ public:
 	virtual ~InputStream();
 
 	virtual size_t read(void* buffer, size_t size) = 0;
-	virtual uint8_t read() = 0;
+	virtual int read() = 0;
 	virtual size_t skip(size_t size) = 0;
 	virtual size_t seek(size_t size) = 0;
 	virtual bool rewind() = 0;
+
+	virtual size_t getPosition() const = 0;
 
 	/** Returns true if this stream can report it's total length. */
 	virtual bool hasLength() const { return false; }

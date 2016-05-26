@@ -186,7 +186,7 @@ int main(int argc, char *argv[]) {
 	 camera = new Camera3D;
 	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/gun.jpg");
+	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/fire.bmp");
 
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());

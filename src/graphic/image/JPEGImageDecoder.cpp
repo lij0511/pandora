@@ -101,17 +101,6 @@ JPEGImageDecoder::JPEGImageDecoder() {
 JPEGImageDecoder::~JPEGImageDecoder() {
 }
 
-static bool skip_src_rows(jpeg_decompress_struct* cinfo, void* buffer, int count) {
-    for (int i = 0; i < count; i++) {
-        JSAMPLE* rowptr = (JSAMPLE*) buffer;
-        int row_count = jpeg_read_scanlines(cinfo, &rowptr, 1);
-        if (1 != row_count) {
-            return false;
-        }
-    }
-    return true;
-}
-
 static Bitmap::Format selectColorType(jpeg_decompress_struct* cinfo) {
 	Bitmap::Format format = Bitmap::RGB565;
 	switch (cinfo->jpeg_color_space) {
