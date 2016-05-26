@@ -5,9 +5,9 @@
  *      Author: lijing
  */
 
-#include "graphic/BitmapFactory.h"
-#include "graphic/image/PNGImageDecoder.h"
 #include "io/FileInputStream.h"
+#include "graphic/BitmapFactory.h"
+#include "graphic/image/ImageDecoder.h"
 
 #include <stdio.h>
 #include <string.h>

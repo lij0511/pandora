@@ -26,6 +26,11 @@ public:
 	virtual size_t seek(size_t size) = 0;
 	virtual bool rewind() = 0;
 
+	/** Returns true if this stream can report it's total length. */
+	virtual bool hasLength() const { return false; }
+	/** Returns the total length of the stream. If this cannot be done, returns 0. */
+	virtual size_t getLength() const { return 0; }
+
 	virtual void close() {
 		assert(!mClosed);
 		mClosed = true;

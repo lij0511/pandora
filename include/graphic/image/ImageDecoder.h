@@ -19,7 +19,7 @@ public:
 	ImageDecoder();
 	virtual ~ImageDecoder();
 
-	virtual Bitmap* decode(io::InputStream* is, Bitmap::Format format = Bitmap::UNKONWN) = 0;
+	virtual Bitmap* decode(io::InputStream* is) = 0;
 
 	static ImageDecoder* Factory(io::InputStream* is);
 };

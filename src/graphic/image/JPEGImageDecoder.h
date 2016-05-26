@@ -27,7 +27,7 @@ struct pola_jpeg_source_mgr : jpeg_source_mgr {
 	// fStream is ref'ed and unref'ed
 	io::InputStream*       fStream;
 	enum {
-		kBufferSize = /*TODO 有些jpg解析汇报异常(Miscellaneous marker 0xe1, length 14952) Why?              1024*/1024 * 500
+		kBufferSize = /*1024*/ 1024 * 512
 	};
 	char    fBuffer[kBufferSize];
 };
@@ -43,7 +43,7 @@ public:
 	JPEGImageDecoder();
 	virtual ~JPEGImageDecoder();
 
-	virtual Bitmap* decode(io::InputStream* is, Bitmap::Format format = Bitmap::UNKONWN) override;
+	virtual Bitmap* decode(io::InputStream* is) override;
 };
 
 }

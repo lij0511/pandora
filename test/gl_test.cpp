@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
+	pola::io::FileInputStream is("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/sydney.md2");
 	mesh = MeshLoader::loadMesh(&is);
 
 	 scene = new Scene(new GLGraphicContext);
@@ -186,7 +186,7 @@ int main(int argc, char *argv[]) {
 	 camera = new Camera3D;
 	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/gun.jpg");
+	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/gun.jpg");
 
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());

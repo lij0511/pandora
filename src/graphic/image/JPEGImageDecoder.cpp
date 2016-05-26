@@ -161,7 +161,7 @@ static void convert_CMYK_to_RGB(unsigned char* scanline, unsigned char* output, 
     }
 }
 
-Bitmap* JPEGImageDecoder::decode(io::InputStream* is, Bitmap::Format pref) {
+Bitmap* JPEGImageDecoder::decode(io::InputStream* is) {
 	JPEGAutoClean autoClean;
 	struct jpeg_decompress_struct  cinfo;
 

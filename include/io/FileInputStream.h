@@ -28,6 +28,9 @@ public:
 	virtual bool rewind() override;
 	virtual void close() override;
 
+	virtual bool hasLength() const override {return true;};
+	virtual size_t getLength() const override;
+
 private:
 	FILE* mFP;
 };

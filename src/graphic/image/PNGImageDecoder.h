@@ -20,7 +20,7 @@ public:
 	PNGImageDecoder();
 	virtual ~PNGImageDecoder();
 
-	virtual Bitmap* decode(io::InputStream* is, Bitmap::Format format = Bitmap::UNKONWN) override;
+	virtual Bitmap* decode(io::InputStream* is) override;
 };
 
 }

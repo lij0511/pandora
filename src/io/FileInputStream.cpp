@@ -53,5 +53,16 @@ void FileInputStream::close() {
 	fclose(mFP);
 }
 
+size_t FileInputStream::getLength() const {
+	if (!mFP) return 0;
+	size_t cursor = ftell(mFP);
+	fseek(mFP, 0, SEEK_END);
+	size_t bytes = ftell(mFP);
+	if (cursor > 0) {
+		fseek(mFP, cursor, SEEK_SET);
+	}
+	return bytes;
+}
+
 }
 }

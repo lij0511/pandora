@@ -45,7 +45,7 @@ static void png_read_fn(png_structp png_ptr, png_bytep data, png_size_t length) 
 	}
 }
 
-Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format pref) {
+Bitmap* PNGImageDecoder::decode(io::InputStream* is) {
 	png_structp png_ptr;
 	png_infop info_ptr;
 
