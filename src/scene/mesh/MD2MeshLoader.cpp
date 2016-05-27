@@ -18,8 +18,8 @@ const int32_t MD2_MAGIC_NUMBER  = 844121161;
 const int32_t MD2_VERSION       = 8;
 const int32_t MD2_MAX_VERTS     = 2048;
 
-struct MD2Header
-{
+#include "utils/spack.h"
+struct MD2Header {
 	int32_t magic;           // four character code "IDP2"
 	int32_t version;         // must be 8
 	int32_t skinWidth;	     // width of the texture
@@ -37,32 +37,26 @@ struct MD2Header
 	int32_t offsetFrames;    // offset in bytes to frame list
 	int32_t offsetGlCommands;// offset in bytes to opengl commands
 	int32_t offsetEnd;       // offset in bytes to end of file
-};
-
-struct MD2Vertex
-{
+} PACK_STRUCT;
+struct MD2Vertex {
 	uint8_t vertex[3];        // [0] = X, [1] = Z, [2] = Y
 	uint8_t lightNormalIndex; // index in the normal table
-};
-
-struct MD2Frame
-{
+} PACK_STRUCT;
+struct MD2Frame {
 	float	scale[3];           // first scale the vertex position
 	float	translate[3];       // then translate the position
 	char	name[16];           // the name of the animation that this key belongs to
 	MD2Vertex vertices[1]; // vertex 1 of SMD2Header.numVertices
-};
-
-struct MD2Triangle
-{
+} PACK_STRUCT;
+struct MD2Triangle {
 	uint16_t vertexIndices[3];
 	uint16_t textureIndices[3];
-};
-
+} PACK_STRUCT;
 struct MD2TextureCoordinate {
 	int16_t s;
 	int16_t t;
-};
+} PACK_STRUCT;
+#include "utils/sunpack.h"
 
 MD2MeshLoader::MD2MeshLoader() {
 }

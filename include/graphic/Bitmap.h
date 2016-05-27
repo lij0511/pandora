@@ -43,23 +43,25 @@ public:
 	static Bitmap* create(uint32_t w, uint32_t h, Format format);
 	static Bitmap* create();
 
-	void set(uint32_t w, uint32_t h, Format format);
+	void set(uint32_t w, uint32_t h, Format format, uint8_t* pixels = nullptr);
 
 	uint32_t getGenerationID() const;
 
-	unsigned char* pixels() const;
+	uint8_t* pixels() const;
 
 protected:
 	Bitmap(uint32_t w, uint32_t h, Format format);
 	Bitmap();
 private:
+
 	uint32_t mWidth;
 	uint32_t mHeight;
 	Format mFormat;
 	uint32_t mGenerationID;
 	bool mRecycled;
 	bool mHasAlpha;
-	unsigned char* mData;
+	uint8_t* mData;
+	uint32_t mRowBytes;
 
 };
 

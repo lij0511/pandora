@@ -185,8 +185,6 @@ Bitmap* JPEGImageDecoder::decode(io::InputStream* is) {
 		return nullptr;
 	}
 
-	// XXX Why?  glTexImage2D一行像素字节数为奇数有问题？？？。
-	/*uint32_t fixed = cinfo.output_width % 2;*/
 	Bitmap* bitmap = Bitmap::create();;
 	bitmap->set(cinfo.output_width/* - fixed*/, cinfo.output_height, format);
 	uint32_t rowBytes = bitmap->rowBytes();

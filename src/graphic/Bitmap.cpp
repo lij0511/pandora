@@ -5,10 +5,17 @@
  *      Author: lijing
  */
 
+#include <string.h>
+
 #include "graphic/Bitmap.h"
 
 namespace pola {
 namespace graphic {
+
+static uint32_t rowBytesAlign(uint32_t w, uint32_t bytesPerPixel) {
+	uint32_t widthInBytes = w * bytesPerPixel;
+	return widthInBytes + ((4 - (widthInBytes % 4))) % 4;
+}
 
 Bitmap::Bitmap(uint32_t w, uint32_t h, Format format) :
 	mWidth(w),
@@ -18,7 +25,8 @@ Bitmap::Bitmap(uint32_t w, uint32_t h, Format format) :
 	mRecycled(false),
 	mHasAlpha(true)
 {
-	mData = new unsigned char[mWidth * mHeight * bytesPerPixel()];
+	mRowBytes = rowBytesAlign(mWidth, bytesPerPixel());
+	mData = new unsigned char[rowBytes() * mHeight];
 }
 Bitmap::Bitmap() :
 	mWidth(0),
@@ -27,7 +35,8 @@ Bitmap::Bitmap() :
 	mGenerationID(0),
 	mRecycled(true),
 	mHasAlpha(true),
-	mData(nullptr)
+	mData(nullptr),
+	mRowBytes(0)
 {
 }
 
@@ -73,7 +82,7 @@ uint32_t Bitmap::bytesPerPixel() const {
 	return getByteCountPerPixel(mFormat);
 }
 uint32_t Bitmap::rowBytes() const {
-	return bytesPerPixel() * getWidth();
+	return mRowBytes;
 }
 uint32_t Bitmap::getByteCount() const {
 	return rowBytes() * getHeight();
@@ -105,7 +114,7 @@ Bitmap* Bitmap::create() {
 	return new Bitmap();
 }
 
-void Bitmap::set(uint32_t w, uint32_t h, Format format) {
+void Bitmap::set(uint32_t w, uint32_t h, Format format, uint8_t* pixels) {
 	mWidth = w;
 	mHeight = h;
 	mFormat = format;
@@ -113,7 +122,11 @@ void Bitmap::set(uint32_t w, uint32_t h, Format format) {
 	if (mData) {
 		delete mData;
 	}
-	mData = new unsigned char[mWidth * mHeight * bytesPerPixel()];
+	mRowBytes = rowBytesAlign(mWidth, bytesPerPixel());
+	mData = new unsigned char[rowBytes() * mHeight];
+	if (pixels != nullptr) {
+		memcpy(mData, pixels, getByteCount());
+	}
 }
 
 uint32_t Bitmap::getGenerationID() const {
