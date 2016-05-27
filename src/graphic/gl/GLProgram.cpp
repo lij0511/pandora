@@ -29,27 +29,19 @@ void GLProgram::use() {
 }
 
 bool GLProgram::fetchAttribute(const char* name, GLint& location) {
-	if (mAttributes.get(name, location)) {
-		return true;
-	}
-	location = glGetAttribLocation(mProgramId, name);
-	if (location >= 0) {
+	if (!mAttributes.get(name, location)) {
+		location = glGetAttribLocation(mProgramId, name);
 		mAttributes.put(name, location);
-		return true;
 	}
-	return false;
+	return location >= 0;
 }
 
 bool GLProgram::fetchUniform(const char* name, GLint& location) {
-	if (mUniforms.get(name, location)) {
-		return true;
-	}
-	location = glGetUniformLocation(mProgramId, name);
-	if (location >= 0) {
+	if (!mUniforms.get(name, location)) {
+		location = glGetUniformLocation(mProgramId, name);
 		mUniforms.put(name, location);
-		return true;
 	}
-	return false;
+	return location >= 0;
 }
 
 void GLProgram::compile(const char* vertexShader, const char* fragmentShader) {

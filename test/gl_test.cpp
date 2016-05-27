@@ -51,7 +51,7 @@ XEvent e;
 FPS fps;
 
 void display() {
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	/*MeshBuffer m(Vertex3::type());
@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/sydney.md2");
+	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
 	mesh = MeshLoader::loadMesh(&is);
 
 	 scene = new Scene(new GLGraphicContext);
@@ -186,7 +186,7 @@ int main(int argc, char *argv[]) {
 	 camera = new Camera3D({0, 0, 100}, {0, 0, 99});
 	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/sydney.bmp");
+	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.bmp");
 
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());

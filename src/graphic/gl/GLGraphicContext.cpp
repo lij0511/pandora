@@ -6,7 +6,7 @@
  */
 
 #include "graphic/gl/GLGraphicContext.h"
-#include "graphic/gl/GLShader.h"
+#include "graphic/gl/DefaultGLShader.h"
 #include "graphic/BitmapFactory.h"
 
 namespace pola {
@@ -28,12 +28,14 @@ void GLGraphicContext::renderMeshBuffer(scene::MeshBuffer& meshBuffer) {
 		return;
 	}
 
-	static GLShader* shader = new GLShader;
+	static DefaultGLShader* shader = new DefaultGLShader;
+	shader->invalidate();
+//	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
 	mat4 m = m_camera;
 //	m.translate(0, 0, -100);
 //	m.rotate(90, 0, 1, 0);
-	shader->set(m);
+	shader->setMatrix("u_MVPMatrix", m);
 
 	GLint a_texCoords;
 	if (meshBuffer.m_vertexInfo.offset_texcoord >= 0 && shader->fetchAttribute("a_texCoords", a_texCoords)) {
@@ -57,6 +59,9 @@ Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
 	if (bitmap == nullptr) {
 		return nullptr;
 	}
+	/**
+	 * Deferred texture generation. Generated when prepare to render.
+	 */
 	GLTexture* texture = new GLTexture;
 	texture->m_bitmap = bitmap;
 

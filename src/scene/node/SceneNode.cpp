@@ -18,7 +18,6 @@ SceneNode::~SceneNode() {
 }
 
 void SceneNode::render(graphic::GraphicContext* graphic) {
-
 }
 
 } /* namespace scene */

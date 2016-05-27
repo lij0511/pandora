@@ -17,6 +17,12 @@ class DefaultGLShader: public GLShader {
 public:
 	DefaultGLShader();
 	virtual ~DefaultGLShader();
+
+protected:
+	virtual const utils::String generateVertexShader();
+	virtual const utils::String generateFragmentShader();
+
+	virtual const ProgramDescription* description();
 };
 
 } /* namespace graphic */

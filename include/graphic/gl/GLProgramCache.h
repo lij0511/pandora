@@ -17,14 +17,14 @@
 namespace pola {
 namespace graphic {
 class GLShader;
+class DefaultGLShader;
+class GLProgramCache;
 
 class ProgramDescription {
 public:
-	ProgramDescription(const utils::String& vertexShader, const utils::String& fragmentShader, utils::hash_t hash);
+	ProgramDescription(const utils::String& vertexShader, const utils::String& fragmentShader);
 
-	bool operator==(const ProgramDescription& other) const {
-		return mVertexShader == other.mVertexShader && mFragmentShader == other.mFragmentShader;
-	};
+	bool operator==(const ProgramDescription& other) const;
 
 	bool operator!=(const ProgramDescription& other) const {
 		return *this != other;
@@ -35,7 +35,14 @@ public:
 	const utils::String mVertexShader;
 	const utils::String mFragmentShader;
 
-	mutable utils::hash_t mHash;
+private:
+	friend class DefaultGLShader;
+	friend class GLProgramCache;
+	ProgramDescription(DefaultGLShader* shader);
+	DefaultGLShader* mShader;
+
+	// GL3D DefaultGLShader flags.
+	bool texture0 = false;
 };
 
 class GLProgramCache : public utils::OnEntryRemoved<const ProgramDescription, GLProgram*>{
@@ -43,7 +50,7 @@ public:
 	GLProgramCache();
 	virtual ~GLProgramCache();
 
-	GLProgram* get(GLShader* shader);
+	GLProgram* get(const ProgramDescription& description);
 
 	virtual void operator()(const ProgramDescription& key, GLProgram*& value);
 

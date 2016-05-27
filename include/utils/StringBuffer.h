@@ -26,6 +26,7 @@ public:
 
 	void append(char cc);
 	void append(char* data, size_t len);
+	void append(const char* data);
 	void append(const char* data, size_t len);
 	void append(const String& str);
 	void append(const StringBuffer& str);

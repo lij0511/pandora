@@ -38,12 +38,16 @@ private:
 		m_data = tmp;
 	}
 	StringImpl(const char* str, bool isConst = false) : m_length(strlen(str)), m_const(isConst), m_hash(0) {
-		char* tmp = new char[m_length + 1];
-		for (size_t i = 0; i < m_length; i ++) {
-			*(tmp + i) = str[i];
+		if (m_const) {
+			m_data = str;
+		} else {
+			char* tmp = new char[m_length + 1];
+			for (size_t i = 0; i < m_length; i ++) {
+				*(tmp + i) = str[i];
+			}
+			*(tmp + m_length) = 0;
+			m_data = tmp;
 		}
-		*(tmp + m_length) = 0;
-		m_data = tmp;
 	}
 public:
 	static StringImpl* emptyString() {

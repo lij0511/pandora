@@ -245,8 +245,8 @@ static void doStandardDecode(BMPHeader& header, io::InputStream* is,
 
 	uint32_t row = 0;
 	uint8_t currVal = 0;
-	for (int32_t h = height_ - 1; h >= 0; h--, row++) {
-		for (int32_t w = 0; w < width_; w++) {
+	for (uint32_t h = height_ - 1; h >= 0; h--, row++) {
+		for (uint32_t w = 0; w < width_; w++) {
 			if (header.BPP >= 24) {
 				putPixel1(bitmap, w, h, readByte(is), readByte(is),
 						readByte(is));
@@ -277,12 +277,15 @@ static void doStandardDecode(BMPHeader& header, io::InputStream* is,
 
 				putPixel(bitmap, w, h, color_table, col);
 			}
-			for (int i = 0; i < pixelPad_; ++i) {
+			for (uint32_t i = 0; i < pixelPad_; ++i) {
 				readByte(is);
 			}
 		}
-		for (int i = 0; i < rowPad_; ++i) {
+		for (uint32_t i = 0; i < rowPad_; ++i) {
 			readByte(is);
+		}
+		if (h ==0) {
+			break;
 		}
 	}
 }
@@ -343,7 +346,6 @@ Bitmap* BMPImageDecoder::decode(io::InputStream* is) {
 
 	Bitmap* bitmap = Bitmap::create();
 	bitmap->set(header.Width, header.Height, format);
-	uint8_t* pixels = bitmap->pixels();
 
 	bool rle = false;
 	if (header.Compression == 1 || header.Compression == 2) {

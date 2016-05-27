@@ -59,6 +59,9 @@ void StringBuffer::append(char* data, size_t len) {
 		*(m_buffer + m_length) = 0;
 	}
 }
+void StringBuffer::append(const char* data) {
+	append(data, strlen(data));
+}
 void StringBuffer::append(const char* data, size_t len) {
 	if (len > 0) {
 		if (m_length +len >= m_capacity) {

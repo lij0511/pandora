@@ -9,6 +9,7 @@
 #define POLA_GLSHADER_H_
 
 #include "graphic/gl/GLProgram.h"
+#include "graphic/gl/GLProgramCache.h"
 #include "utils/String.h"
 #include "graphic/Matrix4.h"
 
@@ -26,24 +27,28 @@ public:
 
 	void makeCurrent();
 
-	virtual void set(const mat4& MVPMatrix);
+	void setMatrix(const char* name, const mat4& MVPMatrix);
 	bool fetchAttribute(const char* name, GLint& outLocation);
 	bool fetchUniform(const char* name, GLint& outLocation);
 
-	virtual const utils::String getVertexShader();
-	virtual const utils::String getFragmentShader();
+	const utils::String getVertexShader();
+	const utils::String getFragmentShader();
 
-	utils::hash_t hash();
+	virtual void setValues();
 
+	/**
+	 * Must be called when ShaderProgram is changed, both Vertex and Fragment.
+	 */
+	void invalidate();
 protected:
 	virtual const utils::String generateVertexShader();
 	virtual const utils::String generateFragmentShader();
 
-	virtual void invalidate();
+	virtual const ProgramDescription* description();
 
+	ProgramDescription* mDescription;
 private:
 	GLProgram* mProgram;
-	utils::hash_t mHash;
 };
 
 }

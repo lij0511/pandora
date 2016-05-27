@@ -6,35 +6,48 @@
  */
 
 #include "graphic/gl/GLProgramCache.h"
-#include "graphic/gl/GLShader.h"
+#include "graphic/gl/DefaultGLShader.h"
 
 #include "utils/JenkinsHash.h"
+
+#include "log/Log.h"
 
 namespace pola {
 namespace graphic {
 
-ProgramDescription::ProgramDescription(const utils::String& vertexShader, const utils::String& fragmentShader, utils::hash_t hash) :
-	mVertexShader(vertexShader), mFragmentShader(fragmentShader), mHash(hash) {
+ProgramDescription::ProgramDescription(const utils::String& vertexShader, const utils::String& fragmentShader) :
+	mVertexShader(vertexShader), mFragmentShader(fragmentShader), mShader(nullptr) {
+	if (vertexShader.isEmpty() || fragmentShader.isEmpty()) {
+		LOG_ALWAYS_FATAL("VertexShader or FragmengShader is NULL. Fix Me!\n");
+	}
 }
 
+ProgramDescription::ProgramDescription(DefaultGLShader* shader) : mShader(shader) {
+}
+
+bool ProgramDescription::operator==(const ProgramDescription& other) const {
+	if ((mShader != nullptr && other.mShader == nullptr) || (mShader == nullptr && other.mShader != nullptr)) {
+		return false;
+	}
+	if (mShader != nullptr) {
+		bool comp = texture0 == other.texture0;
+		// TODO
+		return comp;
+	} else {
+		return mVertexShader == other.mVertexShader && mFragmentShader == other.mFragmentShader;
+	}
+};
+
 utils::hash_t ProgramDescription::hash() const {
-	utils::hash_t hash = mHash;
-	if (hash == 0) {
-		size_t vlen = mVertexShader.length();
-		size_t flen = mFragmentShader.length();
-		if (vlen <= 0 && flen <= 0) return 0;
-		const char* vertexShader = mVertexShader.characters();
-		while (vlen --) {
-			hash = utils::JenkinsHashMix(hash, *vertexShader);
-			vertexShader ++;
-		}
-		const char* fragmentShader = mFragmentShader.characters();
-		while (flen --) {
-			hash = utils::JenkinsHashMix(hash, *fragmentShader);
-			fragmentShader ++;
-		}
+	utils::hash_t hash = 0;
+	if (mShader != nullptr) {
+		hash = utils::JenkinsHashMix(hash, texture0);
+		// TODO
 		hash = utils::JenkinsHashWhiten(hash);
-		mHash = hash;
+	} else {
+		hash = utils::JenkinsHashMix(hash, mVertexShader.hash());
+		hash = utils::JenkinsHashMix(hash, mFragmentShader.hash());
+		hash = utils::JenkinsHashWhiten(hash);
 	}
 	return hash;
 }
@@ -52,11 +65,14 @@ void GLProgramCache::operator()(const ProgramDescription& key, GLProgram*& value
 	}
 }
 
-GLProgram* GLProgramCache::get(GLShader* shader) {
-	ProgramDescription description(shader->getVertexShader(), shader->getFragmentShader(), shader->hash());
+GLProgram* GLProgramCache::get(const ProgramDescription& description) {
 	GLProgram* program = mCache.get(description);
 	if (!program) {
-		program = new GLProgram(description.mVertexShader.characters(), description.mFragmentShader.characters());
+		if (description.mShader != nullptr) {
+			program = new GLProgram(description.mShader->getVertexShader().characters(), description.mShader->getFragmentShader().characters());
+		} else {
+			program = new GLProgram(description.mVertexShader.characters(), description.mFragmentShader.characters());
+		}
 		mCache.put(description, program);
 	}
 	return program;
