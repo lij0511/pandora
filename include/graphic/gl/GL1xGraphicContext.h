@@ -1,12 +1,12 @@
 /*
- * GLGraphicContext.h
+ * GL1xGraphicContext.h
  *
- *  Created on: 2016年5月20日
+ *  Created on: 2016年5月29日
  *      Author: lijing
  */
 
-#ifndef POLA_GLGRAPHICCONTEXT_H_
-#define POLA_GLGRAPHICCONTEXT_H_
+#ifndef POLA_GL1XGRAPHICCONTEXT_H_
+#define POLA_GL1XGRAPHICCONTEXT_H_
 
 #include "graphic/gl/GL.h"
 #include "graphic/GraphicContext.h"
@@ -16,10 +16,10 @@
 namespace pola {
 namespace graphic {
 
-class GLGraphicContext: public GraphicContext {
+class GL1xGraphicContext: public GraphicContext {
 public:
-	GLGraphicContext();
-	virtual ~GLGraphicContext();
+	GL1xGraphicContext();
+	virtual ~GL1xGraphicContext();
 
 	virtual void setViewport(int32_t width, int32_t height);
 
@@ -32,4 +32,4 @@ protected:
 } /* namespace graphic */
 } /* namespace pola */
 
-#endif /* POLA_GLGRAPHICCONTEXT_H_ */
+#endif /* POLA_GL1XGRAPHICCONTEXT_H_ */

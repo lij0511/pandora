@@ -31,6 +31,8 @@ bool ProgramDescription::operator==(const ProgramDescription& other) const {
 	}
 	if (mShader != nullptr) {
 		bool comp = texture0 == other.texture0;
+
+		comp |= lighting == other.lighting;
 		// TODO
 		return comp;
 	} else {
@@ -42,6 +44,7 @@ utils::hash_t ProgramDescription::hash() const {
 	utils::hash_t hash = 0;
 	if (mShader != nullptr) {
 		hash = utils::JenkinsHashMix(hash, texture0);
+		hash = utils::JenkinsHashMix(hash, lighting);
 		// TODO
 		hash = utils::JenkinsHashWhiten(hash);
 	} else {

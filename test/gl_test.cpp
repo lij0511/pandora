@@ -7,6 +7,7 @@
 
 #include "scene/Scene.h"
 #include "graphic/gl/GLGraphicContext.h"
+#include "graphic/gl/GL1xGraphicContext.h"
 #include "graphic/gl/GLCaches.h"
 #include "scene/Camera3D.h"
 #include "scene/mesh/MeshLoader.h"
@@ -34,9 +35,9 @@ using namespace pola::utils;
 using namespace pola::scene;
 using namespace pola::graphic;
 
-Display *display_;
-Window window_;
-GLXContext gl_context_;
+Display *dpy;
+GLXWindow glw;
+GLXContext glc;
 int WINDOW_WIDTH = 1000;
 int WINDOW_HEIGHT = 800;
 
@@ -52,8 +53,8 @@ FPS fps;
 
 void display() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
+	glClearDepth(1.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	/*MeshBuffer m(Vertex3::type());
 	Vertex3* vertex= (Vertex3*) m.alloc(4);
 	Vertex3::set(vertex, -1.0f, -1.0f, -0.0f);
@@ -67,6 +68,12 @@ void display() {
 	m.pushIndex(1);
 	m.pushIndex(3);*/
 //	camera->yaw(1);
+	/*glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective(M_PI / 2.5f, 1.0f, 0, 3000);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		gluLookAt(0, 0, 50, 0, 0, 49, 0, 1, 0);*/
 	scene->graphic()->setCurrentCamera(camera->matrix());
 	if (mesh) {
 		if (texture != nullptr && texture->generateTexture()) {
@@ -76,16 +83,16 @@ void display() {
 		scene->graphic()->renderMeshBuffer(*(mesh->getMeshBuffer(0)));
 	}
 
-	glXSwapBuffers(display_, window_);
+	glXSwapBuffers(dpy, glw);
 	fps.fps();
 }
 void loop() {
 
 	// Consume all the X events.
 	display();
-	while (XPending(display_)) {
+	while (XPending(dpy)) {
 	  XEvent e;
-	  XNextEvent(display_, &e);
+	  XNextEvent(dpy, &e);
 	  switch (e.type) {
 		case Expose:
 		  break;
@@ -103,63 +110,68 @@ void loop() {
 
 int main(int argc, char *argv[]) {
 
-	display_ = XOpenDisplay(NULL);
-	if (!display_) {
-		printf("Cannot open display\n");
-	  return 0;
-	}
-
-	// Get properties of the screen.
-	int screen = DefaultScreen(display_);
-	int root_window = RootWindow(display_, screen);
-
+	/* 建立 X 窗口所需的变量 */
+	Window root;
+	Window win;
+	XVisualInfo *vi;
+	Colormap cmap;
 	XSetWindowAttributes swa;
-	  memset(&swa, 0, sizeof(swa));
-	  swa.background_pixmap = None;
-	  swa.override_redirect = false;
-	  window_ = XCreateWindow(
-			  display_,
-			  root_window,
-			  100,
-			  100,
-			  WINDOW_WIDTH,
-			  WINDOW_HEIGHT,
-	      0,               // border width
-	      CopyFromParent,  // depth
-	      InputOutput,
-	      CopyFromParent,  // visual
-	      CWBackPixmap | CWOverrideRedirect,
-	      &swa);
-	XStoreName(display_, window_, "Compositor Model Bench");
+	XWindowAttributes gwa;
+	XEvent xev;
 
-	XSelectInput(display_, window_,
-				 ExposureMask | KeyPressMask | StructureNotifyMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
-	XMapWindow(display_, window_);
+	/* 在 X 窗口中渲染 OpenGL 图形所需变量 */
+	GLXFBConfig *fc;
 
-	XResizeWindow(display_, window_, WINDOW_WIDTH, WINDOW_HEIGHT);
+	int att[] = {GLX_RGBA, GLX_USE_GL,
+			GLX_RED_SIZE, 4,
+			GLX_GREEN_SIZE, 4,
+			GLX_BLUE_SIZE, 4,
+		  GLX_DEPTH_SIZE, 16,
+			GLX_ALPHA_SIZE, 1,
+					  GLX_DOUBLEBUFFER, True,
+					  None};
+	int nelements;
 
-	XWindowAttributes attributes;
-	XGetWindowAttributes(display_, window_, &attributes);
-	XVisualInfo visual_info_template;
-	visual_info_template.visualid = XVisualIDFromVisual(attributes.visual);
-	int visual_info_count = 0;
-	XVisualInfo* visual_info_list = XGetVisualInfo(display_, VisualIDMask,
-												   &visual_info_template,
-												   &visual_info_count);
-	for (int i = 0; i < visual_info_count && !gl_context_; ++i) {
-	  gl_context_ = glXCreateContext(display_, visual_info_list + i, 0,
-									 True /* Direct rendering */);
+	dpy = XOpenDisplay (NULL);
+
+	if (dpy == NULL) {
+			printf ("\n\tcannot connect to X server\n\n");
+			return -1;
 	}
 
-	XFree(visual_info_list);
-	if (!gl_context_) {
-		printf("Cannot open glContext\n");
-	  return 0;
+	fc = glXChooseFBConfig (dpy, 0, att, &nelements);
+
+	if (fc == NULL) {
+			printf
+				("\n\tno appropriate framebuffer config found\n\n");
+			return -1;
 	}
 
-	if (!glXMakeCurrent(display_, window_, gl_context_)) {
-	  glXDestroyContext(display_, gl_context_);
-	  gl_context_ = NULL;
+	vi = glXGetVisualFromFBConfig (dpy, *fc);
+
+	if (vi == NULL) {
+			printf ("\n\tno appropriate visual found\n\n");
+			return -1;
+	}
+
+	root = RootWindow (dpy, DefaultScreen(dpy));
+	cmap = XCreateColormap (dpy, root, vi->visual, AllocNone);
+
+	swa.colormap = cmap;
+	swa.event_mask = ExposureMask | KeyPressMask | StructureNotifyMask;
+
+	win = XCreateWindow (dpy, root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
+										 0, vi->depth,
+										 InputOutput, vi->visual,
+										 CWColormap | CWEventMask, &swa);
+	XMapWindow (dpy, win);
+	XStoreName (dpy, win, "VERY SIMPLE APPLICATION");
+
+	glw = glXCreateWindow (dpy, *fc, win, NULL);
+	glc = glXCreateNewContext (dpy, *fc, GLX_RGBA_TYPE, NULL, GL_TRUE);
+
+	if (!glXMakeContextCurrent(dpy, glw, glw, glc)) {
+	  glXDestroyContext(dpy, glc);
 	  printf("Cannot open glXMakeCurrent\n");
 	  return 0;
 	}
@@ -167,27 +179,25 @@ int main(int argc, char *argv[]) {
 		 printf("haha\n");
 	 }
 
-	 if (!glewIsSupported("GL_VERSION_2_0")) {
+	 /*if (!glewIsSupported("GL_VERSION_2_0")) {
 
 	 fprintf(stderr, "Required OpenGL extensions missing. %s", glGetString(GL_EXTENSIONS));
 
 	 exit(-1);
 
-	 }
+	 }*/
 	 HandlerThread thread;
 	 thread.start();
 	 Handler h(thread.getLooper());
 
 	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
 	mesh = MeshLoader::loadMesh(&is);
-
 	 scene = new Scene(new GLGraphicContext);
 	 scene->setViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
-	 camera = new Camera3D({0, 0, 100}, {0, 0, 99});
+	 camera = new Camera3D({0, 0, 50}, {0, 0, 49});
 	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.bmp");
-
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());
 	mHandler->post(new FunctionalTask(bind(&loop)));

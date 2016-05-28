@@ -17,6 +17,11 @@ struct Vector2 {
 	float x;
 	float y;
 
+	Vector2(float x = 0, float y = 0) {
+		this->x = x;
+		this->y = y;
+	}
+
 	float lengthSquared() const {
 		return x * x + y * y;
 	}
@@ -93,7 +98,7 @@ struct Vector3 {
     float y;
     float z;
 
-    Vector3(float x, float y, float z) {
+    Vector3(float x = 0, float y = 0, float z = 0) {
     	this->x = x;
     	this->y = y;
     	this->z = z;
@@ -193,6 +198,16 @@ struct Vector3 {
 
 	float dot(const Vector3& vector) const {
 		return x * vector.x + y * vector.y + z * vector.z;
+	}
+
+	//! Creates an interpolated vector between this vector and another vector.
+	/** \param other The other vector to interpolate with.
+	\param d Interpolation value between 0.0f (all the other vector) and 1.0f (all this vector).
+	Note that this is the opposite direction of interpolation to getInterpolated_quadratic()
+	\return An interpolated vector.  This vector is not modified. */
+	Vector3 getInterpolated(const Vector3& other, float d) const {
+		const float inv = 1.0 - d;
+		return Vector3((other.x*inv + x*d), (other.y*inv + y*d), (other.z*inv + z*d));
 	}
 
 };

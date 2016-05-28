@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#include "scene/mesh/MeshBuffer.h"
+#include "graphic/MeshBuffer.h"
 #include "graphic/Matrix4.h"
 #include "graphic/Texture.h"
 #include "io/InputStream.h"
@@ -31,7 +31,7 @@ public:
 
 	void setCurrentCamera(const mat4& projection);
 
-	virtual void renderMeshBuffer(scene::MeshBuffer& meshBuffer) = 0;
+	virtual void renderMeshBuffer(MeshBuffer& meshBuffer) = 0;
 
 protected:
 	virtual Texture* doLoadTexture(io::InputStream* is) = 0;

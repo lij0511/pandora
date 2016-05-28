@@ -9,7 +9,7 @@
 #define POLA_SHADOW_H_
 
 namespace pola {
-namespace scene {
+namespace graphic {
 
 class Shadow {
 public:
@@ -17,7 +17,7 @@ public:
 	virtual ~Shadow();
 };
 
-} /* namespace scene */
+} /* namespace graphic */
 } /* namespace pola */
 
 #endif /* POLA_SHADOW_H_ */

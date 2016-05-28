@@ -41,7 +41,7 @@ inline void polaris_printAssert(bool cond, const char* str, ...) {
 
 #ifndef LOGI
 #define LOGI(str, ...) \
-	fprintf(stdout, str, __VA_ARGS__);
+	fprintf(stdout, str, ## __VA_ARGS__);
 #endif
 
 #ifndef LOG_FATAL_IF

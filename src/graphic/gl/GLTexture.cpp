@@ -56,6 +56,8 @@ bool GLTexture::generateTexture() {
 		// of 2 but we'd have to deal with size changes. Let's keep this simple
 		const bool canMipMap = true;//Extensions::getInstance().hasNPot();
 
+		glEnable( GL_TEXTURE_2D);
+
 		glGenTextures(1, &id);
 
 		GLCaches::get().bindTexture(id);

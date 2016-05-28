@@ -5,10 +5,10 @@
  *      Author: lijing
  */
 
-#include "scene/light/Shadow.h"
+#include "graphic/light/Shadow.h"
 
 namespace pola {
-namespace scene {
+namespace graphic {
 
 Shadow::Shadow() {
 }
@@ -16,5 +16,5 @@ Shadow::Shadow() {
 Shadow::~Shadow() {
 }
 
-} /* namespace scene */
+} /* namespace graphic */
 } /* namespace pola */

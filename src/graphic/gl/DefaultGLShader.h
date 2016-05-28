@@ -18,11 +18,23 @@ public:
 	DefaultGLShader();
 	virtual ~DefaultGLShader();
 
+	virtual void invalidate();
+
 protected:
 	virtual const utils::String generateVertexShader();
 	virtual const utils::String generateFragmentShader();
 
 	virtual const ProgramDescription* description();
+
+private:
+	utils::String& generatePrefix();
+	utils::String m_prefix;
+	bool m_dirty = true;
+
+public:
+	bool texture0 = true;
+
+	bool lighting = false;
 };
 
 } /* namespace graphic */

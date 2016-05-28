@@ -34,5 +34,9 @@ graphic::GraphicContext* Scene::graphic() const {
 	return m_graphic;
 }
 
+Environment* Scene::environment() {
+	return &m_environment;
+}
+
 } /* namespace scene */
 } /* namespace pola */

@@ -34,9 +34,9 @@ public:
 	virtual size_t getFrameCount() const;
 
 	virtual size_t getMeshBufferCount() const;
-	virtual MeshBuffer* getMeshBuffer(uint16_t index);
+	virtual graphic::MeshBuffer* getMeshBuffer(uint16_t index);
 
-	MeshBuffer meshBuffer;
+	graphic::MeshBuffer meshBuffer;
 
 	utils::Vector<utils::Vector<FrameItem>> frameList;
 	utils::Vector<FrameTransform> frameTransforms;

@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include "graphic/GraphicContext.h"
+#include "scene/Environment.h"
 
 namespace pola {
 namespace scene {
@@ -27,10 +28,14 @@ public:
 
 	graphic::GraphicContext* graphic() const;
 
+	Environment* environment();
+
 private:
 	graphic::GraphicContext* m_graphic;
 	int32_t m_width;
 	int32_t m_height;
+
+	Environment m_environment;
 };
 
 } /* namespace scene */

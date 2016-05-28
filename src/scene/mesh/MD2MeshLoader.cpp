@@ -91,10 +91,10 @@ AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 	is->seek(header.offsetFrames);
 
 	MD2AnimatedMesh* mesh = new MD2AnimatedMesh;
-	MeshBuffer* meshBuffer = &mesh->meshBuffer;
+	graphic::MeshBuffer* meshBuffer = &mesh->meshBuffer;
 	meshBuffer->alloc(header.numTriangles * 3);
 	const int16_t count = header.numTriangles * 3;
-	for (int16_t i = 0; i < count;  i+= 3) {
+	for (int16_t i = 0; i < count;  i += 3) {
 		meshBuffer->pushIndex((int16_t) i);
 		meshBuffer->pushIndex((int16_t) i + 1);
 		meshBuffer->pushIndex((int16_t) i + 2);

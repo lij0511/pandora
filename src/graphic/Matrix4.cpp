@@ -350,6 +350,37 @@ void Matrix4::loadPerspective(float fovy, float aspect, float near, float far) {
 	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
+void Matrix4::loadFrustum(float left, float right, float bottom, float top,
+        float near, float far) {
+	const float r_width  = 1.0f / (right - left);
+	const float r_height = 1.0f / (top - bottom);
+	const float r_depth  = 1.0f / (near - far);
+	const float x = 2.0f * (near * r_width);
+	const float y = 2.0f * (near * r_height);
+	const float A = (right + left) * r_width;
+	const float B = (top + bottom) * r_height;
+	const float C = (far + near) * r_depth;
+	const float D = 2.0f * (far * near * r_depth);
+	data[0] = x;
+	data[5] = y;
+	data[8] = A;
+	data[ 9] = B;
+	data[10] = C;
+	data[14] = D;
+	data[11] = -1.0f;
+	data[ 1] = 0.0f;
+	data[ 2] = 0.0f;
+	data[ 3] = 0.0f;
+	data[ 4] = 0.0f;
+	data[ 6] = 0.0f;
+	data[ 7] = 0.0f;
+	data[12] = 0.0f;
+	data[13] = 0.0f;
+	data[15] = 0.0f;
+
+	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
+}
+
 void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
 	loadIdentity();
 

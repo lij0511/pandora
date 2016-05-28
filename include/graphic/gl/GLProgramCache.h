@@ -43,6 +43,8 @@ private:
 
 	// GL3D DefaultGLShader flags.
 	bool texture0 = false;
+
+	bool lighting = false;
 };
 
 class GLProgramCache : public utils::OnEntryRemoved<const ProgramDescription, GLProgram*>{

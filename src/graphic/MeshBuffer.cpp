@@ -5,7 +5,7 @@
  *      Author: lijing
  */
 
-#include "scene/mesh/MeshBuffer.h"
+#include "graphic/MeshBuffer.h"
 #include "log/Log.h"
 
 #include <typeinfo>
@@ -13,12 +13,11 @@
 using namespace std;
 
 namespace pola {
-namespace scene {
-using namespace graphic;
+namespace graphic {
 
 MeshBuffer::MeshBuffer(VertexType type) :
 		m_type(type), m_buffer(nullptr), m_vertexCount(0) {
-	if (type == graphic::TYPE_UNKNOWN) {
+	if (type == TYPE_UNKNOWN) {
 		LOG_ALWAYS_FATAL("MeshBuffer type error [%d]\n", type);
 	}
 	m_vertexInfo = makeVertexInfo(type);

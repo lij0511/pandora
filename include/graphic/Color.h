@@ -8,6 +8,8 @@
 #ifndef POLA_COLOR_H_
 #define POLA_COLOR_H_
 
+#include <stdint.h>
+
 namespace pola {
 namespace graphic {
 

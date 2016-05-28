@@ -16,12 +16,12 @@
 #include "utils/Vector.h"
 
 namespace pola {
-namespace scene {
+namespace graphic {
 
 class MeshBuffer {
 
 public:
-	MeshBuffer(graphic::VertexType type);
+	MeshBuffer(VertexType type);
 	virtual ~MeshBuffer();
 
 	void* alloc(size_t vertexCount);
@@ -37,8 +37,8 @@ public:
 	const uint16_t* getIndexBuffer() const;
 
 public:
-	graphic::VertexType m_type;
-	graphic::VertexInfo m_vertexInfo;
+	VertexType m_type;
+	VertexInfo m_vertexInfo;
 private:
 	void* m_buffer;
 	pola::utils::Vector<uint16_t> m_indexBuffer;

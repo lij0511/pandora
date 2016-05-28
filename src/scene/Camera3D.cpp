@@ -27,6 +27,12 @@ void Camera3D::setSize(int32_t width, int32_t height) {
 	if (width > 0 && height > 0) {
 		m_aspect = (float) width / height;
 		m_projection.loadPerspective(m_fovy, m_aspect, m_znear, m_zfar);
+//		const double DEG2RAD = 3.1415926 / 180;
+//		double tangent = tan(m_fovy / 2 * DEG2RAD);
+//		double h = m_znear * tangent;
+//		double w = height * m_aspect;
+//		m_projection.loadFrustum(- w, w, -h, h, m_znear, m_zfar);
+//		m_projection.loadFrustum(0, width, 0, height, m_znear, m_zfar);
 		recalculateMatrix();
 	}
 }

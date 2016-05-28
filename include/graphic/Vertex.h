@@ -248,6 +248,7 @@ inline VertexInfo makeVertexInfo(VertexType type) {
 	vertexInfo.offset_position = 0;
 	vertexInfo.offset_normal = -1;
 	vertexInfo.count_position = 2;
+	vertexInfo.count_normal = 2;
 	vertexInfo.offset_texcoord = -1;
 	vertexInfo.offset_color = -1;
 	switch (type) {
@@ -269,6 +270,7 @@ inline VertexInfo makeVertexInfo(VertexType type) {
 		break;
 	case TYPE_VERTEX3_TEXTURE_NORMAL:
 		vertexInfo.count_position = 3;
+		vertexInfo.count_normal = 3;
 		vertexInfo.offset_texcoord = 3 * float_size;
 		vertexInfo.offset_normal = 5 * float_size;
 		vertexInfo.item_size = sizeof(NormalTextureVertex3);
@@ -286,6 +288,7 @@ inline VertexInfo makeVertexInfo(VertexType type) {
 		break;
 	case TYPE_VERTEX3_TEXTURE_COLOR_NORMAL:
 		vertexInfo.count_position = 3;
+		vertexInfo.count_normal = 3;
 		vertexInfo.offset_texcoord = 3 * float_size;
 		vertexInfo.offset_color = 5 * float_size;
 		vertexInfo.offset_normal = 9 * float_size;

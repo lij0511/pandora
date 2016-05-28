@@ -9,7 +9,7 @@
 #define POLA_MESH_H_
 
 #include "utils/RefBase.h"
-#include "scene/mesh/MeshBuffer.h"
+#include "graphic/MeshBuffer.h"
 
 namespace pola {
 namespace scene {
@@ -19,7 +19,7 @@ public:
 	virtual ~Mesh() {};
 
 	virtual size_t getMeshBufferCount() const = 0;
-	virtual MeshBuffer* getMeshBuffer(uint16_t index) = 0;
+	virtual graphic::MeshBuffer* getMeshBuffer(uint16_t index) = 0;
 
 };
 

@@ -13,6 +13,14 @@ namespace pola {
 namespace graphic {
 
 GLGraphicContext::GLGraphicContext() {
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(true);
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CW);
+	glEnable(GL_DITHER);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
 }
 
 GLGraphicContext::~GLGraphicContext() {
@@ -23,18 +31,19 @@ void GLGraphicContext::setViewport(int32_t width, int32_t height) {
 	glViewport(0, 0, width, height);
 }
 
-void GLGraphicContext::renderMeshBuffer(scene::MeshBuffer& meshBuffer) {
+void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	if (meshBuffer.getVertexCount() == 0) {
 		return;
 	}
 
-	static DefaultGLShader* shader = new DefaultGLShader;
+	static GLShader* shader = new DefaultGLShader;
+	static float x = 0;
 	shader->invalidate();
 //	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
 	mat4 m = m_camera;
 //	m.translate(0, 0, -100);
-//	m.rotate(90, 0, 1, 0);
+	m.rotate(x ++, 0, 1, 0);
 	shader->setMatrix("u_MVPMatrix", m);
 
 	GLint a_texCoords;
@@ -46,6 +55,11 @@ void GLGraphicContext::renderMeshBuffer(scene::MeshBuffer& meshBuffer) {
 	if (shader->fetchAttribute("a_position", a_position)) {
 		glEnableVertexAttribArray(a_position);
 		glVertexAttribPointer(a_position, meshBuffer.m_vertexInfo.count_position, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_position));
+	}
+	GLint a_normal;
+	if (meshBuffer.m_vertexInfo.offset_normal >= 0 && shader->fetchAttribute("a_normal", a_normal)) {
+		glEnableVertexAttribArray(a_normal);
+		glVertexAttribPointer(a_normal, meshBuffer.m_vertexInfo.count_normal, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_normal));
 	}
 	if (meshBuffer.getIndexCount() > 0) {
 		glDrawElements(GL_TRIANGLES, meshBuffer.getIndexCount(), GL_UNSIGNED_SHORT, meshBuffer.getIndexBuffer());

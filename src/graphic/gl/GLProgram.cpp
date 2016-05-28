@@ -8,6 +8,8 @@
 #include "graphic/gl/GLProgram.h"
 #include "log/Log.h"
 
+//#define DEBUG_SHADER 1;
+
 namespace pola {
 namespace graphic {
 
@@ -78,6 +80,11 @@ void GLProgram::compile(const char* vertexShader, const char* fragmentShader) {
 }
 
 GLuint GLProgram::buildShader(const char* source, GLenum type) {
+
+#ifdef DEBUG_SHADER
+	LOGI("type=%d\nsource=%s\n", type, source);
+#endif
+
 	GLuint shader = glCreateShader(type);
 	glShaderSource(shader, 1, &source, 0);
 	glCompileShader(shader);

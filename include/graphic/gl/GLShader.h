@@ -39,7 +39,7 @@ public:
 	/**
 	 * Must be called when ShaderProgram is changed, both Vertex and Fragment.
 	 */
-	void invalidate();
+	virtual void invalidate();
 protected:
 	virtual const utils::String generateVertexShader();
 	virtual const utils::String generateFragmentShader();
