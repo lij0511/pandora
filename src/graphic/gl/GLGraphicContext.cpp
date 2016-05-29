@@ -17,8 +17,8 @@ GLGraphicContext::GLGraphicContext() {
 	glDepthMask(true);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CW);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 	glEnable(GL_DITHER);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
 }
@@ -37,13 +37,11 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	}
 
 	static GLShader* shader = new DefaultGLShader;
-	static float x = 0;
 	shader->invalidate();
 //	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
 	mat4 m = m_camera;
 //	m.translate(0, 0, -100);
-	m.rotate(x ++, 0, 1, 0);
 	shader->setMatrix("u_MVPMatrix", m);
 
 	GLint a_texCoords;

@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+#include "graphic/Vector.h"
 #include "graphic/Color.h"
 
 namespace pola {
@@ -48,16 +49,16 @@ VertexInfo makeVertexInfo(VertexType type);
 
 
 struct Vertex2 {
-	float x, y;
+	vec2 pos;
 
 	static inline void set(Vertex2* vertex, float x, float y) {
-		vertex[0].x = x;
-		vertex[0].y = y;
+		vertex[0].pos.x = x;
+		vertex[0].pos.y = y;
 	}
 };
 
 struct TextureVertex2 : Vertex2 {
-	float u, v;
+	vec2 uv;
 
 	static inline void set(TextureVertex2* vertex, float x, float y, float u, float v) {
 		Vertex2::set(vertex, x, y);
@@ -65,50 +66,43 @@ struct TextureVertex2 : Vertex2 {
 	}
 
 	static inline void setUV(TextureVertex2* vertex, float u, float v) {
-		vertex[0].u = u;
-		vertex[0].v = v;
+		vertex[0].uv = {u, v};
 	}
 };
 
 struct ColorTextureVertex2 : TextureVertex2 {
-    float r, g, b, a;
+    FColor color;
 
     static inline void set(ColorTextureVertex2* vertex, float x, float y,
             float u, float v, Color c) {
         TextureVertex2::set(vertex, x, y, u, v);
 
-        c.getRGBA(vertex[0].r, vertex[0].g, vertex[0].b, vertex[0].a);
+        c.getRGBA(vertex[0].color.r, vertex[0].color.g, vertex[0].color.b, vertex[0].color.a);
     }
     static inline void set(ColorTextureVertex2* vertex, float x, float y,
     			float u, float v, FColor color) {
 		TextureVertex2::set(vertex, x, y, u, v);
 
 		// RGBA
-		vertex[0].r = color.r;
-		vertex[0].g = color.g;
-		vertex[0].b = color.b;
-		vertex[0].a = color.a;
+		vertex[0].color = color;
 	}
 
 };
 
 struct ColorVertex2 : Vertex2 {
-    float r, g, b, a;
+    FColor color;
 
     static inline void set(ColorVertex2* vertex, float x, float y, Color c) {
     	Vertex2::set(vertex, x, y);
 
-    	c.getRGBA(vertex[0].r, vertex[0].g, vertex[0].b, vertex[0].a);
+    	c.getRGBA(vertex[0].color.r, vertex[0].color.g, vertex[0].color.b, vertex[0].color.a);
     }
     static inline void set(ColorVertex2* vertex, float x, float y,
 			FColor color) {
     	Vertex2::set(vertex, x, y);
 
     	// RGBA
-		vertex[0].r = color.r;
-		vertex[0].g = color.g;
-		vertex[0].b = color.b;
-		vertex[0].a = color.a;
+		vertex[0].color = color;
 	}
 };
 
@@ -128,17 +122,17 @@ struct AlphaVertex2 : Vertex2 {
 
 
 struct Vertex3 {
-	float x, y, z;
+	vec3 pos;
 
 	static inline void set(Vertex3* vertex, float x, float y, float z) {
-		vertex[0].x = x;
-		vertex[0].y = y;
-		vertex[0].z = z;
+		vertex[0].pos.x = x;
+		vertex[0].pos.y = y;
+		vertex[0].pos.z = z;
 	}
 };
 
 struct TextureVertex3 : Vertex3 {
-	float u, v;
+	vec2 uv;
 
 	static inline void set(TextureVertex3* vertex, float x, float y, float z, float u, float v) {
 		Vertex3::set(vertex, x, y, z);
@@ -146,32 +140,32 @@ struct TextureVertex3 : Vertex3 {
 	}
 
 	static inline void setUV(TextureVertex3* vertex, float u, float v) {
-		vertex[0].u = u;
-		vertex[0].v = v;
+		vertex[0].uv.x = u;
+		vertex[0].uv.y = v;
 	}
 };
 
 struct NormalTextureVertex3 : TextureVertex3 {
-    float nx, ny, nz;
+    vec3 normal;
 
     static inline void set(NormalTextureVertex3* vertex, float x, float y, float z,
             float u, float v, float nx, float ny, float nz) {
     	TextureVertex3::set(vertex, x, y, z, u, v);
 
-    	vertex[0].nx = nx;
-		vertex[0].ny = ny;
-		vertex[0].nz = nz;
+    	vertex[0].normal.x = nx;
+		vertex[0].normal.y = ny;
+		vertex[0].normal.z = nz;
     }
 };
 
 struct ColorTextureVertex3 : TextureVertex3 {
-    float r, g, b, a;
+	FColor color;
 
     static inline void set(ColorTextureVertex3* vertex, float x, float y, float z,
             float u, float v, Color c) {
         TextureVertex3::set(vertex, x, y, z, u, v);
 
-        c.getRGBA(vertex[0].r, vertex[0].g, vertex[0].b, vertex[0].a);
+        c.getRGBA(vertex[0].color.r, vertex[0].color.g, vertex[0].color.b, vertex[0].color.a);
     }
 
     static inline void set(ColorTextureVertex3* vertex, float x, float y, float z,
@@ -179,42 +173,39 @@ struct ColorTextureVertex3 : TextureVertex3 {
 		TextureVertex3::set(vertex, x, y, z, u, v);
 
 		// RGBA
-		vertex[0].r = color.r;
-		vertex[0].g = color.g;
-		vertex[0].b = color.b;
-		vertex[0].a = color.a;
+		vertex[0].color = color;
 	}
 };
 
 struct NormalColorTextureVertex3 : ColorTextureVertex3 {
-    float nx, ny, nz;
+	vec3 normal;
 
     static inline void set(NormalColorTextureVertex3* vertex, float x, float y, float z,
             float u, float v, Color c, float nx, float ny, float nz) {
     	ColorTextureVertex3::set(vertex, x, y, z, u, v, c);
 
-    	vertex[0].nx = nx;
-		vertex[0].ny = ny;
-		vertex[0].nz = nz;
+    	vertex[0].normal.x = nx;
+		vertex[0].normal.y = ny;
+		vertex[0].normal.z = nz;
     }
 
     static inline void set(NormalColorTextureVertex3* vertex, float x, float y, float z,
 			float u, float v, FColor color, float nx, float ny, float nz) {
     	ColorTextureVertex3::set(vertex, x, y, z, u, v, color);
 
-		vertex[0].nx = nx;
-		vertex[0].ny = ny;
-		vertex[0].nz = nz;
+		vertex[0].normal.x = nx;
+		vertex[0].normal.y = ny;
+		vertex[0].normal.z = nz;
 	}
 };
 
 struct ColorVertex3 : Vertex3 {
-    float r, g, b, a;
+    FColor color;
 
     static inline void set(ColorVertex3* vertex, float x, float y, float z, Color c) {
     	Vertex3::set(vertex, x, y, z);
 
-    	c.getRGBA(vertex[0].r, vertex[0].g, vertex[0].b, vertex[0].a);
+    	c.getRGBA(vertex[0].color.r, vertex[0].color.g, vertex[0].color.b, vertex[0].color.a);
     }
 
     static inline void set(ColorVertex3* vertex, float x, float y, float z,
@@ -222,10 +213,7 @@ struct ColorVertex3 : Vertex3 {
 		Vertex3::set(vertex, x, y, z);
 
 		// RGBA
-		vertex[0].r = color.r;
-		vertex[0].g = color.g;
-		vertex[0].b = color.b;
-		vertex[0].a = color.a;
+		vertex[0].color = color;
 	}
 };
 

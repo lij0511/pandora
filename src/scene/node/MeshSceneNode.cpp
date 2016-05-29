@@ -20,8 +20,5 @@ uint32_t MeshSceneNode::getMaterialCount() const {
 	return 0;
 }
 
-void MeshSceneNode::render(graphic::GraphicContext* graphic) {
-}
-
 } /* namespace scene */
 } /* namespace pola */

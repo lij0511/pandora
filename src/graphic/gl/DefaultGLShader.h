@@ -34,7 +34,7 @@ private:
 public:
 	bool texture0 = true;
 
-	bool lighting = true;
+	bool lighting = false;
 };
 
 } /* namespace graphic */

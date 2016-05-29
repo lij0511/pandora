@@ -17,7 +17,7 @@ SceneNode::SceneNode(const graphic::vec3& position) : m_position(position) {
 SceneNode::~SceneNode() {
 }
 
-void SceneNode::render(graphic::GraphicContext* graphic) {
+void SceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
 }
 
 } /* namespace scene */

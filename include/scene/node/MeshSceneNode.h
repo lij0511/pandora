@@ -20,7 +20,6 @@ public:
 
 	virtual uint32_t getMaterialCount() const;
 
-	virtual void render(graphic::GraphicContext* graphic);
 };
 
 } /* namespace scene */

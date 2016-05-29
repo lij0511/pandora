@@ -182,14 +182,133 @@ static const float Q2_VERTEX_NORMAL_TABLE[Q2_VERTEX_NORMAL_TABLE_SIZE][3] = {
 	{-0.688191f, -0.587785f, -0.425325f},
 };
 
-MD2AnimatedMesh::MD2AnimatedMesh() : meshBuffer(graphic::TYPE_VERTEX3_TEXTURE_NORMAL), frameCount(0) {
+struct MD2AnimationType {
+	int32_t begin;
+	int32_t end;
+	int32_t fps;
+};
+
+static const MD2AnimationType MD2AnimationTypeList[21] = {
+	{  0,  39,  9}, // STAND
+	{ 40,  45, 10}, // RUN
+	{ 46,  53, 10}, // ATTACK
+	{ 54,  57,  7}, // PAIN_A
+	{ 58,  61,  7}, // PAIN_B
+	{ 62,  65,  7}, // PAIN_C
+	{ 66,  71,  7}, // JUMP
+	{ 72,  83,  7}, // FLIP
+	{ 84,  94,  7}, // SALUTE
+	{ 95, 111, 10}, // FALLBACK
+	{112, 122,  7}, // WAVE
+	{123, 134,  6}, // POINT
+	{135, 153, 10}, // CROUCH_STAND
+	{154, 159,  7}, // CROUCH_WALK
+	{160, 168, 10}, // CROUCH_ATTACK
+	{169, 172,  7}, // CROUCH_PAIN
+	{173, 177,  5}, // CROUCH_DEATH
+	{178, 183,  7}, // DEATH_FALLBACK
+	{184, 189,  7}, // DEATH_FALLFORWARD
+	{190, 197,  7}, // DEATH_FALLBACKSLOW
+	{198, 198,  5}, // BOOM
+};
+
+MD2AnimatedMesh::MD2AnimatedMesh() : meshBuffer(graphic::TYPE_VERTEX3_TEXTURE_NORMAL), frameCount(0),
+	mCurentFrame(-1), mStartFrameLoop(-1), mEndFrameLoop(-1) {
 }
 
 MD2AnimatedMesh::~MD2AnimatedMesh() {
 }
 
+void MD2AnimatedMesh::getFrameLoop(MD2_ANIMATION_TYPE animationType, int32_t& outBegin, int32_t& outEnd, int32_t& outFPS) const {
+	if (animationType < 0 || animationType >= MAT_COUNT)
+		return;
+
+	outBegin = MD2AnimationTypeList[animationType].begin << MD2_FRAME_SHIFT;
+	outEnd = MD2AnimationTypeList[animationType].end << MD2_FRAME_SHIFT;
+
+	// correct to anim between last->first frame
+	outEnd += MD2_FRAME_SHIFT == 0 ? 1 : (1 << MD2_FRAME_SHIFT) - 1;
+	outFPS = MD2AnimationTypeList[animationType].fps << MD2_FRAME_SHIFT;
+}
+
+void MD2AnimatedMesh::updateMeshBuffer(int32_t frame, int32_t startFrameLoop, int32_t endFrameLoop) {
+
+	if (mCurentFrame == frame && mStartFrameLoop == startFrameLoop && mEndFrameLoop == endFrameLoop) {
+		return;
+	}
+	mCurentFrame = frame;
+	mStartFrameLoop = startFrameLoop;
+	mEndFrameLoop = endFrameLoop;
+	uint32_t firstFrame, secondFrame;
+	float div;
+
+	// TA: resolve missing ipol in loop between end-start
+
+	if (endFrameLoop - startFrameLoop == 0) {
+		firstFrame = frame >> MD2_FRAME_SHIFT;
+		secondFrame = frame >> MD2_FRAME_SHIFT;
+		div = 1.0f;
+	} else {
+		// key frames
+		uint32_t s = startFrameLoop >> MD2_FRAME_SHIFT;
+		uint32_t e = endFrameLoop >> MD2_FRAME_SHIFT;
+
+		firstFrame = frame >> MD2_FRAME_SHIFT;
+		secondFrame = firstFrame + 1 > e ? s : firstFrame + 1;
+
+		firstFrame = fmin(frameCount - 1, firstFrame);
+		secondFrame = fmin(frameCount - 1, secondFrame);
+
+		//div = (frame % (1<<MD2_FRAME_SHIFT)) / (f32)(1<<MD2_FRAME_SHIFT);
+		frame &= (1 << MD2_FRAME_SHIFT) - 1;
+		div = frame * MD2_FRAME_SHIFT_RECIPROCAL;
+	}
+
+	graphic::NormalTextureVertex3* vertex = (graphic::NormalTextureVertex3*) meshBuffer.getVertexBuffer();
+	const FrameItem* first = frameList[firstFrame].array();
+	const FrameItem* second = frameList[secondFrame].array();
+	// interpolate both frames
+	const size_t count = frameList[firstFrame].size();
+	if (first == second) {
+		for (uint32_t i = 0; i < count; ++i) {
+			float x = first[0].pos[0] * frameTransforms[firstFrame].scale[0] + frameTransforms[firstFrame].translate[0];
+			float y = first[0].pos[1] * frameTransforms[firstFrame].scale[1] + frameTransforms[firstFrame].translate[1];
+			float z = first[0].pos[2] * frameTransforms[firstFrame].scale[2] + frameTransforms[firstFrame].translate[2];
+			vertex->pos = {x, y, z};
+			vertex->normal = {Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][0], Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][2], Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][1]};
+
+			vertex ++;
+			first ++;
+		}
+	} else {
+		for (uint32_t i = 0; i < count; ++i) {
+			graphic::vec3 one = {first[0].pos[0] * frameTransforms[firstFrame].scale[0] + frameTransforms[firstFrame].translate[0],
+					first[0].pos[1] * frameTransforms[firstFrame].scale[1] + frameTransforms[firstFrame].translate[1],
+					first[0].pos[2] * frameTransforms[firstFrame].scale[2] + frameTransforms[firstFrame].translate[2]};
+			graphic::vec3 two = {second[0].pos[0] * frameTransforms[secondFrame].scale[0] + frameTransforms[secondFrame].translate[0],
+					second[0].pos[1] * frameTransforms[secondFrame].scale[1] + frameTransforms[secondFrame].translate[1],
+					second[0].pos[2] * frameTransforms[secondFrame].scale[2] + frameTransforms[secondFrame].translate[2]};
+			vertex->pos = two.getInterpolated(one, div);
+			const graphic::vec3 n1(
+					Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][0],
+					Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][2],
+					Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][1]);
+			const graphic::vec3 n2(
+					Q2_VERTEX_NORMAL_TABLE[second[0].normal_index][0],
+					Q2_VERTEX_NORMAL_TABLE[second[0].normal_index][2],
+					Q2_VERTEX_NORMAL_TABLE[second[0].normal_index][1]);
+			vertex->normal = n2.getInterpolated(n1, div);
+
+			vertex ++;
+			first ++;
+			second ++;
+		}
+	}
+
+}
+
 size_t MD2AnimatedMesh::getFrameCount() const {
-	return frameCount;
+	return frameCount << MD2_FRAME_SHIFT;
 }
 
 size_t MD2AnimatedMesh::getMeshBufferCount() const {
@@ -198,8 +317,7 @@ size_t MD2AnimatedMesh::getMeshBufferCount() const {
 
 graphic::MeshBuffer* MD2AnimatedMesh::getMeshBuffer(uint16_t index) {
 	if (index == 0 && getFrameCount() > 0) {
-		// TODO
-		static uint16_t frame = 0;
+		/*static uint16_t frame = 0;
 		if (frame >= getFrameCount()) {
 			frame = 0;
 		}
@@ -210,17 +328,13 @@ graphic::MeshBuffer* MD2AnimatedMesh::getMeshBuffer(uint16_t index) {
 			float x = frameList[frame][i].pos[0] * frameTransforms[frame].scale[0] + frameTransforms[frame].translate[0];
 			float y = frameList[frame][i].pos[1] * frameTransforms[frame].scale[1] + frameTransforms[frame].translate[1];
 			float z = frameList[frame][i].pos[2] * frameTransforms[frame].scale[2] + frameTransforms[frame].translate[2];
-			vertex->x = x;
-			vertex->y = y;
-			vertex->z = z;
-			vertex->nx = Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][0];
-			vertex->ny = Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][2];
-			vertex->nz = Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][1];
+			vertex->pos = {x, y, z};
+			vertex->normal = {Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][0], Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][2], Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][1]};
 
 			vertex ++;
 		}
-//		frame ++;
-//		usleep(200000);
+		frame ++;
+		usleep(200000);*/
 		return &meshBuffer;
 	} else {
 		return nullptr;

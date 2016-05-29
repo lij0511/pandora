@@ -11,6 +11,8 @@
 #include "graphic/Vector.h"
 #include "graphic/GraphicContext.h"
 
+#include "utils/Times.h"
+
 namespace pola {
 namespace scene {
 
@@ -19,7 +21,7 @@ public:
 	SceneNode(const graphic::vec3& position = graphic::vec3(0,0,0));
 	virtual ~SceneNode();
 
-	virtual void render(graphic::GraphicContext* graphic);
+	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 
 protected:
 	graphic::vec3 m_position;

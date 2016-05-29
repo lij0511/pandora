@@ -12,7 +12,7 @@
 #include "scene/Camera3D.h"
 #include "scene/mesh/MeshLoader.h"
 #include "io/FileInputStream.h"
-#include "scene/mesh/AnimatedMesh.h"
+#include "scene/node/MD2AnimatedMeshSceneNode.h"
 #include "scene/FPS.h"
 
 #include "utils/thread/FunctionalTask.h"
@@ -43,7 +43,7 @@ int WINDOW_HEIGHT = 800;
 
 Handler* mHandler;
 Scene* scene;
-AnimatedMesh* mesh;
+MD2AnimatedMeshSceneNode* meshNode;
 Camera3D* camera;
 GLTexture* texture;
 XEvent e;
@@ -52,7 +52,7 @@ XEvent e;
 FPS fps;
 
 void display() {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(1.0f, 0.4f, 0.4f, 0.6f);
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	/*MeshBuffer m(Vertex3::type());
@@ -75,12 +75,13 @@ void display() {
 		glLoadIdentity();
 		gluLookAt(0, 0, 50, 0, 0, 49, 0, 1, 0);*/
 	scene->graphic()->setCurrentCamera(camera->matrix());
-	if (mesh) {
+	if (meshNode) {
 		if (texture != nullptr && texture->generateTexture()) {
 			GLCaches::get().bindTexture(texture->id);
 		}
 	for (int i = 0; i < 1; i ++)
-		scene->graphic()->renderMeshBuffer(*(mesh->getMeshBuffer(0)));
+//		scene->graphic()->renderMeshBuffer(*(mesh->getMeshBuffer(0)));
+		meshNode->render(scene->graphic(), uptimeMillis());
 	}
 
 	glXSwapBuffers(dpy, glw);
@@ -190,14 +191,17 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
-	mesh = MeshLoader::loadMesh(&is);
+	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
+	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh(&is);
+	if (mesh) {
+		meshNode = new MD2AnimatedMeshSceneNode(mesh);
+	}
 	 scene = new Scene(new GLGraphicContext);
 	 scene->setViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
-	 camera = new Camera3D({0, 0, 50}, {0, 0, 49});
+	 camera = new Camera3D({0, 30, -40}, {0, 5, 0});
 	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie2.bmp");
+	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.bmp");
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());
 	mHandler->post(new FunctionalTask(bind(&loop)));

@@ -147,8 +147,7 @@ AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 		for (int32_t t = 0; t < header.numTriangles; ++t) {
 			for (int32_t n = 0; n < 3; ++n) {
 				int32_t index = t * 3 + n;
-				vertex[index].u = (textureCoords[triangles[t].textureIndices[n]].s + 0.5f) * dmaxs;
-				vertex[index].v = (textureCoords[triangles[t].textureIndices[n]].t + 0.5f) * dmaxt;
+				vertex[index].uv = {(textureCoords[triangles[t].textureIndices[n]].s + 0.5f) * dmaxs, (textureCoords[triangles[t].textureIndices[n]].t + 0.5f) * dmaxt};
 			}
 		}
 	}
