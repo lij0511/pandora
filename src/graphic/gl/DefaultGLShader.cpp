@@ -77,7 +77,7 @@ const utils::String DefaultGLShader::generateFragmentShader() {
 			"  gl_FragColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);\n"
 			"  #endif\n"
 			"  #ifdef lighting\n"
-			"  gl_FragColor.rgb = gl_FragColor.rgb * v_lightDiffuse;\n"
+			"  gl_FragColor.rgb = gl_FragColor.rgb * (v_lightDiffuse);\n"
 			"  #endif\n"
 			"}\n");
 	utils::String string;

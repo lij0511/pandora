@@ -12,7 +12,7 @@ namespace scene {
 
 Camera3D::Camera3D(const graphic::vec3& pos, const graphic::vec3& lookAt) :
 		m_position(pos), m_target(lookAt), m_upper(0.0f, 1.0f, 0.0f), m_znear(
-				0.0f), m_zfar(3000.0f) {
+				0.1f), m_zfar(3000.0f) {
 	m_fovy = M_PI / 2.5f;
 	m_aspect = 1.0f;
 	m_projection.loadPerspective(m_fovy, m_aspect, m_znear, m_zfar);
@@ -32,7 +32,7 @@ void Camera3D::setSize(int32_t width, int32_t height) {
 //		double h = m_znear * tangent;
 //		double w = height * m_aspect;
 //		m_projection.loadFrustum(- w, w, -h, h, m_znear, m_zfar);
-//		m_projection.loadFrustum(0, width, 0, height, m_znear, m_zfar);
+//		m_projection.loadFrustum(-width, width, -height, height, m_znear, m_zfar);
 		recalculateMatrix();
 	}
 }

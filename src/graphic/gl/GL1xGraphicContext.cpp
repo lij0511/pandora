@@ -12,6 +12,14 @@ namespace pola {
 namespace graphic {
 
 GL1xGraphicContext::GL1xGraphicContext() {
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(true);
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CW);
+	glEnable(GL_DITHER);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
 }
 
 GL1xGraphicContext::~GL1xGraphicContext() {
@@ -27,6 +35,7 @@ void GL1xGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 		return;
 	}
 
+	static float x;
 //	glMatrixMode(GL_PROJECTION);
 //	glLoadIdentity();
 //	gluPerspective(M_PI / 2.5f, 1.0f, 0, 3000);
@@ -34,6 +43,7 @@ void GL1xGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 //	glLoadIdentity();
 //	gluLookAt(0, 0, 50, 0, 0, 49, 0, 1, 0);
 glTranslated(0, 0, -5000);
+glRotated(x ++, 0, 1, 0);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);

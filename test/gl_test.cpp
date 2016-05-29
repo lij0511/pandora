@@ -70,7 +70,7 @@ void display() {
 //	camera->yaw(1);
 	/*glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluPerspective(M_PI / 2.5f, 1.0f, 0, 3000);
+		gluPerspective(M_PI / 2.5f, 1.0f, 1000, 3000000);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		gluLookAt(0, 0, 50, 0, 0, 49, 0, 1, 0);*/
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
 			GLX_RED_SIZE, 4,
 			GLX_GREEN_SIZE, 4,
 			GLX_BLUE_SIZE, 4,
-		  GLX_DEPTH_SIZE, 16,
+		  GLX_DEPTH_SIZE, 24,
 			GLX_ALPHA_SIZE, 1,
 					  GLX_DOUBLEBUFFER, True,
 					  None};
@@ -190,14 +190,14 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
+	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
 	mesh = MeshLoader::loadMesh(&is);
 	 scene = new Scene(new GLGraphicContext);
 	 scene->setViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
 	 camera = new Camera3D({0, 0, 50}, {0, 0, 49});
 	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.bmp");
+	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie2.bmp");
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());
 	mHandler->post(new FunctionalTask(bind(&loop)));
