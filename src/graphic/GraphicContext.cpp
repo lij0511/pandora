@@ -11,15 +11,15 @@
 namespace pola {
 namespace graphic {
 
-GraphicContext::GraphicContext() : m_width(0), m_height(0) {
+GraphicContext::GraphicContext() : mWidth(0), mHeight(0) {
 }
 
 GraphicContext::~GraphicContext() {
 }
 
 void GraphicContext::setViewport(int32_t width, int32_t height) {
-	m_width = width;
-	m_height = height;
+	mWidth = width;
+	mHeight = height;
 }
 
 Texture* GraphicContext::loadTexture(const char* file) {
@@ -30,8 +30,20 @@ Texture* GraphicContext::loadTexture(io::InputStream* is) {
 	return doLoadTexture(is);
 }
 
-void GraphicContext::setCurrentCamera(const mat4& camera) {
-	m_camera = camera;
+void GraphicContext::setMatrix(MatrixType type, const mat4& matrix) {
+	switch (type) {
+		case VIEW:
+			mView = matrix;
+			break;
+		case WORLD:
+			mWorld = matrix;
+			break;
+		case PROJECTION:
+			mProjection = matrix;
+			break;
+		default:
+			break;
+	}
 }
 
 } /* namespace graphic */

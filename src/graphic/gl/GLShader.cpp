@@ -27,10 +27,10 @@ void GLShader::makeCurrent() {
 	mProgram->use();
 }
 
-void GLShader::setMatrix(const char* name, const mat4& MVPMatrix) {
-	GLint u_projection;
-	if (mProgram->fetchUniform(name, u_projection)) {
-		glUniformMatrix4fv(u_projection, 1, GL_FALSE, &MVPMatrix.data[0]);
+void GLShader::setMatrix(const char* name, const mat4& matrix) {
+	GLint u_matrixHandle;
+	if (mProgram->fetchUniform(name, u_matrixHandle)) {
+		glUniformMatrix4fv(u_matrixHandle, 1, GL_FALSE, &matrix.data[0]);
 	}
 }
 

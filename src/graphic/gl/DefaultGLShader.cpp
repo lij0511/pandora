@@ -26,7 +26,8 @@ const utils::String DefaultGLShader::generateVertexShader() {
 	utils::StringBuffer sb;
 	sb.append(generatePrefix());
 	sb.append("attribute vec4 a_position;\n"
-			"uniform mat4 u_MVPMatrix;\n"
+			"uniform mat4 u_projection;\n"
+			"uniform mat4 u_view;\n"
 			"#ifdef texture0\n"
 			"attribute vec2 a_texCoords;\n"
 			"varying vec2 v_texCoords;\n"
@@ -41,12 +42,13 @@ const utils::String DefaultGLShader::generateVertexShader() {
 			"  v_texCoords = a_texCoords;\n"
 			"  #endif\n"
 			"  #ifdef lighting\n"
-			"  vec3 lightDir = -vec3(0.0f, 0.0f, -1.0f);\n"
+			"	v_lightDiffuse=vec3(0.0f, 0.0f, 0.0f);\n"
+			"  vec3 lightDir = -vec3(-1.0f, 0.0f, 1.0f);\n"
 			"  float NdotL = clamp(dot(a_normal, lightDir), 0.0, 1.0);\n"
 			"  vec3 value = vec3(1.0f, 1.0f, 1.0f) * NdotL;\n"
 			"  v_lightDiffuse += value;\n"
 			"  #endif\n"
-			"  gl_Position = u_MVPMatrix * a_position;\n"
+			"  gl_Position = u_projection * u_view * a_position;\n"
 			"}\n");
 	utils::String string;
 	sb.release(string);

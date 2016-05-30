@@ -11,10 +11,20 @@
 namespace pola {
 namespace scene {
 
-SceneNode::SceneNode(const graphic::vec3& position) : m_position(position) {
+SceneNode::SceneNode(const graphic::vec3& position) : mPosition(position) {
 }
 
 SceneNode::~SceneNode() {
+}
+
+void SceneNode::setPosition(const graphic::vec3& position) {
+	mPosition = position;
+}
+
+const graphic::mat4 SceneNode::getTransform() {
+	graphic::mat4 m;
+	m.loadTranslate(mPosition.x, mPosition.y, mPosition.z);
+	return m;
 }
 
 void SceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {

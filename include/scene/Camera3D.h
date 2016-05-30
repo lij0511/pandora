@@ -40,7 +40,6 @@ private:
 
 	graphic::mat4 m_projection;
 	graphic::mat4 m_view;
-	graphic::mat4 m_orientation;
 };
 
 } /* namespace scene */

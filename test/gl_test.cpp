@@ -43,7 +43,6 @@ int WINDOW_HEIGHT = 800;
 
 Handler* mHandler;
 Scene* scene;
-MD2AnimatedMeshSceneNode* meshNode;
 Camera3D* camera;
 GLTexture* texture;
 XEvent e;
@@ -74,15 +73,10 @@ void display() {
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		gluLookAt(0, 0, 50, 0, 0, 49, 0, 1, 0);*/
-	scene->graphic()->setCurrentCamera(camera->matrix());
-	if (meshNode) {
 		if (texture != nullptr && texture->generateTexture()) {
 			GLCaches::get().bindTexture(texture->id);
 		}
-	for (int i = 0; i < 1; i ++)
-//		scene->graphic()->renderMeshBuffer(*(mesh->getMeshBuffer(0)));
-		meshNode->render(scene->graphic(), uptimeMillis());
-	}
+		scene->render();
 
 	glXSwapBuffers(dpy, glw);
 	fps.fps();
@@ -129,6 +123,8 @@ int main(int argc, char *argv[]) {
 			GLX_BLUE_SIZE, 4,
 		  GLX_DEPTH_SIZE, 24,
 			GLX_ALPHA_SIZE, 1,
+			 GLX_SAMPLE_BUFFERS, 1,
+				GLX_SAMPLES, 2,
 					  GLX_DOUBLEBUFFER, True,
 					  None};
 	int nelements;
@@ -191,17 +187,23 @@ int main(int argc, char *argv[]) {
 	 thread.start();
 	 Handler h(thread.getLooper());
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
-	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh(&is);
-	if (mesh) {
-		meshNode = new MD2AnimatedMeshSceneNode(mesh);
-	}
 	 scene = new Scene(new GLGraphicContext);
 	 scene->setViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
-	 camera = new Camera3D({0, 30, -40}, {0, 5, 0});
+	pola::io::FileInputStream is("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/faerie.md2");
+	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh(&is);
+	if (mesh) {
+		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
+		scene->addSceneNode(node);
+		node = new MD2AnimatedMeshSceneNode(mesh);
+		node->setPosition({50, 0, 0});
+		node->setAnimationType(MAT_JUMP);
+		scene->addSceneNode(node);
+	}
+	 camera = new Camera3D({0, 0, 100}, {0, 0, 99});
 	 camera->setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+	 scene->graphic()->setMatrix(GraphicContext::PROJECTION, camera->matrix());
 
-	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.bmp");
+	 texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/faerie2.bmp");
 	Looper::prepare();
 	mHandler = new Handler(Looper::myLooper());
 	mHandler->post(new FunctionalTask(bind(&loop)));

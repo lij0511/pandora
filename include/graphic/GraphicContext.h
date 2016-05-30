@@ -18,9 +18,13 @@
 namespace pola {
 namespace graphic {
 
-
 class GraphicContext {
 public:
+	enum MatrixType {
+		VIEW,
+		WORLD,
+		PROJECTION,
+	};
 	GraphicContext();
 	virtual ~GraphicContext();
 
@@ -29,7 +33,7 @@ public:
 	Texture* loadTexture(const char* file);
 	Texture* loadTexture(io::InputStream* is);
 
-	void setCurrentCamera(const mat4& projection);
+	void setMatrix(MatrixType type, const mat4& matrix);
 
 	virtual void renderMeshBuffer(MeshBuffer& meshBuffer) = 0;
 
@@ -37,10 +41,12 @@ protected:
 	virtual Texture* doLoadTexture(io::InputStream* is) = 0;
 
 protected:
-	mat4 m_camera;
+	mat4 mView;
+	mat4 mWorld;
+	mat4 mProjection;
 private:
-	int32_t m_width;
-	int32_t m_height;
+	int32_t mWidth;
+	int32_t mHeight;
 };
 
 } /* namespace graphic */

@@ -15,7 +15,7 @@ Camera3D::Camera3D(const graphic::vec3& pos, const graphic::vec3& lookAt) :
 				0.1f), m_zfar(3000.0f) {
 	m_fovy = M_PI / 2.5f;
 	m_aspect = 1.0f;
-	m_projection.loadPerspective(m_fovy, m_aspect, m_znear, m_zfar);
+	m_projection.loadPerspectiveLH(m_fovy, m_aspect, m_znear, m_zfar);
 	recalculateMatrix();
 }
 
@@ -39,32 +39,27 @@ void Camera3D::setSize(int32_t width, int32_t height) {
 
 void Camera3D::pitch(float angle) {
 	if (angle != 0.0f) {
-		m_orientation.rotate(angle, 1, 0, 0);
 		recalculateMatrix();
 	}
 }
 
 void Camera3D::yaw(float angle) {
 	if (angle != 0.0f) {
-		m_orientation.rotate(angle, 0, 1, 0);
 		recalculateMatrix();
 	}
 }
 
 void Camera3D::roll(float angle) {
 	if (angle != 0.0f) {
-		m_orientation.rotate(angle, 0, 0, 1);
 		recalculateMatrix();
 	}
 }
 
 void Camera3D::recalculateMatrix() {
+	m_view.loadLookAt(m_position, m_target, m_upper);
 	graphic::mat4 m;
-	m.loadLookAt(m_position, m_target, m_upper);
-	graphic::mat4 m1 = m_orientation;
-	m1.translate(0, 0, -10);
-	m_view.loadMultiply(m_orientation, m);
-	m_matrix.loadMultiply(m_projection, m_view);
+	m.loadMultiply(m_projection, m_view);
+	m_matrix.load(m);
 }
 
 } /* namespace scene */

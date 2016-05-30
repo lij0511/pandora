@@ -20,6 +20,7 @@ public:
 
 	void setFrameLoop(int32_t startFrame, int32_t endFrame);
 	void setFramesPerMs(float framesPerMs);
+	void setCurrentFrame(float frame);
 
 	int32_t getCurrentFrame() const;
 	int32_t getStartFrameLoop() const;

@@ -316,25 +316,7 @@ size_t MD2AnimatedMesh::getMeshBufferCount() const {
 }
 
 graphic::MeshBuffer* MD2AnimatedMesh::getMeshBuffer(uint16_t index) {
-	if (index == 0 && getFrameCount() > 0) {
-		/*static uint16_t frame = 0;
-		if (frame >= getFrameCount()) {
-			frame = 0;
-		}
-		graphic::NormalTextureVertex3* vertex = (graphic::NormalTextureVertex3*) meshBuffer.getVertexBuffer();
-		// interpolate both frames
-		const size_t count = frameList[frame].size();
-		for (uint32_t i = 0; i < count; ++i) {
-			float x = frameList[frame][i].pos[0] * frameTransforms[frame].scale[0] + frameTransforms[frame].translate[0];
-			float y = frameList[frame][i].pos[1] * frameTransforms[frame].scale[1] + frameTransforms[frame].translate[1];
-			float z = frameList[frame][i].pos[2] * frameTransforms[frame].scale[2] + frameTransforms[frame].translate[2];
-			vertex->pos = {x, y, z};
-			vertex->normal = {Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][0], Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][2], Q2_VERTEX_NORMAL_TABLE[frameList[frame][i].normal_index][1]};
-
-			vertex ++;
-		}
-		frame ++;
-		usleep(200000);*/
+	if (index == 0) {
 		return &meshBuffer;
 	} else {
 		return nullptr;

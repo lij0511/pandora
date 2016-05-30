@@ -5,6 +5,7 @@
  *      Author: lijing
  */
 
+#include "utils/Math.h"
 #include "scene/node/AnimatedMeshSceneNode.h"
 
 namespace pola {
@@ -18,9 +19,12 @@ AnimatedMeshSceneNode::~AnimatedMeshSceneNode() {
 }
 
 void AnimatedMeshSceneNode::setFrameLoop(int32_t startFrame, int32_t endFrame) {
-	if (startFrame >= 0 && endFrame >= 0 && endFrame >= startFrame) {
-		mStartFrameLoop = startFrame;
-		mEndFrameLoop = endFrame;
+	mStartFrameLoop = startFrame;
+	mEndFrameLoop = endFrame;
+	if (mFramesPerMs < 0) {
+		setCurrentFrame((float) mEndFrameLoop);
+	} else {
+		setCurrentFrame((float) mStartFrameLoop);
 	}
 }
 
@@ -38,6 +42,10 @@ int32_t AnimatedMeshSceneNode::getEndFrameLoop() const {
 
 void AnimatedMeshSceneNode::setFramesPerMs(float framesPerMs) {
 	mFramesPerMs = framesPerMs;
+}
+
+void AnimatedMeshSceneNode::setCurrentFrame(float frame) {
+	mCurrentFrame = utils::fclamp<float>(frame, (float) mStartFrameLoop, (float) mEndFrameLoop);
 }
 
 void AnimatedMeshSceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
@@ -71,7 +79,6 @@ void AnimatedMeshSceneNode::buildCurrentFrame(nsecs_t timeMs) {
 				mCurrentFrame = mEndFrameLoop - fmod(mEndFrameLoop - mCurrentFrame, (float) (mEndFrameLoop - mStartFrameLoop));
 		}
 	}
-
 }
 
 } /* namespace scene */

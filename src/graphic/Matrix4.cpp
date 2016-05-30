@@ -350,6 +350,35 @@ void Matrix4::loadPerspective(float fovy, float aspect, float near, float far) {
 	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
+void Matrix4::loadPerspectiveLH(float fovy, float aspect, float near, float far) {
+	loadIdentity();
+
+	const double h = 1.0 / (tan(fovy*0.5));
+	const float w = h / aspect;
+
+	data[0] = w;
+	data[1] = 0;
+	data[2] = 0;
+	data[3] = 0;
+
+	data[4] = 0;
+	data[5] = h;
+	data[6] = 0;
+	data[7] = 0;
+
+	data[8] = 0;
+	data[9] = 0;
+	data[10] = (far / (far - near));
+	data[11] = 1;
+
+	data[12] = 0;
+	data[13] = 0;
+	data[14] = - near*far / (far - near);
+	data[15] = 0;
+
+	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
+}
+
 void Matrix4::loadFrustum(float left, float right, float bottom, float top,
         float near, float far) {
 	const float r_width  = 1.0f / (right - left);
@@ -414,6 +443,41 @@ void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
 
 	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 	translate(- position.x, - position.y, - position.z);
+}
+
+void Matrix4::loadLookAtLH(vec3& position, vec3& target, vec3& upper) {
+	loadIdentity();
+
+	vec3 zaxis = target - position;
+	zaxis.normalize();
+
+	vec3 xaxis = upper.copyCross(zaxis);
+	xaxis.normalize();
+
+	vec3 yaxis = zaxis.copyCross(xaxis);
+	yaxis.normalize();
+
+	data[0] = xaxis.x;
+	data[1] = yaxis.x;
+	data[2] = zaxis.x;
+	data[3] = 0;
+
+	data[4] = xaxis.y;
+	data[5] = yaxis.y;
+	data[6] = zaxis.y;
+	data[7] = 0;
+
+	data[8] = xaxis.z;
+	data[9] = yaxis.z;
+	data[10] = zaxis.z;
+	data[11] = 0;
+
+	data[12] = - xaxis.dot(position);
+	data[13] = - yaxis.dot(position);
+	data[14] = - zaxis.dot(position);
+	data[15] = 1;
+
+	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
 float Matrix4::mapZ(const Vector3& orig) const {

@@ -80,6 +80,13 @@ public:
         return !(*this == b);
     }
 
+    Matrix4& operator *(const Matrix4& b) {
+    	Matrix4 m;
+    	m.loadMultiply(*this, b);
+    	load(m);
+    	return *this;
+    }
+
     void loadIdentity();
 
     void load(const float* v);
@@ -96,9 +103,11 @@ public:
 
     void loadOrtho(float left, float right, float bottom, float top, float near, float far);
     void loadPerspective(float fovy, float aspect, float near, float far);
+    void loadPerspectiveLH(float fovy, float aspect, float near, float far);
     void loadFrustum(float left, float right, float bottom, float top,
             float near, float far);
     void loadLookAt(vec3& position, vec3& target, vec3& upper);
+    void loadLookAtLH(vec3& position, vec3& target, vec3& upper);
 
     uint8_t getType() const;
 

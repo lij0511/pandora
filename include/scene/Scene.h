@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include "graphic/GraphicContext.h"
+#include "scene/node/SceneNode.h"
 #include "scene/Environment.h"
 
 namespace pola {
@@ -26,16 +27,23 @@ public:
 	int32_t getWidth() const;
 	int32_t getHeight() const;
 
+	void addSceneNode(SceneNode* node);
+	void removeSceneNode(SceneNode* node);
+
+	void render();
+
 	graphic::GraphicContext* graphic() const;
 
 	Environment* environment();
 
 private:
-	graphic::GraphicContext* m_graphic;
-	int32_t m_width;
-	int32_t m_height;
+	graphic::GraphicContext* mGraphic;
+	int32_t mWidth;
+	int32_t mHeight;
 
-	Environment m_environment;
+	utils::Vector<SceneNode*> mNodes;
+
+	Environment mEnvironment;
 };
 
 } /* namespace scene */

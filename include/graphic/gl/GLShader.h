@@ -27,7 +27,7 @@ public:
 
 	void makeCurrent();
 
-	void setMatrix(const char* name, const mat4& MVPMatrix);
+	void setMatrix(const char* name, const mat4& matrix);
 	bool fetchAttribute(const char* name, GLint& outLocation);
 	bool fetchUniform(const char* name, GLint& outLocation);
 

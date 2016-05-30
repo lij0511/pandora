@@ -40,9 +40,8 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	shader->invalidate();
 //	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
-	mat4 m = m_camera;
-//	m.translate(0, 0, -100);
-	shader->setMatrix("u_MVPMatrix", m);
+	shader->setMatrix("u_projection", mProjection * mWorld);
+	shader->setMatrix("u_view", mView);
 
 	GLint a_texCoords;
 	if (meshBuffer.m_vertexInfo.offset_texcoord >= 0 && shader->fetchAttribute("a_texCoords", a_texCoords)) {

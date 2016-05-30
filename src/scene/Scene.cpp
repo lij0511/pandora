@@ -6,36 +6,65 @@
  */
 
 #include "scene/Scene.h"
+#include "utils/Times.h"
 
 namespace pola {
 namespace scene {
 
-Scene::Scene(graphic::GraphicContext* graphic) : m_graphic(graphic), m_width(0), m_height(0) {
+Scene::Scene(graphic::GraphicContext* graphic) : mGraphic(graphic), mWidth(0), mHeight(0) {
 }
 
 Scene::~Scene() {
 }
 
 void Scene::setViewport(int32_t width, int32_t height) {
-	m_width = width;
-	m_height = height;
-	m_graphic->setViewport(width, height);
+	mWidth = width;
+	mHeight = height;
+	mGraphic->setViewport(width, height);
 }
 
 int32_t Scene::getWidth() const {
-	return m_width;
+	return mWidth;
 }
 
 int32_t Scene::getHeight() const {
-	return m_height;
+	return mHeight;
+}
+
+void Scene::addSceneNode(SceneNode* node) {
+	for (unsigned i = 0; i < mNodes.size(); i ++) {
+		if (mNodes[i] == node) {
+			return;
+		}
+	}
+	node->ref();
+	mNodes.push(node);
+}
+
+void Scene::removeSceneNode(SceneNode* node) {
+	for (unsigned i = 0; i < mNodes.size(); i ++) {
+		if (mNodes[i] == node) {
+			mNodes.removeAt(i);
+			node->deref();
+			return;
+		}
+	}
+}
+
+void Scene::render() {
+	nsecs_t timeMs = uptimeMillis();
+	for (unsigned i = 0; i < mNodes.size(); i ++) {
+		mGraphic->setMatrix(graphic::GraphicContext::VIEW, mNodes[i]->getTransform());
+		mNodes[i]->render(mGraphic, timeMs);
+	}
 }
 
 graphic::GraphicContext* Scene::graphic() const {
-	return m_graphic;
+	return mGraphic;
 }
 
 Environment* Scene::environment() {
-	return &m_environment;
+	return &mEnvironment;
 }
 
 } /* namespace scene */
