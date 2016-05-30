@@ -75,6 +75,10 @@ public:
 
 	KeyEvent();
 	virtual ~KeyEvent();
+
+private:
+	KeyCode mKeyCode;
+	Action mAction;
 };
 
 } /* namespace input */

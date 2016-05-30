@@ -12,7 +12,9 @@
 
 #include "graphic/GraphicContext.h"
 #include "scene/node/SceneNode.h"
+#include "scene/Camera.h"
 #include "scene/Environment.h"
+#include "input/KeyEvent.h"
 
 namespace pola {
 namespace scene {
@@ -30,11 +32,16 @@ public:
 	void addSceneNode(SceneNode* node);
 	void removeSceneNode(SceneNode* node);
 
+	void addCamera(Camera* camera);
+	Camera* getCurrentCamera() const;
+
 	void render();
 
 	graphic::GraphicContext* graphic() const;
 
 	Environment* environment();
+
+	bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 
 private:
 	graphic::GraphicContext* mGraphic;
@@ -42,6 +49,8 @@ private:
 	int32_t mHeight;
 
 	utils::Vector<SceneNode*> mNodes;
+
+	Camera* mCurrentCamera;
 
 	Environment mEnvironment;
 };

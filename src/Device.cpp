@@ -6,6 +6,7 @@
  */
 
 #include "Device.h"
+#include "LinuxDevice.h"
 
 namespace pola {
 
@@ -13,6 +14,11 @@ Device::Device(const DeviceParam& param) : mDeviceParam(param) {
 }
 
 Device::~Device() {
+}
+
+Device* createDevice(const DeviceParam& param) {
+	static LinuxDevice* device = new LinuxDevice(param);
+	return device;
 }
 
 }

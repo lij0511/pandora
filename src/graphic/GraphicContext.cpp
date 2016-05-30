@@ -30,6 +30,12 @@ Texture* GraphicContext::loadTexture(io::InputStream* is) {
 	return doLoadTexture(is);
 }
 
+void GraphicContext::beginFrame() {
+}
+
+void GraphicContext::endFrame() {
+}
+
 void GraphicContext::setMatrix(MatrixType type, const mat4& matrix) {
 	switch (type) {
 		case VIEW:

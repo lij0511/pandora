@@ -10,6 +10,9 @@
 
 #include <stdint.h>
 
+#include "graphic/GraphicContext.h"
+#include "scene/SceneManager.h"
+
 namespace pola {
 
 struct DeviceParam {
@@ -27,11 +30,16 @@ public:
 	Device(const DeviceParam& param);
 	virtual ~Device();
 
+	virtual graphic::GraphicContext* getGraphicContext() = 0;
+	virtual scene::SceneManager* getSceneManager() = 0;
+
 	virtual void run() = 0;
 
 protected:
 	DeviceParam mDeviceParam;
 };
+
+Device* createDevice(const DeviceParam& param);
 
 } /* namespace pola */
 
