@@ -6,6 +6,7 @@
  */
 
 #include "scene/Scene.h"
+#include "scene/FPS.h"
 #include "utils/Times.h"
 
 namespace pola {
@@ -79,6 +80,7 @@ void Scene::render() {
 	}
 
 	mGraphic->endFrame();
+	fps.fps();
 }
 
 graphic::GraphicContext* Scene::graphic() const {

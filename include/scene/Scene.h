@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include "graphic/GraphicContext.h"
+#include "scene/FPS.h"
 #include "scene/node/SceneNode.h"
 #include "scene/Camera.h"
 #include "scene/Environment.h"
@@ -53,6 +54,8 @@ private:
 	Camera* mCurrentCamera;
 
 	Environment mEnvironment;
+
+	FPS fps;
 };
 
 } /* namespace scene */

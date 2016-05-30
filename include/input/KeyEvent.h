@@ -73,7 +73,7 @@ public:
 		KEYCODE_Z,
 	};
 
-	KeyEvent();
+	KeyEvent(const KeyCode& keyCode, const Action& action);
 	virtual ~KeyEvent();
 
 private:

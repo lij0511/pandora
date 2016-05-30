@@ -10,6 +10,10 @@
 
 #include <GL/gl.h>
 #include <GL/glx.h>
+
+#include <X11/keysym.h>
+
+#include "utils/KeyedVector.h"
 #include "Device.h"
 
 namespace pola {
@@ -28,6 +32,7 @@ public:
 	virtual void run();
 
 private:
+	void createKeyMap();
 	void createWindow();
 
 private:
@@ -37,6 +42,8 @@ private:
 
 	graphic::GraphicContext* mGraphicContext;
 	scene::SceneManager* mSceneManager;
+
+	utils::KeyedVector<KeySym, input::KeyEvent::KeyCode> mKeyMap;
 
 };
 

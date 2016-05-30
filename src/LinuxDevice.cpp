@@ -14,6 +14,9 @@ namespace pola {
 LinuxDevice::LinuxDevice(const DeviceParam& param) : Device(param) {
 	mGraphicContext = nullptr;
 	mSceneManager = nullptr;
+
+	createKeyMap();
+
 	createWindow();
 }
 
@@ -52,11 +55,105 @@ void LinuxDevice::run() {
 			case ConfigureNotify:
 				getSceneManager()->getActiveScene()->setViewport(e.xconfigure.width, e.xconfigure.height);
 			  break;
+			case KeyRelease:
+			case KeyPress: {
+				KeySym k = XLookupKeysym(&e.xkey, 0);
+				ssize_t index = mKeyMap.indexOfKey(k);
+				if (index >= 0) {
+					printf("KeyCode=%d, orin=%lu\n", mKeyMap.valueAt(index), k);
+					input::KeyEvent keyEvent(mKeyMap.valueAt(index), e.type == KeyRelease ? input::KeyEvent::ACTION_UP : input::KeyEvent::ACTION_DOWN);
+					getSceneManager()->getActiveScene()->dispatchKeyEvent(keyEvent);
+				} else {
+					printf("keycode=%lu not found\n", k);
+				}
+				break;
+			}
 			default:
 			  break;
 		  }
 		}
 	}
+}
+
+void LinuxDevice::createKeyMap() {
+
+	mKeyMap.add(XK_KP_0, input::KeyEvent::KEYCODE_NUMPAD_0);
+	mKeyMap.add(XK_KP_1, input::KeyEvent::KEYCODE_NUMPAD_1);
+	mKeyMap.add(XK_KP_2, input::KeyEvent::KEYCODE_NUMPAD_2);
+	mKeyMap.add(XK_KP_3, input::KeyEvent::KEYCODE_NUMPAD_3);
+	mKeyMap.add(XK_KP_4, input::KeyEvent::KEYCODE_NUMPAD_4);
+	mKeyMap.add(XK_KP_5, input::KeyEvent::KEYCODE_NUMPAD_5);
+	mKeyMap.add(XK_KP_6, input::KeyEvent::KEYCODE_NUMPAD_6);
+	mKeyMap.add(XK_KP_7, input::KeyEvent::KEYCODE_NUMPAD_7);
+	mKeyMap.add(XK_KP_8, input::KeyEvent::KEYCODE_NUMPAD_8);
+	mKeyMap.add(XK_KP_9, input::KeyEvent::KEYCODE_NUMPAD_9);
+
+	mKeyMap.add(XK_0, input::KeyEvent::KEYCODE_0);
+	mKeyMap.add(XK_1, input::KeyEvent::KEYCODE_1);
+	mKeyMap.add(XK_2, input::KeyEvent::KEYCODE_2);
+	mKeyMap.add(XK_3, input::KeyEvent::KEYCODE_3);
+	mKeyMap.add(XK_4, input::KeyEvent::KEYCODE_4);
+	mKeyMap.add(XK_5, input::KeyEvent::KEYCODE_5);
+	mKeyMap.add(XK_6, input::KeyEvent::KEYCODE_6);
+	mKeyMap.add(XK_7, input::KeyEvent::KEYCODE_7);
+	mKeyMap.add(XK_8, input::KeyEvent::KEYCODE_8);
+	mKeyMap.add(XK_9, input::KeyEvent::KEYCODE_9);
+
+	mKeyMap.add(XK_A, input::KeyEvent::KEYCODE_A);
+	mKeyMap.add(XK_B, input::KeyEvent::KEYCODE_B);
+	mKeyMap.add(XK_C, input::KeyEvent::KEYCODE_C);
+	mKeyMap.add(XK_D, input::KeyEvent::KEYCODE_D);
+	mKeyMap.add(XK_E, input::KeyEvent::KEYCODE_E);
+	mKeyMap.add(XK_F, input::KeyEvent::KEYCODE_F);
+	mKeyMap.add(XK_G, input::KeyEvent::KEYCODE_G);
+	mKeyMap.add(XK_H, input::KeyEvent::KEYCODE_H);
+	mKeyMap.add(XK_I, input::KeyEvent::KEYCODE_I);
+	mKeyMap.add(XK_J, input::KeyEvent::KEYCODE_J);
+	mKeyMap.add(XK_K, input::KeyEvent::KEYCODE_K);
+	mKeyMap.add(XK_L, input::KeyEvent::KEYCODE_L);
+	mKeyMap.add(XK_M, input::KeyEvent::KEYCODE_M);
+	mKeyMap.add(XK_N, input::KeyEvent::KEYCODE_N);
+	mKeyMap.add(XK_O, input::KeyEvent::KEYCODE_O);
+	mKeyMap.add(XK_P, input::KeyEvent::KEYCODE_P);
+	mKeyMap.add(XK_Q, input::KeyEvent::KEYCODE_Q);
+	mKeyMap.add(XK_R, input::KeyEvent::KEYCODE_R);
+	mKeyMap.add(XK_S, input::KeyEvent::KEYCODE_S);
+	mKeyMap.add(XK_T, input::KeyEvent::KEYCODE_T);
+	mKeyMap.add(XK_U, input::KeyEvent::KEYCODE_U);
+	mKeyMap.add(XK_V, input::KeyEvent::KEYCODE_V);
+	mKeyMap.add(XK_W, input::KeyEvent::KEYCODE_W);
+	mKeyMap.add(XK_X, input::KeyEvent::KEYCODE_X);
+	mKeyMap.add(XK_Y, input::KeyEvent::KEYCODE_Y);
+	mKeyMap.add(XK_Z, input::KeyEvent::KEYCODE_Z);
+
+	mKeyMap.add(XK_a, input::KeyEvent::KEYCODE_A);
+	mKeyMap.add(XK_b, input::KeyEvent::KEYCODE_B);
+	mKeyMap.add(XK_c, input::KeyEvent::KEYCODE_C);
+	mKeyMap.add(XK_d, input::KeyEvent::KEYCODE_D);
+	mKeyMap.add(XK_e, input::KeyEvent::KEYCODE_E);
+	mKeyMap.add(XK_f, input::KeyEvent::KEYCODE_F);
+	mKeyMap.add(XK_g, input::KeyEvent::KEYCODE_G);
+	mKeyMap.add(XK_h, input::KeyEvent::KEYCODE_H);
+	mKeyMap.add(XK_i, input::KeyEvent::KEYCODE_I);
+	mKeyMap.add(XK_j, input::KeyEvent::KEYCODE_J);
+	mKeyMap.add(XK_k, input::KeyEvent::KEYCODE_K);
+	mKeyMap.add(XK_l, input::KeyEvent::KEYCODE_L);
+	mKeyMap.add(XK_m, input::KeyEvent::KEYCODE_M);
+	mKeyMap.add(XK_n, input::KeyEvent::KEYCODE_N);
+	mKeyMap.add(XK_o, input::KeyEvent::KEYCODE_O);
+	mKeyMap.add(XK_p, input::KeyEvent::KEYCODE_P);
+	mKeyMap.add(XK_q, input::KeyEvent::KEYCODE_Q);
+	mKeyMap.add(XK_r, input::KeyEvent::KEYCODE_R);
+	mKeyMap.add(XK_s, input::KeyEvent::KEYCODE_S);
+	mKeyMap.add(XK_t, input::KeyEvent::KEYCODE_T);
+	mKeyMap.add(XK_u, input::KeyEvent::KEYCODE_U);
+	mKeyMap.add(XK_v, input::KeyEvent::KEYCODE_V);
+	mKeyMap.add(XK_w, input::KeyEvent::KEYCODE_W);
+	mKeyMap.add(XK_x, input::KeyEvent::KEYCODE_X);
+	mKeyMap.add(XK_y, input::KeyEvent::KEYCODE_Y);
+	mKeyMap.add(XK_z, input::KeyEvent::KEYCODE_Z);
+
+
 }
 
 void LinuxDevice::createWindow() {
@@ -98,7 +195,7 @@ void LinuxDevice::createWindow() {
 	cmap = XCreateColormap (dpy, root, vi->visual, AllocNone);
 
 	swa.colormap = cmap;
-	swa.event_mask = ExposureMask | KeyPressMask | StructureNotifyMask;
+	swa.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | StructureNotifyMask;
 
 	win = XCreateWindow (dpy, root, 0, 0, mDeviceParam.mWindowWidth, mDeviceParam.mWindowHeight,
 										 0, vi->depth,

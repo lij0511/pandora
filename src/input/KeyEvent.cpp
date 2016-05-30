@@ -10,7 +10,7 @@
 namespace pola {
 namespace input {
 
-KeyEvent::KeyEvent() {
+KeyEvent::KeyEvent(const KeyCode& keyCode, const Action& action) : mKeyCode(keyCode), mAction(action) {
 }
 
 KeyEvent::~KeyEvent() {

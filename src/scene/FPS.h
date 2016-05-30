@@ -9,6 +9,9 @@
 #define POLA_FPS_H_
 
 #include "utils/Times.h"
+#include "log/Log.h"
+
+#define DEBUG_FPS
 
 class FPS {
 public:
@@ -34,7 +37,9 @@ inline double FPS::fps() {
 	} else if ((now - mFrameCountingStart) > 1000) {
 		mFps = (double) mFrameCount
 				* 1000 / (now - mFrameCountingStart);
-		printf("FPS:%f\n", mFps);
+#ifdef DEBUG_FPS
+		LOGI("FPS:%f\n", mFps);
+#endif
 		mFrameCountingStart = now;
 		mFrameCount = 0;
 	}
