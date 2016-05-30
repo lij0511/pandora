@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 		scene->addSceneNode(node);
 		node = new MD2AnimatedMeshSceneNode(mesh);
-		node->setPosition({50, 0, 0});
+		node->setPosition({50, 0, -100});
 		node->setAnimationType(MAT_JUMP);
 		scene->addSceneNode(node);
 	}
