@@ -60,7 +60,6 @@ void LinuxDevice::run() {
 				KeySym k = XLookupKeysym(&e.xkey, 0);
 				ssize_t index = mKeyMap.indexOfKey(k);
 				if (index >= 0) {
-					printf("KeyCode=%d, orin=%lu\n", mKeyMap.valueAt(index), k);
 					input::KeyEvent keyEvent(mKeyMap.valueAt(index), e.type == KeyRelease ? input::KeyEvent::ACTION_UP : input::KeyEvent::ACTION_DOWN);
 					getSceneManager()->getActiveScene()->dispatchKeyEvent(keyEvent);
 				} else {

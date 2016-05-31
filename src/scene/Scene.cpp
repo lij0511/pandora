@@ -74,6 +74,7 @@ Camera* Scene::getCurrentCamera() const {
 void Scene::render() {
 	mGraphic->beginFrame();
 	nsecs_t timeMs = uptimeMillis();
+	mGraphic->setMatrix(graphic::GraphicContext::PROJECTION, mCurrentCamera->matrix());
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
 		mGraphic->setMatrix(graphic::GraphicContext::VIEW, mNodes[i]->getTransform());
 		mNodes[i]->render(mGraphic, timeMs);
@@ -92,6 +93,9 @@ Environment* Scene::environment() {
 }
 
 bool Scene::dispatchKeyEvent(input::KeyEvent& keyEvent) {
+	if (mCurrentCamera != nullptr && mCurrentCamera->dispatchKeyEvent(keyEvent)) {
+		return true;
+	}
 	return false;
 }
 

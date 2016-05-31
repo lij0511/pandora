@@ -16,5 +16,13 @@ KeyEvent::KeyEvent(const KeyCode& keyCode, const Action& action) : mKeyCode(keyC
 KeyEvent::~KeyEvent() {
 }
 
+KeyEvent::KeyCode KeyEvent::getKeyCode() const {
+	return mKeyCode;
+}
+
+KeyEvent::Action KeyEvent::getAction() const {
+	return mAction;
+}
+
 } /* namespace input */
 } /* namespace pola */

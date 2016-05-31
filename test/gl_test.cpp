@@ -5,9 +5,9 @@
  *      Author: lijing
  */
 
+#include "../include/scene/PerspectiveCamera.h"
 #include "Device.h"
 #include "io/FileInputStream.h"
-#include "scene/Camera3D.h"
 #include "scene/mesh/MeshLoader.h"
 #include "scene/mesh/MD2AnimatedMesh.h"
 #include "scene/node/MD2AnimatedMeshSceneNode.h"
@@ -30,11 +30,14 @@ int main(int argc, char *argv[]) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 		scene->addSceneNode(node);
 		node = new MD2AnimatedMeshSceneNode(mesh);
-		node->setPosition({50, 0, -100});
+		node->setPosition({50, 0, 0});
 		node->setAnimationType(MD2_AT_JUMP);
 		scene->addSceneNode(node);
 	}
-	scene->addCamera(new Camera3D({0, 0, 100}, {0, 0, 99}));
+	graphic::vec3 pos = {- 1, 0, 0};
+	pos.normalize();
+
+	scene->addCamera(new PerspectiveCamera(pos, {0, 0, 0}));
 
 	// TODO
 	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie2.bmp");

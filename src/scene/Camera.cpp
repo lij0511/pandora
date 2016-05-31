@@ -27,5 +27,9 @@ const graphic::mat4& Camera::matrix() const {
 	return m_matrix;
 }
 
+bool Camera::dispatchKeyEvent(input::KeyEvent& keyEvent) {
+	return false;
+}
+
 } /* namespace scene */
 } /* namespace pola */

@@ -76,6 +76,9 @@ public:
 	KeyEvent(const KeyCode& keyCode, const Action& action);
 	virtual ~KeyEvent();
 
+	KeyCode getKeyCode() const;
+	Action getAction() const;
+
 private:
 	KeyCode mKeyCode;
 	Action mAction;

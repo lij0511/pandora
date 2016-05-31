@@ -10,6 +10,7 @@
 
 #include "graphic/Matrix4.h"
 #include "graphic/Vector.h"
+#include "input/KeyEvent.h"
 
 namespace pola {
 namespace scene {
@@ -22,6 +23,8 @@ public:
 	virtual void setSize(int32_t width, int32_t height);
 
 	const graphic::mat4& matrix() const;
+
+	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 protected:
 	graphic::mat4 m_matrix;
 	int32_t m_width;

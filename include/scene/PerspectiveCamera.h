@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef CAMERA3D_H_
-#define CAMERA3D_H_
+#ifndef PERSPECTIVECAMERA_H_
+#define PERSPECTIVECAMERA_H_
 
 #include "scene/Camera.h"
 
@@ -16,16 +16,14 @@ namespace scene {
 /*
  *
  */
-class Camera3D: public Camera {
+class PerspectiveCamera: public Camera {
 public:
-	Camera3D(const graphic::vec3& pos = graphic::vec3(0.0f, 0.0f, 1.0f), const graphic::vec3& lookAt = graphic::vec3(0.0f, 0.0f, 0.0f));
-	virtual ~Camera3D();
+	PerspectiveCamera(const graphic::vec3& pos = graphic::vec3(0.0f, 0.0f, 1.0f), const graphic::vec3& lookAt = graphic::vec3(0.0f, 0.0f, 0.0f));
+	virtual ~PerspectiveCamera();
 
 	virtual void setSize(int32_t width, int32_t height);
 
-	void pitch(float angle);
-	void yaw(float angle);
-	void roll(float angle);
+	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 private:
 	void recalculateMatrix();
 private:
@@ -45,4 +43,4 @@ private:
 } /* namespace scene */
 } /* namespace pola */
 
-#endif /* CAMERA3D_H_ */
+#endif /* PERSPECTIVECAMERA_H_ */
