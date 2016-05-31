@@ -18,7 +18,7 @@ public:
 	MD2MeshLoader();
 	virtual ~MD2MeshLoader();
 
-	virtual AnimatedMesh* doLoadMesh(io::InputStream* is);
+	virtual Mesh* doLoadMesh(io::InputStream* is);
 };
 
 } /* namespace scene */

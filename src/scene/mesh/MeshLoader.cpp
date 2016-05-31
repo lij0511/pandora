@@ -12,11 +12,12 @@
 namespace pola {
 namespace scene {
 
-AnimatedMesh* MeshLoader::loadMesh(const char* meshFile) {
+Mesh* MeshLoader::loadMesh(const char* meshFile) {
 	io::FileInputStream is(meshFile);
+	//utils::String s(meshFile);
 	return loadMesh(&is);
 }
-AnimatedMesh* MeshLoader::loadMesh(io::InputStream* is) {
+Mesh* MeshLoader::loadMesh(io::InputStream* is, const char* type) {
 	// FIXME
 	MD2MeshLoader loader;
 	return loader.doLoadMesh(is);

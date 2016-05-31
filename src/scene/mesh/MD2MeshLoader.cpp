@@ -64,7 +64,7 @@ MD2MeshLoader::MD2MeshLoader() {
 MD2MeshLoader::~MD2MeshLoader() {
 }
 
-AnimatedMesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
+Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 
 	MD2Header header;
 	is->read(&header, sizeof(MD2Header));

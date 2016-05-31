@@ -146,6 +146,24 @@ public:
 		return *this;
 	}
 
+	ssize_t indexOf(char c) const {
+		for (size_t i = 0; i < length(); i ++) {
+			if (c == charAt(i)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	ssize_t lastIndexOf(char c) const {
+		for (size_t i = length() - 1; i >= 0; i --) {
+			if (c == charAt(i)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	/**
 	 * operator compares.
 	 */
