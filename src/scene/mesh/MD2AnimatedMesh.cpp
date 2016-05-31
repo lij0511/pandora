@@ -220,7 +220,7 @@ MD2AnimatedMesh::~MD2AnimatedMesh() {
 }
 
 void MD2AnimatedMesh::getFrameLoop(MD2_ANIMATION_TYPE animationType, int32_t& outBegin, int32_t& outEnd, int32_t& outFPS) const {
-	if (animationType < 0 || animationType >= MAT_COUNT)
+	if (animationType < 0 || animationType >= MD2_AT_COUNT)
 		return;
 
 	outBegin = MD2AnimationTypeList[animationType].begin << MD2_FRAME_SHIFT;

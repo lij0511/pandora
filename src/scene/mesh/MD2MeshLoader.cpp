@@ -64,6 +64,17 @@ MD2MeshLoader::MD2MeshLoader() {
 MD2MeshLoader::~MD2MeshLoader() {
 }
 
+bool MD2MeshLoader::available(io::InputStream* is) {
+	MD2Header header;
+	is->read(&header, sizeof(MD2Header));
+	bool accept = true;
+	if (header.magic != MD2_MAGIC_NUMBER || header.version != MD2_VERSION) {
+		LOGE("MD2 Loader: Wrong file header\n");
+		accept = false;
+	}
+	return accept;
+}
+
 Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 
 	MD2Header header;

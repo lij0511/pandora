@@ -31,6 +31,8 @@ public:
 
 protected:
 	graphic::vec3 mPosition;
+	graphic::vec3 mRotation;
+	graphic::vec3 mScale;
 };
 
 } /* namespace scene */

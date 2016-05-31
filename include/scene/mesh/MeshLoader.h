@@ -10,6 +10,7 @@
 
 #include "io/InputStream.h"
 #include "scene/mesh/Mesh.h"
+#include "utils/String.h"
 
 namespace pola {
 namespace scene {
@@ -19,8 +20,9 @@ public:
 	virtual ~MeshLoader() {};
 
 	static Mesh* loadMesh(const char* meshFile);
-	static Mesh* loadMesh(io::InputStream* is, const char* type = nullptr);
+	static Mesh* loadMesh(io::InputStream* is, const utils::String& type);
 
+	virtual bool available(io::InputStream* is) = 0;
 protected:
 	virtual Mesh* doLoadMesh(io::InputStream* is) = 0;
 };

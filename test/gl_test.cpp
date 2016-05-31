@@ -25,14 +25,13 @@ int main(int argc, char *argv[]) {
 	Device* device = createDevice(param);
 
 	 Scene* scene = device->getSceneManager()->getActiveScene();
-	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
-	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh(&is);
+	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
 	if (mesh) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 		scene->addSceneNode(node);
 		node = new MD2AnimatedMeshSceneNode(mesh);
 		node->setPosition({50, 0, -100});
-		node->setAnimationType(MAT_JUMP);
+		node->setAnimationType(MD2_AT_JUMP);
 		scene->addSceneNode(node);
 	}
 	scene->addCamera(new Camera3D({0, 0, 100}, {0, 0, 99}));

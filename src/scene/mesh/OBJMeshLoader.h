@@ -1,29 +1,29 @@
 /*
- * MD2MeshLoader.h
+ * OBJMeshLoader.h
  *
- *  Created on: 2016年5月21日
+ *  Created on: 2016年5月31日
  *      Author: lijing
  */
 
-#ifndef POLA_MD2MESHLOADER_H_
-#define POLA_MD2MESHLOADER_H_
+#ifndef POLA_OBJMESHLOADER_H_
+#define POLA_OBJMESHLOADER_H_
 
 #include "scene/mesh/MeshLoader.h"
 
 namespace pola {
 namespace scene {
 
-class MD2MeshLoader: public MeshLoader {
+class OBJMeshLoader: public MeshLoader {
 public:
-	MD2MeshLoader();
-	virtual ~MD2MeshLoader();
+	OBJMeshLoader();
+	virtual ~OBJMeshLoader();
 
-protected:
 	virtual bool available(io::InputStream* is);
+protected:
 	virtual Mesh* doLoadMesh(io::InputStream* is);
 };
 
 } /* namespace scene */
 } /* namespace pola */
 
-#endif /* POLA_MD2MESHLOADER_H_ */
+#endif /* POLA_OBJMESHLOADER_H_ */

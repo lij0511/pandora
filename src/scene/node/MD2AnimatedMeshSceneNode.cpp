@@ -18,7 +18,7 @@ MD2AnimatedMeshSceneNode::~MD2AnimatedMeshSceneNode() {
 }
 
 void MD2AnimatedMeshSceneNode::setAnimationType(MD2_ANIMATION_TYPE type) {
-	if (type < 0 || type >= MAT_COUNT) {
+	if (type < 0 || type >= MD2_AT_COUNT) {
 		return;
 	}
 	int32_t begin, end, fps;

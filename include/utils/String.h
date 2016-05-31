@@ -44,6 +44,9 @@ public:
 	String(const char* str, bool isConst = false) {
 		m_impl = StringImpl::create(str, isConst);
 	}
+	String(const String& o) {
+		m_impl = o.m_impl;
+	}
 
 	~String() {
 	}
@@ -147,7 +150,8 @@ public:
 	}
 
 	ssize_t indexOf(char c) const {
-		for (size_t i = 0; i < length(); i ++) {
+		ssize_t len = length();
+		for (ssize_t i = 0; i < len; i ++) {
 			if (c == charAt(i)) {
 				return i;
 			}
@@ -156,12 +160,21 @@ public:
 	}
 
 	ssize_t lastIndexOf(char c) const {
-		for (size_t i = length() - 1; i >= 0; i --) {
+		for (ssize_t i = length() - 1; i >= 0; i --) {
 			if (c == charAt(i)) {
 				return i;
 			}
 		}
 		return -1;
+	}
+
+	String substring(size_t start) {
+		return substring(start, length());
+	}
+
+	String substring(size_t start, size_t end) {
+		LOG_FATAL_IF((start >= end || end > length()), "Index out of bound, start=%u, end=%u, lenth=%u\n", start, end, length());
+		return String(characters() + start, end - start);
 	}
 
 	/**

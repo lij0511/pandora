@@ -265,4 +265,4 @@ int SortedVector<TYPE>::do_compare(const void* lhs, const void* rhs) const {
 
 // ---------------------------------------------------------------------------
 
-#endif // WS_SORTED_VECTOR_H_
+#endif // POLA_SORTED_VECTOR_H_
