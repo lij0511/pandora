@@ -7,6 +7,7 @@
 
 #include "scene/mesh/MeshLoader.h"
 #include "scene/mesh/MD2MeshLoader.h"
+#include "scene/mesh/MS3DMeshLoader.h"
 #include "scene/mesh/OBJMeshLoader.h"
 #include "io/FileInputStream.h"
 #include "utils/LruCache.h"
@@ -21,8 +22,9 @@ static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type)
 	static bool initialed = false;
 	if (!initialed) {
 		initialed = true;
-		meshLoaders.put(utils::String("obj"), new OBJMeshLoader);
 		meshLoaders.put(utils::String("md2"), new MD2MeshLoader);
+		meshLoaders.put(utils::String("ms3d"), new MS3DMeshLoader);
+		meshLoaders.put(utils::String("obj"), new OBJMeshLoader);
 	}
 
 	MeshLoader* meshLoader = meshLoaders.get(type);

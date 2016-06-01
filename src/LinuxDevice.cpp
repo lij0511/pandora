@@ -67,6 +67,15 @@ void LinuxDevice::run() {
 				}
 				break;
 			}
+			case MotionNotify: {
+				printf("motion x=%d, y=%d\n", e.xbutton.x, e.xbutton.y);
+				break;
+			}
+			case ButtonPress:
+			case ButtonRelease: {
+				printf("button=%u\n", e.xbutton.button);
+				break;
+			}
 			default:
 			  break;
 		  }
@@ -194,7 +203,7 @@ void LinuxDevice::createWindow() {
 	cmap = XCreateColormap (dpy, root, vi->visual, AllocNone);
 
 	swa.colormap = cmap;
-	swa.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | StructureNotifyMask;
+	swa.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | StructureNotifyMask | PointerMotionMask | ButtonPressMask| ButtonReleaseMask;
 
 	win = XCreateWindow (dpy, root, 0, 0, mDeviceParam.mWindowWidth, mDeviceParam.mWindowHeight,
 										 0, vi->depth,

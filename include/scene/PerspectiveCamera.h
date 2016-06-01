@@ -23,11 +23,12 @@ public:
 
 	virtual void setSize(int32_t width, int32_t height);
 
+	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
+
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 private:
 	void recalculateMatrix();
 private:
-	graphic::vec3 m_position;
 	graphic::vec3 m_target;
 	graphic::vec3 m_upper;
 

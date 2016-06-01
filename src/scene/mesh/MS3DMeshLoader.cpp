@@ -12,8 +12,7 @@ namespace scene {
 
 #include "utils/spack.h"
 // File header
-struct MS3DHeader
-{
+struct MS3DHeader {
 	char id[10];
 	int32_t version;
 } PACK_STRUCT;

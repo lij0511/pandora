@@ -11,7 +11,7 @@ namespace pola {
 namespace scene {
 
 PerspectiveCamera::PerspectiveCamera(const graphic::vec3& pos, const graphic::vec3& lookAt) :
-		m_position(pos), m_target(lookAt), m_upper(0.0f, 1.0f, 0.0f), m_znear(
+		Camera(pos), m_target(lookAt), m_upper(0.0f, 1.0f, 0.0f), m_znear(
 				0.1f), m_zfar(3000.0f) {
 	m_fovy = M_PI / 2.5f;
 	m_aspect = 1.0f;
@@ -37,8 +37,11 @@ void PerspectiveCamera::setSize(int32_t width, int32_t height) {
 	}
 }
 
+void PerspectiveCamera::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
+}
+
 void PerspectiveCamera::recalculateMatrix() {
-	m_view.loadLookAt(m_position, m_target, m_upper);
+	m_view.loadLookAt(mPosition, m_target, m_upper);
 	graphic::mat4 m;
 	m.loadMultiply(m_projection, m_view);
 	m_matrix.load(m);
@@ -49,39 +52,39 @@ bool PerspectiveCamera::dispatchKeyEvent(input::KeyEvent& keyEvent) {
 	if (keyEvent.getAction() == input::KeyEvent::ACTION_DOWN) {
 		switch (keyEvent.getKeyCode()) {
 			case input::KeyEvent::KEYCODE_W: {
-				graphic::vec3 t = m_target - m_position;
+				graphic::vec3 t = m_target - mPosition;
 				t.normalize();
-				m_position += t;
+				mPosition += t;
 				m_target += t;
 				recalculateMatrix();
 				handled = true;
 				break;
 			}
 			case input::KeyEvent::KEYCODE_S: {
-				graphic::vec3 t = m_target - m_position;
+				graphic::vec3 t = m_target - mPosition;
 				t.normalize();
-				m_position -= t;
+				mPosition -= t;
 				m_target -= t;
 				recalculateMatrix();
 				handled = true;
 				break;
 			}
 			case input::KeyEvent::KEYCODE_A: {
-				graphic::vec3 t = m_target;
+				graphic::vec3 t = m_target - mPosition;
 				t = t.copyCross(m_upper);
 				t.normalize();
-				m_position += t;
-				m_target += t;
+				mPosition -= t;
+				m_target -= t;
 				recalculateMatrix();
 				handled = true;
 				break;
 			}
 			case input::KeyEvent::KEYCODE_D: {
-				graphic::vec3 t = m_target;
+				graphic::vec3 t = m_target - mPosition;
 				t = t.copyCross(m_upper);
 				t.normalize();
-				m_position -= t;
-				m_target -= t;
+				mPosition += t;
+				m_target += t;
 				recalculateMatrix();
 				handled = true;
 				break;
