@@ -9,12 +9,6 @@ namespace pola {
 namespace graphic {
 
 ///////////////////////////////////////////////////////////////////////////////
-// Defines
-///////////////////////////////////////////////////////////////////////////////
-
-static const float EPSILON = 0.0000001f;
-
-///////////////////////////////////////////////////////////////////////////////
 // Matrix
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -24,151 +18,77 @@ const Matrix4& Matrix4::identity() {
 }
 
 void Matrix4::loadIdentity() {
-    data[kScaleX]       = 1.0f;
-    data[kSkewY]        = 0.0f;
+    data[0]       = 1.0f;
+    data[1]        = 0.0f;
     data[2]             = 0.0f;
-    data[kPerspective0] = 0.0f;
+    data[3] = 0.0f;
 
-    data[kSkewX]        = 0.0f;
-    data[kScaleY]       = 1.0f;
+    data[4]        = 0.0f;
+    data[5]       = 1.0f;
     data[6]             = 0.0f;
-    data[kPerspective1] = 0.0f;
+    data[7] = 0.0f;
 
     data[8]             = 0.0f;
     data[9]             = 0.0f;
-    data[kScaleZ]       = 1.0f;
+    data[10]       = 1.0f;
     data[11]            = 0.0f;
 
-    data[kTranslateX]   = 0.0f;
-    data[kTranslateY]   = 0.0f;
-    data[kTranslateZ]   = 0.0f;
-    data[kPerspective2] = 1.0f;
+    data[12]   = 0.0f;
+    data[13]   = 0.0f;
+    data[14]   = 0.0f;
+    data[15] = 1.0f;
 
-    mType = kTypeIdentity | kTypeRectToRect;
-}
-
-static bool isZero(float f) {
-    return fabs(f) <= EPSILON;
-}
-
-uint8_t Matrix4::getType() const {
-    if (mType & kTypeUnknown) {
-        mType = kTypeIdentity;
-
-        if (data[kPerspective0] != 0.0f || data[kPerspective1] != 0.0f ||
-                data[kPerspective2] != 1.0f) {
-            mType |= kTypePerspective;
-        }
-
-        if (data[kTranslateX] != 0.0f || data[kTranslateY] != 0.0f) {
-            mType |= kTypeTranslate;
-        }
-
-        float m00 = data[kScaleX];
-        float m01 = data[kSkewX];
-        float m10 = data[kSkewY];
-        float m11 = data[kScaleY];
-        float m32 = data[kTranslateZ];
-
-        if (m01 != 0.0f || m10 != 0.0f || m32 != 0.0f) {
-            mType |= kTypeAffine;
-        }
-
-        if (m00 != 1.0f || m11 != 1.0f) {
-            mType |= kTypeScale;
-        }
-
-        // The following section determines whether the matrix will preserve
-        // rectangles. For instance, a rectangle transformed by a pure
-        // translation matrix will result in a rectangle. A rectangle
-        // transformed by a 45 degrees rotation matrix is not a rectangle.
-        // If the matrix has a perspective component then we already know
-        // it doesn't preserve rectangles.
-        if (!(mType & kTypePerspective)) {
-            if ((isZero(m00) && isZero(m11) && !isZero(m01) && !isZero(m10)) ||
-                    (isZero(m01) && isZero(m10) && !isZero(m00) && !isZero(m11))) {
-                mType |= kTypeRectToRect;
-            }
-        }
-    }
-    return mType;
-}
-
-uint8_t Matrix4::getGeometryType() const {
-    return getType() & sGeometryMask;
-}
-
-bool Matrix4::rectToRect() const {
-    return getType() & kTypeRectToRect;
-}
-
-bool Matrix4::positiveScale() const {
-    return (data[kScaleX] > 0.0f && data[kScaleY] > 0.0f);
-}
-
-bool Matrix4::changesBounds() const {
-    return getType() & (kTypeScale | kTypeAffine | kTypePerspective);
-}
-
-bool Matrix4::isPureTranslate() const {
-    // NOTE: temporary hack to workaround ignoreTransform behavior with Z values
-    // TODO: separate this into isPure2dTranslate vs isPure3dTranslate
-    return getGeometryType() <= kTypeTranslate && (data[kTranslateZ] == 0.0f);
-}
-
-bool Matrix4::isSimple() const {
-    return getGeometryType() <= (kTypeScale | kTypeTranslate) && (data[kTranslateZ] == 0.0f);
 }
 
 bool Matrix4::isIdentity() const {
-    return getGeometryType() == kTypeIdentity;
-}
-
-bool Matrix4::isPerspective() const {
-    return getType() & kTypePerspective;
+	if (data[12] != 0 || data[13] != 0 || data[14] != 0 || data[15] != 1)
+		return false;
+	if (data[0] != 1 || data[1] != 0 || data[2] != 0 || data[3] != 0)
+		return false;
+	if (data[4] != 0 || data[5] != 1 || data[6] != 0 || data[7] != 0)
+		return false;
+	if (data[8] != 0 || data[9] != 0 || data[10] != 1 || data[11] != 0)
+		return false;
+	return true;
 }
 
 void Matrix4::load(const float* v) {
     memcpy(data, v, sizeof(data));
-    mType = kTypeUnknown;
 }
 
 void Matrix4::load(const Matrix4& v) {
     memcpy(data, v.data, sizeof(data));
-    mType = v.getType();
 }
 
 void Matrix4::loadInverse(const Matrix4& v) {
     double scale = 1.0 /
-            (v.data[kScaleX] * ((double) v.data[kScaleY]  * v.data[kPerspective2] -
-                    (double) v.data[kTranslateY] * v.data[kPerspective1]) +
-             v.data[kSkewX] * ((double) v.data[kTranslateY] * v.data[kPerspective0] -
-                     (double) v.data[kSkewY] * v.data[kPerspective2]) +
-             v.data[kTranslateX] * ((double) v.data[kSkewY] * v.data[kPerspective1] -
-                     (double) v.data[kScaleY] * v.data[kPerspective0]));
+            (v.data[0] * ((double) v.data[5]  * v.data[15] -
+                    (double) v.data[13] * v.data[7]) +
+             v.data[4] * ((double) v.data[13] * v.data[3] -
+                     (double) v.data[1] * v.data[15]) +
+             v.data[12] * ((double) v.data[1] * v.data[7] -
+                     (double) v.data[5] * v.data[3]));
 
-    data[kScaleX] = (v.data[kScaleY] * v.data[kPerspective2] -
-            v.data[kTranslateY] * v.data[kPerspective1])  * scale;
-    data[kSkewX] = (v.data[kTranslateX] * v.data[kPerspective1] -
-            v.data[kSkewX]  * v.data[kPerspective2]) * scale;
-    data[kTranslateX] = (v.data[kSkewX] * v.data[kTranslateY] -
-            v.data[kTranslateX] * v.data[kScaleY])  * scale;
+    data[0] = (v.data[5] * v.data[15] -
+            v.data[13] * v.data[7])  * scale;
+    data[4] = (v.data[12] * v.data[7] -
+            v.data[4]  * v.data[15]) * scale;
+    data[12] = (v.data[4] * v.data[13] -
+            v.data[12] * v.data[5])  * scale;
 
-    data[kSkewY] = (v.data[kTranslateY] * v.data[kPerspective0] -
-            v.data[kSkewY]  * v.data[kPerspective2]) * scale;
-    data[kScaleY] = (v.data[kScaleX] * v.data[kPerspective2] -
-            v.data[kTranslateX] * v.data[kPerspective0])  * scale;
-    data[kTranslateY] = (v.data[kTranslateX] * v.data[kSkewY] -
-            v.data[kScaleX]  * v.data[kTranslateY]) * scale;
+    data[1] = (v.data[13] * v.data[3] -
+            v.data[1]  * v.data[15]) * scale;
+    data[5] = (v.data[0] * v.data[15] -
+            v.data[12] * v.data[3])  * scale;
+    data[13] = (v.data[12] * v.data[1] -
+            v.data[0]  * v.data[13]) * scale;
 
-    data[kPerspective0] = (v.data[kSkewY] * v.data[kPerspective1] -
-            v.data[kScaleY] * v.data[kPerspective0]) * scale;
-    data[kPerspective1] = (v.data[kSkewX] * v.data[kPerspective0] -
-            v.data[kScaleX] * v.data[kPerspective1]) * scale;
-    data[kPerspective2] = (v.data[kScaleX] * v.data[kScaleY] -
-            v.data[kSkewX] * v.data[kSkewY]) * scale;
-
-    mType = kTypeUnknown;
+    data[3] = (v.data[1] * v.data[7] -
+            v.data[5] * v.data[3]) * scale;
+    data[7] = (v.data[4] * v.data[3] -
+            v.data[0] * v.data[7]) * scale;
+    data[15] = (v.data[0] * v.data[5] -
+            v.data[4] * v.data[1]) * scale;
 }
 
 void Matrix4::copyTo(float* v) const {
@@ -176,56 +96,52 @@ void Matrix4::copyTo(float* v) const {
 }
 
 float Matrix4::getTranslateX() const {
-    return data[kTranslateX];
+    return data[12];
 }
 
 float Matrix4::getTranslateY() const {
-    return data[kTranslateY];
+    return data[13];
 }
 
 void Matrix4::multiply(float v) {
     for (int i = 0; i < 16; i++) {
         data[i] *= v;
     }
-    mType = kTypeUnknown;
 }
 
 void Matrix4::loadTranslate(float x, float y, float z) {
     loadIdentity();
 
-    data[kTranslateX] = x;
-    data[kTranslateY] = y;
-    data[kTranslateZ] = z;
+    data[12] = x;
+    data[13] = y;
+    data[14] = z;
 
-    mType = kTypeTranslate | kTypeRectToRect;
 }
 
 void Matrix4::loadScale(float sx, float sy, float sz) {
     loadIdentity();
 
-    data[kScaleX] = sx;
-    data[kScaleY] = sy;
-    data[kScaleZ] = sz;
+    data[0] = sx;
+    data[5] = sy;
+    data[10] = sz;
 
-    mType = kTypeScale | kTypeRectToRect;
 }
 
 void Matrix4::loadSkew(float sx, float sy) {
     loadIdentity();
 
-    data[kScaleX]       = 1.0f;
-    data[kSkewX]        = sx;
-    data[kTranslateX]   = 0.0f;
+    data[0]       = 1.0f;
+    data[4]        = sx;
+    data[12]   = 0.0f;
 
-    data[kSkewY]        = sy;
-    data[kScaleY]       = 1.0f;
-    data[kTranslateY]   = 0.0f;
+    data[1]        = sy;
+    data[5]       = 1.0f;
+    data[13]   = 0.0f;
 
-    data[kPerspective0] = 0.0f;
-    data[kPerspective1] = 0.0f;
-    data[kPerspective2] = 1.0f;
+    data[3] = 0.0f;
+    data[7] = 0.0f;
+    data[15] = 1.0f;
 
-    mType = kTypeUnknown;
 }
 
 void Matrix4::loadRotate(float angle) {
@@ -235,23 +151,21 @@ void Matrix4::loadRotate(float angle) {
 
     loadIdentity();
 
-    data[kScaleX]     = c;
-    data[kSkewX]      = -s;
+    data[0]     = c;
+    data[4]      = -s;
 
-    data[kSkewY]      = s;
-    data[kScaleY]     = c;
-
-    mType = kTypeUnknown;
+    data[1]      = s;
+    data[5]     = c;
 }
 
 void Matrix4::loadRotate(float angle, float x, float y, float z) {
-    data[kPerspective0]  = 0.0f;
-    data[kPerspective1]  = 0.0f;
+    data[3]  = 0.0f;
+    data[7]  = 0.0f;
     data[11]             = 0.0f;
-    data[kTranslateX]    = 0.0f;
-    data[kTranslateY]    = 0.0f;
-    data[kTranslateZ]    = 0.0f;
-    data[kPerspective2]  = 1.0f;
+    data[12]    = 0.0f;
+    data[13]    = 0.0f;
+    data[14]    = 0.0f;
+    data[15]  = 1.0f;
 
     angle *= float(M_PI / 180.0f);
     float c = cosf(angle);
@@ -271,17 +185,16 @@ void Matrix4::loadRotate(float angle, float x, float y, float z) {
     const float ys = y * s;
     const float zs = z * s;
 
-    data[kScaleX] = x * x * nc +  c;
-    data[kSkewX]  =    xy * nc - zs;
+    data[0] = x * x * nc +  c;
+    data[4]  =    xy * nc - zs;
     data[8]       =    zx * nc + ys;
-    data[kSkewY]  =    xy * nc + zs;
-    data[kScaleY] = y * y * nc +  c;
+    data[1]  =    xy * nc + zs;
+    data[5] = y * y * nc +  c;
     data[9]       =    yz * nc - xs;
     data[2]       =    zx * nc - ys;
     data[6]       =    yz * nc + xs;
-    data[kScaleZ] = z * z * nc +  c;
+    data[10] = z * z * nc +  c;
 
-    mType = kTypeUnknown;
 }
 
 void Matrix4::loadMultiply(const Matrix4& u, const Matrix4& v) {
@@ -305,20 +218,18 @@ void Matrix4::loadMultiply(const Matrix4& u, const Matrix4& v) {
         set(i, 3, w);
     }
 
-    mType = kTypeUnknown;
 }
 
 void Matrix4::loadOrtho(float left, float right, float bottom, float top, float near, float far) {
     loadIdentity();
 
-    data[kScaleX] = 2.0f / (right - left);
-    data[kScaleY] = 2.0f / (top - bottom);
-    data[kScaleZ] = -2.0f / (far - near);
-    data[kTranslateX] = -(right + left) / (right - left);
-    data[kTranslateY] = -(top + bottom) / (top - bottom);
-    data[kTranslateZ] = -(far + near) / (far - near);
+    data[0] = 2.0f / (right - left);
+    data[5] = 2.0f / (top - bottom);
+    data[10] = -2.0f / (far - near);
+    data[12] = -(right + left) / (right - left);
+    data[13] = -(top + bottom) / (top - bottom);
+    data[14] = -(far + near) / (far - near);
 
-    mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
 void Matrix4::loadPerspective(float fovy, float aspect, float near, float far) {
@@ -347,7 +258,6 @@ void Matrix4::loadPerspective(float fovy, float aspect, float near, float far) {
 	data[14] = 2 * near * far / (near - far);
 	data[15] = 0;
 
-	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
 void Matrix4::loadPerspectiveLH(float fovy, float aspect, float near, float far) {
@@ -376,7 +286,6 @@ void Matrix4::loadPerspectiveLH(float fovy, float aspect, float near, float far)
 	data[14] = - near*far / (far - near);
 	data[15] = 0;
 
-	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
 void Matrix4::loadFrustum(float left, float right, float bottom, float top,
@@ -407,7 +316,6 @@ void Matrix4::loadFrustum(float left, float right, float bottom, float top,
 	data[13] = 0.0f;
 	data[15] = 0.0f;
 
-	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
 void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
@@ -441,7 +349,6 @@ void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
 
 	data[15] = 1;
 
-	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 	translate(- position.x, - position.y, - position.z);
 }
 
@@ -477,33 +384,26 @@ void Matrix4::loadLookAtLH(vec3& position, vec3& target, vec3& upper) {
 	data[14] = - zaxis.dot(position);
 	data[15] = 1;
 
-	mType = kTypeTranslate | kTypeScale | kTypeRectToRect;
 }
 
 float Matrix4::mapZ(const Vector3& orig) const {
     // duplicates logic for mapPoint3d's z coordinate
-    return orig.x * data[2] + orig.y * data[6] + orig.z * data[kScaleZ] + data[kTranslateZ];
+    return orig.x * data[2] + orig.y * data[6] + orig.z * data[10] + data[14];
 }
 
 void Matrix4::mapPoint3d(Vector3& vec) const {
     const Vector3 orig(vec);
-    vec.x = orig.x * data[kScaleX] + orig.y * data[kSkewX] + orig.z * data[8] + data[kTranslateX];
-    vec.y = orig.x * data[kSkewY] + orig.y * data[kScaleY] + orig.z * data[9] + data[kTranslateY];
-    vec.z = orig.x * data[2] + orig.y * data[6] + orig.z * data[kScaleZ] + data[kTranslateZ];
+    vec.x = orig.x * data[0] + orig.y * data[4] + orig.z * data[8] + data[12];
+    vec.y = orig.x * data[1] + orig.y * data[5] + orig.z * data[9] + data[13];
+    vec.z = orig.x * data[2] + orig.y * data[6] + orig.z * data[10] + data[14];
 }
 
 #define MUL_ADD_STORE(a, b, c) a = (a) * (b) + (c)
 
 void Matrix4::mapPoint(float& x, float& y) const {
-    if (isSimple()) {
-        MUL_ADD_STORE(x, data[kScaleX], data[kTranslateX]);
-        MUL_ADD_STORE(y, data[kScaleY], data[kTranslateY]);
-        return;
-    }
-
-    float dx = x * data[kScaleX] + y * data[kSkewX] + data[kTranslateX];
-    float dy = x * data[kSkewY] + y * data[kScaleY] + data[kTranslateY];
-    float dz = x * data[kPerspective0] + y * data[kPerspective1] + data[kPerspective2];
+    float dx = x * data[0] + y * data[4] + data[12];
+    float dy = x * data[1] + y * data[5] + data[13];
+    float dz = x * data[3] + y * data[7] + data[15];
     if (dz) dz = 1.0f / dz;
 
     x = dx * dz;
@@ -512,10 +412,49 @@ void Matrix4::mapPoint(float& x, float& y) const {
 
 void Matrix4::decomposeScale(float& sx, float& sy) const {
     float len;
-    len = data[mat4::kScaleX] * data[mat4::kScaleX] + data[mat4::kSkewX] * data[mat4::kSkewX];
-    sx = copysignf(sqrtf(len), data[mat4::kScaleX]);
-    len = data[mat4::kScaleY] * data[mat4::kScaleY] + data[mat4::kSkewY] * data[mat4::kSkewY];
-    sy = copysignf(sqrtf(len), data[mat4::kScaleY]);
+    len = data[0] * data[0] + data[4] * data[4];
+    sx = copysignf(sqrtf(len), data[0]);
+    len = data[5] * data[5] + data[1] * data[1];
+    sy = copysignf(sqrtf(len), data[5]);
+}
+
+void Matrix4::setRotationRadians(const Vector3& rotation) {
+	const double cr = cos(rotation.x);
+	const double sr = sin(rotation.x);
+	const double cp = cos(rotation.y);
+	const double sp = sin(rotation.y);
+	const double cy = cos(rotation.z);
+	const double sy = sin(rotation.z);
+
+	data[0] = (cp * cy);
+	data[1] = (cp * sy);
+	data[2] = (-sp);
+
+	const double srsp = sr * sp;
+	const double crsp = cr * sp;
+
+	data[4] = (srsp * cy - cr * sy);
+	data[5] = (srsp * sy + cr * cy);
+	data[6] = (sr * cp);
+
+	data[8] = (crsp * cy + sr * sy);
+	data[9] = (crsp * sy - sr * cy);
+	data[10] = (cr * cp);
+}
+
+void Matrix4::setRotationDegrees(const Vector3& degrees) {
+	setRotationRadians(degrees * M_PI / 180.0f);
+}
+
+void Matrix4::transformVector(Vector3& vec) {
+	Vector3 in = vec;
+	transformVector(in, vec);
+}
+
+void Matrix4::transformVector(const Vector3& in, Vector3& out) {
+	out.x = in.x*data[0] + in.y*data[4] + in.z*data[8] + data[12];
+	out.y = in.x*data[1] + in.y*data[5] + in.z*data[9] + data[13];
+	out.z = in.x*data[2] + in.y*data[6] + in.z*data[10] + data[14];
 }
 
 }

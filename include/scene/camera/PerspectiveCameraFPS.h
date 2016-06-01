@@ -24,8 +24,12 @@ public:
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
 private:
-	int32_t mKeyFlag;
-	bool mAnimating;
+	float mMoveSpeed;
+	float mRotateSpeed;
+
+	int32_t mAnimatingFlag;
+	graphic::vec2 mMousePosition;
+	graphic::vec2 mMouseMovePosition;
 	nsecs_t mLastAnimatingTime;
 };
 

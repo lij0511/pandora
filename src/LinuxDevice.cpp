@@ -94,7 +94,26 @@ void LinuxDevice::run() {
 			}
 			case ButtonPress:
 			case ButtonRelease: {
-
+				int32_t buttonState = (e.xbutton.state & Button1Mask) ? input::MouseEvent::BUTTON_LEFT : 0;
+				buttonState |= (e.xbutton.state & Button2Mask) ? input::MouseEvent::BUTTON_MIDDLE : 0;
+				buttonState |= (e.xbutton.state & Button3Mask) ? input::MouseEvent::BUTTON_RIGHT: 0;
+				input::MouseEvent::Action action = e.type == ButtonPress ? input::MouseEvent::ACTION_DOWN : input::MouseEvent::ACTION_UP;
+				input::MouseEvent::Button button = input::MouseEvent::BUTTON_NONE;
+				switch (e.xbutton.button) {
+					case Button1:
+						button = input::MouseEvent::BUTTON_LEFT;
+						break;
+					case Button2:
+						button = input::MouseEvent::BUTTON_MIDDLE;
+						break;
+					case Button3:
+						button = input::MouseEvent::BUTTON_RIGHT;
+						break;
+					default:
+						break;
+				}
+				input::MouseEvent mouseEvent(e.xbutton.x, e.xbutton.y, action, button, buttonState);
+				getSceneManager()->getActiveScene()->dispatchMouseEvent(mouseEvent);
 				break;
 			}
 			default:

@@ -42,6 +42,7 @@ public:
 	float getY() const;
 
 	Action getAction() const;
+	Button getButton() const;
 	int32_t getButtonState() const;
 
 private:

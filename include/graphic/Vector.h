@@ -210,6 +210,29 @@ struct Vector3 {
 		return Vector3((other.x*inv + x*d), (other.y*inv + y*d), (other.z*inv + z*d));
 	}
 
+	Vector3 getHorizontalAngle() const {
+		Vector3 angle;
+		double RADTODEG = 180.0 / M_PIl;
+
+		const double tmp = (atan2(x, z) * RADTODEG);
+		angle.y = tmp;
+
+		if (angle.y < 0)
+			angle.y += 360;
+		if (angle.y >= 360)
+			angle.y -= 360;
+
+		const double z1 = sqrt(x*x + z*z);
+
+		angle.x = (atan2(z1, y) * RADTODEG - 90.0);
+
+		if (angle.x < 0)
+			angle.x += 360;
+		if (angle.x >= 360)
+			angle.x -= 360;
+		return angle;
+	}
+
 };
 
 typedef Vector2 vec2;

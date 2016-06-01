@@ -29,6 +29,10 @@ MouseEvent::Action MouseEvent::getAction() const {
 	return mAction;
 }
 
+MouseEvent::Button MouseEvent::getButton() const {
+	return mButton;
+}
+
 int32_t MouseEvent::getButtonState() const {
 	return mButtonState;
 }

@@ -22,35 +22,6 @@ class Matrix4 {
 public:
     float data[16];
 
-    enum Entry {
-        kScaleX = 0,
-        kSkewY = 1,
-        kPerspective0 = 3,
-        kSkewX = 4,
-        kScaleY = 5,
-        kPerspective1 = 7,
-        kScaleZ = 10,
-        kTranslateX = 12,
-        kTranslateY = 13,
-        kTranslateZ = 14,
-        kPerspective2 = 15
-    };
-
-    // NOTE: The flags from kTypeIdentity to kTypePerspective
-    //       must be kept in sync with the type flags found
-    //       in SkMatrix
-    enum Type {
-        kTypeIdentity = 0,
-        kTypeTranslate = 0x1,
-        kTypeScale = 0x2,
-        kTypeAffine = 0x4,
-        kTypePerspective = 0x8,
-        kTypeRectToRect = 0x10,
-        kTypeUnknown = 0x20,
-    };
-
-    static const int sGeometryMask = 0xf;
-
     Matrix4() {
         loadIdentity();
     }
@@ -68,7 +39,6 @@ public:
     }
 
     float& operator[](int index) {
-        mType = kTypeUnknown;
         return data[index];
     }
 
@@ -109,8 +79,6 @@ public:
     void loadLookAt(vec3& position, vec3& target, vec3& upper);
     void loadLookAtLH(vec3& position, vec3& target, vec3& upper);
 
-    uint8_t getType() const;
-
     void multiply(const Matrix4& v) {
         Matrix4 u;
         u.loadMultiply(*this, v);
@@ -120,27 +88,14 @@ public:
     void multiply(float v);
 
     void translate(float x, float y, float z = 0) {
-        if ((getType() & sGeometryMask) <= kTypeTranslate) {
-            data[kTranslateX] += x;
-            data[kTranslateY] += y;
-            data[kTranslateZ] += z;
-            mType |= kTypeUnknown;
+        if (false) {
+            data[12] += x;
+            data[13] += y;
+            data[14] += z;
         } else {
-            // Doing a translation will only affect the translate bit of the type
-            // Save the type
-            uint8_t type = mType;
-
             Matrix4 u;
             u.loadTranslate(x, y, z);
             multiply(u);
-
-            // Restore the type and fix the translate bit
-            mType = type;
-            if (data[kTranslateX] != 0.0f || data[kTranslateY] != 0.0f) {
-                mType |= kTypeTranslate;
-            } else {
-                mType &= ~kTypeTranslate;
-            }
         }
     }
 
@@ -162,18 +117,6 @@ public:
         multiply(u);
     }
 
-    /**
-     * If the matrix is identity or translate and/or scale.
-     */
-    bool isSimple() const;
-    bool isPureTranslate() const;
-    bool isIdentity() const;
-    bool isPerspective() const;
-    bool rectToRect() const;
-    bool positiveScale() const;
-
-    bool changesBounds() const;
-
     void copyTo(float* v) const;
 
     float mapZ(const Vector3& orig) const;
@@ -183,12 +126,19 @@ public:
     float getTranslateX() const;
     float getTranslateY() const;
 
+    bool isIdentity() const;
+
     void decomposeScale(float& sx, float& sy) const;
+
+
+    void setRotationRadians(const Vector3& radians);
+    void setRotationDegrees(const Vector3& degrees);
+    void transformVector(Vector3& vec);
+    void transformVector(const Vector3& in, Vector3& out);
 
     static const Matrix4& identity();
 
 private:
-    mutable uint8_t mType;
 
     inline float get(int i, int j) const {
         return data[i * 4 + j];
@@ -197,8 +147,6 @@ private:
     inline void set(int i, int j, float v) {
         data[i * 4 + j] = v;
     }
-
-    uint8_t getGeometryType() const;
 
 }; // class Matrix4
 
