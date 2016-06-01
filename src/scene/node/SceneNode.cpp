@@ -21,6 +21,10 @@ void SceneNode::setPosition(const graphic::vec3& position) {
 	mPosition = position;
 }
 
+graphic::vec3 SceneNode::getPosition() const {
+	return mPosition;
+}
+
 const graphic::mat4 SceneNode::getTransform() {
 	graphic::mat4 m;
 	m.loadTranslate(mPosition.x, mPosition.y, mPosition.z);

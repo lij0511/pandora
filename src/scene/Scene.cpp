@@ -102,5 +102,12 @@ bool Scene::dispatchKeyEvent(input::KeyEvent& keyEvent) {
 	return false;
 }
 
+bool Scene::dispatchMouseEvent(input::MouseEvent& mouseEvent) {
+	if (mCurrentCamera != nullptr && mCurrentCamera->dispatchMouseEvent(mouseEvent)) {
+		return true;
+	}
+	return false;
+}
+
 } /* namespace scene */
 } /* namespace pola */

@@ -16,6 +16,7 @@
 #include "scene/Camera.h"
 #include "scene/Environment.h"
 #include "input/KeyEvent.h"
+#include "input/MouseEvent.h"
 
 namespace pola {
 namespace scene {
@@ -43,6 +44,7 @@ public:
 	Environment* environment();
 
 	bool dispatchKeyEvent(input::KeyEvent& keyEvent);
+	bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
 private:
 	graphic::GraphicContext* mGraphic;

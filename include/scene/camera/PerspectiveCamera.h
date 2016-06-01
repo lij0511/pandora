@@ -23,22 +23,23 @@ public:
 
 	virtual void setSize(int32_t width, int32_t height);
 
-	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
+	void setTarget(const graphic::vec3& target);
+	void setUpper(const graphic::vec3& upper);
 
-	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
-private:
-	void recalculateMatrix();
-private:
-	graphic::vec3 m_target;
-	graphic::vec3 m_upper;
+protected:
+	virtual void recalculateMatrix();
+protected:
+	graphic::vec3 mTarget;
+	graphic::vec3 mUpper;
 
-	float m_fovy;	// Field of view, in radians.
-	float m_aspect;	// Aspect ratio.
-	float m_znear;	// value of the near view-plane.
-	float m_zfar;	// Z-value of the far view-plane.
+	float mFovy;	// Field of view, in radians.
+	float mAspect;	// Aspect ratio.
+	float mZnear;	// value of the near view-plane.
+	float mZfar;	// Z-value of the far view-plane.
 
-	graphic::mat4 m_projection;
-	graphic::mat4 m_view;
+	graphic::mat4 mProjection;
+	graphic::mat4 mView;
+
 };
 
 } /* namespace scene */

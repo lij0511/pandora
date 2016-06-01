@@ -5,7 +5,7 @@
  *      Author: lijing
  */
 
-#include "scene/Camera2D.h"
+#include "scene/camera/Camera2D.h"
 
 namespace pola {
 namespace scene {
@@ -24,7 +24,7 @@ void Camera2D::setSize(int32_t width, int32_t height) {
 }
 
 void Camera2D::recalculateMatrix() {
-	m_matrix.loadOrtho(0, m_width, 0, m_height, -1, 1);
+	mMatrix.loadOrtho(0, mWidth, 0, mHeight, -1, 1);
 }
 
 } /* namespace scene */

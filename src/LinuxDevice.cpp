@@ -5,9 +5,11 @@
  *      Author: lijing
  */
 
-#include "log/Log.h"
 #include "graphic/gl/GLGraphicContext.h"
+#include "log/Log.h"
 #include "LinuxDevice.h"
+#include "input/KeyEvent.h"
+#include "input/MouseEvent.h"
 
 namespace pola {
 
@@ -55,7 +57,22 @@ void LinuxDevice::run() {
 			case ConfigureNotify:
 				getSceneManager()->getActiveScene()->setViewport(e.xconfigure.width, e.xconfigure.height);
 			  break;
-			case KeyRelease:
+			case KeyRelease:{
+				if ((XPending(mDisplay) > 0)) {
+					// check for Autorepeat manually
+					// We'll do the same as Windows does: Only send KeyPressed
+					// So every KeyRelease is a real release
+					XEvent next_event;
+					XPeekEvent (e.xkey.display, &next_event);
+					if ((next_event.type == KeyPress) &&
+						(next_event.xkey.keycode == e.xkey.keycode) &&
+						(next_event.xkey.time - e.xkey.time) < 2)	// usually same time, but on some systems a difference of 1 is possible
+					{
+						/* Ignore the key release event */
+						break;
+					}
+				}
+			}
 			case KeyPress: {
 				KeySym k = XLookupKeysym(&e.xkey, 0);
 				ssize_t index = mKeyMap.indexOfKey(k);
@@ -68,12 +85,16 @@ void LinuxDevice::run() {
 				break;
 			}
 			case MotionNotify: {
-				printf("motion x=%d, y=%d\n", e.xbutton.x, e.xbutton.y);
+				int32_t buttonState = (e.xbutton.state & Button1Mask) ? input::MouseEvent::BUTTON_LEFT : 0;
+				buttonState |= (e.xbutton.state & Button2Mask) ? input::MouseEvent::BUTTON_MIDDLE : 0;
+				buttonState |= (e.xbutton.state & Button3Mask) ? input::MouseEvent::BUTTON_RIGHT: 0;
+				input::MouseEvent mouseEvent(e.xbutton.x, e.xbutton.y, input::MouseEvent::ACTION_MOVE, input::MouseEvent::BUTTON_NONE, buttonState);
+				getSceneManager()->getActiveScene()->dispatchMouseEvent(mouseEvent);
 				break;
 			}
 			case ButtonPress:
 			case ButtonRelease: {
-				printf("button=%u\n", e.xbutton.button);
+
 				break;
 			}
 			default:

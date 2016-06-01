@@ -24,6 +24,7 @@ public:
 	virtual ~SceneNode();
 
 	void setPosition(const graphic::vec3& projection);
+	graphic::vec3 getPosition() const;
 
 	const graphic::mat4 getTransform();
 

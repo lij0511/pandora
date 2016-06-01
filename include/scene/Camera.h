@@ -9,6 +9,7 @@
 #define POLA_CAMERA_H_
 
 #include "input/KeyEvent.h"
+#include "input/MouseEvent.h"
 #include "graphic/Matrix4.h"
 #include "graphic/Vector.h"
 #include "scene/node/SceneNode.h"
@@ -23,13 +24,20 @@ public:
 
 	virtual void setSize(int32_t width, int32_t height);
 
-	const graphic::mat4& matrix() const;
+	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
+
+	const graphic::mat4& matrix();
 
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
+	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
+
 protected:
-	graphic::mat4 m_matrix;
-	int32_t m_width;
-	int32_t m_height;
+	virtual void recalculateMatrix();
+protected:
+	graphic::mat4 mMatrix;
+	int32_t mWidth;
+	int32_t mHeight;
+	bool mDirty;
 };
 
 } /* namespace scene */
