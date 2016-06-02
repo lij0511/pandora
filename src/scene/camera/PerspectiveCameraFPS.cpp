@@ -19,7 +19,7 @@ const static int FLAG_KEYCODE_D = 0x08;
 const static int FLAG_MOUSE_BUTTON_RIGHT = 0x10;
 
 PerspectiveCameraFPS::PerspectiveCameraFPS(const graphic::vec3& pos, const graphic::vec3& lookAt) :
-	PerspectiveCamera(pos, lookAt), mMoveSpeed(0.05f), mRotateSpeed(0.0005f), mAnimatingFlag(0), mLastAnimatingTime(0) {
+	PerspectiveCamera(pos, lookAt), mMoveSpeed(0.05f), mRotateSpeed(0.0005f), mAnimatingFlag(0), mRotating(false), mLastAnimatingTime(0) {
 }
 
 PerspectiveCameraFPS::~PerspectiveCameraFPS() {
@@ -34,38 +34,52 @@ void PerspectiveCameraFPS::render(graphic::GraphicContext* graphic, nsecs_t time
 		mLastAnimatingTime = timeMs;
 
 		graphic::vec3 position = mPosition;
-		graphic::vec3 target = mTarget;
+		graphic::vec3 target = mTarget - mPosition;
 
-		/*graphic::vec3 relativeRotation = (target - position).getHorizontalAngle();
-		relativeRotation.x += interval * mRotateSpeed;
+		if ((mAnimatingFlag & FLAG_MOUSE_BUTTON_RIGHT) == FLAG_MOUSE_BUTTON_RIGHT) {
+			if (!mRotating) {
+				mRotating = true;
+				mRotateStart = mMousePosition;
+			} else {
+				graphic::vec2 mo = mMousePosition - mRotateStart;
+				graphic::vec2 rotatePos = mo * interval * mRotateSpeed;
+				mRotateStart += rotatePos;
+				if (rotatePos.length() > mo.length()) {
 
-		graphic::vec3 t1;
-		graphic::mat4 mat;
-		mat.setRotationDegrees(graphic::vec3(relativeRotation.x, relativeRotation.y, 0));
-		mat.transformVector(target, t1);
-		t1 = (t1 - position).copyNormalized();
-		t1 = t1 - position;*/
-//		target += t1;
+				} else {
+					graphic::vec3 relativeRotation = target.getHorizontalAngle();
+					target = {0, 0, fmax(1.f, position.length())};
+					relativeRotation.x -= rotatePos.y;
+					relativeRotation.y += rotatePos.x;
+					relativeRotation.z = 0;
+					graphic::mat4 mat;
+					mat.setRotationDegrees(graphic::vec3(relativeRotation.x, relativeRotation.y, 0));
+					mat.transformVector(target);
+				}
 
 
-		graphic::vec3 dir = (target - position).copyNormalized();
+			}
+		}
+
+
+		graphic::vec3 dir = target.copyNormalized();
 		graphic::vec3 t;
 		if ((mAnimatingFlag & FLAG_KEYCODE_W) == FLAG_KEYCODE_W) {
-			t += dir * interval * 0.05;
+			t += dir * interval * mMoveSpeed;
 		}
 		if ((mAnimatingFlag & FLAG_KEYCODE_S) == FLAG_KEYCODE_S) {
-			t -= dir * interval * 0.05;
+			t -= dir * interval * mMoveSpeed;
 		}
 		dir = dir.copyCross(mUpper);
 		if ((mAnimatingFlag & FLAG_KEYCODE_A) == FLAG_KEYCODE_A) {
-			t -= dir * interval * 0.05;
+			t += dir * interval * mMoveSpeed;
 		}
 		if ((mAnimatingFlag & FLAG_KEYCODE_D) == FLAG_KEYCODE_D) {
-			t += dir * interval * 0.05;
+			t -= dir * interval * mMoveSpeed;
 		}
 
 		setPosition(position + t);
-		setTarget(target + t);
+		setTarget(mPosition + target);
 	}
 	PerspectiveCamera::render(graphic, timeMs);
 }
@@ -143,17 +157,21 @@ bool PerspectiveCameraFPS::dispatchMouseEvent(input::MouseEvent& mouseEvent) {
 		case input::MouseEvent::ACTION_UP:
 			if (mouseEvent.getButton() == input::MouseEvent::BUTTON_RIGHT) {
 				mAnimatingFlag &= ~FLAG_MOUSE_BUTTON_RIGHT;
+				mRotating = false;
 				handled = true;
 			}
 			break;
 		case input::MouseEvent::ACTION_MOVE:
 			if ((mAnimatingFlag & FLAG_MOUSE_BUTTON_RIGHT) == FLAG_MOUSE_BUTTON_RIGHT) {
-				mMouseMovePosition = graphic::vec2(mouseEvent.getX(), mouseEvent.getY()) - mMousePosition;
+				mMousePosition = graphic::vec2(mouseEvent.getX(), mouseEvent.getY());
 				handled = true;
 			}
 			break;
 		default:
 			break;
+	}
+	if (mAnimatingFlag == 0) {
+		mLastAnimatingTime = 0;
 	}
 	return handled;
 }

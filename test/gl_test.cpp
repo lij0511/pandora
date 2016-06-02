@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 	Device* device = createDevice(param);
 
 	 Scene* scene = device->getSceneManager()->getActiveScene();
-	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
+	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/faerie.md2");
 	if (mesh) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 		scene->addSceneNode(node);
@@ -34,12 +34,12 @@ int main(int argc, char *argv[]) {
 		node->setAnimationType(MD2_AT_JUMP);
 		scene->addSceneNode(node);
 	}
-	graphic::vec3 pos = {0, 0, 50};
 
-	scene->addCamera(new PerspectiveCameraFPS(pos, {0, 0, 49}));
+//	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
+	scene->addCamera(new PerspectiveCameraFPS({0,5,400}, {0, 5, 0}));
 
 	// TODO
-	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie2.bmp");
+	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/webcore/irrlicht-1.8.3/media/faerie2.bmp");
 	if (texture != nullptr && texture->generateTexture()) {
 		graphic::GLCaches::get().bindTexture(texture->id);
 	}

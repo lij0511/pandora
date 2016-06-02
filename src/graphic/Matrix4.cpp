@@ -319,41 +319,68 @@ void Matrix4::loadFrustum(float left, float right, float bottom, float top,
 }
 
 void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
-	loadIdentity();
 
-	vec3 nvec = target - position;
-	nvec.normalize();
+	/*vec3 zaxis = position - target;
+	zaxis.normalize();
 
-	vec3 uvec = nvec.copyCross(upper);
-	uvec.normalize();
+	vec3 xaxis = upper.copyCross(zaxis);
+	xaxis.normalize();
 
-	vec3 vvec = uvec.copyCross(nvec);
-	vvec.normalize();
+	vec3 yaxis = zaxis.copyCross(xaxis);
+//	yaxis.normalize();
 
 	memset(data, 0, sizeof(float) * 16);
 
-	data[0] = uvec.x;
-	data[4] = uvec.y;
-	data[8] = uvec.z;
-//	data[12] = - position.dot(uvec);
+	data[0] = xaxis.x;
+	data[1] = yaxis.x;
+	data[2] = zaxis.x;
 
-	data[1] = vvec.x;
-	data[5] = vvec.y;
-	data[9] = vvec.z;
-//	data[13] = - position.dot(vvec);
+	data[4] = xaxis.y;
+	data[5] = yaxis.y;
+	data[6] = - zaxis.y;
 
-	data[2] = - nvec.x;
-	data[6] = - nvec.y;
-	data[10] = - nvec.z;
-//	data[14] = - position.dot(nvec);
+	data[8] = xaxis.z;
+	data[9] = yaxis.z;
+	data[10] = zaxis.z;
+
+	data[12] = - xaxis.dot(position);
+	data[13] = - yaxis.dot(position);
+	data[14] = - zaxis.dot(position);
+
+	data[15] = 1;*/
+
+	vec3 zaxis = target - position;
+	zaxis.normalize();
+
+	vec3 xaxis = zaxis.copyCross(upper);
+	xaxis.normalize();
+
+	vec3 yaxis = xaxis.copyCross(zaxis);
+//	yaxis.normalize();
+
+	memset(data, 0, sizeof(float) * 16);
+
+	data[0] = xaxis.x;
+	data[1] = yaxis.x;
+	data[2] = - zaxis.x;
+
+	data[4] = xaxis.y;
+	data[5] = yaxis.y;
+	data[6] = - zaxis.y;
+
+	data[8] = xaxis.z;
+	data[9] = yaxis.z;
+	data[10] = - zaxis.z;
 
 	data[15] = 1;
 
-	translate(- position.x, - position.y, - position.z);
+	data[12] = position.dot(xaxis);
+	data[13] = position.dot(yaxis);
+	data[14] = position.dot(zaxis);
+//	translate(- position.x, - position.y, - position.z);
 }
 
 void Matrix4::loadLookAtLH(vec3& position, vec3& target, vec3& upper) {
-	loadIdentity();
 
 	vec3 zaxis = target - position;
 	zaxis.normalize();

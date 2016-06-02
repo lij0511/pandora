@@ -49,9 +49,7 @@ void PerspectiveCamera::setUpper(const graphic::vec3& upper) {
 
 void PerspectiveCamera::recalculateMatrix() {
 	mView.loadLookAt(mPosition, mTarget, mUpper);
-	graphic::mat4 m;
-	m.loadMultiply(mProjection, mView);
-	mMatrix.load(m);
+	mMatrix.loadMultiply(mProjection, mView);
 }
 
 } /* namespace scene */

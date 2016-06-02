@@ -105,7 +105,7 @@ struct Vector3 {
     }
 
     float lengthSquared() const {
-		return x * x + y * y;
+		return x * x + y * y + z * z;
 	}
 
     float length() const {
@@ -165,11 +165,11 @@ struct Vector3 {
     }
 
     void normalize() {
-    	float len2 = lengthSquared();
-    	if (len2 == 0.0f || len2 == 1.0f) {
+    	float len = lengthSquared();
+    	if (len == 0.0f || len == 1.0f) {
     		return;
     	}
-		float s = 1.0f / sqrt(len2);
+		float s = 1.0f / sqrt(len);
 		x *= s;
 		y *= s;
 		z *= s;
@@ -212,7 +212,7 @@ struct Vector3 {
 
 	Vector3 getHorizontalAngle() const {
 		Vector3 angle;
-		double RADTODEG = 180.0 / M_PIl;
+		static double RADTODEG = 180.0 / M_PIl;
 
 		const double tmp = (atan2(x, z) * RADTODEG);
 		angle.y = tmp;
