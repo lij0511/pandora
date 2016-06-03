@@ -11,7 +11,7 @@
 namespace pola {
 namespace scene {
 
-SceneNode::SceneNode(const graphic::vec3& position) : mPosition(position) {
+SceneNode::SceneNode() {
 }
 
 SceneNode::~SceneNode() {

@@ -441,6 +441,7 @@ void Matrix4::setRotation(const Quaternion& rotation) {
 }
 
 void Matrix4::compose(const Vector3& position, const Quaternion& rotation, const Vector3& scale) {
+	loadIdentity();
 	this->setRotation(rotation);
 	this->setScale(scale);
 	this->setPosition(position);
@@ -562,7 +563,7 @@ void Matrix4::lookAt(const vec3& eye, const vec3& target, const vec3& upper) {
 		xaxis.normalize();
 	}
 
-	vec3 yaxis = xaxis.copyCross(zaxis);
+	vec3 yaxis = zaxis.copyCross(xaxis);
 //	yaxis.normalize();
 
 	data[0] = xaxis.x;

@@ -10,7 +10,7 @@
 namespace pola {
 namespace scene {
 
-Camera::Camera(const graphic::vec3& pos) : SceneNode(pos), mWidth(1), mHeight(1), mDirty(true) {
+Camera::Camera() : SceneNode(), mWidth(1), mHeight(1), mDirty(true) {
 }
 
 Camera::~Camera() {

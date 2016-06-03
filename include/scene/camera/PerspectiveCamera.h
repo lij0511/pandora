@@ -18,20 +18,14 @@ namespace scene {
  */
 class PerspectiveCamera: public Camera {
 public:
-	PerspectiveCamera(const graphic::vec3& pos = graphic::vec3(0.0f, 0.0f, 1.0f), const graphic::vec3& lookAt = graphic::vec3(0.0f, 0.0f, 0.0f));
+	PerspectiveCamera(float fovy = M_PI / 2.5f, float aspect = 1.f, float near = 1.f, float far = 3000.f);
 	virtual ~PerspectiveCamera();
 
 	virtual void setSize(int32_t width, int32_t height);
 
-	void setTarget(const graphic::vec3& target);
-	void setUpper(const graphic::vec3& upper);
-
 protected:
 	virtual void recalculateMatrix();
 protected:
-	graphic::vec3 mTarget;
-	graphic::vec3 mUpper;
-
 	float mFovy;	// Field of view, in radians.
 	float mAspect;	// Aspect ratio.
 	float mZnear;	// value of the near view-plane.

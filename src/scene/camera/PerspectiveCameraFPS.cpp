@@ -18,8 +18,8 @@ const static int FLAG_KEYCODE_D = 0x08;
 
 const static int FLAG_MOUSE_BUTTON_RIGHT = 0x10;
 
-PerspectiveCameraFPS::PerspectiveCameraFPS(const graphic::vec3& pos, const graphic::vec3& lookAt) :
-	PerspectiveCamera(pos, lookAt), mMoveSpeed(0.05f), mRotateSpeed(0.5f), mAnimatingFlag(0), mRotating(false), mLastAnimatingTime(0) {
+PerspectiveCameraFPS::PerspectiveCameraFPS() :
+	mMoveSpeed(0.05f), mRotateSpeed(0.5f), mAnimatingFlag(0), mRotating(false), mLastAnimatingTime(0) {
 }
 
 PerspectiveCameraFPS::~PerspectiveCameraFPS() {
@@ -34,7 +34,7 @@ void PerspectiveCameraFPS::render(graphic::GraphicContext* graphic, nsecs_t time
 		mLastAnimatingTime = timeMs;
 
 		graphic::vec3 position = mPosition;
-		graphic::vec3 target = mTarget - mPosition;
+//		graphic::vec3 target = mTarget - mPosition;
 
 		/*if ((mAnimatingFlag & FLAG_MOUSE_BUTTON_RIGHT) == FLAG_MOUSE_BUTTON_RIGHT) {
 			if (!mRotating) {
@@ -59,7 +59,7 @@ void PerspectiveCameraFPS::render(graphic::GraphicContext* graphic, nsecs_t time
 		}*/
 
 
-		graphic::vec3 dir = target.copyNormalized();
+		/*graphic::vec3 dir = target.copyNormalized();
 		graphic::vec3 t;
 		if ((mAnimatingFlag & FLAG_KEYCODE_W) == FLAG_KEYCODE_W) {
 			t += dir * interval * mMoveSpeed;
@@ -76,7 +76,7 @@ void PerspectiveCameraFPS::render(graphic::GraphicContext* graphic, nsecs_t time
 		}
 
 		setPosition(position + t);
-		setTarget(mPosition + target);
+		setTarget(mPosition + target);*/
 	}
 	PerspectiveCamera::render(graphic, timeMs);
 }

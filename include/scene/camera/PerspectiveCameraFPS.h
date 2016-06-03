@@ -15,7 +15,7 @@ namespace scene {
 
 class PerspectiveCameraFPS: public PerspectiveCamera {
 public:
-	PerspectiveCameraFPS(const graphic::vec3& pos = graphic::vec3(0.0f, 0.0f, 1.0f), const graphic::vec3& lookAt = graphic::vec3(0.0f, 0.0f, 0.0f));
+	PerspectiveCameraFPS();
 	virtual ~PerspectiveCameraFPS();
 
 	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);

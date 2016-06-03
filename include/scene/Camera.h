@@ -19,7 +19,7 @@ namespace scene {
 
 class Camera : public SceneNode {
 public:
-	Camera(const graphic::vec3& pos = graphic::vec3(0.0f, 0.0f, 1.0f));
+	Camera();
 	virtual ~Camera();
 
 	virtual void setSize(int32_t width, int32_t height);

@@ -21,7 +21,7 @@ namespace scene {
 
 class SceneNode : public utils::RefBase<SceneNode> {
 public:
-	SceneNode(const graphic::vec3& position = graphic::vec3(0,0,0));
+	SceneNode();
 	virtual ~SceneNode();
 
 	void setPosition(const graphic::vec3& position);
