@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 #include "graphic/MeshBuffer.h"
-#include "graphic/Matrix4.h"
+#include "graphic/math/Matrix4.h"
 #include "graphic/Texture.h"
 #include "io/InputStream.h"
 

@@ -10,7 +10,7 @@
 
 #include "graphic/gl/GL.h"
 #include "graphic/GraphicContext.h"
-#include "graphic/Matrix4.h"
+#include "graphic/math/Matrix4.h"
 #include "graphic/gl/GLTexture.h"
 
 namespace pola {

@@ -76,6 +76,14 @@ struct Vector2 {
 		return (Vector2){x * s, y * s};
 	}
 
+	bool operator==(const Vector2& v) {
+		return x == v.x && y == v.y;
+	}
+
+	bool operator!=(const Vector2& v) {
+		return !(*this == v);
+	}
+
 	void normalize() {
 		float s = 1.0f / length();
 		x *= s;
@@ -164,6 +172,14 @@ struct Vector3 {
         return (Vector3){x * s, y * s, z * s};
     }
 
+    bool operator==(const Vector3& v) {
+		return x == v.x && y == v.y && z == v.z;
+	}
+
+	bool operator!=(const Vector3& v) {
+		return !(*this == v);
+	}
+
     void normalize() {
     	float len = lengthSquared();
     	if (len == 0.0f || len == 1.0f) {
@@ -190,7 +206,7 @@ struct Vector3 {
 		this->z = z;
 	}
 
-	Vector3 copyCross(const Vector3& vector) {
+	Vector3 copyCross(const Vector3& vector) const {
 		Vector3 v = {x, y, z};
 		v.cross(vector);
 		return v;

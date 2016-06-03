@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#include "graphic/Vector.h"
-#include "graphic/Matrix4.h"
+#include "graphic/math/Vector.h"
+#include "graphic/math/Matrix4.h"
 
 using namespace pola;
 using namespace pola::graphic;

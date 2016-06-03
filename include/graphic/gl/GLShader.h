@@ -11,7 +11,7 @@
 #include "graphic/gl/GLProgram.h"
 #include "graphic/gl/GLProgramCache.h"
 #include "utils/String.h"
-#include "graphic/Matrix4.h"
+#include "graphic/math/Matrix4.h"
 
 namespace pola {
 namespace graphic {

@@ -29,7 +29,7 @@ private:
 
 	int32_t mAnimatingFlag;
 	graphic::vec2 mMousePosition;
-	graphic::vec2 mRotateStart;
+	graphic::vec2 mMouseMovePosition;
 	bool mRotating;
 	nsecs_t mLastAnimatingTime;
 };

@@ -8,8 +8,9 @@
 #ifndef POLA_SCENENODE_H_
 #define POLA_SCENENODE_H_
 
-#include "graphic/Vector.h"
-#include "graphic/Matrix4.h"
+#include "graphic/math/Vector.h"
+#include "graphic/math/Quaternion.h"
+#include "graphic/math/Matrix4.h"
 #include "graphic/GraphicContext.h"
 
 #include "utils/Times.h"
@@ -23,8 +24,14 @@ public:
 	SceneNode(const graphic::vec3& position = graphic::vec3(0,0,0));
 	virtual ~SceneNode();
 
-	void setPosition(const graphic::vec3& projection);
-	graphic::vec3 getPosition() const;
+	void setPosition(const graphic::vec3& position);
+	const graphic::vec3& getPosition() const;
+
+	void setRotation(const graphic::quat4& rotation);
+	const graphic::quat4& getRotation() const;
+
+	void setScale(const graphic::vec3& scale);
+	const graphic::vec3& getScale() const;
 
 	const graphic::mat4 getTransform();
 
@@ -32,7 +39,7 @@ public:
 
 protected:
 	graphic::vec3 mPosition;
-	graphic::vec3 mRotation;
+	graphic::quat4 mRotation;
 	graphic::vec3 mScale;
 };
 

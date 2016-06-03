@@ -10,8 +10,8 @@
 
 #include "input/KeyEvent.h"
 #include "input/MouseEvent.h"
-#include "graphic/Matrix4.h"
-#include "graphic/Vector.h"
+#include "graphic/math/Matrix4.h"
+#include "graphic/math/Vector.h"
 #include "scene/node/SceneNode.h"
 
 namespace pola {

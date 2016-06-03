@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "graphic/Matrix4.h"
+#include "graphic/math/Matrix4.h"
 
 namespace pola {
 namespace graphic {
@@ -232,94 +232,8 @@ void Matrix4::loadOrtho(float left, float right, float bottom, float top, float 
 
 }
 
-void Matrix4::loadPerspective(float fovy, float aspect, float near, float far) {
-	loadIdentity();
-
-	const double h = 1.0 / (tan(fovy*0.5));
-	const float w = (h / aspect);
-
-	data[0] = w;
-	data[1] = 0;
-	data[2] = 0;
-	data[3] = 0;
-
-	data[4] = 0;
-	data[5] = h;
-	data[6] = 0;
-	data[7] = 0;
-
-	data[8] = 0;
-	data[9] = 0;
-	data[10] = ((far + near) / (near - far));
-	data[11] = - 1;
-
-	data[12] = 0;
-	data[13] = 0;
-	data[14] = 2 * near * far / (near - far);
-	data[15] = 0;
-
-}
-
-void Matrix4::loadPerspectiveLH(float fovy, float aspect, float near, float far) {
-	loadIdentity();
-
-	const double h = 1.0 / (tan(fovy*0.5));
-	const float w = h / aspect;
-
-	data[0] = w;
-	data[1] = 0;
-	data[2] = 0;
-	data[3] = 0;
-
-	data[4] = 0;
-	data[5] = h;
-	data[6] = 0;
-	data[7] = 0;
-
-	data[8] = 0;
-	data[9] = 0;
-	data[10] = (far / (far - near));
-	data[11] = 1;
-
-	data[12] = 0;
-	data[13] = 0;
-	data[14] = - near*far / (far - near);
-	data[15] = 0;
-
-}
-
-void Matrix4::loadFrustum(float left, float right, float bottom, float top,
-        float near, float far) {
-	const float r_width  = 1.0f / (right - left);
-	const float r_height = 1.0f / (top - bottom);
-	const float r_depth  = 1.0f / (near - far);
-	const float x = 2.0f * (near * r_width);
-	const float y = 2.0f * (near * r_height);
-	const float A = (right + left) * r_width;
-	const float B = (top + bottom) * r_height;
-	const float C = (far + near) * r_depth;
-	const float D = 2.0f * (far * near * r_depth);
-	data[0] = x;
-	data[5] = y;
-	data[8] = A;
-	data[ 9] = B;
-	data[10] = C;
-	data[14] = D;
-	data[11] = -1.0f;
-	data[ 1] = 0.0f;
-	data[ 2] = 0.0f;
-	data[ 3] = 0.0f;
-	data[ 4] = 0.0f;
-	data[ 6] = 0.0f;
-	data[ 7] = 0.0f;
-	data[12] = 0.0f;
-	data[13] = 0.0f;
-	data[15] = 0.0f;
-
-}
-
 void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
-
+	loadIdentity();
 	/*vec3 zaxis = position - target;
 	zaxis.normalize();
 
@@ -358,8 +272,6 @@ void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
 	vec3 yaxis = xaxis.copyCross(zaxis);
 //	yaxis.normalize();
 
-	memset(data, 0, sizeof(float) * 16);
-
 	data[0] = xaxis.x;
 	data[1] = yaxis.x;
 	data[2] = - zaxis.x;
@@ -377,19 +289,23 @@ void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
 	data[12] = position.dot(xaxis);
 	data[13] = position.dot(yaxis);
 	data[14] = position.dot(zaxis);
+//	data[12] = position.x;
+//	data[13] = position.y;
+//	data[14] = position.z;
 //	translate(- position.x, - position.y, - position.z);
 }
 
 void Matrix4::loadLookAtLH(vec3& position, vec3& target, vec3& upper) {
+	loadIdentity();
 
-	vec3 zaxis = target - position;
+	vec3 zaxis = position - target;
 	zaxis.normalize();
 
 	vec3 xaxis = upper.copyCross(zaxis);
 	xaxis.normalize();
 
 	vec3 yaxis = zaxis.copyCross(xaxis);
-	yaxis.normalize();
+//	yaxis.normalize();
 
 	data[0] = xaxis.x;
 	data[1] = yaxis.x;
@@ -437,14 +353,6 @@ void Matrix4::mapPoint(float& x, float& y) const {
     y = dy * dz;
 }
 
-void Matrix4::decomposeScale(float& sx, float& sy) const {
-    float len;
-    len = data[0] * data[0] + data[4] * data[4];
-    sx = copysignf(sqrtf(len), data[0]);
-    len = data[5] * data[5] + data[1] * data[1];
-    sy = copysignf(sqrtf(len), data[5]);
-}
-
 void Matrix4::setRotationRadians(const Vector3& rotation) {
 	const double cr = cos(rotation.x);
 	const double sr = sin(rotation.x);
@@ -484,5 +392,237 @@ void Matrix4::transformVector(const Vector3& in, Vector3& out) {
 	out.z = in.x*data[2] + in.y*data[6] + in.z*data[10] + data[14];
 }
 
+void Matrix4::setPosition(const Vector3& position) {
+	data[12] = position.x;
+	data[13] = position.y;
+	data[14] = position.z;
+}
+
+void Matrix4::setScale(const Vector3& scale) {
+	float* te = data;
+	float x = scale.x, y = scale.y, z = scale.z;
+	te[ 0 ] *= x; te[ 4 ] *= y; te[ 8 ] *= z;
+	te[ 1 ] *= x; te[ 5 ] *= y; te[ 9 ] *= z;
+	te[ 2 ] *= x; te[ 6 ] *= y; te[ 10 ] *= z;
+	te[ 3 ] *= x; te[ 7 ] *= y; te[ 11 ] *= z;
+}
+
+void Matrix4::setRotation(const Quaternion& rotation) {
+	float* te = data;
+
+	float x = rotation.x, y = rotation.y, z = rotation.z, w = rotation.w;
+	float x2 = x + x, y2 = y + y, z2 = z + z;
+	float xx = x * x2, xy = x * y2, xz = x * z2;
+	float yy = y * y2, yz = y * z2, zz = z * z2;
+	float wx = w * x2, wy = w * y2, wz = w * z2;
+
+	te[ 0 ] = 1 - ( yy + zz );
+	te[ 4 ] = xy - wz;
+	te[ 8 ] = xz + wy;
+
+	te[ 1 ] = xy + wz;
+	te[ 5 ] = 1 - ( xx + zz );
+	te[ 9 ] = yz - wx;
+
+	te[ 2 ] = xz - wy;
+	te[ 6 ] = yz + wx;
+	te[ 10 ] = 1 - ( xx + yy );
+
+	// last column
+	te[ 3 ] = 0;
+	te[ 7 ] = 0;
+	te[ 11 ] = 0;
+
+	// bottom row
+	te[ 12 ] = 0;
+	te[ 13 ] = 0;
+	te[ 14 ] = 0;
+	te[ 15 ] = 1;
+}
+
+void Matrix4::compose(const Vector3& position, const Quaternion& rotation, const Vector3& scale) {
+	this->setRotation(rotation);
+	this->setScale(scale);
+	this->setPosition(position);
+}
+
+void Matrix4::decompose(Vector3& position, Quaternion& rotation, Vector3& scale) {
+	float* te = data;
+	float sx = Vector3( te[ 0 ], te[ 1 ], te[ 2 ] ).length();
+	float sy = Vector3( te[ 4 ], te[ 5 ], te[ 6 ] ).length();
+	float sz = Vector3( te[ 8 ], te[ 9 ], te[ 10 ] ).length();
+
+	// if determine is negative, we need to invert one scale
+	float det = determinant();
+	if ( det < 0 ) {
+		sx = - sx;
+	}
+	position.x = te[ 12 ];
+	position.y = te[ 13 ];
+	position.z = te[ 14 ];
+
+	Matrix4 matrix(*this);
+	float invSX = 1 / sx;
+	float invSY = 1 / sy;
+	float invSZ = 1 / sz;
+
+	matrix.data[ 0 ] *= invSX;
+	matrix.data[ 1 ] *= invSX;
+	matrix.data[ 2 ] *= invSX;
+
+	matrix.data[ 4 ] *= invSY;
+	matrix.data[ 5 ] *= invSY;
+	matrix.data[ 6 ] *= invSY;
+
+	matrix.data[ 8 ] *= invSZ;
+	matrix.data[ 9 ] *= invSZ;
+	matrix.data[ 10 ] *= invSZ;
+	matrix.getRotation(rotation);
+
+	scale.x = sx;
+	scale.y = sy;
+	scale.z = sz;
+}
+
+void Matrix4::getRotation(Quaternion& rotaion) {
+	float* te = data;
+	float m11 = te[ 0 ], m12 = te[ 4 ], m13 = te[ 8 ],
+	m21 = te[ 1 ], m22 = te[ 5 ], m23 = te[ 9 ],
+	m31 = te[ 2 ], m32 = te[ 6 ], m33 = te[ 10 ],
+	trace = m11 + m22 + m33,
+	s;
+
+	if ( trace > 0 ) {
+		s = 0.5 / sqrt( trace + 1.0 );
+		rotaion.w = 0.25 / s;
+		rotaion.x = ( m32 - m23 ) * s;
+		rotaion.y = ( m13 - m31 ) * s;
+		rotaion.z = ( m21 - m12 ) * s;
+	} else if ( m11 > m22 && m11 > m33 ) {
+		s = 2.0 * sqrt( 1.0 + m11 - m22 - m33 );
+		rotaion.w = ( m32 - m23 ) / s;
+		rotaion.x = 0.25 * s;
+		rotaion.y = ( m12 + m21 ) / s;
+		rotaion.z = ( m13 + m31 ) / s;
+	} else if ( m22 > m33 ) {
+		s = 2.0 * sqrt( 1.0 + m22 - m11 - m33 );
+		rotaion.w = ( m13 - m31 ) / s;
+		rotaion.x = ( m12 + m21 ) / s;
+		rotaion.y = 0.25 * s;
+		rotaion.z = ( m23 + m32 ) / s;
+	} else {
+		s = 2.0 * sqrt( 1.0 + m33 - m11 - m22 );
+		rotaion.w = ( m21 - m12 ) / s;
+		rotaion.x = ( m13 + m31 ) / s;
+		rotaion.y = ( m23 + m32 ) / s;
+		rotaion.z = 0.25 * s;
+	}
+}
+
+void Matrix4::makeFrustum(float left, float right, float bottom, float top,
+        float near, float far) {
+	float* te = data;
+	float x = 2 * near / ( right - left );
+	float y = 2 * near / ( top - bottom );
+
+	float a = ( right + left ) / ( right - left );
+	float b = ( top + bottom ) / ( top - bottom );
+	float c = - ( far + near ) / ( far - near );
+	float d = - 2 * far * near / ( far - near );
+
+	te[ 0 ] = x;	te[ 4 ] = 0;	te[ 8 ] = a;	te[ 12 ] = 0;
+	te[ 1 ] = 0;	te[ 5 ] = y;	te[ 9 ] = b;	te[ 13 ] = 0;
+	te[ 2 ] = 0;	te[ 6 ] = 0;	te[ 10 ] = c;	te[ 14 ] = d;
+	te[ 3 ] = 0;	te[ 7 ] = 0;	te[ 11 ] = - 1;	te[ 15 ] = 0;
+}
+
+void Matrix4::makePerspective(float fovy, float aspect, float near, float far) {
+	float ymax = near * tan(fovy * 0.5);
+	float ymin = - ymax;
+	float xmin = ymin * aspect;
+	float xmax = ymax * aspect;
+
+	makeFrustum( xmin, xmax, ymin, ymax, near, far );
+}
+
+void Matrix4::lookAt(const vec3& eye, const vec3& target, const vec3& upper) {
+	loadIdentity();
+
+	vec3 zaxis = eye - target;
+	zaxis.normalize();
+	if (zaxis.lengthSquared() == 0) {
+		zaxis.z = 1;
+	}
+
+	vec3 xaxis = upper.copyCross(zaxis);
+	xaxis.normalize();
+	if ( xaxis.lengthSquared() == 0 ) {
+		zaxis.x += 0.0001;
+		xaxis = upper.copyCross(zaxis);
+		xaxis.normalize();
+	}
+
+	vec3 yaxis = xaxis.copyCross(zaxis);
+//	yaxis.normalize();
+
+	data[0] = xaxis.x;
+	data[1] = xaxis.y;
+	data[2] = xaxis.z;
+
+	data[4] = yaxis.x;
+	data[5] = yaxis.y;
+	data[6] = yaxis.z;
+
+	data[8] = zaxis.x;
+	data[9] = zaxis.y;
+	data[10] = zaxis.z;
+
+	data[12] = xaxis.dot(eye);
+	data[13] = yaxis.dot(eye);
+	data[14] = zaxis.dot(eye);
+}
+
+float Matrix4::determinant() {
+	float* te = data;
+	float n11 = te[ 0 ], n12 = te[ 4 ], n13 = te[ 8 ], n14 = te[ 12 ];
+	float n21 = te[ 1 ], n22 = te[ 5 ], n23 = te[ 9 ], n24 = te[ 13 ];
+	float n31 = te[ 2 ], n32 = te[ 6 ], n33 = te[ 10 ], n34 = te[ 14 ];
+	float n41 = te[ 3 ], n42 = te[ 7 ], n43 = te[ 11 ], n44 = te[ 15 ];
+	return (
+			n41 * (
+				+ n14 * n23 * n32
+				 - n13 * n24 * n32
+				 - n14 * n22 * n33
+				 + n12 * n24 * n33
+				 + n13 * n22 * n34
+				 - n12 * n23 * n34
+			) +
+			n42 * (
+				+ n11 * n23 * n34
+				 - n11 * n24 * n33
+				 + n14 * n21 * n33
+				 - n13 * n21 * n34
+				 + n13 * n24 * n31
+				 - n14 * n23 * n31
+			) +
+			n43 * (
+				+ n11 * n24 * n32
+				 - n11 * n22 * n34
+				 - n14 * n21 * n32
+				 + n12 * n21 * n34
+				 + n14 * n22 * n31
+				 - n12 * n24 * n31
+			) +
+			n44 * (
+				- n13 * n22 * n31
+				 - n11 * n23 * n32
+				 + n11 * n22 * n33
+				 + n13 * n21 * n32
+				 - n12 * n21 * n33
+				 + n12 * n23 * n31
+			)
+
+		);
+}
 }
 };

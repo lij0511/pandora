@@ -15,7 +15,7 @@ PerspectiveCamera::PerspectiveCamera(const graphic::vec3& pos, const graphic::ve
 				0.1f), mZfar(3000.0f) {
 	mFovy = M_PI / 2.5f;
 	mAspect = 1.0f;
-	mProjection.loadPerspectiveLH(mFovy, mAspect, mZnear, mZfar);
+	mProjection.makePerspective(mFovy, mAspect, mZnear, mZfar);
 	mDirty = true;
 }
 
@@ -26,7 +26,7 @@ void PerspectiveCamera::setSize(int32_t width, int32_t height) {
 	Camera::setSize(width, height);
 	if (width > 0 && height > 0) {
 		mAspect = (float) width / height;
-		mProjection.loadPerspective(mFovy, mAspect, mZnear, mZfar);
+		mProjection.makePerspective(mFovy, mAspect, mZnear, mZfar);
 //		const double DEG2RAD = 3.1415926 / 180;
 //		double tangent = tan(m_fovy / 2 * DEG2RAD);
 //		double h = m_znear * tangent;
@@ -49,7 +49,12 @@ void PerspectiveCamera::setUpper(const graphic::vec3& upper) {
 
 void PerspectiveCamera::recalculateMatrix() {
 	mView.loadLookAt(mPosition, mTarget, mUpper);
-	mMatrix.loadMultiply(mProjection, mView);
+//	mView.setPosition(mPosition);
+//	mView.setPosition(mPosition);
+	graphic::mat4 m;
+//	m.loadInverse(mView);
+	m.load(mView);
+	mMatrix.loadMultiply(mProjection, m);
 }
 
 } /* namespace scene */

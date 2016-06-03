@@ -5,7 +5,7 @@
  *      Author: lijing
  */
 
-#include "graphic/Vector.h"
+#include "graphic/math/Vector.h"
 
 namespace pola {
 namespace graphic {

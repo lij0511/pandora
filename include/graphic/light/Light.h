@@ -10,7 +10,7 @@
 
 #include "utils/RefBase.h"
 #include "graphic/Color.h"
-#include "graphic/Vector.h"
+#include "graphic/math/Vector.h"
 
 #define LIGHT_MAX_COUNT 8;
 

@@ -21,8 +21,24 @@ void SceneNode::setPosition(const graphic::vec3& position) {
 	mPosition = position;
 }
 
-graphic::vec3 SceneNode::getPosition() const {
+const graphic::vec3& SceneNode::getPosition() const {
 	return mPosition;
+}
+
+void SceneNode::setRotation(const graphic::quat4& rotation) {
+	mRotation = rotation;
+}
+
+const graphic::quat4& SceneNode::getRotation() const {
+	return mRotation;
+}
+
+void SceneNode::setScale(const graphic::vec3& scale) {
+	mScale = scale;
+}
+
+const graphic::vec3& SceneNode::getScale() const {
+	return mScale;
 }
 
 const graphic::mat4 SceneNode::getTransform() {
