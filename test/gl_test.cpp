@@ -5,7 +5,8 @@
  *      Author: lijing
  */
 
-#include "scene/camera/PerspectiveCameraFPS.h"
+#include "scene/camera/PerspectiveCamera.h"
+#include "scene/camera/FPSCameraController.h"
 #include "Device.h"
 #include "io/FileInputStream.h"
 #include "scene/mesh/MeshLoader.h"
@@ -36,7 +37,8 @@ int main(int argc, char *argv[]) {
 	}
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
-	Camera* camera = new PerspectiveCameraFPS();
+	Camera* camera = new PerspectiveCamera();
+	camera->setCameraController(new FPSCameraController(camera));
 	camera->setPosition(vec3(0, 0, -100));
 	scene->addCamera(camera);
 

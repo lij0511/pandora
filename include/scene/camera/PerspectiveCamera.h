@@ -8,7 +8,7 @@
 #ifndef PERSPECTIVECAMERA_H_
 #define PERSPECTIVECAMERA_H_
 
-#include "scene/Camera.h"
+#include "scene/camera/Camera.h"
 
 namespace pola {
 namespace scene {
@@ -24,15 +24,12 @@ public:
 	virtual void setSize(int32_t width, int32_t height);
 
 protected:
-	virtual void recalculateMatrix();
+	virtual void updateMatrix();
 protected:
 	float mFovy;	// Field of view, in radians.
 	float mAspect;	// Aspect ratio.
 	float mZnear;	// value of the near view-plane.
 	float mZfar;	// Z-value of the far view-plane.
-
-	graphic::mat4 mProjection;
-	graphic::mat4 mView;
 
 };
 

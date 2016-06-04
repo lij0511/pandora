@@ -8,16 +8,36 @@
 #ifndef CAMERACONTROLLER_H_
 #define CAMERACONTROLLER_H_
 
+#include "input/KeyEvent.h"
+#include "input/MouseEvent.h"
+#include "utils/Times.h"
+#include "graphic/math/Matrix4.h"
+#include "graphic/math/Vector.h"
+
 namespace pola {
 namespace scene {
+
+class Camera;
 
 /*
  *
  */
 class CameraController {
 public:
-	CameraController();
+	CameraController(Camera* camera);
 	virtual ~CameraController();
+
+	virtual bool animate(nsecs_t timeMs);
+	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
+	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
+
+	virtual graphic::mat4 getTransform();
+
+protected:
+	Camera* mCamera;
+
+	graphic::vec3 mPosition;
+	graphic::quat4 mRotation;
 };
 
 } /* namespace scene */

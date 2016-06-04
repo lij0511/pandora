@@ -25,7 +25,6 @@ void Scene::setViewport(int32_t width, int32_t height) {
 	mGraphic->setViewport(width, height);
 	if (mCurrentCamera != nullptr) {
 		mCurrentCamera->setSize(width, height);
-		mGraphic->setMatrix(graphic::GraphicContext::PROJECTION, mCurrentCamera->matrix());
 	}
 }
 
@@ -64,7 +63,6 @@ void Scene::addCamera(Camera* camera) {
 	}
 	mCurrentCamera = camera;
 	mCurrentCamera->setSize(mWidth, mHeight);
-	mGraphic->setMatrix(graphic::GraphicContext::PROJECTION, mCurrentCamera->matrix());
 }
 
 Camera* Scene::getCurrentCamera() const {
@@ -76,7 +74,6 @@ void Scene::render() {
 	nsecs_t timeMs = uptimeMillis();
 	if (mCurrentCamera != nullptr) {
 		mCurrentCamera->render(mGraphic, timeMs);
-		mGraphic->setMatrix(graphic::GraphicContext::PROJECTION, mCurrentCamera->matrix());
 	}
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
 		mGraphic->setMatrix(graphic::GraphicContext::VIEW, mNodes[i]->getTransform());

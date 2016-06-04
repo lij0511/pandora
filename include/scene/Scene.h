@@ -13,7 +13,7 @@
 #include "graphic/GraphicContext.h"
 #include "scene/FPS.h"
 #include "scene/node/SceneNode.h"
-#include "scene/Camera.h"
+#include "scene/camera/Camera.h"
 #include "scene/Environment.h"
 #include "input/KeyEvent.h"
 #include "input/MouseEvent.h"

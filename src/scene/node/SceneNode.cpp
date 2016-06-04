@@ -11,7 +11,8 @@
 namespace pola {
 namespace scene {
 
-SceneNode::SceneNode() {
+SceneNode::SceneNode() : mMatrixDirty(true) {
+	mScale = {1, 1, 1};
 }
 
 SceneNode::~SceneNode() {
@@ -19,6 +20,7 @@ SceneNode::~SceneNode() {
 
 void SceneNode::setPosition(const graphic::vec3& position) {
 	mPosition = position;
+	onPropertyChange();
 }
 
 const graphic::vec3& SceneNode::getPosition() const {
@@ -27,6 +29,7 @@ const graphic::vec3& SceneNode::getPosition() const {
 
 void SceneNode::setRotation(const graphic::quat4& rotation) {
 	mRotation = rotation;
+	onPropertyChange();
 }
 
 const graphic::quat4& SceneNode::getRotation() const {
@@ -35,6 +38,7 @@ const graphic::quat4& SceneNode::getRotation() const {
 
 void SceneNode::setScale(const graphic::vec3& scale) {
 	mScale = scale;
+	onPropertyChange();
 }
 
 const graphic::vec3& SceneNode::getScale() const {
@@ -42,12 +46,18 @@ const graphic::vec3& SceneNode::getScale() const {
 }
 
 const graphic::mat4 SceneNode::getTransform() {
-	graphic::mat4 m;
-	m.loadTranslate(mPosition.x, mPosition.y, mPosition.z);
-	return m;
+	if (mMatrixDirty) {
+		mMatrix.compose(mPosition, mRotation, mScale);
+		mMatrixDirty = false;
+	}
+	return mMatrix;
 }
 
 void SceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
+}
+
+void SceneNode::onPropertyChange() {
+	mMatrixDirty = true;
 }
 
 } /* namespace scene */

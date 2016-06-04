@@ -33,14 +33,20 @@ public:
 	void setScale(const graphic::vec3& scale);
 	const graphic::vec3& getScale() const;
 
-	const graphic::mat4 getTransform();
+	virtual const graphic::mat4 getTransform();
 
 	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 
 protected:
+	virtual void onPropertyChange();
+
 	graphic::vec3 mPosition;
 	graphic::quat4 mRotation;
 	graphic::vec3 mScale;
+
+	graphic::mat4 mMatrix;
+	bool mMatrixDirty;
+
 };
 
 } /* namespace scene */

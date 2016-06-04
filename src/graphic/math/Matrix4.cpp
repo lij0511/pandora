@@ -232,7 +232,7 @@ void Matrix4::loadOrtho(float left, float right, float bottom, float top, float 
 
 }
 
-void Matrix4::loadLookAt(vec3& position, vec3& target, vec3& upper) {
+void Matrix4::loadLookAt(const vec3& position, const vec3& target, const vec3& upper) {
 	loadIdentity();
 	/*vec3 zaxis = position - target;
 	zaxis.normalize();
@@ -441,7 +441,6 @@ void Matrix4::setRotation(const Quaternion& rotation) {
 }
 
 void Matrix4::compose(const Vector3& position, const Quaternion& rotation, const Vector3& scale) {
-	loadIdentity();
 	this->setRotation(rotation);
 	this->setScale(scale);
 	this->setPosition(position);
