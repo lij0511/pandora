@@ -5,10 +5,10 @@
  *      Author: lijing
  */
 
-#include "scene/node/Material.h"
+#include "graphic/Material.h"
 
 namespace pola {
-namespace scene {
+namespace graphic {
 
 Material::Material() {
 }
@@ -16,5 +16,5 @@ Material::Material() {
 Material::~Material() {
 }
 
-} /* namespace scene */
+} /* namespace graphic */
 } /* namespace pola */
