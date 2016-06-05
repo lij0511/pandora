@@ -71,6 +71,11 @@ public:
 		KEYCODE_X,
 		KEYCODE_Y,
 		KEYCODE_Z,
+
+		KEYCODE_LEFT,
+		KEYCODE_RIGHT,
+		KEYCODE_UP,
+		KEYCODE_DOWN,
 	};
 
 	KeyEvent(const KeyCode& keyCode, const Action& action);

@@ -53,7 +53,9 @@ void Camera::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
 
 void Camera::updateMatrix() {
 	graphic::mat4 m;
-	m.compose(mPosition, mRotation, mScale);
+	graphic::quat4 quat;
+	mRotation.getQuaternion(quat);
+	m.compose(mPosition, quat, mScale);
 	mMatrix.loadInverse(m);
 }
 

@@ -138,10 +138,10 @@ public:
 
     void setPosition(const Vector3& position);
 	void setScale(const Vector3& scale);
-	void setRotation(const Quaternion& rotation);
+	void makeRotationFromQuaternion(const Quaternion& rotation);
 
-    void compose(const Vector3& position, const Quaternion& rotation, const Vector3& scale);
-    void decompose(Vector3& position, Quaternion& rotation, Vector3& scale);
+    void compose(const Vector3& position, const Quaternion& quaternion, const Vector3& scale);
+    void decompose(Vector3& position, Quaternion& quaternion, Vector3& scale);
     void getRotation(Quaternion& rotation);
 
     void makeFrustum(float left, float right, float bottom, float top,

@@ -49,7 +49,7 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	shader->invalidate();
 //	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
-	shader->setMatrix("u_projection", mProjection * mWorld);
+	shader->setMatrix("u_projection", mProjection);
 	shader->setMatrix("u_view", mView);
 
 	GLint a_texCoords;

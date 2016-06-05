@@ -30,9 +30,10 @@ bool CameraController::dispatchMouseEvent(input::MouseEvent& mouseEvent) {
 }
 
 graphic::mat4 CameraController::getTransform() {
-	static graphic::vec3 scale(1, 1, 1);
 	graphic::mat4 m;
-	m.compose(mPosition, mRotation, scale);
+	graphic::quat4 quat;
+	mRotation.getQuaternion(quat);
+	m.compose(mPosition, quat, {1, 1, 1});
 	return m;
 }
 

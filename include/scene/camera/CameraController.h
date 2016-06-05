@@ -12,6 +12,7 @@
 #include "input/MouseEvent.h"
 #include "utils/Times.h"
 #include "graphic/math/Matrix4.h"
+#include "graphic/math/Euler.h"
 #include "graphic/math/Vector.h"
 
 namespace pola {
@@ -37,7 +38,7 @@ protected:
 	Camera* mCamera;
 
 	graphic::vec3 mPosition;
-	graphic::quat4 mRotation;
+	graphic::Euler mRotation;
 };
 
 } /* namespace scene */

@@ -7,6 +7,7 @@
 
 #include "graphic/math/Vector.h"
 #include "graphic/math/Matrix4.h"
+#include "utils/Math.h"
 
 using namespace pola;
 using namespace pola::graphic;
@@ -30,6 +31,16 @@ int main(int argc, char *argv[]) {
 		printf("x=%f, y=%f, z=%f\n", v.x, v.y, v.z);
 
 //	}
+		int a[10] = {0};
+		for (int i = 0; i < 10000; i ++) {
+			a[(int) utils::random(0, 9)] ++;
+		}
+		for (int i = 0; i < 10000; i ++) {
+			a[(int) utils::random(0, 9)] ++;
+		}
+		for (int i = 0; i < 10; i ++) {
+			printf("%d = %d\n", i, a[i]);
+		}
 
 	return 1;
 }

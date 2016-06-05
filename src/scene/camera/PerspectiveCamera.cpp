@@ -29,7 +29,9 @@ void PerspectiveCamera::setSize(int32_t width, int32_t height) {
 
 void PerspectiveCamera::updateMatrix() {
 //	mView.lookAt(mPosition, mTarget, mUpper);
-	mView.compose(mPosition, mRotation, mScale);
+	graphic::quat4 quat;
+	mRotation.getQuaternion(quat);
+	mView.compose(mPosition, quat, mScale);
 	mMatrix.loadMultiply(mProjection, mView);
 }
 

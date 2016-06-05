@@ -201,6 +201,11 @@ void LinuxDevice::createKeyMap() {
 	mKeyMap.add(XK_y, input::KeyEvent::KEYCODE_Y);
 	mKeyMap.add(XK_z, input::KeyEvent::KEYCODE_Z);
 
+	mKeyMap.add(XK_Left, input::KeyEvent::KEYCODE_LEFT);
+	mKeyMap.add(XK_Right, input::KeyEvent::KEYCODE_RIGHT);
+	mKeyMap.add(XK_Up, input::KeyEvent::KEYCODE_UP);
+	mKeyMap.add(XK_Down, input::KeyEvent::KEYCODE_DOWN);
+
 
 }
 

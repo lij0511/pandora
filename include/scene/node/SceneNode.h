@@ -10,6 +10,7 @@
 
 #include "graphic/math/Vector.h"
 #include "graphic/math/Quaternion.h"
+#include "graphic/math/Euler.h"
 #include "graphic/math/Matrix4.h"
 #include "graphic/GraphicContext.h"
 
@@ -27,8 +28,8 @@ public:
 	void setPosition(const graphic::vec3& position);
 	const graphic::vec3& getPosition() const;
 
-	void setRotation(const graphic::quat4& rotation);
-	const graphic::quat4& getRotation() const;
+	void setRotation(const graphic::Euler& rotation);
+	const graphic::Euler& getRotation() const;
 
 	void setScale(const graphic::vec3& scale);
 	const graphic::vec3& getScale() const;
@@ -41,7 +42,7 @@ protected:
 	virtual void onPropertyChange();
 
 	graphic::vec3 mPosition;
-	graphic::quat4 mRotation;
+	graphic::Euler mRotation;
 	graphic::vec3 mScale;
 
 	graphic::mat4 mMatrix;

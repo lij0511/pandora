@@ -27,12 +27,12 @@ const graphic::vec3& SceneNode::getPosition() const {
 	return mPosition;
 }
 
-void SceneNode::setRotation(const graphic::quat4& rotation) {
+void SceneNode::setRotation(const graphic::Euler& rotation) {
 	mRotation = rotation;
 	onPropertyChange();
 }
 
-const graphic::quat4& SceneNode::getRotation() const {
+const graphic::Euler& SceneNode::getRotation() const {
 	return mRotation;
 }
 
@@ -47,7 +47,9 @@ const graphic::vec3& SceneNode::getScale() const {
 
 const graphic::mat4 SceneNode::getTransform() {
 	if (mMatrixDirty) {
-		mMatrix.compose(mPosition, mRotation, mScale);
+		graphic::quat4 quat;
+		mRotation.getQuaternion(quat);
+		mMatrix.compose(mPosition, quat, mScale);
 		mMatrixDirty = false;
 	}
 	return mMatrix;

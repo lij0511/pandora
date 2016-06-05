@@ -407,10 +407,10 @@ void Matrix4::setScale(const Vector3& scale) {
 	te[ 3 ] *= x; te[ 7 ] *= y; te[ 11 ] *= z;
 }
 
-void Matrix4::setRotation(const Quaternion& rotation) {
+void Matrix4::makeRotationFromQuaternion(const Quaternion& quaternion) {
 	float* te = data;
 
-	float x = rotation.x, y = rotation.y, z = rotation.z, w = rotation.w;
+	float x = quaternion.x, y = quaternion.y, z = quaternion.z, w = quaternion.w;
 	float x2 = x + x, y2 = y + y, z2 = z + z;
 	float xx = x * x2, xy = x * y2, xz = x * z2;
 	float yy = y * y2, yz = y * z2, zz = z * z2;
@@ -440,13 +440,13 @@ void Matrix4::setRotation(const Quaternion& rotation) {
 	te[ 15 ] = 1;
 }
 
-void Matrix4::compose(const Vector3& position, const Quaternion& rotation, const Vector3& scale) {
-	this->setRotation(rotation);
+void Matrix4::compose(const Vector3& position, const Quaternion& quaternion, const Vector3& scale) {
+	this->makeRotationFromQuaternion(quaternion);
 	this->setScale(scale);
 	this->setPosition(position);
 }
 
-void Matrix4::decompose(Vector3& position, Quaternion& rotation, Vector3& scale) {
+void Matrix4::decompose(Vector3& position, Quaternion& quaternion, Vector3& scale) {
 	float* te = data;
 	float sx = Vector3( te[ 0 ], te[ 1 ], te[ 2 ] ).length();
 	float sy = Vector3( te[ 4 ], te[ 5 ], te[ 6 ] ).length();
@@ -477,7 +477,7 @@ void Matrix4::decompose(Vector3& position, Quaternion& rotation, Vector3& scale)
 	matrix.data[ 8 ] *= invSZ;
 	matrix.data[ 9 ] *= invSZ;
 	matrix.data[ 10 ] *= invSZ;
-	matrix.getRotation(rotation);
+	matrix.getRotation(quaternion);
 
 	scale.x = sx;
 	scale.y = sy;

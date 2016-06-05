@@ -23,6 +23,8 @@ public:
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
+	virtual graphic::mat4 getTransform();
+
 private:
 	float mMoveSpeed;
 	float mRotateSpeed;
