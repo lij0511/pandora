@@ -25,7 +25,7 @@
 #ifndef POLA_UNIQUEPTR_H_
 #define POLA_UNIQUEPTR_H_
 
-#include <cstdlib> // For NULL.
+#include <stdlib.h> // For NULL.
 
 // Default deleter for pointer types.
 template <typename T>

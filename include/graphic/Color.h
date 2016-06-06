@@ -30,6 +30,12 @@ struct Color {
 
 struct FColor {
 	float r, g, b, a;
+	FColor(float r = 0, float g = 0, float b = 0, float a = 0) {
+		this->r = r;
+		this->g = g;
+		this->b = b;
+		this->a = a;
+	}
 };
 
 } /* namespace graphic */

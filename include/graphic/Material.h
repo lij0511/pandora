@@ -9,6 +9,7 @@
 #define POLA_MATERIAL_H_
 
 #include "graphic/Color.h"
+#include "graphic/Texture.h"
 
 namespace pola {
 namespace graphic {
@@ -18,10 +19,16 @@ public:
 	Material();
 	virtual ~Material();
 
+	void setTexture(uint32_t i, Texture* texture);
+	Texture* getTexture(uint32_t i) const;
+
 private:
-	Color mAmbientColor;
-	Color mDiffuseColor;
-	Color mSpecularColor;
+	Texture* mTextures[MAX_TEXTURE_UNITS_COUNT];
+
+	FColor mAmbientColor;
+	FColor mDiffuseColor;
+	FColor mEmissiveColor;
+	FColor mSpecularColor;
 	float mShininess;
 };
 

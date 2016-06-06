@@ -9,17 +9,34 @@
 #define POLA_GLCACHES_H_
 
 #include "graphic/gl/GLProgramCache.h"
+#include "graphic/Texture.h"
 
 namespace pola {
 namespace graphic {
-
-#define REQUIRED_TEXTURE_UNITS_COUNT 3
 
 // Must define as many texture units as specified by REQUIRED_TEXTURE_UNITS_COUNT
 static const GLenum gTextureUnits[] = {
     GL_TEXTURE0,
     GL_TEXTURE1,
-    GL_TEXTURE2
+    GL_TEXTURE2,
+#if MAX_TEXTURE_UNITS_COUNT > 3
+	GL_TEXTURE3,
+#endif
+#if MAX_TEXTURE_UNITS_COUNT > 4
+	GL_TEXTURE4,
+#endif
+#if MAX_TEXTURE_UNITS_COUNT > 5
+	GL_TEXTURE5,
+#endif
+#if MAX_TEXTURE_UNITS_COUNT > 6
+	GL_TEXTURE6,
+#endif
+#if MAX_TEXTURE_UNITS_COUNT > 7
+	GL_TEXTURE7,
+#endif
+#if MAX_TEXTURE_UNITS_COUNT > 8
+#error "Unsupport Texture Count"
+#endif
 };
 
 class GLCaches {
@@ -43,7 +60,7 @@ public:
 private:
 
 	GLuint mTextureUnit;
-	GLuint mBoundTextures[REQUIRED_TEXTURE_UNITS_COUNT];
+	GLuint mBoundTextures[MAX_TEXTURE_UNITS_COUNT];
 };
 
 } /* namespace graphic */

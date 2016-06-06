@@ -12,6 +12,7 @@
 
 #include "graphic/MeshBuffer.h"
 #include "graphic/math/Matrix4.h"
+#include "graphic/Material.h"
 #include "graphic/Texture.h"
 #include "io/InputStream.h"
 
@@ -37,6 +38,8 @@ public:
 	virtual void endFrame();
 
 	void setMatrix(MatrixType type, const mat4& matrix);
+
+	virtual void setMaterial(const Material& material) = 0;
 
 	virtual void renderMeshBuffer(MeshBuffer& meshBuffer) = 0;
 

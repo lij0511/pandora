@@ -12,6 +12,7 @@
 #include "graphic/GraphicContext.h"
 #include "graphic/math/Matrix4.h"
 #include "graphic/gl/GLTexture.h"
+#include "graphic/gl/GLCaches.h"
 
 namespace pola {
 namespace graphic {
@@ -26,10 +27,15 @@ public:
 	virtual void beginFrame();
 	virtual void endFrame();
 
+	virtual void setMaterial(const Material& material);
+
 	virtual void renderMeshBuffer(MeshBuffer& meshBuffer);
 
 protected:
 	virtual Texture* doLoadTexture(io::InputStream* is);
+
+private:
+	GLCaches& mCaches;
 };
 
 } /* namespace graphic */

@@ -12,7 +12,7 @@
 namespace pola {
 namespace graphic {
 
-GLGraphicContext::GLGraphicContext() {
+GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(true);
 	glDepthFunc(GL_LEQUAL);
@@ -38,6 +38,19 @@ void GLGraphicContext::beginFrame() {
 }
 
 void GLGraphicContext::endFrame() {
+}
+
+void GLGraphicContext::setMaterial(const Material& material) {
+	for (uint32_t i = 0; i < MAX_TEXTURE_UNITS_COUNT; i ++) {
+		Texture* texture = material.getTexture(i);
+		if (texture != nullptr) {
+			GLTexture* glTexture = (GLTexture*) texture;
+			if (glTexture->generateTexture()) {
+				mCaches.activeTexture(i);
+				mCaches.bindTexture(glTexture->id);
+			}
+		}
+	}
 }
 
 void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {

@@ -28,9 +28,21 @@ int main(int argc, char *argv[]) {
 
 	 Scene* scene = device->getSceneManager()->getActiveScene();
 	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
+	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie2.bmp");
+	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.md2");
+	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/sydney.bmp");
 	if (mesh) {
-		for (int i = 0; i < 200; i ++) {
+		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
+			node->setMaterialTexture(0, texture);
+			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+			scene->addSceneNode(node);
+		}
+	}
+	if (mesh) {
+		for (int i = 0; i < 100; i ++) {
+			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
+			node->setMaterialTexture(0, texture2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			scene->addSceneNode(node);
 		}
@@ -41,12 +53,6 @@ int main(int argc, char *argv[]) {
 	camera->setCameraController(new FPSCameraController(camera));
 //	camera->setPosition(vec3(0, 0, -100));
 	scene->addCamera(camera);
-
-	// TODO
-	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie2.bmp");
-	if (texture != nullptr && texture->generateTexture()) {
-		graphic::GLCaches::get().bindTexture(texture->id);
-	}
 
 	device->run();
 	return 1;

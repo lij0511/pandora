@@ -51,11 +51,11 @@ void GLCaches::deleteTexture(GLuint texture) {
 }
 
 void GLCaches::resetBoundTextures() {
-    memset(mBoundTextures, 0, REQUIRED_TEXTURE_UNITS_COUNT * sizeof(GLuint));
+    memset(mBoundTextures, 0, MAX_TEXTURE_UNITS_COUNT * sizeof(GLuint));
 }
 
 void GLCaches::unbindTexture(GLuint texture) {
-    for (int i = 0; i < REQUIRED_TEXTURE_UNITS_COUNT; i++) {
+    for (int i = 0; i < MAX_TEXTURE_UNITS_COUNT; i++) {
         if (mBoundTextures[i] == texture) {
             mBoundTextures[i] = 0;
         }
