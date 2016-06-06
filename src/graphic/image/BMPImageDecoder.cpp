@@ -111,6 +111,27 @@ static void putPixel888_1(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t r, uin
 	pixels[base + 2] = b;
 }
 
+static int calcShiftRight(uint32_t mask) {
+  int ret = 0;
+  while (mask != 0 && !(mask & 1)) {
+    mask >>= 1;
+    ret++;
+  }
+  return ret;
+}
+
+static int calcShiftLeft(uint32_t mask) {
+  int ret = 0;
+  while (mask != 0 && !(mask & 1)) {
+    mask >>= 1;
+  }
+  while (mask != 0 && !(mask & 0x80)) {
+    mask <<= 1;
+    ret++;
+  }
+  return ret;
+}
+
 static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
 		uint8_t* color_table) {
 	static const uint8_t RLE_ESCAPE = 0;
@@ -199,6 +220,21 @@ static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
 
 static void doStandardDecode(BMPHeader& header, io::InputStream* is,
 		Bitmap* bitmap, uint8_t* color_table) {
+	uint32_t redBits_ = 0x7c00;
+	uint32_t greenBits_ = 0x03e0;
+	uint32_t blueBits_ = 0x001f;
+	if (header.Compression == 3) {
+		redBits_ = readInt(is) & 0xffff;
+		greenBits_ = readInt(is) & 0xffff;
+		blueBits_ = readInt(is) & 0xffff;
+	}
+
+	int redShiftRight_ = calcShiftRight(redBits_);
+	int greenShiftRight_ = calcShiftRight(greenBits_);
+	int blueShiftRight_ = calcShiftRight(blueBits_);
+	int redShiftLeft_ = calcShiftLeft(redBits_);
+	int greenShiftLeft_ = calcShiftLeft(greenBits_);
+	int blueShiftLeft_ = calcShiftLeft(blueBits_);
 
 	uint32_t width_ = bitmap->getWidth();
 	uint32_t height_ = bitmap->getHeight();
@@ -250,12 +286,12 @@ static void doStandardDecode(BMPHeader& header, io::InputStream* is,
 			if (header.BPP >= 24) {
 				putPixel1(bitmap, w, h, readByte(is), readByte(is),
 						readByte(is));
-			} else if (header.BPP == 16) {/*
-			 uint32_t val = readShort(is);
-			 line[0] = ((val & redBits_) >> redShiftRight_) << redShiftLeft_;
-			 line[1] = ((val & greenBits_) >> greenShiftRight_) << greenShiftLeft_;
-			 line[2] = ((val & blueBits_) >> blueShiftRight_) << blueShiftLeft_;
-			 */
+			} else if (header.BPP == 16) {
+				 uint32_t val = readShort(is);
+				 uint8_t c1 = ((val & redBits_) >> redShiftRight_) << redShiftLeft_;
+				 uint8_t c2 = ((val & greenBits_) >> greenShiftRight_) << greenShiftLeft_;
+				 uint8_t c3 = ((val & blueBits_) >> blueShiftRight_) << blueShiftLeft_;
+				 putPixel1(bitmap, w, h, c1, c2, c3);
 			} else if (header.BPP <= 8) {
 				uint8_t col;
 				if (header.BPP == 8) {
