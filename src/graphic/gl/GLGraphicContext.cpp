@@ -49,6 +49,9 @@ void GLGraphicContext::setMaterial(const Material& material) {
 				mCaches.activeTexture(i);
 				mCaches.bindTexture(glTexture->id);
 			}
+		} else {
+			mCaches.activeTexture(i);
+			mCaches.bindTexture(0);
 		}
 	}
 }
