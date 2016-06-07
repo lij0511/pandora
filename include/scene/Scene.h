@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include "graphic/GraphicContext.h"
+#include "graphic/Color.h"
 #include "scene/FPS.h"
 #include "scene/node/SceneNode.h"
 #include "scene/camera/Camera.h"
@@ -31,6 +32,8 @@ public:
 	int32_t getWidth() const;
 	int32_t getHeight() const;
 
+	void setClearColor(graphic::FColor color);
+
 	void addSceneNode(SceneNode* node);
 	void removeSceneNode(SceneNode* node);
 
@@ -50,6 +53,7 @@ private:
 	graphic::GraphicContext* mGraphic;
 	int32_t mWidth;
 	int32_t mHeight;
+	graphic::FColor mClearColor;
 
 	utils::Vector<SceneNode*> mNodes;
 

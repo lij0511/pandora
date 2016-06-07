@@ -36,6 +36,10 @@ int32_t Scene::getHeight() const {
 	return mHeight;
 }
 
+void Scene::setClearColor(graphic::FColor color) {
+	mClearColor = color;
+}
+
 void Scene::addSceneNode(SceneNode* node) {
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
 		if (mNodes[i] == node) {
@@ -70,7 +74,7 @@ Camera* Scene::getCurrentCamera() const {
 }
 
 void Scene::render() {
-	mGraphic->beginFrame();
+	mGraphic->beginFrame(mClearColor);
 	nsecs_t timeMs = uptimeMillis();
 	if (mCurrentCamera != nullptr) {
 		mCurrentCamera->render(mGraphic, timeMs);

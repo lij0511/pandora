@@ -48,6 +48,8 @@ protected:
 	graphic::mat4 mMatrix;
 	bool mMatrixDirty;
 
+	utils::sp<SceneNode> mParent;
+
 };
 
 } /* namespace scene */

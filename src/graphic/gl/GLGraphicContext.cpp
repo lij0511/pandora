@@ -31,8 +31,8 @@ void GLGraphicContext::setViewport(int32_t width, int32_t height) {
 	glViewport(0, 0, width, height);
 }
 
-void GLGraphicContext::beginFrame() {
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+void GLGraphicContext::beginFrame(FColor clearColor) {
+	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

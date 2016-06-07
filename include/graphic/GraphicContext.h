@@ -34,7 +34,7 @@ public:
 	Texture* loadTexture(const char* file);
 	Texture* loadTexture(io::InputStream* is);
 
-	virtual void beginFrame();
+	virtual void beginFrame(FColor clearColor);
 	virtual void endFrame();
 
 	void setMatrix(MatrixType type, const mat4& matrix);

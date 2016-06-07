@@ -13,6 +13,7 @@ namespace scene {
 
 SceneNode::SceneNode() : mMatrixDirty(true) {
 	mScale = {1, 1, 1};
+	mParent = NULL;
 }
 
 SceneNode::~SceneNode() {

@@ -24,7 +24,7 @@ public:
 
 	virtual void setViewport(int32_t width, int32_t height);
 
-	virtual void beginFrame();
+	virtual void beginFrame(FColor clearColor);
 	virtual void endFrame();
 
 	virtual void setMaterial(const Material& material);

@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
 	Device* device = createDevice(param);
 
 	 Scene* scene = device->getSceneManager()->getActiveScene();
+	 scene->setClearColor({0.4f, 0.4f, 0.6f, 1.f});
 	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/faerie.md2");
 	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/faerie2.bmp");
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
@@ -36,6 +37,10 @@ int main(int argc, char *argv[]) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 			node->setMaterialTexture(0, texture);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+			int ani = random(0, MD2_AT_COUNT + 3);
+			if (ani < MD2_AT_COUNT) {
+				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
+			}
 			scene->addSceneNode(node);
 		}
 	}
@@ -44,6 +49,10 @@ int main(int argc, char *argv[]) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
 			node->setMaterialTexture(0, texture2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+			int ani = random(0, MD2_AT_COUNT + 3);
+			if (ani < MD2_AT_COUNT) {
+				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
+			}
 			scene->addSceneNode(node);
 		}
 	}
