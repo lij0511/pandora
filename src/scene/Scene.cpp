@@ -77,11 +77,11 @@ void Scene::render() {
 	mGraphic->beginFrame(mClearColor);
 	nsecs_t timeMs = uptimeMillis();
 	if (mCurrentCamera != nullptr) {
-		mCurrentCamera->render(mGraphic, timeMs);
+		mCurrentCamera->dispatchRender(mGraphic, timeMs);
 	}
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
 		mGraphic->setMatrix(graphic::GraphicContext::VIEW, mNodes[i]->getTransform());
-		mNodes[i]->render(mGraphic, timeMs);
+		mNodes[i]->dispatchRender(mGraphic, timeMs);
 	}
 
 	mGraphic->endFrame();

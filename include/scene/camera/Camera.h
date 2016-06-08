@@ -27,12 +27,12 @@ public:
 
 	void setCameraController(CameraController* controller);
 
-	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
 protected:
+	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 	virtual void updateMatrix();
 
 	virtual void onPropertyChange();

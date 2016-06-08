@@ -13,9 +13,17 @@
 namespace pola {
 namespace io {
 
-class Reader: public InputStream {
+class Reader {
 public:
 	virtual ~Reader() {};
+
+	virtual size_t read(void* buffer, size_t size) = 0;
+	virtual int read() = 0;
+	virtual size_t skip(size_t size) = 0;
+	virtual size_t seek(size_t size) = 0;
+	virtual bool rewind() = 0;
+
+	virtual void close() = 0;
 };
 
 } /* namespace io */

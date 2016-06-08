@@ -10,7 +10,7 @@
 namespace pola {
 namespace graphic {
 
-Material::Material() : mTextures({nullptr}), mAmbientColor(1.f, 1.f, 1.f, 1.f)
+Material::Material() : mTextures{nullptr}, mAmbientColor(1.f, 1.f, 1.f, 1.f)
 	, mDiffuseColor(1.f, 1.f, 1.f, 1.f), mEmissiveColor(0.f, 0.f, 0.f, 0.f)
 	, mSpecularColor(1.f, 1.f, 1.f, 1.f), mShininess(0.f) {
 }

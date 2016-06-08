@@ -36,9 +36,13 @@ public:
 
 	virtual const graphic::mat4 getTransform();
 
-	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
+	void addChild(SceneNode* node);
+	void removeChild(SceneNode* node);
+
+	void dispatchRender(graphic::GraphicContext* graphic, nsecs_t timeMs);
 
 protected:
+	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 	virtual void onPropertyChange();
 
 	graphic::vec3 mPosition;
@@ -48,7 +52,8 @@ protected:
 	graphic::mat4 mMatrix;
 	bool mMatrixDirty;
 
-	utils::sp<SceneNode> mParent;
+	SceneNode* mParent;
+	utils::Vector<SceneNode*> mChildren;
 
 };
 

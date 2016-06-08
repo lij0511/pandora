@@ -30,7 +30,7 @@ Texture* GraphicContext::loadTexture(io::InputStream* is) {
 	return doLoadTexture(is);
 }
 
-void GraphicContext::beginFrame(FColor clearColor) {
+void GraphicContext::beginFrame(const FColor& clearColor) {
 }
 
 void GraphicContext::endFrame() {

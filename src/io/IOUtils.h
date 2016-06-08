@@ -29,7 +29,6 @@ utils::Vector<TYPE> copyStreamToVector(InputStream* is) {
 	} else {
 		size_t size = sizeof(TYPE);
 		void* ch = new char[size];
-		printf("size=%lu\n", size);
 		while (is->read(ch, size) == size) {
 			vector.push(*((TYPE*) ch));
 		}

@@ -13,7 +13,7 @@ namespace scene {
 
 SceneNode::SceneNode() : mMatrixDirty(true) {
 	mScale = {1, 1, 1};
-	mParent = NULL;
+	mParent = nullptr;
 }
 
 SceneNode::~SceneNode() {
@@ -56,11 +56,41 @@ const graphic::mat4 SceneNode::getTransform() {
 	return mMatrix;
 }
 
+void SceneNode::addChild(SceneNode* child) {
+	for (unsigned i = 0; i < mChildren.size(); i ++) {
+		if (mChildren[i] == child) {
+			return;
+		}
+	}
+	child->ref();
+	mChildren.push(child);
+}
+
+void SceneNode::removeChild(SceneNode* child) {
+	for (unsigned i = 0; i < mChildren.size(); i ++) {
+		if (mChildren[i] == child) {
+			mChildren.removeAt(i);
+			child->deref();
+			return;
+		}
+	}
+}
+
+void SceneNode::dispatchRender(graphic::GraphicContext* graphic, nsecs_t timeMs) {
+	render(graphic, timeMs);
+	for (unsigned i = 0; i < mChildren.size(); i ++) {
+		mChildren[i]->dispatchRender(graphic, timeMs);
+	}
+}
+
 void SceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
 }
 
 void SceneNode::onPropertyChange() {
 	mMatrixDirty = true;
+	for (unsigned i = 0; i < mChildren.size(); i ++) {
+		mChildren[i]->onPropertyChange();
+	}
 }
 
 } /* namespace scene */

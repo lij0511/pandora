@@ -22,8 +22,10 @@ public:
 
 	void setAnimationType(MD2_ANIMATION_TYPE type);
 
-	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 	void setMaterialTexture(uint32_t i, graphic::Texture* texture);
+
+protected:
+	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 
 private:
 	MD2AnimatedMesh* mMesh;
