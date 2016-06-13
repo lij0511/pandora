@@ -50,7 +50,9 @@ bool FileInputStream::rewind() {
 }
 
 void FileInputStream::close() {
-	InputStream::close();
+	if (!isClosed()) {
+		InputStream::close();
+	}
 	if (!mFP) return;
 	fclose(mFP);
 	mFP = 0;

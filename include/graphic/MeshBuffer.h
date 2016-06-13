@@ -25,6 +25,7 @@ public:
 	virtual ~MeshBuffer();
 
 	void* alloc(size_t vertexCount);
+	void setVertexs(void* vertexs, size_t vertexCount);
 
 	uint16_t* allocIndex(size_t indexCount);
 	void pushIndex(uint16_t index);

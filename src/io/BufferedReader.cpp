@@ -6,6 +6,7 @@
  */
 
 #include "log/Log.h"
+#include "utils/StringBuffer.h"
 #include "io/BufferedReader.h"
 
 namespace pola {
@@ -15,6 +16,7 @@ BufferedReader::BufferedReader(Reader* reader, size_t bufSize) : mReader(reader)
 	LOG_FATAL_IF(bufSize == 0, "Buffer Size must not be 0.\n");
 	mBuffer = new char[bufSize];
 	mBufferSize = bufSize;
+	mLastWasCR = false;
 }
 
 BufferedReader::~BufferedReader() {
@@ -22,15 +24,55 @@ BufferedReader::~BufferedReader() {
 }
 
 size_t BufferedReader::read(void* buffer, size_t size) {
-	// TODO
-	return mReader->read(buffer, size);
+	if (size == 0) {
+		return 0;
+	}
+
+	maybeSwallowLF();
+
+	ssize_t length = ssize_t(size);
+	ssize_t outstanding = length;
+	while (outstanding > 0) {
+		// If there are chars in the buffer, grab those first.
+		int32_t available = mEnd - mPosition;
+		if (available > 0) {
+			int count = available >= outstanding ? outstanding : available;
+			memcpy(buffer, mBuffer + mPosition, count);
+			mPosition += count;
+			outstanding -= count;
+		}
+
+		if (outstanding == 0 || outstanding < length) {
+			break;
+		}
+
+		if (fillBuffer() <= 0) {
+			break; // source is exhausted
+		}
+	}
+	ssize_t count = length - outstanding;
+	if (count > 0) {
+		return count;
+	}
+	return EOF;
 }
 int BufferedReader::read() {
-	// TODO
-	return mReader->read();
+	int ch = readChar();
+	if (mLastWasCR && ch == '\n') {
+		ch = readChar();
+	}
+	mLastWasCR = false;
+	return ch;
 }
+int BufferedReader::readChar() {
+	if (mPosition < mEnd || fillBuffer() > 0) {
+		return mBuffer[mPosition++];
+	}
+	return EOF;
+}
+
 size_t BufferedReader::skip(size_t size) {
-	if (mPosition + size <= mEnd) {
+	if (mPosition + ssize_t(size) <= mEnd) {
 		mPosition += size;
 		return size;
 	}
@@ -50,7 +92,48 @@ bool BufferedReader::rewind() {
 }
 
 bool BufferedReader::readLine(utils::String& line) {
-	// TODO
+	maybeSwallowLF();
+
+	// Do we have a whole line in the buffer?
+	for (int32_t i = mPosition; i < mEnd; ++ i) {
+		char ch = mBuffer[i];
+		if (ch == '\n' || ch == '\r') {
+			line = utils::String(mBuffer + mPosition, size_t(i - mPosition));
+			mPosition = i + 1;
+			mLastWasCR = (ch == '\r');
+			return true;
+		}
+	}
+
+	utils::StringBuffer sb;
+	sb.append(mBuffer + mPosition, size_t(mEnd - mPosition));
+	while (true) {
+		mPosition = mEnd;
+		if (fillBuffer() <= 0) {
+			// If there's no more input, return what we've read so far, if anything.
+			if (sb.length() > 0) {
+				sb.release(line);
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		// Do we have a whole line in the buffer now?
+		for (int32_t i = mPosition; i < mEnd; ++ i) {
+			char ch = mBuffer[i];
+			if (ch == '\n' || ch == '\r') {
+				sb.append(mBuffer + mPosition, size_t(i - mPosition));
+				mPosition = i + 1;
+				mLastWasCR = (ch == '\r');
+				sb.release(line);
+				return true;
+			}
+		}
+
+		// Add this whole buffer to the line-in-progress and try again...
+		sb.append(mBuffer + mPosition, size_t(mEnd - mPosition));
+	}
 	return false;
 }
 
@@ -69,6 +152,19 @@ int BufferedReader::fillBuffer() {
 		mEnd = result;
 	}
 	return result;
+}
+
+void BufferedReader::chompNewline() {
+	if ((mPosition != mEnd || fillBuffer() > 0) && mBuffer[mPosition] == '\n') {
+		++ mPosition;
+	}
+}
+
+void BufferedReader::maybeSwallowLF() {
+	if (mLastWasCR) {
+		chompNewline();
+		mLastWasCR = false;
+	}
 }
 
 } /* namespace io */

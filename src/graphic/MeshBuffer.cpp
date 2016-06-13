@@ -41,7 +41,17 @@ void* MeshBuffer::alloc(size_t vertexCount) {
 		m_vertexCount = vertexCount;
 	}
 	return m_buffer;
-};
+}
+
+void MeshBuffer::setVertexs(void* vertexs, size_t vertexCount) {
+	if (m_buffer != vertexs || m_vertexCount != vertexCount) {
+		if (m_buffer && m_buffer != vertexs) {
+			free(m_buffer);
+		}
+		m_buffer = vertexs;
+		m_vertexCount = vertexCount;
+	}
+}
 
 uint16_t* MeshBuffer::allocIndex(size_t indexCount) {
 	m_indexBuffer.clear();

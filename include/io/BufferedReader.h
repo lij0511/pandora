@@ -34,14 +34,18 @@ public:
 
 private:
 	int fillBuffer();
+	int readChar();
+	void chompNewline();
+	void maybeSwallowLF();
 
 private:
 	Reader* mReader;
 	char* mBuffer;
 	size_t mBufferSize;
 
-	uint32_t mPosition;
-	uint32_t mEnd;
+	int32_t mPosition;
+	int32_t mEnd;
+	bool mLastWasCR;
 };
 
 } /* namespace io */

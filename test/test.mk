@@ -14,5 +14,8 @@ md2_loader_test: test/md2_loader_test.cpp
 	
 v_test: test/v_test.cpp
 	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
+
+io_test: test/io_test.cpp
+	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
 	
-test: thread_test gl_test md2_loader_test v_test
+test: thread_test gl_test md2_loader_test v_test io_test

@@ -149,6 +149,22 @@ public:
 		return *this;
 	}
 
+	String trim() {
+		size_t start = 0, last = length() - 1;
+		size_t end = last;
+		const char* chars = characters();
+		while ((start <= end) && (chars[start] <= ' ')) {
+			start++;
+		}
+		while ((end >= start) && (chars[end] <= ' ')) {
+			end--;
+		}
+		if (start == 0 && end == last) {
+			return *this;
+		}
+		return String(chars + start, end - start);
+	}
+
 	ssize_t indexOf(char c) const {
 		ssize_t len = length();
 		for (ssize_t i = 0; i < len; i ++) {

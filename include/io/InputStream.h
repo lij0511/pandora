@@ -34,8 +34,10 @@ public:
 	/** Returns the total length of the stream. If this cannot be done, returns 0. */
 	virtual size_t getLength() const { return 0; }
 
+	bool isClosed() const {
+		return mClosed;
+	}
 	virtual void close() {
-		assert(!mClosed);
 		mClosed = true;
 	}
 
