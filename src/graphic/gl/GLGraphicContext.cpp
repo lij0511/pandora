@@ -85,8 +85,10 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	}
 	if (meshBuffer.getIndexCount() > 0) {
 		glDrawElements(GL_TRIANGLES, meshBuffer.getIndexCount(), GL_UNSIGNED_SHORT, meshBuffer.getIndexBuffer());
+//		glDrawElements(GL_LINES, meshBuffer.getIndexCount(), GL_UNSIGNED_SHORT, meshBuffer.getIndexBuffer());
+//		glDrawArrays(GL_LINES, 0, meshBuffer.getVertexCount());
 	} else {
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, meshBuffer.getVertexCount());
+		glDrawArrays(GL_TRIANGLES, 0, meshBuffer.getVertexCount());
 	}
 }
 

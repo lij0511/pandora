@@ -7,31 +7,62 @@
 
 #include "log/Log.h"
 #include "scene/mesh/OBJMeshLoader.h"
+#include "scene/mesh/BasicMesh.h"
 #include "io/BufferedReader.h"
 #include "io/InputStreamReader.h"
-#include <regex.h>
+#include <string>
+#include <regex>
+#include <iostream>
+//#include <regex.h>
+
+#define DEBUG_REGEX
 
 namespace pola {
 namespace scene {
 
 static bool regexMatch(const char* pattern, const char* string, utils::String*& matchResult, int32_t& matchCount) {
-	int error;
+	std::regex reg(pattern/*, std::regex_constants::ECMAScript|std::regex_constants::optimize*/);
+	std::cmatch result;
+	bool match = std::regex_match(string, result, reg);
+	matchCount = 0;
+	if (match) {
+		matchCount = (int32_t) result.size();
+		if (matchResult) {
+			delete[] matchResult;
+			matchResult = nullptr;
+		}
+		matchResult = new utils::String[matchCount];
+		for (int x = 0; x < matchCount; x ++) {
+			if (result[x].second == result[x].first) {
+				matchResult[x] = utils::String(true);
+			} else {
+				matchResult[x] = utils::String(result[x].first, size_t(result[x].second - result[x].first));
+			}
+		}
+	}
+
+	return match;
+	/*int error;
 	regex_t reg;
 	static const size_t nmatch = 20;
 	static regmatch_t pm[nmatch];
 	error = regcomp(&reg, pattern, REG_EXTENDED);
 	matchCount = 0;
 	if (error != 0) {
+#ifdef DEBUG_REGEX
 		char ebuf[128];
 		regerror(error, &reg, ebuf, sizeof(ebuf));
 		LOGE("regcomp (%s) error, %s\n", pattern, ebuf);
+#endif
 		return false;
 	}
 	error = regexec(&reg, string, nmatch, pm, 0);
 	if (error != 0) {
+#ifdef DEBUG_REGEX
 		char ebuf[128];
 		regerror(error, &reg, ebuf, sizeof(ebuf));
 		LOGE("regexec (%s) error, %s\n", string, ebuf);
+#endif
 		return false;
 	}
 	for (unsigned x = 0; x < nmatch && pm[x].rm_so != -1; x ++) {
@@ -48,7 +79,7 @@ static bool regexMatch(const char* pattern, const char* string, utils::String*& 
 		}
 	}
 	regfree(&reg);
-	return matchCount > 0;
+	return matchCount > 0;*/
 }
 
 OBJMeshLoader::OBJMeshLoader() {
@@ -67,6 +98,7 @@ Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 	io::InputStreamReader isReader(is);
 	io::BufferedReader reader(&isReader);
 
+	utils::Vector<graphic::NormalTextureVertex3> vertexs;
 	utils::Vector<graphic::vec3> vertexBuffer;
 	utils::Vector<graphic::vec2> uvBuffer;
 	utils::Vector<graphic::vec3> normalBuffer;
@@ -104,12 +136,12 @@ Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 				}
 				break;
 			case 'f':
-				if (regexMatch("^f\\s+(-?[0-9]+)\\s+(-?[0-9]+)\\s+(-?[0-9]+)(\\s+-?[0-9]+)?$", line.characters(), matchResult, matchCount)) {
-					if (matchCount == 4) {
+				if (regexMatch("^f\\s+(-?[0-9]+)\\s+(-?[0-9]+)\\s+(-?[0-9]+)(?:\\s+(-?[0-9]+))?$", line.characters(), matchResult, matchCount) && matchCount == 5) {
 
-					} else if (matchCount == 5) {
-
-					}
+				} else if (regexMatch("^f\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)(?:\\s+(-?[0-9]+)\\/\\/(-?[0-9]+))?$", line.characters(), matchResult, matchCount) && matchCount == 9) {
+					graphic::NormalTextureVertex3 vertex;
+					vertex.pos = {(float) atof(matchResult[1].characters()), (float) atof(matchResult[3].characters()), (float) atof(matchResult[5].characters())};
+					vertexs.push(vertex);
 				}
 				break;
 			default:
@@ -121,6 +153,15 @@ Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 		delete[] matchResult;
 		matchResult = nullptr;
 	}
+
+	if (vertexs.size() > 0) {
+		BasicMesh* mesh = new BasicMesh(graphic::VertexType::TYPE_VERTEX3_TEXTURE_NORMAL);
+		graphic::NormalTextureVertex3* vs = (graphic::NormalTextureVertex3*) malloc(sizeof(graphic::NormalTextureVertex3) * vertexs.size());
+		memcpy(vs, vertexs.array(), sizeof(graphic::NormalTextureVertex3) * vertexs.size());
+		mesh->getMeshBuffer(0)->setVertexs(vs, vertexs.size());
+		return mesh;
+	}
+
 	return nullptr;
 }
 

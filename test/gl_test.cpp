@@ -12,6 +12,7 @@
 #include "scene/mesh/MeshLoader.h"
 #include "scene/mesh/MD2AnimatedMesh.h"
 #include "scene/node/MD2AnimatedMeshSceneNode.h"
+#include "scene/node/BasicMeshSceneNode.h"
 #include "graphic/gl/GLCaches.h"
 #include "graphic/gl/GLTexture.h"
 #include "utils/Math.h"
@@ -33,9 +34,9 @@ int main(int argc, char *argv[]) {
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
 	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("./res/sydney.bmp");
 
-	MeshLoader::loadMesh("./res/emerald.obj");
+	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/emerald.obj");
 	if (mesh) {
-		for (int i = 0; i < 150; i ++) {
+		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 			node->setMaterialTexture(0, texture);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
@@ -46,8 +47,8 @@ int main(int argc, char *argv[]) {
 			scene->addSceneNode(node);
 		}
 	}
-	if (mesh) {
-		for (int i = 0; i < 150; i ++) {
+	if (mesh2) {
+		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
 			node->setMaterialTexture(0, texture2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
@@ -58,6 +59,14 @@ int main(int argc, char *argv[]) {
 			scene->addSceneNode(node);
 		}
 	}
+	if (basicMesh) {
+		for (int i = 0; i < 100; i ++) {
+			BasicMeshSceneNode* node = new BasicMeshSceneNode(basicMesh);
+			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+			scene->addSceneNode(node);
+		}
+	}
+
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();
