@@ -60,7 +60,6 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	if (meshBuffer.getVertexCount() == 0) {
 		return;
 	}
-
 	static GLShader* shader = new DefaultGLShader;
 	shader->invalidate();
 //	static GLShader* shader = new GLShader;

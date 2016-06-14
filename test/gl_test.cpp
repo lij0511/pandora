@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
 	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("./res/sydney.bmp");
 
-	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/emerald.obj");
+	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
 	if (mesh) {
 		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
@@ -62,7 +62,9 @@ int main(int argc, char *argv[]) {
 	if (basicMesh) {
 		for (int i = 0; i < 100; i ++) {
 			BasicMeshSceneNode* node = new BasicMeshSceneNode(basicMesh);
+//			node->setMaterialTexture(0, texture2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+			node->setScale({80, 80, 80});
 			scene->addSceneNode(node);
 		}
 	}

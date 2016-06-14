@@ -150,8 +150,8 @@ public:
 	}
 
 	String trim() {
-		size_t start = 0, last = length() - 1;
-		size_t end = last;
+		ssize_t start = 0, last = length() - 1;
+		ssize_t end = last;
 		const char* chars = characters();
 		while ((start <= end) && (chars[start] <= ' ')) {
 			start++;
@@ -162,7 +162,7 @@ public:
 		if (start == 0 && end == last) {
 			return *this;
 		}
-		return String(chars + start, end - start);
+		return String(chars + start, size_t(end - start));
 	}
 
 	ssize_t indexOf(char c) const {

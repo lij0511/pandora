@@ -18,11 +18,11 @@ GLProgram::GLProgram(const char* vertexShader, const char* fragmentShader) :
 		mVertexShaderHandle(0),
 		mFragmentShaderHandle(0) {
 	compile(vertexShader, fragmentShader);
+	glDeleteShader(mVertexShaderHandle);
+	glDeleteShader(mFragmentShaderHandle);
 }
 
 GLProgram::~GLProgram() {
-	glDeleteShader(mVertexShaderHandle);
-	glDeleteShader(mFragmentShaderHandle);
 	glDeleteProgram(mProgramId);
 }
 

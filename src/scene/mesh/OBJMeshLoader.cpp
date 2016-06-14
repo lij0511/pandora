@@ -13,36 +13,36 @@
 #include <string>
 #include <regex>
 #include <iostream>
-//#include <regex.h>
+#include <regex.h>
 
-#define DEBUG_REGEX
+//#define DEBUG_REGEX
 
 namespace pola {
 namespace scene {
 
 static bool regexMatch(const char* pattern, const char* string, utils::String*& matchResult, int32_t& matchCount) {
-	std::regex reg(pattern/*, std::regex_constants::ECMAScript|std::regex_constants::optimize*/);
-	std::cmatch result;
-	bool match = std::regex_match(string, result, reg);
-	matchCount = 0;
-	if (match) {
-		matchCount = (int32_t) result.size();
-		if (matchResult) {
-			delete[] matchResult;
-			matchResult = nullptr;
-		}
-		matchResult = new utils::String[matchCount];
-		for (int x = 0; x < matchCount; x ++) {
-			if (result[x].second == result[x].first) {
-				matchResult[x] = utils::String(true);
-			} else {
-				matchResult[x] = utils::String(result[x].first, size_t(result[x].second - result[x].first));
-			}
-		}
-	}
-
-	return match;
-	/*int error;
+//	std::regex reg(pattern/*, std::regex_constants::ECMAScript|std::regex_constants::optimize*/);
+//	std::cmatch result;
+//	bool match = std::regex_match(string, result, reg);
+//	matchCount = 0;
+//	if (match) {
+//		matchCount = (int32_t) result.size();
+//		if (matchResult) {
+//			delete[] matchResult;
+//			matchResult = nullptr;
+//		}
+//		matchResult = new utils::String[matchCount];
+//		for (int x = 0; x < matchCount; x ++) {
+//			if (result[x].second == result[x].first) {
+//				matchResult[x] = utils::String(true);
+//			} else {
+//				matchResult[x] = utils::String(result[x].first, size_t(result[x].second - result[x].first));
+//			}
+//		}
+//	}
+//
+//	return match;
+	int error;
 	regex_t reg;
 	static const size_t nmatch = 20;
 	static regmatch_t pm[nmatch];
@@ -79,7 +79,7 @@ static bool regexMatch(const char* pattern, const char* string, utils::String*& 
 		}
 	}
 	regfree(&reg);
-	return matchCount > 0;*/
+	return matchCount > 0;
 }
 
 OBJMeshLoader::OBJMeshLoader() {
@@ -93,8 +93,6 @@ bool OBJMeshLoader::available(io::InputStream* is) {
 }
 
 Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
-//	BasicMesh* mesh = new BasicMesh(graphic::VertexType::TYPE_VERTEX3_TEXTURE_NORMAL);
-
 	io::InputStreamReader isReader(is);
 	io::BufferedReader reader(&isReader);
 
@@ -136,11 +134,35 @@ Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 				}
 				break;
 			case 'f':
-				if (regexMatch("^f\\s+(-?[0-9]+)\\s+(-?[0-9]+)\\s+(-?[0-9]+)(?:\\s+(-?[0-9]+))?$", line.characters(), matchResult, matchCount) && matchCount == 5) {
+				if (regexMatch("^f\\s+(-?[0-9]+)\\s+(-?[0-9]+)\\s+(-?[0-9]+)(\\s+(-?[0-9]+))?$", line.characters(), matchResult, matchCount) && matchCount == 5) {
 
-				} else if (regexMatch("^f\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)(?:\\s+(-?[0-9]+)\\/\\/(-?[0-9]+))?$", line.characters(), matchResult, matchCount) && matchCount == 9) {
+				} else if (regexMatch("^f\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)\\s+(-?[0-9]+)\\/\\/(-?[0-9]+)(\\s+(-?[0-9]+)\\/\\/(-?[0-9]+))?$", line.characters(), matchResult, matchCount) && matchCount >= 7) {
 					graphic::NormalTextureVertex3 vertex;
-					vertex.pos = {(float) atof(matchResult[1].characters()), (float) atof(matchResult[3].characters()), (float) atof(matchResult[5].characters())};
+					int a = atoi(matchResult[1].characters());
+					int b = atoi(matchResult[3].characters());
+					int c = atoi(matchResult[5].characters());
+					a = a > 0 ? a - 1 : a + vertexBuffer.size();
+					b = b > 0 ? b - 1 : b + vertexBuffer.size();
+					c = c > 0 ? c - 1 : c + vertexBuffer.size();
+					vertex.pos = vertexBuffer[a];
+					vertexs.push(vertex);
+					vertex.pos = vertexBuffer[b];
+					vertexs.push(vertex);
+					vertex.pos = vertexBuffer[c];
+					vertexs.push(vertex);
+				} else if (regexMatch("^f\\s+(-?[0-9]+)\\/(-?[0-9]+)\\/(-?[0-9]+)\\s+(-?[0-9]+)\\/(-?[0-9]+)\\/(-?[0-9]+)\\s+(-?[0-9]+)\\/(-?[0-9]+)\\/(-?[0-9]+)(\\s+(-?[0-9]+)\\/(-?[0-9]+)\\/(-?[0-9]+))?$", line.characters(), matchResult, matchCount) && matchCount >= 10) {
+					graphic::NormalTextureVertex3 vertex;
+					int a = atoi(matchResult[1].characters());
+					int b = atoi(matchResult[4].characters());
+					int c = atoi(matchResult[7].characters());
+					a = a > 0 ? a - 1 : a + vertexBuffer.size();
+					b = b > 0 ? b - 1 : b + vertexBuffer.size();
+					c = c > 0 ? c - 1 : c + vertexBuffer.size();
+					vertex.pos = vertexBuffer[a];
+					vertexs.push(vertex);
+					vertex.pos = vertexBuffer[b];
+					vertexs.push(vertex);
+					vertex.pos = vertexBuffer[c];
 					vertexs.push(vertex);
 				}
 				break;
