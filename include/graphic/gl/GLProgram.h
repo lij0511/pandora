@@ -10,6 +10,7 @@
 
 #include "graphic/gl/GL.h"
 #include "utils/TinyHashMap.h"
+#include "utils/String.h"
 
 namespace pola {
 namespace graphic {
@@ -22,8 +23,8 @@ public:
 	void use();
 	GLuint programId() const {return mProgramId;};
 
-	bool fetchAttribute(const char* name, GLint& outLocation);
-	bool fetchUniform(const char* name, GLint& outLocation);
+	bool fetchAttribute(const utils::String& name, GLint& outLocation);
+	bool fetchUniform(const utils::String& name, GLint& outLocation);
 
 private:
 	void compile(const char* vertexShader, const char* fragmentShader);
@@ -34,8 +35,8 @@ private:
 	GLuint mVertexShaderHandle;
 	GLuint mFragmentShaderHandle;
 
-	pola::utils::TinyHashMap<const char*, GLint> mAttributes;
-	pola::utils::TinyHashMap<const char*, GLint> mUniforms;
+	pola::utils::TinyHashMap<utils::String, GLint> mAttributes;
+	pola::utils::TinyHashMap<utils::String, GLint> mUniforms;
 };
 
 } /* namespace graphic */

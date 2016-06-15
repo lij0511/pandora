@@ -27,7 +27,7 @@ void GLShader::makeCurrent() {
 	mProgram->use();
 }
 
-void GLShader::setMatrix(const char* name, const mat4& matrix) {
+void GLShader::setMatrix(const utils::String& name, const mat4& matrix) {
 	GLint u_matrixHandle;
 	if (mProgram->fetchUniform(name, u_matrixHandle)) {
 		glUniformMatrix4fv(u_matrixHandle, 1, GL_FALSE, &matrix.data[0]);
@@ -45,11 +45,11 @@ const utils::String GLShader::getFragmentShader() {
 void GLShader::setValues() {
 }
 
-bool GLShader::fetchAttribute(const char* name, GLint& location) {
+bool GLShader::fetchAttribute(const utils::String& name, GLint& location) {
 	return mProgram->fetchAttribute(name, location);
 }
 
-bool GLShader::fetchUniform(const char* name, GLint& location) {
+bool GLShader::fetchUniform(const utils::String& name, GLint& location) {
 	return mProgram->fetchUniform(name, location);
 }
 

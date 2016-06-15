@@ -64,21 +64,21 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	shader->invalidate();
 //	static GLShader* shader = new GLShader;
 	shader->makeCurrent();
-	shader->setMatrix("u_projection", mProjection);
-	shader->setMatrix("u_view", mView);
+	shader->setMatrix(utils::String("u_projection", true), mProjection);
+	shader->setMatrix(utils::String("u_view", true), mView);
 
 	GLint a_texCoords;
-	if (meshBuffer.m_vertexInfo.offset_texcoord >= 0 && shader->fetchAttribute("a_texCoords", a_texCoords)) {
+	if (meshBuffer.m_vertexInfo.offset_texcoord >= 0 && shader->fetchAttribute(utils::String("a_texCoords", true), a_texCoords)) {
 		glEnableVertexAttribArray(a_texCoords);
 		glVertexAttribPointer(a_texCoords, 2, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_texcoord));
 	}
 	GLint a_position;
-	if (shader->fetchAttribute("a_position", a_position)) {
+	if (shader->fetchAttribute(utils::String("a_position", true), a_position)) {
 		glEnableVertexAttribArray(a_position);
 		glVertexAttribPointer(a_position, meshBuffer.m_vertexInfo.count_position, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_position));
 	}
 	GLint a_normal;
-	if (meshBuffer.m_vertexInfo.offset_normal >= 0 && shader->fetchAttribute("a_normal", a_normal)) {
+	if (meshBuffer.m_vertexInfo.offset_normal >= 0 && shader->fetchAttribute(utils::String("a_normal", true), a_normal)) {
 		glEnableVertexAttribArray(a_normal);
 		glVertexAttribPointer(a_normal, meshBuffer.m_vertexInfo.count_normal, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_normal));
 	}

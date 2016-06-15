@@ -30,216 +30,70 @@ class StringBuffer;
 class String {
 public:
 
-	String(bool null = false) {
-		if (!null) {
-			m_impl = StringImpl::emptyString();
-		}
-	}
-	String(char* chars, size_t length) {
-		m_impl = StringImpl::create(chars, length);
-	}
-	String(const char* chars, size_t length) {
-		m_impl = StringImpl::create(chars, length);
-	}
-	String(const char* str, bool isConst = false) {
-		m_impl = StringImpl::create(str, isConst);
-	}
-	String(const String& o) {
-		m_impl = o.m_impl;
-	}
+	String(bool null = false);
+	String(char* chars, size_t length);
+	String(const char* chars, size_t length);
+	String(const char* str, bool isConst = false);
+	String(const String& o);
 
-	~String() {
-	}
-	void print() const {
-		impl() ? m_impl->print() : (void)0;
-	}
+	~String();
 
-	size_t length() const {
-		return impl() ? m_impl->length() : 0;
-	}
+	void print() const;
 
-	bool isEmpty() const {
-		return length() <= 0;
-	}
+	size_t length() const;
 
-	bool isNull() const {
-		return !impl();
-	}
+	bool isEmpty() const;
 
-	char charAt(size_t index) const {
-		return impl() ? m_impl->charAt(index) : 0;
-	}
+	bool isNull() const;
 
-	const char* characters() const {
-		return impl() ? m_impl->characters() : nullptr;
-	}
+	char charAt(size_t index) const;
 
-	const StringImpl* impl() const {
-		return m_impl.get();
-	}
+	const char* characters() const;
 
-	bool startsWith(const String& str, size_t start = 0) const {
-		return impl() && m_impl->startsWith(*str.impl(), start);
-	}
+	const StringImpl* impl() const;
 
-	bool endsWith(const String& str) const {
-		return impl() && str.impl() && m_impl->endsWith(*str.impl());
-	}
+	bool startsWith(const String& str, size_t start = 0) const;
 
-	bool equalIgnoringCase(const String& str) {
-		if (*this == str) {
-			return true;
-		}
-		if (length() != str.length()) {
-			return false;
-		}
-		for (unsigned index = 0; index < length(); index ++) {
-			if (toLowerCase(charAt(index)) != toLowerCase(str.charAt(index))) {
-				return false;
-			}
-		}
-		return true;
-	}
+	bool endsWith(const String& str) const;
 
-	bool contains(const String& str) const {
-		return impl() && str.impl() && m_impl->contains(*(str.m_impl));
-	}
+	bool equalIgnoringCase(const String& str);
 
-	String lower() {
-		size_t len = length();
-		if (len > 0) {
-			bool hasUpper = false;
-			for (size_t index = 0; index < len; index ++) {
-				if (isASCIIUpper(charAt(index))) {
-					hasUpper = true;
-					break;
-				}
-			}
-			if (hasUpper) {
-				char* datas = new char[len + 1];
-				for (size_t index = 0; index < len; index ++) {
-					datas[index] = toLowerCase(charAt(index));
-				}
-				datas[len] = 0;
-				return String(datas, len, true);
-			}
-		}
-		return *this;
-	}
+	bool contains(const String& str) const;
 
-	String upper() {
-		size_t len = length();
-		if (len > 0) {
-			bool hasLower = false;
-			for (size_t index = 0; index < len; index ++) {
-				if (isASCIILower(charAt(index))) {
-					hasLower = true;
-					break;
-				}
-			}
-			if (hasLower) {
-				char* datas = new char[len + 1];
-				for (size_t index = 0; index < len; index ++) {
-					datas[index] = toUpperCase(charAt(index));
-				}
-				datas[len] = 0;
-				return String(datas, len, true);
-			}
-		}
-		return *this;
-	}
+	String lower();
 
-	String trim() {
-		ssize_t start = 0, last = length() - 1;
-		ssize_t end = last;
-		const char* chars = characters();
-		while ((start <= end) && (chars[start] <= ' ')) {
-			start++;
-		}
-		while ((end >= start) && (chars[end] <= ' ')) {
-			end--;
-		}
-		if (start == 0 && end == last) {
-			return *this;
-		}
-		return String(chars + start, size_t(end - start));
-	}
+	String upper();
 
-	ssize_t indexOf(char c) const {
-		ssize_t len = length();
-		for (ssize_t i = 0; i < len; i ++) {
-			if (c == charAt(i)) {
-				return i;
-			}
-		}
-		return -1;
-	}
+	String trim();
 
-	ssize_t lastIndexOf(char c) const {
-		for (ssize_t i = length() - 1; i >= 0; i --) {
-			if (c == charAt(i)) {
-				return i;
-			}
-		}
-		return -1;
-	}
+	ssize_t indexOf(char c) const;
 
-	String substring(size_t start) {
-		return substring(start, length());
-	}
+	ssize_t lastIndexOf(char c) const;
 
-	String substring(size_t start, size_t end) {
-		LOG_FATAL_IF((start >= end || end > length()), "Index out of bound, start=%u, end=%u, lenth=%u\n", start, end, length());
-		return String(characters() + start, end - start);
-	}
+	String substring(size_t start);
+
+	String substring(size_t start, size_t end);
+
+	String& operator+=(const String& s);
+	String& operator+=(const char* s);
+	String operator+(const String& s);
+	String operator+(const char* s);
 
 	/**
 	 * operator compares.
 	 */
-	bool operator==(const String& s) const {
-		if (hash() != s.hash()) return false;
-		if (impl() && s.impl()) {
-			return *m_impl == *s.impl();
-		}
-		return !impl() && !s.impl();
-	}
-	bool operator!=(const String& s) const {
-		return !(*this == s);
-	}
-	bool operator>(const String& s) const {
-		if (impl() && s.impl()) {
-			return *m_impl > *s.impl();
-		}
-		return impl();
-	}
-	bool operator>=(const String& s) const {
-		if (impl() && s.impl()) {
-			return *m_impl >= *s.impl();
-		}
-		return impl();
-	}
-	bool operator<(const String& s) const {
-		return (s > *this);
-	}
-	bool operator<=(const String& s) const {
-		return (s >= *this);
-	}
+	bool operator==(const String& s) const;
+	bool operator!=(const String& s) const;
+	bool operator>(const String& s) const;
+	bool operator>=(const String& s) const;
+	bool operator<(const String& s) const;
+	bool operator<=(const String& s) const;
 
-	hash_t hash() const {
-		return impl() ? impl()->hash() : 0;
-	}
+	hash_t hash() const;
 
 private:
 	friend class StringBuffer;
-	String(const char* chars, size_t length, bool istatic) {
-		if (istatic) {
-			m_impl = new StringImpl;
-			m_impl->m_data = chars;
-			m_impl->m_length = length;
-		} else {
-			m_impl = StringImpl::create(chars, length);
-		}
-	}
+	String(const char* chars, size_t length, bool istatic);
 
 	sp<StringImpl> m_impl;
 };

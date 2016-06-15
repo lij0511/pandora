@@ -27,9 +27,9 @@ public:
 
 	void makeCurrent();
 
-	void setMatrix(const char* name, const mat4& matrix);
-	bool fetchAttribute(const char* name, GLint& outLocation);
-	bool fetchUniform(const char* name, GLint& outLocation);
+	void setMatrix(const utils::String& name, const mat4& matrix);
+	bool fetchAttribute(const utils::String& name, GLint& outLocation);
+	bool fetchUniform(const utils::String& name, GLint& outLocation);
 
 	const utils::String getVertexShader();
 	const utils::String getFragmentShader();

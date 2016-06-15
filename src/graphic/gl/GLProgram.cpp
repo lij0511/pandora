@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#include "graphic/gl/GLProgram.h"
 #include "log/Log.h"
+#include "graphic/gl/GLProgram.h"
 
 //#define DEBUG_SHADER 1;
 
@@ -30,17 +30,17 @@ void GLProgram::use() {
 	glUseProgram(mProgramId);
 }
 
-bool GLProgram::fetchAttribute(const char* name, GLint& location) {
+bool GLProgram::fetchAttribute(const utils::String& name, GLint& location) {
 	if (!mAttributes.get(name, location)) {
-		location = glGetAttribLocation(mProgramId, name);
+		location = glGetAttribLocation(mProgramId, name.characters());
 		mAttributes.put(name, location);
 	}
 	return location >= 0;
 }
 
-bool GLProgram::fetchUniform(const char* name, GLint& location) {
+bool GLProgram::fetchUniform(const utils::String& name, GLint& location) {
 	if (!mUniforms.get(name, location)) {
-		location = glGetUniformLocation(mProgramId, name);
+		location = glGetUniformLocation(mProgramId, name.characters());
 		mUniforms.put(name, location);
 	}
 	return location >= 0;
