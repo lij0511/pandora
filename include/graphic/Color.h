@@ -13,21 +13,6 @@
 namespace pola {
 namespace graphic {
 
-typedef uint32_t RGBA32; // RGBA quadruplet
-
-struct Color {
-	RGBA32 color;
-
-	void getRGBA(float& red, float& green, float&blue, float& alpha) {
-		// RGBA
-		const float a = ((color) & 0xff) / 255.0f;
-		red = a * ((color >> 24) & 0xff) / 255.0f;
-		green = a * ((color >> 16) & 0xff) / 255.0f;
-		blue = a * ((color >> 8) & 0xff) / 255.0f;
-		alpha = a;
-	}
-};
-
 struct FColor {
 	float r, g, b, a;
 	FColor(float r = 0, float g = 0, float b = 0, float a = 0) {
@@ -35,6 +20,37 @@ struct FColor {
 		this->g = g;
 		this->b = b;
 		this->a = a;
+	}
+};
+
+typedef uint32_t RGBA32; // RGBA quadruplet
+
+struct Color {
+	RGBA32 color;
+
+	Color(RGBA32 rgba) : color(rgba) {}
+
+	Color(uint16_t r, uint16_t g, uint16_t b, uint16_t a) {
+		color = ((r && 0xFF) << 24);
+		color |= ((g && 0xFF) << 16);
+		color |= ((b && 0xFF) << 8);
+		color |= ((a && 0xFF)          );
+	}
+
+	Color(FColor fcolor) : Color(uint16_t(fcolor.r * 255), uint16_t(fcolor.g * 255), uint16_t(fcolor.b * 255), uint16_t(fcolor.a * 255)) {
+	}
+
+	void getRGBA(float& red, float& green, float& blue, float& alpha) {
+		// RGBA
+		const float a = ((color) & 0xff) / 255.0f;
+		red = ((color >> 24) & 0xff) / 255.0f;
+		green = ((color >> 16) & 0xff) / 255.0f;
+		blue = ((color >> 8) & 0xff) / 255.0f;
+		alpha = a;
+	}
+
+	void getFColor(FColor& c) {
+		getRGBA(c.r, c.g, c.b, c.a);
 	}
 };
 

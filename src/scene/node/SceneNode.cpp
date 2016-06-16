@@ -17,6 +17,13 @@ SceneNode::SceneNode() : mMatrixDirty(true) {
 }
 
 SceneNode::~SceneNode() {
+	if (mChildren.size() > 0) {
+		for (unsigned i = 0; i < mChildren.size(); i ++) {
+			mChildren[i]->mParent = nullptr;
+			mChildren[i]->deref();
+		}
+		mChildren.clear();
+	}
 }
 
 void SceneNode::setPosition(const graphic::vec3& position) {
@@ -57,12 +64,16 @@ const graphic::mat4 SceneNode::getTransform() {
 }
 
 void SceneNode::addChild(SceneNode* child) {
+	if (child->mParent != nullptr) {
+		return;
+	}
 	for (unsigned i = 0; i < mChildren.size(); i ++) {
 		if (mChildren[i] == child) {
 			return;
 		}
 	}
 	child->ref();
+	child->mParent = this;
 	mChildren.push(child);
 }
 
@@ -71,6 +82,7 @@ void SceneNode::removeChild(SceneNode* child) {
 		if (mChildren[i] == child) {
 			mChildren.removeAt(i);
 			child->deref();
+			child->mParent = nullptr;
 			return;
 		}
 	}

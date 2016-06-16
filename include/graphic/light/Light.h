@@ -32,20 +32,14 @@ public:
 	Light(const LightType type);
 	virtual ~Light();
 
-	void setAmbientColor(const FColor color);
-
-	void setDiffuseColor(const FColor color);
-
-	void setSpecularColor(const FColor color);
+	void setColor(const FColor color);
 
 	const LightType lightType() const;
 
 private:
-	FColor m_ambientColor;
-	FColor m_diffuseColor;
-	FColor m_specularColor;
+	FColor mColor;
 
-	const LightType m_type;
+	const LightType mType;
 };
 
 } /* namespace graphic */

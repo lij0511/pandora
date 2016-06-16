@@ -10,14 +10,18 @@
 namespace pola {
 namespace graphic {
 
-Light::Light(const LightType type) : m_type(type) {
+Light::Light(const LightType type) : mType(type) {
 }
 
 Light::~Light() {
 }
 
 const Light::LightType Light::lightType() const {
-	return m_type;
+	return mType;
+}
+
+void Light::setColor(FColor color) {
+	mColor = color;
 }
 
 } /* namespace graphic */
