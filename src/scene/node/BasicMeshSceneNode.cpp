@@ -16,12 +16,7 @@ BasicMeshSceneNode::BasicMeshSceneNode(BasicMesh* mesh) : mMesh(mesh) {
 BasicMeshSceneNode::~BasicMeshSceneNode() {
 }
 
-void BasicMeshSceneNode::setMaterialTexture(uint32_t i, graphic::Texture* texture) {
-	mMaterial.setTexture(i, texture);
-}
-
 void BasicMeshSceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
-	graphic->setMaterial(mMaterial);
 	graphic->renderMeshBuffer(*mMesh->getMeshBuffer(0));
 }
 

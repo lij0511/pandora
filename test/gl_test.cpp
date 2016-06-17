@@ -38,7 +38,6 @@ int main(int argc, char *argv[]) {
 	if (mesh) {
 		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
-			node->setMaterialTexture(0, texture);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			int ani = random(0, MD2_AT_COUNT + 3);
 			if (ani < MD2_AT_COUNT) {
@@ -50,7 +49,6 @@ int main(int argc, char *argv[]) {
 	if (mesh2) {
 		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
-			node->setMaterialTexture(0, texture2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			int ani = random(0, MD2_AT_COUNT + 3);
 			if (ani < MD2_AT_COUNT) {

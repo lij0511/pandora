@@ -8,6 +8,7 @@
 #ifndef POLA_MESHSCENENODE_H_
 #define POLA_MESHSCENENODE_H_
 
+#include "graphic/Material.h"
 #include "scene/node/SceneNode.h"
 
 namespace pola {
@@ -19,6 +20,9 @@ public:
 	virtual ~MeshSceneNode();
 
 	virtual uint32_t getMaterialCount() const;
+
+protected:
+	graphic::Material* mMaterial;
 
 };
 

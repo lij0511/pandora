@@ -10,7 +10,7 @@
 namespace pola {
 namespace scene {
 
-MeshSceneNode::MeshSceneNode() {
+MeshSceneNode::MeshSceneNode() : mMaterial(nullptr) {
 }
 
 MeshSceneNode::~MeshSceneNode() {

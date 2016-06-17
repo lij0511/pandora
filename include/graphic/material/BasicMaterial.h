@@ -9,6 +9,7 @@
 #define BASICMATERIAL_H_
 
 #include "graphic/Material.h"
+#include "graphic/Color.h"
 
 namespace pola {
 namespace graphic {
@@ -18,8 +19,11 @@ namespace graphic {
  */
 class BasicMaterial: public Material {
 public:
-	BasicMaterial();
+	BasicMaterial(const FColor& color = {1.f, 1.f, 1.f, 1.f});
 	virtual ~BasicMaterial();
+
+protected:
+	FColor mColor;
 };
 
 } /* namespace graphic */

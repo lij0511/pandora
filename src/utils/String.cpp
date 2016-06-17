@@ -227,40 +227,57 @@ String String::substring(size_t start, size_t end) {
 }
 
 String& String::operator+=(const String& s) {
-	StringBuffer sb(length() + s.length());
-	sb.append(*this);
-	sb.append(s);
-	sb.release(*this);
+	size_t len = s.length();
+	if (len > 0) {
+		StringBuffer sb(length() + len);
+		sb.append(*this);
+		sb.append(s);
+		sb.release(*this);
+	}
 	return *this;
 }
 
 String& String::operator+=(const char* s) {
 	size_t len = strlen(s);
-	StringBuffer sb(length() + len);
-	sb.append(*this);
-	sb.append(s, len);
-	sb.release(*this);
+	if (len > 0) {
+		StringBuffer sb(length() + len);
+		sb.append(*this);
+		sb.append(s, len);
+		sb.release(*this);
+	}
+	return *this;
+}
+
+String& String::operator=(const char* s) {
+	*this = String(s);
 	return *this;
 }
 
 String String::operator+(const String& s) {
-	StringBuffer sb(length() + s.length());
-	sb.append(*this);
-	sb.append(s);
-	sb.release(*this);
-	String result;
-	sb.release(result);
-	return result;
+	size_t len = s.length();
+	if (len > 0) {
+		StringBuffer sb(length() + len);
+		sb.append(*this);
+		sb.append(s);
+		sb.release(*this);
+		String result;
+		sb.release(result);
+		return result;
+	}
+	return *this;
 }
 
 String String::operator+(const char* s) {
 	size_t len = strlen(s);
-	StringBuffer sb(length() + len);
-	sb.append(*this);
-	sb.append(s, len);
-	String result;
-	sb.release(result);
-	return result;
+	if (len > 0) {
+		StringBuffer sb(length() + len);
+		sb.append(*this);
+		sb.append(s, len);
+		String result;
+		sb.release(result);
+		return result;
+	}
+	return *this;
 }
 
 /**

@@ -40,22 +40,6 @@ void GLGraphicContext::beginFrame(const FColor& clearColor) {
 void GLGraphicContext::endFrame() {
 }
 
-void GLGraphicContext::setMaterial(const Material& material) {
-	for (uint32_t i = 0; i < MAX_TEXTURE_UNITS_COUNT; i ++) {
-		Texture* texture = material.getTexture(i);
-		if (texture != nullptr) {
-			GLTexture* glTexture = (GLTexture*) texture;
-			if (glTexture->generateTexture()) {
-				mCaches.activeTexture(i);
-				mCaches.bindTexture(glTexture->id);
-			}
-		} else {
-			mCaches.activeTexture(i);
-			mCaches.bindTexture(0);
-		}
-	}
-}
-
 void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	if (meshBuffer.getVertexCount() == 0) {
 		return;

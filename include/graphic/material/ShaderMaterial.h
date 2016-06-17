@@ -20,6 +20,12 @@ class ShaderMaterial: public Material {
 public:
 	ShaderMaterial();
 	virtual ~ShaderMaterial();
+
+protected:
+	virtual const utils::String generateVertexShader() = 0;
+	virtual const utils::String generateFragmentShader() = 0;
+
+	virtual bool isShaderMaterial() const;
 };
 
 } /* namespace graphic */

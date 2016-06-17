@@ -18,6 +18,12 @@ int main(int argc, char *argv[]) {
 
 	s.print();
 
+	utils::String s1 = "heihei";
+	s1.print();
+
+	s1 = s;
+	s1.print();
+
 	return 1;
 }
 

@@ -5,31 +5,42 @@
  *      Author: lijing
  */
 
+#include <typeinfo>
 #include "graphic/Material.h"
 
 namespace pola {
 namespace graphic {
 
-Material::Material() : mTextures{nullptr}, mAmbientColor(1.f, 1.f, 1.f, 1.f)
-	, mDiffuseColor(1.f, 1.f, 1.f, 1.f), mEmissiveColor(0.f, 0.f, 0.f, 0.f)
-	, mSpecularColor(1.f, 1.f, 1.f, 1.f), mShininess(0.f) {
+Material::Material() : mVertexShader(true), mFragmentShader(true) {
 }
 
 Material::~Material() {
 }
 
-void Material::setTexture(uint32_t i, Texture* texture) {
-	if (i >= MAX_TEXTURE_UNITS_COUNT) {
-		return;
+const utils::String Material::getVertexShader() {
+	if (mVertexShader.isEmpty()) {
+		mVertexShader = generateVertexShader();
 	}
-	mTextures[i] = texture;
+	return mVertexShader;
 }
 
-Texture* Material::getTexture(uint32_t i) const {
-	if (i >= MAX_TEXTURE_UNITS_COUNT) {
-		return nullptr;
+const utils::String Material::getFragmentShader() {
+	if (mFragmentShader.isEmpty()) {
+		mFragmentShader = generateFragmentShader();
 	}
-	return mTextures[i];
+	return mFragmentShader;
+}
+
+const char* Material::getMaterialType() const {
+	if (isShaderMaterial()) {
+		return nullptr;
+	} else {
+		return typeid(*this).name();
+	}
+}
+
+bool Material::isShaderMaterial() const {
+	return false;
 }
 
 } /* namespace graphic */

@@ -8,8 +8,7 @@
 #ifndef POLA_MATERIAL_H_
 #define POLA_MATERIAL_H_
 
-#include "graphic/Color.h"
-#include "graphic/Texture.h"
+#include "utils/String.h"
 
 namespace pola {
 namespace graphic {
@@ -19,17 +18,20 @@ public:
 	Material();
 	virtual ~Material();
 
-	void setTexture(uint32_t i, Texture* texture);
-	Texture* getTexture(uint32_t i) const;
+	const utils::String getVertexShader();
+	const utils::String getFragmentShader();
 
-private:
-	Texture* mTextures[MAX_TEXTURE_UNITS_COUNT];
+	const char* getMaterialType() const;
 
-	FColor mAmbientColor;
-	FColor mDiffuseColor;
-	FColor mEmissiveColor;
-	FColor mSpecularColor;
-	float mShininess;
+protected:
+	virtual const utils::String generateVertexShader() = 0;
+	virtual const utils::String generateFragmentShader() = 0;
+
+	virtual bool isShaderMaterial() const;
+
+	utils::String mVertexShader;
+	utils::String mFragmentShader;
+
 };
 
 } /* namespace graphic */

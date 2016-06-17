@@ -10,7 +10,7 @@
 namespace pola {
 namespace graphic {
 
-BasicMaterial::BasicMaterial() {
+BasicMaterial::BasicMaterial(const FColor& color) : mColor(color) {
 }
 
 BasicMaterial::~BasicMaterial() {

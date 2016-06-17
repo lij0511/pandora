@@ -76,6 +76,7 @@ public:
 
 	String& operator+=(const String& s);
 	String& operator+=(const char* s);
+	String& operator=(const char* s);
 	String operator+(const String& s);
 	String operator+(const char* s);
 

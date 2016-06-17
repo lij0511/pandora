@@ -27,8 +27,6 @@ public:
 	virtual void beginFrame(const FColor& clearColor);
 	virtual void endFrame();
 
-	virtual void setMaterial(const Material& material);
-
 	virtual void renderMeshBuffer(MeshBuffer& meshBuffer);
 
 protected:

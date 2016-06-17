@@ -39,8 +39,6 @@ public:
 
 	void setMatrix(MatrixType type, const mat4& matrix);
 
-	virtual void setMaterial(const Material& material) = 0;
-
 	virtual void renderMeshBuffer(MeshBuffer& meshBuffer) = 0;
 
 protected:

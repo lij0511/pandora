@@ -16,5 +16,9 @@ ShaderMaterial::ShaderMaterial() {
 ShaderMaterial::~ShaderMaterial() {
 }
 
+bool ShaderMaterial::isShaderMaterial() const {
+	return true;
+}
+
 } /* namespace graphic */
 } /* namespace pola */
