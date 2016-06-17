@@ -31,6 +31,9 @@ const utils::String Material::getFragmentShader() {
 	return mFragmentShader;
 }
 
+void Material::bind(Program* program) {
+}
+
 const char* Material::getMaterialType() const {
 	if (isShaderMaterial()) {
 		return nullptr;

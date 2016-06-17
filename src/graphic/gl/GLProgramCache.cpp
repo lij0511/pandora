@@ -6,7 +6,6 @@
  */
 
 #include "graphic/gl/GLProgramCache.h"
-#include "graphic/gl/DefaultGLShader.h"
 
 #include "utils/JenkinsHash.h"
 
@@ -16,21 +15,21 @@ namespace pola {
 namespace graphic {
 
 ProgramDescription::ProgramDescription(const utils::String& vertexShader, const utils::String& fragmentShader) :
-	mVertexShader(vertexShader), mFragmentShader(fragmentShader), mShader(nullptr) {
+	mVertexShader(vertexShader), mFragmentShader(fragmentShader), material_type(nullptr) {
 	if (vertexShader.isEmpty() || fragmentShader.isEmpty()) {
 		LOG_ALWAYS_FATAL("VertexShader or FragmengShader is NULL. Fix Me!\n");
 	}
 }
 
-ProgramDescription::ProgramDescription(DefaultGLShader* shader) : mShader(shader) {
+ProgramDescription::ProgramDescription(const char* type) : material_type(type) {
 }
 
 bool ProgramDescription::operator==(const ProgramDescription& other) const {
-	if ((mShader != nullptr && other.mShader == nullptr) || (mShader == nullptr && other.mShader != nullptr)) {
+	if ((material_type != nullptr && other.material_type == nullptr) || (material_type == nullptr && other.material_type != nullptr)) {
 		return false;
 	}
-	if (mShader != nullptr) {
-		bool comp = texture0 == other.texture0;
+	if (material_type != nullptr) {
+		bool comp = material_type == other.material_type;
 
 		comp |= lighting == other.lighting;
 		// TODO
@@ -42,8 +41,8 @@ bool ProgramDescription::operator==(const ProgramDescription& other) const {
 
 utils::hash_t ProgramDescription::hash() const {
 	utils::hash_t hash = 0;
-	if (mShader != nullptr) {
-		hash = utils::JenkinsHashMix(hash, texture0);
+	if (material_type != nullptr) {
+		hash = utils::hash_type(material_type);
 		hash = utils::JenkinsHashMix(hash, lighting);
 		// TODO
 		hash = utils::JenkinsHashWhiten(hash);
@@ -71,11 +70,7 @@ void GLProgramCache::operator()(const ProgramDescription& key, GLProgram*& value
 GLProgram* GLProgramCache::get(const ProgramDescription& description) {
 	GLProgram* program = mCache.get(description);
 	if (!program) {
-		if (description.mShader != nullptr) {
-			program = new GLProgram(description.mShader->getVertexShader().characters(), description.mShader->getFragmentShader().characters());
-		} else {
-			program = new GLProgram(description.mVertexShader.characters(), description.mFragmentShader.characters());
-		}
+		program = new GLProgram(description.mVertexShader.characters(), description.mFragmentShader.characters());
 		mCache.put(description, program);
 	}
 	return program;

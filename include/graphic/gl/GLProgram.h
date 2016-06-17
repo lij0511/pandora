@@ -11,11 +11,12 @@
 #include "graphic/gl/GL.h"
 #include "utils/TinyHashMap.h"
 #include "utils/String.h"
+#include "graphic/Program.h"
 
 namespace pola {
 namespace graphic {
 
-class GLProgram {
+class GLProgram : public Program {
 public:
 	GLProgram(const char* vertexShader, const char* fragmentShader);
 	virtual ~GLProgram();

@@ -9,6 +9,7 @@
 #define POLA_MATERIAL_H_
 
 #include "utils/String.h"
+#include "graphic/Program.h"
 
 namespace pola {
 namespace graphic {
@@ -20,6 +21,8 @@ public:
 
 	const utils::String getVertexShader();
 	const utils::String getFragmentShader();
+
+	virtual void bind(Program* program);
 
 	const char* getMaterialType() const;
 

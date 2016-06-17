@@ -22,6 +22,12 @@ public:
 	BasicMaterial(const FColor& color = {1.f, 1.f, 1.f, 1.f});
 	virtual ~BasicMaterial();
 
+	virtual void bind(Program* program);
+
+protected:
+	virtual const utils::String generateVertexShader();
+	virtual const utils::String generateFragmentShader();
+
 protected:
 	FColor mColor;
 };

@@ -16,13 +16,11 @@
 
 namespace pola {
 namespace graphic {
-class GLShader;
-class DefaultGLShader;
-class GLProgramCache;
 
 class ProgramDescription {
 public:
 	ProgramDescription(const utils::String& vertexShader, const utils::String& fragmentShader);
+	ProgramDescription(const char* material_type);
 
 	bool operator==(const ProgramDescription& other) const;
 
@@ -36,13 +34,7 @@ public:
 	const utils::String mFragmentShader;
 
 private:
-	friend class DefaultGLShader;
-	friend class GLProgramCache;
-	ProgramDescription(DefaultGLShader* shader);
-	DefaultGLShader* mShader;
-
-	// GL3D DefaultGLShader flags.
-	bool texture0 = false;
+	const char* material_type;
 
 	bool lighting = false;
 };

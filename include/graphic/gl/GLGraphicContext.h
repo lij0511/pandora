@@ -10,6 +10,7 @@
 
 #include "graphic/gl/GL.h"
 #include "graphic/GraphicContext.h"
+#include "graphic/Material.h"
 #include "graphic/math/Matrix4.h"
 #include "graphic/gl/GLTexture.h"
 #include "graphic/gl/GLCaches.h"
@@ -34,6 +35,8 @@ protected:
 
 private:
 	GLCaches& mCaches;
+
+	Material* mDefaultMaterial;
 };
 
 } /* namespace graphic */

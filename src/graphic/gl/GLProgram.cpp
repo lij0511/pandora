@@ -97,7 +97,8 @@ GLuint GLProgram::buildShader(const char* source, GLenum type) {
 		// use a fixed size instead
 		GLchar log[512];
 		glGetShaderInfoLog(shader, sizeof(log), 0, &log[0]);
-		LOG_ALWAYS_FATAL("Error while compiling shader: %s\n", log);
+		LOGE("Error while compiling shader:%s\n", source);
+		LOG_ALWAYS_FATAL("Error log: %s\n", log);
 		return 0;
 	}
 
