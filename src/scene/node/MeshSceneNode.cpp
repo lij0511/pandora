@@ -16,8 +16,8 @@ MeshSceneNode::MeshSceneNode() : mMaterial(nullptr) {
 MeshSceneNode::~MeshSceneNode() {
 }
 
-uint32_t MeshSceneNode::getMaterialCount() const {
-	return 0;
+void MeshSceneNode::setMaterial(graphic::Material* material) {
+	mMaterial = material;
 }
 
 } /* namespace scene */

@@ -19,7 +19,6 @@ namespace graphic {
 
 class ProgramDescription {
 public:
-	ProgramDescription(const utils::String& vertexShader, const utils::String& fragmentShader);
 	ProgramDescription(const char* material_type);
 
 	bool operator==(const ProgramDescription& other) const;
@@ -30,13 +29,12 @@ public:
 
 	utils::hash_t hash() const;
 
-	const utils::String mVertexShader;
-	const utils::String mFragmentShader;
+	utils::String mVertexShader;
+	utils::String mFragmentShader;
 
-private:
 	const char* material_type;
-
 	bool lighting = false;
+
 };
 
 class GLProgramCache : public utils::OnEntryRemoved<const ProgramDescription, GLProgram*>{
@@ -45,6 +43,7 @@ public:
 	virtual ~GLProgramCache();
 
 	GLProgram* get(const ProgramDescription& description);
+	void cache(const ProgramDescription& description, GLProgram* program);
 
 	virtual void operator()(const ProgramDescription& key, GLProgram*& value);
 

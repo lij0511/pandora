@@ -30,7 +30,7 @@ void MD2AnimatedMeshSceneNode::setAnimationType(MD2_ANIMATION_TYPE type) {
 void MD2AnimatedMeshSceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
 	AnimatedMeshSceneNode::render(graphic, timeMs);
 	mMesh->updateMeshBuffer(getCurrentFrame(), getStartFrameLoop(), getEndFrameLoop());
-	graphic->renderMeshBuffer(*mMesh->getMeshBuffer(0));
+	graphic->renderMeshBuffer(*mMesh->getMeshBuffer(0), mMaterial.get());
 }
 
 } /* namespace scene */

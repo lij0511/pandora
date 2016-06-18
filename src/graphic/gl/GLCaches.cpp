@@ -62,11 +62,12 @@ void GLCaches::unbindTexture(GLuint texture) {
     }
 }
 
-void GLCaches::activeTexture(GLuint textureUnit) {
+GLenum GLCaches::activeTexture(GLuint textureUnit) {
     if (mTextureUnit != textureUnit) {
         glActiveTexture(gTextureUnits[textureUnit]);
         mTextureUnit = textureUnit;
     }
+    return gTextureUnits[textureUnit];
 }
 
 void GLCaches::resetActiveTexture() {

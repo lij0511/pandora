@@ -15,6 +15,8 @@
 #include "scene/node/BasicMeshSceneNode.h"
 #include "graphic/gl/GLCaches.h"
 #include "graphic/gl/GLTexture.h"
+#include "graphic/material/BasicMaterial.h"
+#include "graphic/material/TMaterial.h"
 #include "utils/Math.h"
 
 using namespace pola;
@@ -34,11 +36,17 @@ int main(int argc, char *argv[]) {
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
 	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("./res/sydney.bmp");
 
+	Material* m1 = new BasicMaterial({0.f, 0.f, 1.f, 1.f});
+	Material* m2 = new BasicMaterial({1.f, 0.f, 0.f, 1.f});
+	Material* tm1 = texture ? new TMaterial(texture) : nullptr;
+	Material* tm2 = texture2 ? new TMaterial(texture2) : nullptr;
+
 	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
 	if (mesh) {
 		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+			node->setMaterial(tm1);
 			int ani = random(0, MD2_AT_COUNT + 3);
 			if (ani < MD2_AT_COUNT) {
 				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
@@ -49,6 +57,7 @@ int main(int argc, char *argv[]) {
 	if (mesh2) {
 		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
+			node->setMaterial(tm2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			int ani = random(0, MD2_AT_COUNT + 3);
 			if (ani < MD2_AT_COUNT) {
@@ -60,7 +69,7 @@ int main(int argc, char *argv[]) {
 	if (basicMesh) {
 		for (int i = 0; i < 100; i ++) {
 			BasicMeshSceneNode* node = new BasicMeshSceneNode(basicMesh);
-//			node->setMaterialTexture(0, texture2);
+			node->setMaterial(m1);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setScale({80, 80, 80});
 			scene->addSceneNode(node);

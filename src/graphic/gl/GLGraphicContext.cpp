@@ -7,13 +7,13 @@
 
 #include "graphic/gl/GLGraphicContext.h"
 #include "graphic/BitmapFactory.h"
-#include "graphic/material/BasicMaterial.h"
+#include "graphic/gl/GLShaderLib.h"
 
 namespace pola {
 namespace graphic {
 
 GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {
-	mDefaultMaterial = new BasicMaterial;
+	mDefaultMaterial = new Material;
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(true);
 	glDepthFunc(GL_LEQUAL);
@@ -42,16 +42,32 @@ void GLGraphicContext::beginFrame(const FColor& clearColor) {
 void GLGraphicContext::endFrame() {
 }
 
-void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
+GLProgram* GLGraphicContext::currentProgram(Material* material) {
+	ProgramDescription description(material->getMaterialType());
+	if (!description.material_type) {
+		description.mVertexShader = material->getVertexShader();
+		description.mFragmentShader = material->getFragmentShader();
+	}
+	GLProgram* program = mCaches.programCache.get(description);
+	if (!program) {
+		utils::String vs = GLShaderLib::VS_MainUnifroms();
+		vs += GLShaderLib::VS_MainAttributes();
+		vs += material->getVertexShader();
+		program = new GLProgram(vs.characters(), material->getFragmentShader().characters());
+		mCaches.programCache.cache(description, program);
+	}
+	return program;
+}
+
+void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer, Material* material) {
 	if (meshBuffer.getVertexCount() == 0) {
 		return;
 	}
-	Material* material = mDefaultMaterial;
-	ProgramDescription description(/*material->getMaterialType()*/material->getVertexShader(), material->getFragmentShader());
-//	description.mVertexShader = material->getVertexShader();
-//	description.mFragmentShader = material->getFragmentShader();
+	if (material == nullptr) {
+		material = mDefaultMaterial;
+	}
 
-	GLProgram* program = mCaches.programCache.get(description);
+	GLProgram* program = currentProgram(material);
 	program->use();
 
 	GLint u_projection;

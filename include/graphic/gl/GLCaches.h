@@ -52,7 +52,7 @@ public:
 	void deleteTexture(GLuint texture);
 	void resetBoundTextures();
 
-	void activeTexture(GLuint textureUnit);
+	GLenum activeTexture(GLuint textureUnit);
 	void resetActiveTexture();
 
 	GLProgramCache programCache;

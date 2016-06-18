@@ -39,7 +39,7 @@ public:
 
 	void setMatrix(MatrixType type, const mat4& matrix);
 
-	virtual void renderMeshBuffer(MeshBuffer& meshBuffer) = 0;
+	virtual void renderMeshBuffer(MeshBuffer& meshBuffer, Material* material = nullptr) = 0;
 
 protected:
 	virtual Texture* doLoadTexture(io::InputStream* is) = 0;

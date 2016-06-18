@@ -5,14 +5,11 @@
  *      Author: lijing
  */
 
-// TODO
-#define OGL_RENDERER
-
+#include "graphic/material/BasicMaterial.h"
 #ifdef OGL_RENDERER
 #include "graphic/gl/GLProgram.h"
 #include "graphic/gl/GLShaderLib.h"
 #endif
-#include "graphic/material/BasicMaterial.h"
 
 #include "utils/StringBuffer.h"
 
@@ -26,18 +23,7 @@ BasicMaterial::~BasicMaterial() {
 }
 
 const utils::String BasicMaterial::generateVertexShader() {
-	utils::StringBuffer sb;
-#ifdef OGL_RENDERER
-	sb.append(GLShaderLib::VS_MainUnifroms());
-	sb.append(GLShaderLib::VS_MainAttributes());
-	sb.append("void main()\n"
-			"{\n");
-	sb.append(GLShaderLib::VS_MainPosition());
-	sb.append("}\n");
-#endif
-	utils::String s;
-	sb.release(s);
-	return s;
+	return Material::generateVertexShader();
 }
 
 const utils::String BasicMaterial::generateFragmentShader() {

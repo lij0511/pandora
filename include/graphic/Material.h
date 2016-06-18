@@ -8,13 +8,17 @@
 #ifndef POLA_MATERIAL_H_
 #define POLA_MATERIAL_H_
 
+// TODO
+#define OGL_RENDERER
+
+#include "utils/RefBase.h"
 #include "utils/String.h"
 #include "graphic/Program.h"
 
 namespace pola {
 namespace graphic {
 
-class Material {
+class Material : public utils::RefBase<Material> {
 public:
 	Material();
 	virtual ~Material();
@@ -27,8 +31,8 @@ public:
 	const char* getMaterialType() const;
 
 protected:
-	virtual const utils::String generateVertexShader() = 0;
-	virtual const utils::String generateFragmentShader() = 0;
+	virtual const utils::String generateVertexShader();
+	virtual const utils::String generateFragmentShader();
 
 	virtual bool isShaderMaterial() const;
 

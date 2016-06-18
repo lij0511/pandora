@@ -28,12 +28,14 @@ public:
 	virtual void beginFrame(const FColor& clearColor);
 	virtual void endFrame();
 
-	virtual void renderMeshBuffer(MeshBuffer& meshBuffer);
+	virtual void renderMeshBuffer(MeshBuffer& meshBuffer, Material* material = nullptr);
 
 protected:
 	virtual Texture* doLoadTexture(io::InputStream* is);
 
 private:
+	GLProgram* currentProgram(Material* material);
+
 	GLCaches& mCaches;
 
 	Material* mDefaultMaterial;

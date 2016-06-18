@@ -19,10 +19,10 @@ public:
 	MeshSceneNode();
 	virtual ~MeshSceneNode();
 
-	virtual uint32_t getMaterialCount() const;
+	void setMaterial(graphic::Material* material);
 
 protected:
-	graphic::Material* mMaterial;
+	utils::sp<graphic::Material> mMaterial;
 
 };
 
