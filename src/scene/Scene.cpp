@@ -36,7 +36,7 @@ int32_t Scene::getHeight() const {
 	return mHeight;
 }
 
-void Scene::setClearColor(graphic::FColor color) {
+void Scene::setClearColor(graphic::FColor4 color) {
 	mClearColor = color;
 }
 
@@ -79,6 +79,7 @@ void Scene::render() {
 	if (mCurrentCamera != nullptr) {
 		mCurrentCamera->dispatchRender(mGraphic, timeMs);
 	}
+	mGraphic->setLights(mEnvironment.lights());
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
 		mGraphic->setMatrix(graphic::GraphicContext::VIEW, mNodes[i]->getTransform());
 		mNodes[i]->dispatchRender(mGraphic, timeMs);

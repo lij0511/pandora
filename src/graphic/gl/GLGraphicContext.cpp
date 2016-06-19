@@ -13,7 +13,6 @@ namespace pola {
 namespace graphic {
 
 GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {
-	mDefaultMaterial = new Material;
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(true);
 	glDepthFunc(GL_LEQUAL);
@@ -25,7 +24,6 @@ GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {
 }
 
 GLGraphicContext::~GLGraphicContext() {
-	delete mDefaultMaterial;
 }
 
 void GLGraphicContext::setViewport(int32_t width, int32_t height) {
@@ -33,7 +31,7 @@ void GLGraphicContext::setViewport(int32_t width, int32_t height) {
 	glViewport(0, 0, width, height);
 }
 
-void GLGraphicContext::beginFrame(const FColor& clearColor) {
+void GLGraphicContext::beginFrame(const FColor4& clearColor) {
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -53,7 +51,14 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 		utils::String vs = GLShaderLib::VS_MainUnifroms();
 		vs += GLShaderLib::VS_MainAttributes();
 		vs += material->getVertexShader();
-		program = new GLProgram(vs.characters(), material->getFragmentShader().characters());
+		utils::String fs;
+		if (mLights.directionalLightCount() > 0) {
+			char buf[40];
+			sprintf(buf, "#define NUM_DIR_LIGHTS %lu\n", mLights.directionalLightCount());
+			fs = buf;
+		}
+		fs += material->getFragmentShader().characters();
+		program = new GLProgram(vs.characters(), fs.characters());
 		mCaches.programCache.cache(description, program);
 	}
 	return program;
@@ -79,12 +84,12 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer, Material* materi
 		glUniformMatrix4fv(u_view, 1, GL_FALSE, &mView.data[0]);
 	}
 
-	material->bind(program);
+	material->bind(this, program);
 
-	GLint a_texCoords;
-	if (meshBuffer.m_vertexInfo.offset_texcoord >= 0 && program->fetchAttribute(utils::String("a_texCoords", true), a_texCoords)) {
-		glEnableVertexAttribArray(a_texCoords);
-		glVertexAttribPointer(a_texCoords, 2, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_texcoord));
+	GLint a_uv;
+	if (meshBuffer.m_vertexInfo.offset_texcoord >= 0 && program->fetchAttribute(utils::String("a_uv", true), a_uv)) {
+		glEnableVertexAttribArray(a_uv);
+		glVertexAttribPointer(a_uv, 2, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_texcoord));
 	}
 	GLint a_position;
 	if (program->fetchAttribute(utils::String("a_position", true), a_position)) {

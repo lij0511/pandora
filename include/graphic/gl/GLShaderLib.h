@@ -19,6 +19,10 @@ public:
 	static const char* VS_MainPosition();
 
 	static const char* FS_MainHeader();
+
+
+	/* lights */
+	static const char* FS_Para_Lighs();
 };
 
 } /* namespace graphic */

@@ -12,12 +12,13 @@
 
 #include "graphic/MeshBuffer.h"
 #include "graphic/math/Matrix4.h"
-#include "graphic/Material.h"
+#include "graphic/light/Lights.h"
 #include "graphic/Texture.h"
 #include "io/InputStream.h"
 
 namespace pola {
 namespace graphic {
+class Material;
 
 class GraphicContext {
 public:
@@ -34,8 +35,11 @@ public:
 	Texture* loadTexture(const char* file);
 	Texture* loadTexture(io::InputStream* is);
 
-	virtual void beginFrame(const FColor& clearColor);
+	virtual void beginFrame(const FColor4& clearColor);
 	virtual void endFrame();
+
+	void setLights(const Lights& lights);
+	const Lights& lights() const;
 
 	void setMatrix(MatrixType type, const mat4& matrix);
 
@@ -48,6 +52,9 @@ protected:
 	mat4 mView;
 	mat4 mWorld;
 	mat4 mProjection;
+
+	Material* mDefaultMaterial;
+	Lights mLights;
 private:
 	int32_t mWidth;
 	int32_t mHeight;

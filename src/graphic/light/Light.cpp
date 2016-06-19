@@ -10,7 +10,7 @@
 namespace pola {
 namespace graphic {
 
-Light::Light(const LightType type) : mType(type) {
+Light::Light(const LightType type, const FColor3& c) : mType(type), color(c) {
 }
 
 Light::~Light() {
@@ -20,8 +20,8 @@ const Light::LightType Light::lightType() const {
 	return mType;
 }
 
-void Light::setColor(FColor color) {
-	mColor = color;
+void Light::setColor(FColor3 color) {
+	this->color = color;
 }
 
 } /* namespace graphic */

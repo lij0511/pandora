@@ -37,7 +37,7 @@ const utils::String Material::getFragmentShader() {
 	return mFragmentShader;
 }
 
-void Material::bind(Program* program) {
+void Material::bind(GraphicContext* graphic, Program* program) {
 }
 
 const char* Material::getMaterialType() const {

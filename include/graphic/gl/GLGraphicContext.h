@@ -25,7 +25,7 @@ public:
 
 	virtual void setViewport(int32_t width, int32_t height);
 
-	virtual void beginFrame(const FColor& clearColor);
+	virtual void beginFrame(const FColor4& clearColor);
 	virtual void endFrame();
 
 	virtual void renderMeshBuffer(MeshBuffer& meshBuffer, Material* material = nullptr);
@@ -38,7 +38,6 @@ private:
 
 	GLCaches& mCaches;
 
-	Material* mDefaultMaterial;
 };
 
 } /* namespace graphic */

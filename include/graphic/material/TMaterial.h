@@ -22,7 +22,7 @@ public:
 	TMaterial(Texture* texture);
 	virtual ~TMaterial();
 
-	virtual void bind(Program* program);
+	virtual void bind(GraphicContext* graphic, Program* program);
 
 protected:
 	virtual const utils::String generateVertexShader();

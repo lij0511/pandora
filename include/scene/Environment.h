@@ -9,7 +9,7 @@
 #define POLA_ENVIRONMENT_H_
 
 #include "utils/Vector.h"
-#include "graphic/light/Light.h"
+#include "graphic/light/Lights.h"
 
 namespace pola {
 namespace scene {
@@ -22,8 +22,10 @@ public:
 	void addLight(graphic::Light* light);
 	void removeLight(graphic::Light* light);
 
+	const graphic::Lights& lights() const;
+
 private:
-	utils::Vector<utils::sp<graphic::Light>> m_lights;
+	graphic::Lights mLights;
 };
 
 } /* namespace scene */

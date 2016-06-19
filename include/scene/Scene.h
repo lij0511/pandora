@@ -32,7 +32,7 @@ public:
 	int32_t getWidth() const;
 	int32_t getHeight() const;
 
-	void setClearColor(graphic::FColor color);
+	void setClearColor(graphic::FColor4 color);
 
 	void addSceneNode(SceneNode* node);
 	void removeSceneNode(SceneNode* node);
@@ -53,7 +53,7 @@ private:
 	graphic::GraphicContext* mGraphic;
 	int32_t mWidth;
 	int32_t mHeight;
-	graphic::FColor mClearColor;
+	graphic::FColor4 mClearColor;
 
 	utils::Vector<SceneNode*> mNodes;
 

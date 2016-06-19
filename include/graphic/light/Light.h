@@ -29,17 +29,19 @@ public:
 		LIGHT_DIRECTIONAL,
 	};
 
-	Light(const LightType type);
+	Light(const LightType type, const FColor3& color = {1.f, 1.f, 1.f});
 	virtual ~Light();
 
-	void setColor(const FColor color);
+	void setColor(const FColor3 color);
 
 	const LightType lightType() const;
 
 private:
-	FColor mColor;
-
 	const LightType mType;
+
+public:
+	FColor3 color;
+
 };
 
 } /* namespace graphic */

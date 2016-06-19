@@ -16,7 +16,7 @@
 namespace pola {
 namespace graphic {
 
-BasicMaterial::BasicMaterial(const FColor& color) : mColor(color) {
+BasicMaterial::BasicMaterial(const FColor3& color) : mColor(color) {
 }
 
 BasicMaterial::~BasicMaterial() {
@@ -41,12 +41,12 @@ const utils::String BasicMaterial::generateFragmentShader() {
 	return s;
 }
 
-void BasicMaterial::bind(Program* program) {
+void BasicMaterial::bind(GraphicContext* graphic, Program* program) {
 #ifdef OGL_RENDERER
 	GLProgram* glProgram = (GLProgram*) program;
 	GLint u_color;
 	if (glProgram->fetchUniform(utils::String("u_color", true), u_color)) {
-		glUniform4f(u_color, mColor.r, mColor.g, mColor.b, mColor.a);
+		glUniform3f(u_color, mColor.r, mColor.g, mColor.b);
 	}
 #endif
 }

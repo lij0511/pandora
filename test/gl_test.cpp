@@ -17,6 +17,7 @@
 #include "graphic/gl/GLTexture.h"
 #include "graphic/material/BasicMaterial.h"
 #include "graphic/material/TMaterial.h"
+#include "graphic/material/TPhongMaterial.h"
 #include "utils/Math.h"
 
 using namespace pola;
@@ -35,10 +36,11 @@ int main(int argc, char *argv[]) {
 	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/faerie2.bmp");
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
 	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("./res/sydney.bmp");
+	scene->environment()->addLight(new DirectionalLight({- 1.f, 0.f, 1.f}, {1.0f, 0.0f, 0.0f}));
 
-	Material* m1 = new BasicMaterial({0.f, 0.f, 1.f, 1.f});
-	Material* m2 = new BasicMaterial({1.f, 0.f, 0.f, 1.f});
-	Material* tm1 = texture ? new TMaterial(texture) : nullptr;
+	Material* m1 = new BasicMaterial({0.f, 0.f, 1.f});
+	Material* m2 = new BasicMaterial({1.f, 0.f, 0.f});
+	Material* tm1 = texture ? new TPhongMaterial(texture) : nullptr;
 	Material* tm2 = texture2 ? new TMaterial(texture2) : nullptr;
 
 	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");

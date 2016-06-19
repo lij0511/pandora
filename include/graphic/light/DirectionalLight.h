@@ -15,13 +15,12 @@ namespace graphic {
 
 class DirectionalLight: public Light {
 public:
-	DirectionalLight();
+	DirectionalLight(const vec3& direction, const FColor3& color = {1.f, 1.f, 1.f});
 	virtual ~DirectionalLight();
 
 	void setDirection(const vec3& direction);
 
-private:
-	vec3 m_direction;
+	vec3 direction;
 };
 
 } /* namespace graphic */

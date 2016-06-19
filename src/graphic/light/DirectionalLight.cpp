@@ -10,14 +10,14 @@
 namespace pola {
 namespace graphic {
 
-DirectionalLight::DirectionalLight() : Light(LIGHT_DIRECTIONAL){
+DirectionalLight::DirectionalLight(const vec3& dir , const FColor3& color) : Light(LIGHT_DIRECTIONAL, color), direction(dir) {
 }
 
 DirectionalLight::~DirectionalLight() {
 }
 
-void DirectionalLight::setDirection(const vec3& direction) {
-	m_direction = direction;
+void DirectionalLight::setDirection(const vec3& dir) {
+	direction = dir;
 }
 
 } /* namespace graphic */

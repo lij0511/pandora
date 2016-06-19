@@ -14,6 +14,7 @@
 #include "utils/RefBase.h"
 #include "utils/String.h"
 #include "graphic/Program.h"
+#include "graphic/GraphicContext.h"
 
 namespace pola {
 namespace graphic {
@@ -26,7 +27,7 @@ public:
 	const utils::String getVertexShader();
 	const utils::String getFragmentShader();
 
-	virtual void bind(Program* program);
+	virtual void bind(GraphicContext* graphic, Program* program);
 
 	const char* getMaterialType() const;
 

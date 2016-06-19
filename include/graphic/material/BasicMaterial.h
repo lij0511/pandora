@@ -19,17 +19,17 @@ namespace graphic {
  */
 class BasicMaterial: public Material {
 public:
-	BasicMaterial(const FColor& color = {1.f, 1.f, 1.f, 1.f});
+	BasicMaterial(const FColor3& color = {1.f, 1.f, 1.f});
 	virtual ~BasicMaterial();
 
-	virtual void bind(Program* program);
+	virtual void bind(GraphicContext* graphic, Program* program);
 
 protected:
 	virtual const utils::String generateVertexShader();
 	virtual const utils::String generateFragmentShader();
 
 protected:
-	FColor mColor;
+	FColor3 mColor;
 };
 
 } /* namespace graphic */

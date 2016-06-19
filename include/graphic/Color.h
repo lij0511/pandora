@@ -13,9 +13,18 @@
 namespace pola {
 namespace graphic {
 
-struct FColor {
+struct FColor3 {
+	float r, g, b;
+	FColor3(float r = 0, float g = 0, float b = 0) {
+		this->r = r;
+		this->g = g;
+		this->b = b;
+	}
+};
+
+struct FColor4 {
 	float r, g, b, a;
-	FColor(float r = 0, float g = 0, float b = 0, float a = 0) {
+	FColor4(float r = 0, float g = 0, float b = 0, float a = 0) {
 		this->r = r;
 		this->g = g;
 		this->b = b;
@@ -37,7 +46,7 @@ struct Color {
 		color |= ((a && 0xFF)          );
 	}
 
-	Color(FColor fcolor) : Color(uint16_t(fcolor.r * 255), uint16_t(fcolor.g * 255), uint16_t(fcolor.b * 255), uint16_t(fcolor.a * 255)) {
+	Color(FColor4 fcolor) : Color(uint16_t(fcolor.r * 255), uint16_t(fcolor.g * 255), uint16_t(fcolor.b * 255), uint16_t(fcolor.a * 255)) {
 	}
 
 	void getRGBA(float& red, float& green, float& blue, float& alpha) {
@@ -49,7 +58,7 @@ struct Color {
 		alpha = a;
 	}
 
-	void getFColor(FColor& c) {
+	void getFColor(FColor4& c) {
 		getRGBA(c.r, c.g, c.b, c.a);
 	}
 };

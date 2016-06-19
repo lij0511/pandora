@@ -22,7 +22,9 @@ bool ProgramDescription::operator==(const ProgramDescription& other) const {
 		return false;
 	}
 	bool comp = true;
-	comp &= lighting == other.lighting;
+	comp &= lights.directionalLightCount() == other.lights.directionalLightCount();
+	comp &= lights.pointLightCount() == other.lights.pointLightCount();
+	comp &= lights.spotLightCount() == other.lights.spotLightCount();
 	// TODO
 	if (material_type == nullptr) {
 		comp &= (mVertexShader == other.mVertexShader && mFragmentShader == other.mFragmentShader);
@@ -39,7 +41,7 @@ utils::hash_t ProgramDescription::hash() const {
 		hash = utils::JenkinsHashMix(hash, mVertexShader.hash());
 		hash = utils::JenkinsHashMix(hash, mFragmentShader.hash());
 	}
-	hash = utils::JenkinsHashMix(hash, lighting);
+	hash = utils::JenkinsHashMix(hash, lights.hash());
 	// TODO
 	hash = utils::JenkinsHashWhiten(hash);
 	return hash;

@@ -17,7 +17,7 @@ const char* GLShaderLib::VS_MainUnifroms() {
 
 const char* GLShaderLib::VS_MainAttributes() {
 	return "attribute vec4 a_position;\n"
-			"attribute vec2 a_texCoords;\n"
+			"attribute vec2 a_uv;\n"
 			"attribute vec3 a_normal;\n";
 }
 
@@ -31,6 +31,17 @@ const char* GLShaderLib::FS_MainHeader() {
 			"precision highp float;\n"
 			"#else\n"
 			"#define LOWP \n"
+			"#endif\n";
+}
+
+const char* GLShaderLib::FS_Para_Lighs() {
+	return
+			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"
+			"struct DirectionalLight {\n"
+			"vec3 direction;\n"
+			"vec3 color;\n"
+			"};\n"
+			"uniform DirectionalLight u_dirLights[NUM_DIR_LIGHTS];\n"
 			"#endif\n";
 }
 

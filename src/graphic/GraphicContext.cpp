@@ -6,15 +6,18 @@
  */
 
 #include "graphic/GraphicContext.h"
+#include "graphic/Material.h"
 #include "io/FileInputStream.h"
 
 namespace pola {
 namespace graphic {
 
 GraphicContext::GraphicContext() : mWidth(0), mHeight(0) {
+	mDefaultMaterial = new Material;
 }
 
 GraphicContext::~GraphicContext() {
+	delete mDefaultMaterial;
 }
 
 void GraphicContext::setViewport(int32_t width, int32_t height) {
@@ -30,10 +33,18 @@ Texture* GraphicContext::loadTexture(io::InputStream* is) {
 	return doLoadTexture(is);
 }
 
-void GraphicContext::beginFrame(const FColor& clearColor) {
+void GraphicContext::beginFrame(const FColor4& clearColor) {
 }
 
 void GraphicContext::endFrame() {
+}
+
+void GraphicContext::setLights(const Lights& lights) {
+	mLights = lights;
+}
+
+const Lights& GraphicContext::lights() const {
+	return mLights;
 }
 
 void GraphicContext::setMatrix(MatrixType type, const mat4& matrix) {

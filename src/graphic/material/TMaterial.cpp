@@ -27,10 +27,10 @@ TMaterial::~TMaterial() {
 const utils::String TMaterial::generateVertexShader() {
 	utils::StringBuffer sb;
 #ifdef OGL_RENDERER
-	sb.append("varying vec2 v_texCoords;\n"
+	sb.append("varying vec2 v_uv;\n"
 			"void main()\n"
 			"{\n"
-			"  v_texCoords = a_texCoords;\n");
+			"  v_uv = a_uv;\n");
 	sb.append(GLShaderLib::VS_MainPosition());
 	sb.append("}\n");
 #endif
@@ -44,10 +44,10 @@ const utils::String TMaterial::generateFragmentShader() {
 #ifdef OGL_RENDERER
 	sb.append(GLShaderLib::FS_MainHeader());
 	sb.append("uniform sampler2D u_texture;\n"
-			"varying vec2 v_texCoords;\n"
+			"varying vec2 v_uv;\n"
 			"void main()\n"
 			"{\n"
-			"  gl_FragColor = texture2D(u_texture,  v_texCoords);\n"
+			"  gl_FragColor = texture2D(u_texture,  v_uv);\n"
 			"}\n");
 #endif
 	utils::String s;
@@ -55,7 +55,7 @@ const utils::String TMaterial::generateFragmentShader() {
 	return s;
 }
 
-void TMaterial::bind(Program* program) {
+void TMaterial::bind(GraphicContext* graphic, Program* program) {
 #ifdef OGL_RENDERER
 	GLTexture* glTexture = (GLTexture*) mTexture;
 	if (glTexture->generateTexture()) {
