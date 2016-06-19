@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 
 	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
 	if (mesh) {
-		for (int i = 0; i < 100; i ++) {
+		for (int i = 0; i < 1000; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setMaterial(tm1);

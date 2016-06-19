@@ -79,7 +79,7 @@ void Scene::render() {
 	if (mCurrentCamera != nullptr) {
 		mCurrentCamera->dispatchRender(mGraphic, timeMs);
 	}
-	mGraphic->setLights(mEnvironment.lights());
+//	mGraphic->setLights(mEnvironment.lights());
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
 		mGraphic->setMatrix(graphic::GraphicContext::VIEW, mNodes[i]->getTransform());
 		mNodes[i]->dispatchRender(mGraphic, timeMs);
