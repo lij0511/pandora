@@ -36,6 +36,13 @@ const char* GLShaderLib::FS_MainHeader() {
 
 const char* GLShaderLib::FS_Para_Lighs() {
 	return
+			"struct BlinnPhongMaterial {\n"
+			"vec3	diffuseColor;\n"
+			"vec3	specularColor;\n"
+			"float	specularShininess;\n"
+			"float	specularStrength;\n"
+			"};\n"
+
 			"uniform vec3 u_ambientLight;\n"
 			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"
 			"struct DirectionalLight {\n"
