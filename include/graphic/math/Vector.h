@@ -9,6 +9,7 @@
 #define POLA_GRAPHIC_VECTOR_H_
 
 #include <math.h>
+#include "graphic/math/Quaternion.h"
 
 namespace pola {
 namespace graphic {
@@ -214,6 +215,23 @@ struct Vector3 {
 
 	float dot(const Vector3& vector) const {
 		return x * vector.x + y * vector.y + z * vector.z;
+	}
+
+	void applyQuaternion(const Quaternion& q) {
+		float qx = q.x, qy = q.y, qz = q.z, qw = q.w;
+
+		// calculate quat * vector
+
+		float ix =  qw * x + qy * z - qz * y;
+		float iy =  qw * y + qz * x - qx * z;
+		float iz =  qw * z + qx * y - qy * x;
+		float iw = - qx * x - qy * y - qz * z;
+
+		// calculate result * inverse quat
+
+		x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
+		y = iy * qw + iw * - qy + iz * - qx - ix * - qz;
+		z = iz * qw + iw * - qz + ix * - qy - iy * - qx;
 	}
 
 	//! Creates an interpolated vector between this vector and another vector.

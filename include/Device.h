@@ -33,7 +33,8 @@ public:
 	virtual graphic::GraphicContext* getGraphicContext() = 0;
 	virtual scene::SceneManager* getSceneManager() = 0;
 
-	virtual void run() = 0;
+	virtual void swapBuffers() = 0;
+	virtual bool run() = 0;
 
 protected:
 	DeviceParam mDeviceParam;

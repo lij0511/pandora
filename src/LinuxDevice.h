@@ -29,7 +29,9 @@ public:
 	virtual graphic::GraphicContext* getGraphicContext();
 	virtual scene::SceneManager* getSceneManager();
 
-	virtual void run();
+	virtual void swapBuffers();
+
+	virtual bool run();
 
 private:
 	void createKeyMap();

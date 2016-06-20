@@ -36,8 +36,9 @@ int main(int argc, char *argv[]) {
 	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/faerie2.bmp");
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
 	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("./res/sydney.bmp");
-	scene->environment()->addLight(new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
-	scene->environment()->setAmbientLight({0.3f, 0.3f, 0.3f});
+	DirectionalLight* light = new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
+	scene->environment()->addLight(light);
+	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 
 	Material* m1 = new BasicMaterial({0.f, 0.f, 1.f});
@@ -87,7 +88,11 @@ int main(int argc, char *argv[]) {
 //	camera->setPosition(vec3(0, 0, -100));
 	scene->addCamera(camera);
 
-	device->run();
+	while (device->run()) {
+		scene->render();
+
+		device->swapBuffers();
+	}
 	return 1;
 }
 

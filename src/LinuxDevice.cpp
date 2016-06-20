@@ -42,85 +42,84 @@ scene::SceneManager* LinuxDevice::getSceneManager() {
 	return mSceneManager;
 }
 
-void LinuxDevice::run() {
-	while (1) {
-		getSceneManager()->getActiveScene()->render();
+void LinuxDevice::swapBuffers() {
+	glXSwapBuffers(mDisplay, mGLWindow);
+}
 
-		glXSwapBuffers(mDisplay, mGLWindow);
-
-		while (XPending(mDisplay)) {
-		  XEvent e;
-		  XNextEvent(mDisplay, &e);
-		  switch (e.type) {
-			case Expose:
-			  break;
-			case ConfigureNotify:
-				getSceneManager()->getActiveScene()->setViewport(e.xconfigure.width, e.xconfigure.height);
-			  break;
-			case KeyRelease:{
-				if ((XPending(mDisplay) > 0)) {
-					// check for Autorepeat manually
-					// We'll do the same as Windows does: Only send KeyPressed
-					// So every KeyRelease is a real release
-					XEvent next_event;
-					XPeekEvent (e.xkey.display, &next_event);
-					if ((next_event.type == KeyPress) &&
-						(next_event.xkey.keycode == e.xkey.keycode) &&
-						(next_event.xkey.time - e.xkey.time) < 2)	// usually same time, but on some systems a difference of 1 is possible
-					{
-						/* Ignore the key release event */
-						break;
-					}
+bool LinuxDevice::run() {
+	while (XPending(mDisplay)) {
+	  XEvent e;
+	  XNextEvent(mDisplay, &e);
+	  switch (e.type) {
+		case Expose:
+		  break;
+		case ConfigureNotify:
+			getSceneManager()->getActiveScene()->setViewport(e.xconfigure.width, e.xconfigure.height);
+		  break;
+		case KeyRelease:{
+			if ((XPending(mDisplay) > 0)) {
+				// check for Autorepeat manually
+				// We'll do the same as Windows does: Only send KeyPressed
+				// So every KeyRelease is a real release
+				XEvent next_event;
+				XPeekEvent (e.xkey.display, &next_event);
+				if ((next_event.type == KeyPress) &&
+					(next_event.xkey.keycode == e.xkey.keycode) &&
+					(next_event.xkey.time - e.xkey.time) < 2)	// usually same time, but on some systems a difference of 1 is possible
+				{
+					/* Ignore the key release event */
+					break;
 				}
 			}
-			case KeyPress: {
-				KeySym k = XLookupKeysym(&e.xkey, 0);
-				ssize_t index = mKeyMap.indexOfKey(k);
-				if (index >= 0) {
-					input::KeyEvent keyEvent(mKeyMap.valueAt(index), e.type == KeyRelease ? input::KeyEvent::ACTION_UP : input::KeyEvent::ACTION_DOWN);
-					getSceneManager()->getActiveScene()->dispatchKeyEvent(keyEvent);
-				} else {
-					printf("keycode=%lu not found\n", k);
-				}
-				break;
-			}
-			case MotionNotify: {
-				int32_t buttonState = (e.xbutton.state & Button1Mask) ? input::MouseEvent::BUTTON_LEFT : 0;
-				buttonState |= (e.xbutton.state & Button2Mask) ? input::MouseEvent::BUTTON_MIDDLE : 0;
-				buttonState |= (e.xbutton.state & Button3Mask) ? input::MouseEvent::BUTTON_RIGHT: 0;
-				input::MouseEvent mouseEvent(e.xbutton.x, e.xbutton.y, input::MouseEvent::ACTION_MOVE, input::MouseEvent::BUTTON_NONE, buttonState);
-				getSceneManager()->getActiveScene()->dispatchMouseEvent(mouseEvent);
-				break;
-			}
-			case ButtonPress:
-			case ButtonRelease: {
-				int32_t buttonState = (e.xbutton.state & Button1Mask) ? input::MouseEvent::BUTTON_LEFT : 0;
-				buttonState |= (e.xbutton.state & Button2Mask) ? input::MouseEvent::BUTTON_MIDDLE : 0;
-				buttonState |= (e.xbutton.state & Button3Mask) ? input::MouseEvent::BUTTON_RIGHT: 0;
-				input::MouseEvent::Action action = e.type == ButtonPress ? input::MouseEvent::ACTION_DOWN : input::MouseEvent::ACTION_UP;
-				input::MouseEvent::Button button = input::MouseEvent::BUTTON_NONE;
-				switch (e.xbutton.button) {
-					case Button1:
-						button = input::MouseEvent::BUTTON_LEFT;
-						break;
-					case Button2:
-						button = input::MouseEvent::BUTTON_MIDDLE;
-						break;
-					case Button3:
-						button = input::MouseEvent::BUTTON_RIGHT;
-						break;
-					default:
-						break;
-				}
-				input::MouseEvent mouseEvent(e.xbutton.x, e.xbutton.y, action, button, buttonState);
-				getSceneManager()->getActiveScene()->dispatchMouseEvent(mouseEvent);
-				break;
-			}
-			default:
-			  break;
-		  }
 		}
+		case KeyPress: {
+			KeySym k = XLookupKeysym(&e.xkey, 0);
+			ssize_t index = mKeyMap.indexOfKey(k);
+			if (index >= 0) {
+				input::KeyEvent keyEvent(mKeyMap.valueAt(index), e.type == KeyRelease ? input::KeyEvent::ACTION_UP : input::KeyEvent::ACTION_DOWN);
+				getSceneManager()->getActiveScene()->dispatchKeyEvent(keyEvent);
+			} else {
+				printf("keycode=%lu not found\n", k);
+			}
+			break;
+		}
+		case MotionNotify: {
+			int32_t buttonState = (e.xbutton.state & Button1Mask) ? input::MouseEvent::BUTTON_LEFT : 0;
+			buttonState |= (e.xbutton.state & Button2Mask) ? input::MouseEvent::BUTTON_MIDDLE : 0;
+			buttonState |= (e.xbutton.state & Button3Mask) ? input::MouseEvent::BUTTON_RIGHT: 0;
+			input::MouseEvent mouseEvent(e.xbutton.x, e.xbutton.y, input::MouseEvent::ACTION_MOVE, input::MouseEvent::BUTTON_NONE, buttonState);
+			getSceneManager()->getActiveScene()->dispatchMouseEvent(mouseEvent);
+			break;
+		}
+		case ButtonPress:
+		case ButtonRelease: {
+			int32_t buttonState = (e.xbutton.state & Button1Mask) ? input::MouseEvent::BUTTON_LEFT : 0;
+			buttonState |= (e.xbutton.state & Button2Mask) ? input::MouseEvent::BUTTON_MIDDLE : 0;
+			buttonState |= (e.xbutton.state & Button3Mask) ? input::MouseEvent::BUTTON_RIGHT: 0;
+			input::MouseEvent::Action action = e.type == ButtonPress ? input::MouseEvent::ACTION_DOWN : input::MouseEvent::ACTION_UP;
+			input::MouseEvent::Button button = input::MouseEvent::BUTTON_NONE;
+			switch (e.xbutton.button) {
+				case Button1:
+					button = input::MouseEvent::BUTTON_LEFT;
+					break;
+				case Button2:
+					button = input::MouseEvent::BUTTON_MIDDLE;
+					break;
+				case Button3:
+					button = input::MouseEvent::BUTTON_RIGHT;
+					break;
+				default:
+					break;
+			}
+			input::MouseEvent mouseEvent(e.xbutton.x, e.xbutton.y, action, button, buttonState);
+			getSceneManager()->getActiveScene()->dispatchMouseEvent(mouseEvent);
+			break;
+		}
+		default:
+		  break;
+	  }
 	}
+	return true;
 }
 
 void LinuxDevice::createKeyMap() {

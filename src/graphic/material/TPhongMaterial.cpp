@@ -112,7 +112,7 @@ const utils::String TPhongMaterial::generateFragmentShader() {
 			"    outgoing += directionalLight.color * dotNL * diffuseColor.rgb;\n"
 			"  }\n"
 			"#endif\n"
-			"  outgoing += u_ambientLight;\n"
+			"  outgoing += u_ambientLight * diffuseColor.rgb;\n"
 			"  gl_FragColor = vec4(outgoing, diffuseColor.a);\n"
 			"}\n");
 #endif
