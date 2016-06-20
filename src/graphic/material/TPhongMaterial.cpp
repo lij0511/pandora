@@ -28,20 +28,48 @@ void TPhongMaterial::bind(GraphicContext* graphic, Program* program) {
 	TMaterial::bind(graphic, program);
 #ifdef OGL_RENDERER
 	const Lights* lights = graphic->lights();
+	GLProgram* glProgram = (GLProgram*) program;
 	if (lights && lights->directionalLightCount() > 0) {
+		static utils::Vector<utils::String> dirLightsColors;
+		static utils::Vector<utils::String> dirLightsDirections;
 		for (unsigned i = 0; i < lights->directionalLightCount(); i ++) {
-			GLProgram* glProgram = (GLProgram*) program;
 			DirectionalLight* light = (DirectionalLight*) lights->directionalLight(i);
 			GLint u_dl;
-			if (!glProgram->fetchUniform("u_dirLights[0].color", u_dl)) {
+
+			utils::String color;
+			if (i < dirLightsColors.size()) {
+				color = dirLightsColors[i];
+			} else {
+				char buf[40];
+				sprintf(buf, "u_dirLights[%u].color", i);
+				color = buf;
+				dirLightsColors.push(color);
+			}
+			if (!glProgram->fetchUniform(color, u_dl)) {
 				return;
 			}
 			glUniform3f(u_dl, light->color.r, light->color.g, light->color.b);
-			if (!glProgram->fetchUniform("u_dirLights[0].direction", u_dl)) {
+
+			utils::String direction;
+			if (i < dirLightsDirections.size()) {
+				direction = dirLightsDirections[i];
+			} else {
+				char buf[40];
+				sprintf(buf, "u_dirLights[%u].direction", i);
+				direction = buf;
+				dirLightsDirections.push(direction);
+			}
+			if (!glProgram->fetchUniform(direction, u_dl)) {
 				return;
 			}
 			glUniform3f(u_dl, light->direction.x, light->direction.y, light->direction.z);
 		}
+	}
+
+	GLint u_ambientLight;
+	if (glProgram->fetchUniform(utils::String("u_ambientLight", true), u_ambientLight)) {
+		FColor3 ambient = lights->ambientLight();
+		glUniform3f(u_ambientLight, ambient.r, ambient.g, ambient.b);
 	}
 #endif
 }
@@ -84,6 +112,7 @@ const utils::String TPhongMaterial::generateFragmentShader() {
 			"    outgoing += directionalLight.color * dotNL * diffuseColor.rgb;\n"
 			"  }\n"
 			"#endif\n"
+			"  outgoing += u_ambientLight;\n"
 			"  gl_FragColor = vec4(outgoing, diffuseColor.a);\n"
 			"}\n");
 #endif

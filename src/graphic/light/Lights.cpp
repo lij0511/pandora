@@ -51,6 +51,14 @@ void Lights::removeLight(Light* light) {
 	mHash = 0;
 }
 
+void Lights::setAmbientLight(const FColor3& color) {
+	mAmbientColor = color;
+}
+
+FColor3 Lights::ambientLight() const {
+	return mAmbientColor;
+}
+
 size_t Lights::directionalLightCount() const {
 	return mDirectionalLights.size();
 }

@@ -22,6 +22,9 @@ public:
 	void addLight(graphic::Light* light);
 	void removeLight(graphic::Light* light);
 
+	void setAmbientLight(const graphic::FColor3& color);
+	graphic::FColor3 ambientLight() const;
+
 	graphic::Lights* lights() const;
 
 private:

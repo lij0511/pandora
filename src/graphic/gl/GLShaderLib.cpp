@@ -36,6 +36,7 @@ const char* GLShaderLib::FS_MainHeader() {
 
 const char* GLShaderLib::FS_Para_Lighs() {
 	return
+			"uniform vec3 u_ambientLight;\n"
 			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"
 			"struct DirectionalLight {\n"
 			"vec3 direction;\n"

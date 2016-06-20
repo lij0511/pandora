@@ -26,6 +26,14 @@ void Environment::removeLight(graphic::Light* light) {
 	mLights->removeLight(light);
 }
 
+void Environment::setAmbientLight(const graphic::FColor3& color) {
+	mLights->setAmbientLight(color);
+}
+
+graphic::FColor3 Environment::ambientLight() const {
+	return mLights->ambientLight();
+}
+
 graphic::Lights* Environment::lights() const {
 	return mLights;
 }
