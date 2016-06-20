@@ -52,9 +52,9 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 		vs += GLShaderLib::VS_MainAttributes();
 		vs += material->getVertexShader();
 		utils::String fs;
-		if (mLights.directionalLightCount() > 0) {
+		if (mLights && mLights->directionalLightCount() > 0) {
 			char buf[40];
-			sprintf(buf, "#define NUM_DIR_LIGHTS %lu\n", mLights.directionalLightCount());
+			sprintf(buf, "#define NUM_DIR_LIGHTS %lu\n", mLights->directionalLightCount());
 			fs = buf;
 		}
 		fs += material->getFragmentShader().characters();

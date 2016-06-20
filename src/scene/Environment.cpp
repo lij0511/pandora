@@ -12,20 +12,21 @@ namespace pola {
 namespace scene {
 
 Environment::Environment() {
+	mLights = new graphic::Lights;
 }
 
 Environment::~Environment() {
 }
 
 void Environment::addLight(graphic::Light* light) {
-	mLights.addLight(light);
+	mLights->addLight(light);
 }
 
 void Environment::removeLight(graphic::Light* light) {
-	mLights.removeLight(light);
+	mLights->removeLight(light);
 }
 
-const graphic::Lights& Environment::lights() const {
+graphic::Lights* Environment::lights() const {
 	return mLights;
 }
 

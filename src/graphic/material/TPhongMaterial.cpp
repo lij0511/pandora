@@ -27,11 +27,11 @@ TPhongMaterial::~TPhongMaterial() {
 void TPhongMaterial::bind(GraphicContext* graphic, Program* program) {
 	TMaterial::bind(graphic, program);
 #ifdef OGL_RENDERER
-	const Lights& lights = graphic->lights();
-	if (lights.directionalLightCount() > 0) {
-		for (unsigned i = 0; i < lights.directionalLightCount(); i ++) {
+	const Lights* lights = graphic->lights();
+	if (lights && lights->directionalLightCount() > 0) {
+		for (unsigned i = 0; i < lights->directionalLightCount(); i ++) {
 			GLProgram* glProgram = (GLProgram*) program;
-			DirectionalLight* light = (DirectionalLight*) lights.directionalLight(i);
+			DirectionalLight* light = (DirectionalLight*) lights->directionalLight(i);
 			GLint u_dl;
 			if (!glProgram->fetchUniform("u_dirLights[0].color", u_dl)) {
 				return;

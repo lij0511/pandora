@@ -22,10 +22,10 @@ public:
 	void addLight(graphic::Light* light);
 	void removeLight(graphic::Light* light);
 
-	const graphic::Lights& lights() const;
+	graphic::Lights* lights() const;
 
 private:
-	graphic::Lights mLights;
+	graphic::Lights* mLights;
 };
 
 } /* namespace scene */

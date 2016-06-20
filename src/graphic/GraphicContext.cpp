@@ -13,6 +13,7 @@ namespace pola {
 namespace graphic {
 
 GraphicContext::GraphicContext() : mWidth(0), mHeight(0) {
+	mLights = nullptr;
 	mDefaultMaterial = new Material;
 }
 
@@ -39,11 +40,11 @@ void GraphicContext::beginFrame(const FColor4& clearColor) {
 void GraphicContext::endFrame() {
 }
 
-void GraphicContext::setLights(const Lights& lights) {
+void GraphicContext::setLights(Lights* lights) {
 	mLights = lights;
 }
 
-const Lights& GraphicContext::lights() const {
+Lights* GraphicContext::lights() const {
 	return mLights;
 }
 

@@ -42,6 +42,13 @@ const char* GLShaderLib::FS_Para_Lighs() {
 			"vec3 color;\n"
 			"};\n"
 			"uniform DirectionalLight u_dirLights[NUM_DIR_LIGHTS];\n"
+			"#endif\n"
+			"#if defined(NUM_POINT_LIGHTS) && NUM_POINT_LIGHTS > 0\n"
+			"struct PointLight {\n"
+			"vec3 position;\n"
+			"vec3 color;\n"
+			"};\n"
+			"uniform PointLight u_pointLights[NUM_POINT_LIGHTS];\n"
 			"#endif\n";
 }
 
