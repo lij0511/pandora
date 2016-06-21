@@ -12,6 +12,7 @@ namespace graphic {
 
 const char* GLShaderLib::VS_MainUnifroms() {
 	return "uniform mat4 u_projection;\n"
+			"uniform mat4 u_model;\n"
 			"uniform mat4 u_view;\n";
 }
 
@@ -22,7 +23,7 @@ const char* GLShaderLib::VS_MainAttributes() {
 }
 
 const char* GLShaderLib::VS_MainPosition() {
-	return "  gl_Position = u_projection * u_view * a_position;\n";
+	return "  gl_Position = u_projection * u_view * u_model * a_position;\n";
 }
 
 const char* GLShaderLib::FS_MainHeader() {

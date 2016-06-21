@@ -81,7 +81,7 @@ void Scene::render() {
 	}
 	mGraphic->setLights(mEnvironment.lights());
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
-		mGraphic->setMatrix(graphic::GraphicContext::VIEW, mNodes[i]->getTransform());
+		mGraphic->setMatrix(graphic::GraphicContext::MODEL, mNodes[i]->getTransform());
 		mNodes[i]->dispatchRender(mGraphic, timeMs);
 	}
 

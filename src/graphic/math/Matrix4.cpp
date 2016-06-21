@@ -61,34 +61,46 @@ void Matrix4::load(const Matrix4& v) {
 }
 
 void Matrix4::loadInverse(const Matrix4& v) {
-    double scale = 1.0 /
-            (v.data[0] * ((double) v.data[5]  * v.data[15] -
-                    (double) v.data[13] * v.data[7]) +
-             v.data[4] * ((double) v.data[13] * v.data[3] -
-                     (double) v.data[1] * v.data[15]) +
-             v.data[12] * ((double) v.data[1] * v.data[7] -
-                     (double) v.data[5] * v.data[3]));
+	float* te = this->data;
+	const float* me = v.data;
 
-    data[0] = (v.data[5] * v.data[15] -
-            v.data[13] * v.data[7])  * scale;
-    data[4] = (v.data[12] * v.data[7] -
-            v.data[4]  * v.data[15]) * scale;
-    data[12] = (v.data[4] * v.data[13] -
-            v.data[12] * v.data[5])  * scale;
+	float n11 = me[ 0 ], n21 = me[ 1 ], n31 = me[ 2 ], n41 = me[ 3 ],
+	n12 = me[ 4 ], n22 = me[ 5 ], n32 = me[ 6 ], n42 = me[ 7 ],
+	n13 = me[ 8 ], n23 = me[ 9 ], n33 = me[ 10 ], n43 = me[ 11 ],
+	n14 = me[ 12 ], n24 = me[ 13 ], n34 = me[ 14 ], n44 = me[ 15 ],
 
-    data[1] = (v.data[13] * v.data[3] -
-            v.data[1]  * v.data[15]) * scale;
-    data[5] = (v.data[0] * v.data[15] -
-            v.data[12] * v.data[3])  * scale;
-    data[13] = (v.data[12] * v.data[1] -
-            v.data[0]  * v.data[13]) * scale;
+	t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44,
+	t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44,
+	t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44,
+	t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
 
-    data[3] = (v.data[1] * v.data[7] -
-            v.data[5] * v.data[3]) * scale;
-    data[7] = (v.data[4] * v.data[3] -
-            v.data[0] * v.data[7]) * scale;
-    data[15] = (v.data[0] * v.data[5] -
-            v.data[4] * v.data[1]) * scale;
+	float det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
+	if ( det == 0 ) {
+		loadIdentity();
+		return;
+	}
+
+	te[ 0 ] = t11;
+	te[ 1 ] = n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44;
+	te[ 2 ] = n22 * n34 * n41 - n24 * n32 * n41 + n24 * n31 * n42 - n21 * n34 * n42 - n22 * n31 * n44 + n21 * n32 * n44;
+	te[ 3 ] = n23 * n32 * n41 - n22 * n33 * n41 - n23 * n31 * n42 + n21 * n33 * n42 + n22 * n31 * n43 - n21 * n32 * n43;
+
+	te[ 4 ] = t12;
+	te[ 5 ] = n13 * n34 * n41 - n14 * n33 * n41 + n14 * n31 * n43 - n11 * n34 * n43 - n13 * n31 * n44 + n11 * n33 * n44;
+	te[ 6 ] = n14 * n32 * n41 - n12 * n34 * n41 - n14 * n31 * n42 + n11 * n34 * n42 + n12 * n31 * n44 - n11 * n32 * n44;
+	te[ 7 ] = n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43;
+
+	te[ 8 ] = t13;
+	te[ 9 ] = n14 * n23 * n41 - n13 * n24 * n41 - n14 * n21 * n43 + n11 * n24 * n43 + n13 * n21 * n44 - n11 * n23 * n44;
+	te[ 10 ] = n12 * n24 * n41 - n14 * n22 * n41 + n14 * n21 * n42 - n11 * n24 * n42 - n12 * n21 * n44 + n11 * n22 * n44;
+	te[ 11 ] = n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43;
+
+	te[ 12 ] = t14;
+	te[ 13 ] = n13 * n24 * n31 - n14 * n23 * n31 + n14 * n21 * n33 - n11 * n24 * n33 - n13 * n21 * n34 + n11 * n23 * n34;
+	te[ 14 ] = n14 * n22 * n31 - n12 * n24 * n31 - n14 * n21 * n32 + n11 * n24 * n32 + n12 * n21 * n34 - n11 * n22 * n34;
+	te[ 15 ] = n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33;
+
+	multiply( 1 / det );
 }
 
 void Matrix4::copyTo(float* v) const {

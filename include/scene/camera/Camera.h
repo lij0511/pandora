@@ -33,17 +33,14 @@ public:
 
 protected:
 	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
-	virtual void updateMatrix();
 
 	virtual void onPropertyChange();
 protected:
-	graphic::mat4 mMatrix;
 	int32_t mWidth;
 	int32_t mHeight;
 	bool mCameraDirty;
 
 	graphic::mat4 mProjection;
-	graphic::mat4 mView;
 	CameraController* mController;
 };
 

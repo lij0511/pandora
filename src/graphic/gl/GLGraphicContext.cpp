@@ -75,13 +75,15 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer, Material* materi
 	GLProgram* program = currentProgram(material);
 	program->use();
 
-	GLint u_projection;
-	if (program->fetchUniform(utils::String("u_projection", true), u_projection)) {
-		glUniformMatrix4fv(u_projection, 1, GL_FALSE, &mProjection.data[0]);
+	GLint u_mat;
+	if (program->fetchUniform(utils::String("u_projection", true), u_mat)) {
+		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mProjectionMatrix.data[0]);
 	}
-	GLint u_view;
-	if (program->fetchUniform(utils::String("u_view", true), u_view)) {
-		glUniformMatrix4fv(u_view, 1, GL_FALSE, &mView.data[0]);
+	if (program->fetchUniform(utils::String("u_view", true), u_mat)) {
+		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mViewMatrix.data[0]);
+	}
+	if (program->fetchUniform(utils::String("u_model", true), u_mat)) {
+		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mModelMatrix.data[0]);
 	}
 
 	material->bind(this, program);

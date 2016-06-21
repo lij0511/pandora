@@ -24,7 +24,8 @@ class GraphicContext {
 public:
 	enum MatrixType {
 		VIEW,
-		WORLD,
+		MODEL,
+		MODEL_VIEW,
 		PROJECTION,
 	};
 	GraphicContext();
@@ -49,9 +50,9 @@ protected:
 	virtual Texture* doLoadTexture(io::InputStream* is) = 0;
 
 protected:
-	mat4 mView;
-	mat4 mWorld;
-	mat4 mProjection;
+	mat4 mViewMatrix;
+	mat4 mModelMatrix;
+	mat4 mProjectionMatrix;
 
 	Material* mDefaultMaterial;
 	Lights* mLights;

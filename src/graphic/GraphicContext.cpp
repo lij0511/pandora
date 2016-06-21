@@ -51,13 +51,13 @@ Lights* GraphicContext::lights() const {
 void GraphicContext::setMatrix(MatrixType type, const mat4& matrix) {
 	switch (type) {
 		case VIEW:
-			mView = matrix;
+			mViewMatrix = matrix;
 			break;
-		case WORLD:
-			mWorld = matrix;
+		case MODEL:
+			mModelMatrix = matrix;
 			break;
 		case PROJECTION:
-			mProjection = matrix;
+			mProjectionMatrix = matrix;
 			break;
 		default:
 			break;

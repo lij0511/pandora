@@ -101,7 +101,7 @@ const utils::String TPhongMaterial::generateFragmentShader() {
 			"varying vec3 v_normal;\n"
 			"void main()\n"
 			"{\n"
-			"  vec3 normal = normalize( v_normal );\n"
+			"  vec3 normal = normalize(v_normal);\n"
 			"  vec4 diffuseColor =texture2D(u_texture,  v_uv);\n"
 			"  vec3 outgoing = vec3(0.0f, 0.0f, 0.0f);\n"
 			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"

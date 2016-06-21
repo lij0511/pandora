@@ -24,8 +24,6 @@ public:
 	virtual void setSize(int32_t width, int32_t height);
 
 protected:
-	virtual void updateMatrix();
-protected:
 	float mFovy;	// Field of view, in radians.
 	float mAspect;	// Aspect ratio.
 	float mZnear;	// value of the near view-plane.
