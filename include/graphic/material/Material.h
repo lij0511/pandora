@@ -18,6 +18,13 @@
 #include "graphic/Color.h"
 #include "graphic/Texture.h"
 
+#ifdef OGL_RENDERER
+#include "graphic/gl/GLProgram.h"
+#include "graphic/gl/GLShaderLib.h"
+#include "graphic/gl/GLTexture.h"
+#include "graphic/gl/GLCaches.h"
+#endif
+
 namespace pola {
 namespace graphic {
 

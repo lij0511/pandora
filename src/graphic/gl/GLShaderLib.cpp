@@ -64,7 +64,7 @@ const char* GLShaderLib::FS_TextureMap() {
 			"#endif\n";
 }
 
-const char* GLShaderLib::FS_Para_Lighs() {
+const char* GLShaderLib::Para_Lighs() {
 	return
 			"struct BlinnPhongMaterial {\n"
 			"vec3	diffuseColor;\n"

@@ -15,6 +15,7 @@
 #include "scene/node/BasicMeshSceneNode.h"
 #include "graphic/gl/GLCaches.h"
 #include "graphic/gl/GLTexture.h"
+#include "graphic/material/LambertMaterial.h"
 #include "graphic/material/PhongMaterial.h"
 #include "utils/Math.h"
 
@@ -39,14 +40,14 @@ int main(int argc, char *argv[]) {
 	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 
-	Material* m1 = new PhongMaterial({0.f, 0.f, 1.f});
+	Material* m1 = new PhongMaterial({1.f, 0.f, 0.f});
 	Material* m2 = new PhongMaterial({1.f, 0.f, 0.f});
-	Material* tm1 = texture ? new PhongMaterial({1.0f, 1.0f, 1.0f}, texture) : nullptr;
-	Material* tm2 = texture2 ? new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2) : nullptr;
+	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
+	Material* tm2 = new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2);
 
 	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
 	if (mesh) {
-		for (int i = 0; i < 500; i ++) {
+		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setMaterial(tm1);

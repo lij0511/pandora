@@ -28,7 +28,7 @@ public:
 
 
 	/* lights */
-	static const char* FS_Para_Lighs();
+	static const char* Para_Lighs();
 };
 
 } /* namespace graphic */

@@ -7,12 +7,6 @@
 
 #include <typeinfo>
 #include "graphic/material/Material.h"
-#ifdef OGL_RENDERER
-#include "graphic/gl/GLProgram.h"
-#include "graphic/gl/GLShaderLib.h"
-#include "graphic/gl/GLTexture.h"
-#include "graphic/gl/GLCaches.h"
-#endif
 
 #include "utils/StringBuffer.h"
 

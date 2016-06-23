@@ -1,24 +1,24 @@
 /*
- * PhongMaterial.cpp
+ * LambertMaterial.cpp
  *
- *  Created on: 2016年6月19日
+ *  Created on: 2016年6月23日
  *      Author: lijing
  */
 
-#include "graphic/material/PhongMaterial.h"
+#include "graphic/material/LambertMaterial.h"
 
 #include "utils/StringBuffer.h"
 
 namespace pola {
 namespace graphic {
 
-PhongMaterial::PhongMaterial(const FColor3& color, Texture* textureMap) : Material(color, textureMap) {
+LambertMaterial::LambertMaterial(const FColor3& color, Texture* textureMap) : Material(color, textureMap) {
 }
 
-PhongMaterial::~PhongMaterial() {
+LambertMaterial::~LambertMaterial() {
 }
 
-void PhongMaterial::bind(GraphicContext* graphic, Program* program) {
+void LambertMaterial::bind(GraphicContext* graphic, Program* program) {
 	Material::bind(graphic, program);
 #ifdef OGL_RENDERER
 	const Lights* lights = graphic->lights();
@@ -68,49 +68,37 @@ void PhongMaterial::bind(GraphicContext* graphic, Program* program) {
 #endif
 }
 
-const utils::String PhongMaterial::generateVertexShader() {
+const utils::String LambertMaterial::generateVertexShader() {
 	utils::StringBuffer sb;
 #ifdef OGL_RENDERER
 	sb.append(GLShaderLib::VS_Para_TextureMap())
-		.append("varying vec3 v_normal;\n"
+		.append(GLShaderLib::Para_Lighs())
+		.append(
 			"void main()\n"
 			"{\n")
 		.append(GLShaderLib::VS_TextureMap())
 		.append(GLShaderLib::VS_MainPosition())
-		.append("  v_normal = a_normal;\n");
-	sb.append("}\n");
+		.append("}\n");
 #endif
 	utils::String s;
 	sb.release(s);
 	return s;
 }
 
-const utils::String PhongMaterial::generateFragmentShader() {
+const utils::String LambertMaterial::generateFragmentShader() {
 	utils::StringBuffer sb(256);
 #ifdef OGL_RENDERER
 	sb.append(GLShaderLib::FS_MainHeader())
-		.append(GLShaderLib::Para_Lighs())
 		.append(GLShaderLib::FS_Para_TextureMap())
-		.append("varying vec3 v_normal;\n"
+		.append(
 			"uniform vec3 u_color;\n"
 			"void main()\n"
-			"{\n"
-			"  vec3 normal = normalize(v_normal);\n")
+			"{\n")
 		.append(GLShaderLib::FS_DiffuseColor())
 		.append("  diffuseColor = vec4(u_color, 1.0f);\n")
 		.append(GLShaderLib::FS_TextureMap())
 		.append(
-			"  vec3 outgoing = vec3(0.0f, 0.0f, 0.0f);\n"
-			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"
-			"  DirectionalLight directionalLight;\n"
-			"  for (int i = 0; i < NUM_DIR_LIGHTS; i ++) {\n"
-			"    directionalLight = u_dirLights[ i ];\n"
-			"    float dotNL = clamp(dot(normal, directionalLight.direction), 0.0f, 1.0f);\n"
-			"    outgoing += directionalLight.color * dotNL * diffuseColor.rgb;\n"
-			"  }\n"
-			"#endif\n"
-			"  outgoing += u_ambientLight * diffuseColor.rgb;\n"
-			"  gl_FragColor = vec4(outgoing, diffuseColor.a);\n"
+			"  gl_FragColor = diffuseColor;\n"
 			"}\n");
 #endif
 	utils::String s;
