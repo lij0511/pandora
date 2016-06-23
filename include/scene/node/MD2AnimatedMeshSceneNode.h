@@ -10,7 +10,6 @@
 
 #include "scene/node/AnimatedMeshSceneNode.h"
 #include "scene/mesh/MD2AnimatedMesh.h"
-#include "graphic/Material.h"
 
 namespace pola {
 namespace scene {

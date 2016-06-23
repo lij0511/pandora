@@ -26,12 +26,41 @@ const char* GLShaderLib::VS_MainPosition() {
 	return "  gl_Position = u_projection * u_view * u_model * a_position;\n";
 }
 
+const char* GLShaderLib::VS_Para_TextureMap() {
+	return "#ifdef TEXTURE_MAP\n"
+			"varying vec2 v_uv;\n"
+			"#endif\n";
+}
+
+const char* GLShaderLib::VS_TextureMap() {
+	return "#ifdef TEXTURE_MAP\n"
+			"v_uv = a_uv;\n"
+			"#endif\n";
+}
+
 const char* GLShaderLib::FS_MainHeader() {
 	return "#ifdef GL_ES\n"
 			"#define LOWP lowp\n"
 			"precision highp float;\n"
 			"#else\n"
 			"#define LOWP \n"
+			"#endif\n";
+}
+
+const char* GLShaderLib::FS_DiffuseColor() {
+	return "vec4 diffuseColor;\n";
+}
+
+const char* GLShaderLib::FS_Para_TextureMap() {
+	return "#ifdef TEXTURE_MAP\n"
+			"uniform sampler2D u_textureMap;\n"
+			"varying vec2 v_uv;\n"
+			"#endif\n";
+}
+
+const char* GLShaderLib::FS_TextureMap() {
+	return "#ifdef TEXTURE_MAP\n"
+			"diffuseColor *= texture2D(u_textureMap,  v_uv);\n"
 			"#endif\n";
 }
 

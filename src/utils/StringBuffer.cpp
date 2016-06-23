@@ -42,14 +42,15 @@ StringBuffer::~StringBuffer() {
 	}
 }
 
-void StringBuffer::append(char cc) {
+StringBuffer& StringBuffer::append(char cc) {
 	if (m_length +1 >= m_capacity) {
 		ensureCapacity(_grow(m_length + 1));
 	}
 	*(m_buffer + (m_length++)) = cc;
 	*(m_buffer + m_length) = 0;
+	return *this;
 }
-void StringBuffer::append(char* data, size_t len) {
+StringBuffer& StringBuffer::append(char* data, size_t len) {
 	if (len > 0) {
 		if (m_length +len >= m_capacity) {
 			ensureCapacity(_grow(m_length + len + 1));
@@ -58,11 +59,12 @@ void StringBuffer::append(char* data, size_t len) {
 		m_length += len;
 		*(m_buffer + m_length) = 0;
 	}
+	return *this;
 }
-void StringBuffer::append(const char* data) {
+StringBuffer& StringBuffer::append(const char* data) {
 	append(data, strlen(data));
 }
-void StringBuffer::append(const char* data, size_t len) {
+StringBuffer& StringBuffer::append(const char* data, size_t len) {
 	if (len > 0) {
 		if (m_length +len >= m_capacity) {
 			ensureCapacity(_grow(m_length + len + 1));
@@ -71,12 +73,13 @@ void StringBuffer::append(const char* data, size_t len) {
 		m_length += len;
 		*(m_buffer + m_length) = 0;
 	}
+	return *this;
 }
-void StringBuffer::append(const String& str) {
-	append(str.characters(), str.length());
+StringBuffer& StringBuffer::append(const String& str) {
+	return append(str.characters(), str.length());
 }
-void StringBuffer::append(const StringBuffer& str) {
-	append(str.buffer(), str.length());
+StringBuffer& StringBuffer::append(const StringBuffer& str) {
+	return append(str.buffer(), str.length());
 }
 
 const char* StringBuffer::buffer() const {

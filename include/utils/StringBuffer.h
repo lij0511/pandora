@@ -24,12 +24,12 @@ public:
 
 	virtual ~StringBuffer();
 
-	void append(char cc);
-	void append(char* data, size_t len);
-	void append(const char* data);
-	void append(const char* data, size_t len);
-	void append(const String& str);
-	void append(const StringBuffer& str);
+	StringBuffer& append(char cc);
+	StringBuffer& append(char* data, size_t len);
+	StringBuffer& append(const char* data);
+	StringBuffer& append(const char* data, size_t len);
+	StringBuffer& append(const String& str);
+	StringBuffer& append(const StringBuffer& str);
 
 	const char* buffer() const;
 	const size_t length() const;

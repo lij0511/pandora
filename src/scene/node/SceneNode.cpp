@@ -53,14 +53,28 @@ const graphic::vec3& SceneNode::getScale() const {
 	return mScale;
 }
 
-const graphic::mat4 SceneNode::getTransform() {
+void SceneNode::updateTransform() {
 	if (mMatrixDirty) {
 		graphic::quat4 quat;
 		mRotation.getQuaternion(quat);
 		mMatrix.compose(mPosition, quat, mScale);
+		if (mParent != nullptr) {
+			mWorldMatrix.loadMultiply(mParent->getWorldTransform(), mMatrix);
+		} else {
+			mWorldMatrix.load(mMatrix);
+		}
 		mMatrixDirty = false;
 	}
+}
+
+const graphic::mat4 SceneNode::getTransform() {
+	updateTransform();
 	return mMatrix;
+}
+
+const graphic::mat4 SceneNode::getWorldTransform() {
+	updateTransform();
+	return mWorldMatrix;
 }
 
 void SceneNode::addChild(SceneNode* child) {

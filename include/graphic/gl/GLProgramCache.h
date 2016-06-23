@@ -13,7 +13,6 @@
 #include "utils/String.h"
 #include "utils/LruCache.h"
 #include "graphic/gl/GLProgram.h"
-#include "graphic/light/Lights.h"
 
 namespace pola {
 namespace graphic {
@@ -34,8 +33,13 @@ public:
 	utils::String mFragmentShader;
 
 	const char* material_type;
-	Lights lights;
+	bool texture_map;
 
+	unsigned directional_light_count;
+	unsigned point_light_count;
+	unsigned spot_light_count;
+
+	bool fog;
 };
 
 class GLProgramCache : public utils::OnEntryRemoved<const ProgramDescription, GLProgram*>{

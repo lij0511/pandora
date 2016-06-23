@@ -1,22 +1,22 @@
 /*
- * TPhongMaterial.h
+ * PhongMaterial.h
  *
  *  Created on: 2016年6月19日
  *      Author: lijing
  */
 
-#ifndef POLA_TPHONGMATERIAL_H_
-#define POLA_TPHONGMATERIAL_H_
+#ifndef POLA_PHONGMATERIAL_H_
+#define POLA_PHONGMATERIAL_H_
 
-#include "graphic/material/TMaterial.h"
+#include "graphic/material/Material.h"
 
 namespace pola {
 namespace graphic {
 
-class TPhongMaterial: public TMaterial {
+class PhongMaterial: public Material {
 public:
-	TPhongMaterial(Texture* texture);
-	virtual ~TPhongMaterial();
+	PhongMaterial(const FColor3& color = {1.f, 1.f, 1.f}, Texture* textureMap = nullptr);
+	virtual ~PhongMaterial();
 
 	void bind(GraphicContext* graphic, Program* program);
 
@@ -28,4 +28,4 @@ protected:
 } /* namespace graphic */
 } /* namespace pola */
 
-#endif /* POLA_TPHONGMATERIAL_H_ */
+#endif /* POLA_PHONGMATERIAL_H_ */

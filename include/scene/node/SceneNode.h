@@ -34,7 +34,9 @@ public:
 	void setScale(const graphic::vec3& scale);
 	const graphic::vec3& getScale() const;
 
-	virtual const graphic::mat4 getTransform();
+	const graphic::mat4 getTransform();
+
+	const graphic::mat4 getWorldTransform();
 
 	void addChild(SceneNode* node);
 	void removeChild(SceneNode* node);
@@ -45,10 +47,13 @@ protected:
 	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 	virtual void onPropertyChange();
 
+	virtual void updateTransform();
+
 	graphic::vec3 mPosition;
 	graphic::Euler mRotation;
 	graphic::vec3 mScale;
 
+	graphic::mat4 mWorldMatrix;
 	graphic::mat4 mMatrix;
 	bool mMatrixDirty;
 

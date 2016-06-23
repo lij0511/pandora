@@ -15,14 +15,18 @@
 #include "utils/String.h"
 #include "graphic/Program.h"
 #include "graphic/GraphicContext.h"
+#include "graphic/Color.h"
+#include "graphic/Texture.h"
 
 namespace pola {
 namespace graphic {
 
 class Material : public utils::RefBase<Material> {
 public:
-	Material();
+	Material(const FColor3& color = {1.f, 1.f, 1.f}, Texture* textureMap = nullptr);
 	virtual ~Material();
+
+	bool hasTextureMap() const;
 
 	const utils::String getVertexShader();
 	const utils::String getFragmentShader();
@@ -39,6 +43,10 @@ protected:
 
 	utils::String mVertexShader;
 	utils::String mFragmentShader;
+
+protected:
+	FColor3 mColor;
+	Texture* mTextureMap;
 
 };
 

@@ -34,6 +34,8 @@ public:
 protected:
 	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 
+	virtual void updateTransform();
+
 	virtual void onPropertyChange();
 protected:
 	int32_t mWidth;

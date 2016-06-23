@@ -15,9 +15,7 @@
 #include "scene/node/BasicMeshSceneNode.h"
 #include "graphic/gl/GLCaches.h"
 #include "graphic/gl/GLTexture.h"
-#include "graphic/material/BasicMaterial.h"
-#include "graphic/material/TMaterial.h"
-#include "graphic/material/TPhongMaterial.h"
+#include "graphic/material/PhongMaterial.h"
 #include "utils/Math.h"
 
 using namespace pola;
@@ -41,10 +39,10 @@ int main(int argc, char *argv[]) {
 	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 
-	Material* m1 = new BasicMaterial({0.f, 0.f, 1.f});
-	Material* m2 = new BasicMaterial({1.f, 0.f, 0.f});
-	Material* tm1 = texture ? new TPhongMaterial(texture) : nullptr;
-	Material* tm2 = texture2 ? new TPhongMaterial(texture2) : nullptr;
+	Material* m1 = new PhongMaterial({0.f, 0.f, 1.f});
+	Material* m2 = new PhongMaterial({1.f, 0.f, 0.f});
+	Material* tm1 = texture ? new PhongMaterial({1.0f, 1.0f, 1.0f}, texture) : nullptr;
+	Material* tm2 = texture2 ? new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2) : nullptr;
 
 	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
 	if (mesh) {

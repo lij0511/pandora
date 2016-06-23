@@ -6,7 +6,7 @@
  */
 
 #include "graphic/GraphicContext.h"
-#include "graphic/Material.h"
+#include "graphic/material/Material.h"
 #include "io/FileInputStream.h"
 
 namespace pola {

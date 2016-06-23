@@ -8,7 +8,7 @@
 #ifndef SHADERMATERIAL_H_
 #define SHADERMATERIAL_H_
 
-#include "graphic/Material.h"
+#include "graphic/material/Material.h"
 
 namespace pola {
 namespace graphic {

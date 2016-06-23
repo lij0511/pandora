@@ -8,7 +8,7 @@
 #ifndef POLA_MESHSCENENODE_H_
 #define POLA_MESHSCENENODE_H_
 
-#include "graphic/Material.h"
+#include "graphic/material/Material.h"
 #include "scene/node/SceneNode.h"
 
 namespace pola {

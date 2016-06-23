@@ -43,13 +43,33 @@ void Camera::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
 		animating = mController->animate(timeMs);
 	}
 	if (mCameraDirty || animating) {
+		mMatrixDirty = true;
 		mCameraDirty = false;
 		graphic->setMatrix(graphic::GraphicContext::PROJECTION, mProjection);
-		graphic::mat4 view = mController != nullptr ? mController->getTransform() * getTransform() : getTransform();
 		graphic::mat4 viewInverse;
-		viewInverse.loadInverse(view);
+		viewInverse.loadInverse(getWorldTransform());
 //		viewInverse.load(view);
 		graphic->setMatrix(graphic::GraphicContext::VIEW, viewInverse);
+	}
+}
+
+void Camera::updateTransform() {
+	if (mMatrixDirty) {
+		graphic::mat4 m;
+		graphic::quat4 quat;
+		mRotation.getQuaternion(quat);
+		m.compose(mPosition, quat, mScale);
+		if (mController != nullptr) {
+			mMatrix.loadMultiply(mController->getTransform(), m);
+		} else {
+			mMatrix.load(m);
+		}
+		if (mParent != nullptr) {
+			mWorldMatrix.loadMultiply(mParent->getWorldTransform(), mMatrix);
+		} else {
+			mWorldMatrix.load(mMatrix);
+		}
+		mMatrixDirty = false;
 	}
 }
 

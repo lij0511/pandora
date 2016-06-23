@@ -18,7 +18,13 @@ public:
 
 	static const char* VS_MainPosition();
 
+	static const char* VS_Para_TextureMap();
+	static const char* VS_TextureMap();
+
 	static const char* FS_MainHeader();
+	static const char* FS_DiffuseColor();
+	static const char* FS_TextureMap();
+	static const char* FS_Para_TextureMap();
 
 
 	/* lights */

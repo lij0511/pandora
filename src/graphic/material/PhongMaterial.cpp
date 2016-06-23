@@ -1,11 +1,11 @@
 /*
- * TPhongMaterial.cpp
+ * PhongMaterial.cpp
  *
  *  Created on: 2016年6月19日
  *      Author: lijing
  */
 
-#include "graphic/material/TPhongMaterial.h"
+#include "graphic/material/PhongMaterial.h"
 #ifdef OGL_RENDERER
 #include "graphic/gl/GLProgram.h"
 #include "graphic/gl/GLShaderLib.h"
@@ -18,14 +18,14 @@
 namespace pola {
 namespace graphic {
 
-TPhongMaterial::TPhongMaterial(Texture* texture) : TMaterial(texture) {
+PhongMaterial::PhongMaterial(const FColor3& color, Texture* textureMap) : Material(color, textureMap) {
 }
 
-TPhongMaterial::~TPhongMaterial() {
+PhongMaterial::~PhongMaterial() {
 }
 
-void TPhongMaterial::bind(GraphicContext* graphic, Program* program) {
-	TMaterial::bind(graphic, program);
+void PhongMaterial::bind(GraphicContext* graphic, Program* program) {
+	Material::bind(graphic, program);
 #ifdef OGL_RENDERER
 	const Lights* lights = graphic->lights();
 	GLProgram* glProgram = (GLProgram*) program;
@@ -74,16 +74,16 @@ void TPhongMaterial::bind(GraphicContext* graphic, Program* program) {
 #endif
 }
 
-const utils::String TPhongMaterial::generateVertexShader() {
+const utils::String PhongMaterial::generateVertexShader() {
 	utils::StringBuffer sb;
 #ifdef OGL_RENDERER
-	sb.append("varying vec2 v_uv;\n"
-			"varying vec3 v_normal;\n"
+	sb.append(GLShaderLib::VS_Para_TextureMap())
+		.append("varying vec3 v_normal;\n"
 			"void main()\n"
-			"{\n"
-			"  v_uv = a_uv;\n"
-			"  v_normal = a_normal;\n");
-	sb.append(GLShaderLib::VS_MainPosition());
+			"{\n")
+		.append(GLShaderLib::VS_TextureMap())
+		.append(GLShaderLib::VS_MainPosition())
+		.append("  v_normal = a_normal;\n");
 	sb.append("}\n");
 #endif
 	utils::String s;
@@ -91,18 +91,21 @@ const utils::String TPhongMaterial::generateVertexShader() {
 	return s;
 }
 
-const utils::String TPhongMaterial::generateFragmentShader() {
+const utils::String PhongMaterial::generateFragmentShader() {
 	utils::StringBuffer sb(256);
 #ifdef OGL_RENDERER
-	sb.append(GLShaderLib::FS_MainHeader());
-	sb.append(GLShaderLib::FS_Para_Lighs());
-	sb.append("uniform sampler2D u_texture;\n"
-			"varying vec2 v_uv;\n"
-			"varying vec3 v_normal;\n"
+	sb.append(GLShaderLib::FS_MainHeader())
+		.append(GLShaderLib::FS_Para_Lighs())
+		.append(GLShaderLib::FS_Para_TextureMap())
+		.append("varying vec3 v_normal;\n"
+			"uniform vec3 u_color;\n"
 			"void main()\n"
 			"{\n"
-			"  vec3 normal = normalize(v_normal);\n"
-			"  vec4 diffuseColor =texture2D(u_texture,  v_uv);\n"
+			"  vec3 normal = normalize(v_normal);\n")
+		.append(GLShaderLib::FS_DiffuseColor())
+		.append("  diffuseColor = vec4(u_color, 1.0f);\n")
+		.append(GLShaderLib::FS_TextureMap())
+		.append(
 			"  vec3 outgoing = vec3(0.0f, 0.0f, 0.0f);\n"
 			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"
 			"  DirectionalLight directionalLight;\n"

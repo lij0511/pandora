@@ -8,7 +8,7 @@
 #include "log/Log.h"
 #include "graphic/gl/GLProgram.h"
 
-//#define DEBUG_SHADER 1;
+#define DEBUG_SHADER 1;
 
 namespace pola {
 namespace graphic {

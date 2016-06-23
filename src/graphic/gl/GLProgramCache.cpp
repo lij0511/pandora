@@ -14,17 +14,23 @@
 namespace pola {
 namespace graphic {
 
-ProgramDescription::ProgramDescription(const char* type) : material_type(type) {
+ProgramDescription::ProgramDescription(const char* type)
+	: material_type(type), texture_map(false),
+	  directional_light_count(0), point_light_count(0), spot_light_count(0),
+	  fog(false) {
 }
 
 bool ProgramDescription::operator==(const ProgramDescription& other) const {
 	if (material_type != other.material_type) {
 		return false;
 	}
+	if (texture_map != other.texture_map) {
+		return false;
+	}
 	bool comp = true;
-	comp &= lights.directionalLightCount() == other.lights.directionalLightCount();
-	comp &= lights.pointLightCount() == other.lights.pointLightCount();
-	comp &= lights.spotLightCount() == other.lights.spotLightCount();
+	comp &= directional_light_count == other.directional_light_count;
+	comp &= point_light_count == other.point_light_count;
+	comp &= spot_light_count == other.spot_light_count;
 	// TODO
 	if (material_type == nullptr) {
 		comp &= (mVertexShader == other.mVertexShader && mFragmentShader == other.mFragmentShader);
@@ -41,7 +47,10 @@ utils::hash_t ProgramDescription::hash() const {
 		hash = utils::JenkinsHashMix(hash, mVertexShader.hash());
 		hash = utils::JenkinsHashMix(hash, mFragmentShader.hash());
 	}
-	hash = utils::JenkinsHashMix(hash, lights.hash());
+	hash = utils::JenkinsHashMix(hash, utils::hash_type(texture_map));
+	hash = utils::JenkinsHashMix(hash, directional_light_count);
+	hash = utils::JenkinsHashMix(hash, point_light_count);
+	hash = utils::JenkinsHashMix(hash, spot_light_count);
 	// TODO
 	hash = utils::JenkinsHashWhiten(hash);
 	return hash;

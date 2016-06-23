@@ -46,9 +46,14 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 		description.mVertexShader = material->getVertexShader();
 		description.mFragmentShader = material->getFragmentShader();
 	}
+	description.texture_map = material->hasTextureMap();
 	GLProgram* program = mCaches.programCache.get(description);
 	if (!program) {
-		utils::String vs = GLShaderLib::VS_MainUnifroms();
+		utils::String vs;
+		if (material->hasTextureMap()) {
+			vs += "#define TEXTURE_MAP\n";
+		}
+		vs += GLShaderLib::VS_MainUnifroms();
 		vs += GLShaderLib::VS_MainAttributes();
 		vs += material->getVertexShader();
 		utils::String fs;
@@ -56,6 +61,9 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 			char buf[40];
 			sprintf(buf, "#define NUM_DIR_LIGHTS %lu\n", mLights->directionalLightCount());
 			fs = buf;
+		}
+		if (material->hasTextureMap()) {
+			fs += "#define TEXTURE_MAP\n";
 		}
 		fs += material->getFragmentShader().characters();
 		program = new GLProgram(vs.characters(), fs.characters());
