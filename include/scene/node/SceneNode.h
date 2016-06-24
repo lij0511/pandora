@@ -14,52 +14,23 @@
 #include "graphic/math/Matrix4.h"
 #include "graphic/GraphicContext.h"
 
+#include "scene/SceneObject.h"
+
 #include "utils/Times.h"
 #include "utils/RefBase.h"
 
 namespace pola {
 namespace scene {
 
-class SceneNode : public utils::RefBase<SceneNode> {
+class SceneNode : public SceneObject {
 public:
 	SceneNode();
 	virtual ~SceneNode();
-
-	void setPosition(const graphic::vec3& position);
-	const graphic::vec3& getPosition() const;
-
-	void setRotation(const graphic::Euler& rotation);
-	const graphic::Euler& getRotation() const;
-
-	void setScale(const graphic::vec3& scale);
-	const graphic::vec3& getScale() const;
-
-	const graphic::mat4 getTransform();
-
-	const graphic::mat4 getWorldTransform();
-
-	void addChild(SceneNode* node);
-	void removeChild(SceneNode* node);
 
 	void dispatchRender(graphic::GraphicContext* graphic, nsecs_t timeMs);
 
 protected:
 	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
-	virtual void onPropertyChange();
-
-	virtual void updateTransform();
-
-	graphic::vec3 mPosition;
-	graphic::Euler mRotation;
-	graphic::vec3 mScale;
-
-	graphic::mat4 mWorldMatrix;
-	graphic::mat4 mMatrix;
-	bool mMatrixDirty;
-
-	SceneNode* mParent;
-	utils::Vector<SceneNode*> mChildren;
-
 };
 
 } /* namespace scene */

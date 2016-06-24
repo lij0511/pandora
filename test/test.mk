@@ -8,6 +8,9 @@ thread_test: test/thread_test.cpp
 
 gl_test: test/gl_test.cpp
 	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
+
+lights_test: test/lights_test.cpp
+	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
 	
 md2_loader_test: test/md2_loader_test.cpp
 	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)

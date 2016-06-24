@@ -29,13 +29,5 @@ bool CameraController::dispatchMouseEvent(input::MouseEvent& mouseEvent) {
 	return false;
 }
 
-graphic::mat4 CameraController::getTransform() {
-	graphic::mat4 m;
-	graphic::quat4 quat;
-	mRotation.getQuaternion(quat);
-	m.compose(mPosition, quat, {1, 1, 1});
-	return m;
-}
-
 } /* namespace scene */
 } /* namespace pola */

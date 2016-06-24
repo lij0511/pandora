@@ -77,7 +77,7 @@ void Scene::render() {
 	mGraphic->beginFrame(mClearColor);
 	nsecs_t timeMs = uptimeMillis();
 	if (mCurrentCamera != nullptr) {
-		mCurrentCamera->dispatchRender(mGraphic, timeMs);
+		mCurrentCamera->update(mGraphic, timeMs);
 	}
 	mGraphic->setLights(mEnvironment.lights());
 	for (unsigned i = 0; i < mNodes.size(); i ++) {

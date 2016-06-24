@@ -64,17 +64,10 @@ bool FPSCameraController::animate(nsecs_t timeMs) {
 			if ((mAnimatingFlag & FLAG_KEYCODE_D) == FLAG_KEYCODE_D) {
 				mPosition.x -= interval * mMoveSpeed;
 			}
+			onPropertyChange();
 			return true;
 		}
 	return false;
-}
-
-graphic::mat4 FPSCameraController::getTransform() {
-	graphic::mat4 m;
-	graphic::quat4 q;
-	mRotation.getQuaternion(q);
-	m.compose(mPosition, q, {1, 1, 1});
-	return m;
 }
 
 bool FPSCameraController::dispatchKeyEvent(input::KeyEvent& keyEvent) {

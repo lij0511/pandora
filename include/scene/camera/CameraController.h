@@ -14,6 +14,7 @@
 #include "graphic/math/Matrix4.h"
 #include "graphic/math/Euler.h"
 #include "graphic/math/Vector.h"
+#include "scene/SceneObject.h"
 
 namespace pola {
 namespace scene {
@@ -23,7 +24,7 @@ class Camera;
 /*
  *
  */
-class CameraController {
+class CameraController : public SceneObject  {
 public:
 	CameraController(Camera* camera);
 	virtual ~CameraController();
@@ -32,13 +33,9 @@ public:
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
-	virtual graphic::mat4 getTransform();
-
 protected:
 	Camera* mCamera;
 
-	graphic::vec3 mPosition;
-	graphic::Euler mRotation;
 };
 
 } /* namespace scene */

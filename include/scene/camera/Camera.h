@@ -12,13 +12,13 @@
 #include "input/MouseEvent.h"
 #include "graphic/math/Matrix4.h"
 #include "graphic/math/Vector.h"
-#include "scene/node/SceneNode.h"
+#include "scene/SceneObject.h"
 #include "scene/camera/CameraController.h"
 
 namespace pola {
 namespace scene {
 
-class Camera : public SceneNode {
+class Camera : public SceneObject {
 public:
 	Camera();
 	virtual ~Camera();
@@ -27,12 +27,12 @@ public:
 
 	void setCameraController(CameraController* controller);
 
-
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
+	virtual void update(graphic::GraphicContext* graphic, nsecs_t timeMs);
+
 protected:
-	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
 
 	virtual void updateTransform();
 

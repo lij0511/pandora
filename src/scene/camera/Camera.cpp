@@ -10,7 +10,7 @@
 namespace pola {
 namespace scene {
 
-Camera::Camera() : SceneNode(), mWidth(1), mHeight(1), mCameraDirty(true), mController(nullptr) {
+Camera::Camera() : SceneObject(), mWidth(1), mHeight(1), mCameraDirty(true), mController(nullptr) {
 }
 
 Camera::~Camera() {
@@ -37,7 +37,7 @@ void Camera::setCameraController(CameraController* controller) {
 	mController = controller;
 }
 
-void Camera::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
+void Camera::update(graphic::GraphicContext* graphic, nsecs_t timeMs) {
 	bool animating = false;
 	if (mController != nullptr) {
 		animating = mController->animate(timeMs);
@@ -74,7 +74,7 @@ void Camera::updateTransform() {
 }
 
 void Camera::onPropertyChange() {
-	SceneNode::onPropertyChange();
+	SceneObject::onPropertyChange();
 	mCameraDirty = true;
 }
 
