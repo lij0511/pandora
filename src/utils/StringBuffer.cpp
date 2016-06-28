@@ -62,7 +62,7 @@ StringBuffer& StringBuffer::append(char* data, size_t len) {
 	return *this;
 }
 StringBuffer& StringBuffer::append(const char* data) {
-	append(data, strlen(data));
+	return append(data, strlen(data));
 }
 StringBuffer& StringBuffer::append(const char* data, size_t len) {
 	if (len > 0) {

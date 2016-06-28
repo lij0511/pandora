@@ -1,52 +1,24 @@
-INCLUDEFLAGS = -I ./src -I ./include
+include build/core.mk
+
+LOCAL_PATH:= ./
+include $(CLEAR_VARS)
+
+LOCAL_C_INCLUDES = ./src ./include \
+	third_party/freetype/include \
+	third_party/zlib \
+	third_party/libpng \
+	third_party/libjpeg \
+	third_party/icu/source/common \
 
 CC = gcc
 CXX = g++
 
-CXXFLAGS =	-O2 -g -Wall -Wno-unused-function -Wno-strict-aliasing -fmessage-length=0  -fPIC -std=c++11 
+LOCAL_CPPFLAGS :=	-O2 -g -Wall -Wno-unused-function -Wno-strict-aliasing -fmessage-length=0  -fPIC -std=c++11 
 
-src := src
-abs_srcdir := $(abspath $(srcdir))
+LOCAL_SRC_FILES := $(shell find src/ -name '*.cpp')
+LOCAL_MODULE := libpola
 
-builddir ?= out
-
-obj := $(builddir)/obj
-abs_obj := $(abspath $(obj))
-
-srcs := $(shell find src/ -name '*.cpp')
-objs := $(subst $(src), $(obj), $(patsubst %.cpp, %.o, $(srcs)))
-
-sources = $(objs)
-deps = $(sources:.o=.d)
-
-# Declare the "all" target first so it is the default,
-# even though we don't have the deps yet.
-.PHONY: all
-all: libpolaris.so
-
-include third_party/third_party.mk
-	
-libpolaris.so: $(objs)
-	$(CXX) $(CXXFLAGS) $(CFLAGS) -shared $^ -o $(builddir)/$@ $(INCLUDEFLAGS)
-
-include test/test.mk
-
-$(src)/%.dir:
-	@mkdir -p $(dir $(subst $(src),$(obj),$@))
-	
-$(obj)/%.o: $(src)/%.cpp $(src)/%.dir
-	$(CXX) $(CXXFLAGS) $(CFLAGS) -o $@ -c $< $(INCLUDEFLAGS)
-
-$(obj)/%.d:$(src)/%.cpp $(src)/%.dir
-	@set -e; rm -f $@; $(CXX) $(CXXFLAGS) $(CFLAGS) -MM $(INCLUDEFLAGS) $< > $@.$$$$; \
-	sed "s,\(.*\)\.o:,\$(patsubst %.d,%.o,$@):,g" < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-#	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
-#	rm -f $@.$$$$
-
-deps: $(deps)
-	
--include $(deps)
+include $(BUILD_STATIC_LIBRARY)
 
 .PHONY: clean
 	#@find src/core -name '*.cpp' | xargs echo;
