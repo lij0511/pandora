@@ -46,6 +46,14 @@ int main(int argc, char *argv[]) {
 	Material* tm2 = new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2);
 
 	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
+	/*int i = 0;
+	while (i < 30) {
+		if (basicMesh != nullptr) {
+			delete basicMesh;
+		}
+		basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
+		i ++;
+	}*/
 	if (mesh) {
 		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);

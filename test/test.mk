@@ -1,24 +1,29 @@
 
-cflags = -lpthread -lX11 -lGL -lGLEW -D_GNU_SOURCE
 
-testlibs = $(builddir)/libpolaris.so $(builddir)/libft2.so $(builddir)/libpng.so $(builddir)/libjpeg.so $(builddir)/libz.so $(builddir)/libicu.so
+cppflags := $(LOCAL_CPPFLAGS)
+cppflags += -lpthread -lX11 -lGL -lGLEW -D_GNU_SOURCE
+
+builddir := out
+
+testlibs = -L./out/libs/libpola -lpola
+includes := $(addprefix -I , $(LOCAL_C_INCLUDES))
 
 thread_test: test/thread_test.cpp
-	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) $(INCLUDEFLAGS)
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ $(includes) $(cppflags) 
 
 gl_test: test/gl_test.cpp
-	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 
 lights_test: test/lights_test.cpp
-	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 	
 md2_loader_test: test/md2_loader_test.cpp
-	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 	
 v_test: test/v_test.cpp
-	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 
 io_test: test/io_test.cpp
-	$(CXX) $(CXXFLAGS) $(CFLAGS) $^ $(testlibs) -o $(builddir)/$@ $(cflags) -lGLU -lglut $(INCLUDEFLAGS)
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 	
 test: thread_test gl_test md2_loader_test v_test io_test

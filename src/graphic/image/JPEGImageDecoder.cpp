@@ -241,6 +241,10 @@ static bool is_jpeg(io::InputStream* is) {
 	return true;
 }
 
+bool JPEGImageDecoder::decodeable(io::InputStream* is) {
+	return is_jpeg(is);
+}
+
 static ImageDecoder* jpeg_image_factory(io::InputStream* is) {
 	if (is_jpeg(is)) {
 		return new JPEGImageDecoder;

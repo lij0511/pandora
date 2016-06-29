@@ -54,6 +54,7 @@ static bool regexMatch(const char* pattern, const char* string, utils::String*& 
 		regerror(error, &reg, ebuf, sizeof(ebuf));
 		LOGE("regcomp (%s) error, %s\n", pattern, ebuf);
 #endif
+		regfree(&reg);
 		return false;
 	}
 	error = regexec(&reg, string, nmatch, pm, 0);
@@ -63,6 +64,7 @@ static bool regexMatch(const char* pattern, const char* string, utils::String*& 
 		regerror(error, &reg, ebuf, sizeof(ebuf));
 		LOGE("regexec (%s) error, %s\n", string, ebuf);
 #endif
+		regfree(&reg);
 		return false;
 	}
 	for (unsigned x = 0; x < nmatch && pm[x].rm_so != -1; x ++) {

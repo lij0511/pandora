@@ -44,6 +44,8 @@ public:
 	virtual ~JPEGImageDecoder();
 
 	virtual Bitmap* decode(io::InputStream* is) override;
+
+	static bool decodeable(io::InputStream* is);
 };
 
 }

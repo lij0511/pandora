@@ -16,7 +16,6 @@ namespace graphic {
 
 class ImageDecoder {
 public:
-	ImageDecoder();
 	virtual ~ImageDecoder();
 
 	virtual Bitmap* decode(io::InputStream* is) = 0;

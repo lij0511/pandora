@@ -10,7 +10,5 @@
 
 int main(int argc, char *argv[]) {
 
-	pola::io::FileInputStream is("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
-
-	pola::scene::MeshLoader::loadMesh(&is);
+	pola::scene::MeshLoader::loadMesh("/home/lijing/work/workspace/irrlicht-1.8.3/media/faerie.md2");
 }

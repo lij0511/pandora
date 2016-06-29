@@ -22,6 +22,8 @@ public:
 	virtual ~BMPImageDecoder();
 
 	virtual Bitmap* decode(io::InputStream* is) override;
+
+	static bool decodeable(io::InputStream* is);
 };
 
 } /* namespace graphic */

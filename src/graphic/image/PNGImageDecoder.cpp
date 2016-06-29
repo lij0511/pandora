@@ -157,6 +157,10 @@ static bool is_png(io::InputStream* is) {
     return false;
 }
 
+bool PNGImageDecoder::decodeable(io::InputStream* is) {
+	return is_png(is);
+}
+
 static ImageDecoder* png_image_factory(io::InputStream* is) {
 	if (is_png(is)) {
 		return new PNGImageDecoder;

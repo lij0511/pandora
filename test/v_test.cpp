@@ -23,7 +23,6 @@ int main(int argc, char *argv[]) {
 
 	s1 = s;
 	s1.print();
-
 	return 1;
 }
 

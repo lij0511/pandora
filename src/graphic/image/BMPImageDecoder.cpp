@@ -403,6 +403,10 @@ static bool is_bmp(io::InputStream* is) {
 		!memcmp(buffer, kBmpMagic, sizeof(kBmpMagic));
 }
 
+bool BMPImageDecoder::decodeable(io::InputStream* is) {
+	return is_bmp(is);
+}
+
 static ImageDecoder* bmp_image_factory(io::InputStream* is) {
 	if (is_bmp(is)) {
 		return new BMPImageDecoder;

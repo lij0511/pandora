@@ -21,6 +21,8 @@ public:
 	virtual ~PNGImageDecoder();
 
 	virtual Bitmap* decode(io::InputStream* is) override;
+
+	static bool decodeable(io::InputStream* is);
 };
 
 }
