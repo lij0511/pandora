@@ -13,7 +13,8 @@ namespace graphic {
 const char* GLShaderLib::VS_MainUnifroms() {
 	return "uniform mat4 u_projection;\n"
 			"uniform mat4 u_model;\n"
-			"uniform mat4 u_view;\n";
+			"uniform mat4 u_view;\n"
+			"uniform mat3 u_normal_matrix;\n";
 }
 
 const char* GLShaderLib::VS_MainAttributes() {
