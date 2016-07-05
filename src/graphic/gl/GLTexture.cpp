@@ -32,14 +32,14 @@ static GLenum getGLType(Bitmap::Format format) {
 }
 
 GLTexture::GLTexture() : id(0), blend(false), width(0), height(0),
-        mipMap(false), m_bitmap(nullptr) {
+        mipMap(false), mBitmap(nullptr) {
 }
 
 GLTexture::~GLTexture() {
 	deleteTexture();
-	if (m_bitmap != nullptr) {
-		delete m_bitmap;
-		m_bitmap = nullptr;
+	if (mBitmap != nullptr) {
+		delete mBitmap;
+		mBitmap = nullptr;
 	}
 }
 
@@ -51,10 +51,7 @@ void GLTexture::deleteTexture() {
 }
 
 bool GLTexture::generateTexture() {
-	if (id <= 0 && m_bitmap != nullptr) {
-		// We could also enable mipmapping if both bitmap dimensions are powers
-		// of 2 but we'd have to deal with size changes. Let's keep this simple
-		const bool canMipMap = true;//Extensions::getInstance().hasNPot();
+	if (id <= 0 && mBitmap != nullptr) {
 
 		glEnable( GL_TEXTURE_2D);
 
@@ -62,24 +59,27 @@ bool GLTexture::generateTexture() {
 
 		GLCaches::get().bindTexture(id);
 
-//		generation = m_bitmap->getGenerationID();
-		width = m_bitmap->getWidth();
-		height = m_bitmap->getHeight();
+		width = mBitmap->getWidth();
+		height = mBitmap->getHeight();
 
-		glPixelStorei(GL_UNPACK_ALIGNMENT, m_bitmap->bytesPerPixel());
+		glPixelStorei(GL_UNPACK_ALIGNMENT, mBitmap->bytesPerPixel());
 
-		GLenum format = getGLFormat(m_bitmap->getFormat());
-		GLenum type = getGLType(m_bitmap->getFormat());
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type, m_bitmap->pixels());
+		GLenum format = getGLFormat(mBitmap->getFormat());
+		GLenum type = getGLType(mBitmap->getFormat());
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type, mBitmap->pixels());
+
+		if (mipMap) {
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
-	if (m_bitmap != nullptr) {
-		delete m_bitmap;
-		m_bitmap = nullptr;
+	if (mBitmap != nullptr) {
+		delete mBitmap;
+		mBitmap = nullptr;
 	}
 	return id > 0;
 }

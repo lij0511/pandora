@@ -75,7 +75,7 @@ public:
 
 	/*! remove items */
 	ssize_t removeItemsAt(size_t index, size_t count = 1);
-	void clear();
+	void clear(bool recapacity = true);
 
 	const void* itemLocation(size_t index) const;
 	void* editItemLocation(size_t index);
@@ -100,7 +100,7 @@ protected:
 
 private:
 	void* _grow(size_t where, size_t amount);
-	void _shrink(size_t where, size_t amount);
+	void _shrink(size_t where, size_t amount, bool recapacity = true);
 
 	inline void _do_construct(void* storage, size_t num) const;
 	inline void _do_destroy(void* storage, size_t num) const;

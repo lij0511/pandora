@@ -80,6 +80,8 @@ void Scene::render() {
 		mCurrentCamera->update(mGraphic, timeMs);
 	}
 	mGraphic->setLights(mEnvironment.lights());
+
+	/* TODO Project RenderNodes */
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
 		mGraphic->setMatrix(graphic::GraphicContext::MODEL, mNodes[i]->getTransform());
 		mNodes[i]->dispatchRender(mGraphic, timeMs);

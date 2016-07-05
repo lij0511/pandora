@@ -50,7 +50,7 @@ public:
      * empty the vector
      */
 
-    inline  void            clear()             { VectorImpl::clear(); }
+    inline  void            clear(bool recapacity = true)             { VectorImpl::clear(recapacity); }
 
     /*! 
      * vector stats

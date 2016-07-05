@@ -262,9 +262,9 @@ void VectorImpl::finish_vector()
     mCount = 0;
 }
 
-void VectorImpl::clear()
+void VectorImpl::clear(bool recapacity)
 {
-    _shrink(0, mCount);
+    _shrink(0, mCount, recapacity);
 }
 
 void* VectorImpl::editItemLocation(size_t index)
@@ -384,14 +384,14 @@ void* VectorImpl::_grow(size_t where, size_t amount)
     return free_space;
 }
 
-void VectorImpl::_shrink(size_t where, size_t amount)
+void VectorImpl::_shrink(size_t where, size_t amount, bool recapacity)
 {
     if (!mStorage)
         return;
 
 
     const size_t new_size = mCount - amount;
-    if (new_size*3 < capacity()) {
+    if (new_size*3 < capacity() && recapacity) {
         const size_t new_capacity = max(kMinVectorCapacity, new_size*2);
 //        ALOGV("shrink vector %p, new_capacity=%d", this, (int)new_capacity);
         if ((where == new_size) &&

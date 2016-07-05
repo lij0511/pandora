@@ -129,7 +129,7 @@ Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
 	 * Deferred texture generation. Generated when prepare to render.
 	 */
 	GLTexture* texture = new GLTexture;
-	texture->m_bitmap = bitmap;
+	texture->mBitmap = bitmap;
 
 	return texture;
 }

@@ -46,7 +46,7 @@ public:
 	 */
 	bool mipMap;
 
-	Bitmap* m_bitmap;
+	Bitmap* mBitmap;
 
 	bool generateTexture();
 
