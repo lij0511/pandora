@@ -9,7 +9,7 @@
 #define POLA_ANIMATEDMESH_H_
 
 #include "scene/mesh/Mesh.h"
-#include "graphic/MeshBuffer.h"
+#include "graphic/Geometry.h"
 
 namespace pola {
 namespace scene {

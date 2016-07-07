@@ -9,7 +9,7 @@
 #define POLA_GRAPHIC_GL_H_
 
 /* TODO 需要更好的宏 */
-#ifdef __arm__
+#ifdef POLA_GLES
 #define GLES 2
 #include <GLES2/gl2.h>
 #else

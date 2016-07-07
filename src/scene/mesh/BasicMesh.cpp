@@ -10,18 +10,18 @@
 namespace pola {
 namespace scene {
 
-BasicMesh::BasicMesh(graphic::VertexType vertexType) : mMeshBuffer(vertexType) {
+BasicMesh::BasicMesh() : mGeometry(new graphic::Geometry) {
+}
+
+BasicMesh::BasicMesh(graphic::Geometry* geometry) : mGeometry(geometry) {
 }
 
 BasicMesh::~BasicMesh() {
+	delete mGeometry;
 }
 
-size_t BasicMesh::getMeshBufferCount() const {
-	return 1;
-}
-
-graphic::MeshBuffer* BasicMesh::getMeshBuffer(uint16_t index) {
-	return &mMeshBuffer;
+graphic::Geometry* BasicMesh::geometry() {
+	return mGeometry;
 }
 
 } /* namespace scene */

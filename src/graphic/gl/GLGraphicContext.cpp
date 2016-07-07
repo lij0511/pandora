@@ -33,7 +33,7 @@ void GLGraphicContext::setViewport(int32_t width, int32_t height) {
 
 void GLGraphicContext::beginFrame(const FColor4& clearColor) {
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-	glClearDepth(1.0f);
+	glClearDepthf(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -72,8 +72,9 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 	return program;
 }
 
-void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer, Material* material) {
-	if (meshBuffer.getVertexCount() == 0) {
+void GLGraphicContext::renderGeometry(Geometry* geometry, Material* material) {
+	size_t positionCount = geometry->positionCount();
+	if (positionCount == 0) {
 		return;
 	}
 	if (material == nullptr) {
@@ -96,27 +97,25 @@ void GLGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer, Material* materi
 
 	material->bind(this, program);
 
-	GLint a_uv;
-	if (meshBuffer.m_vertexInfo.offset_texcoord >= 0 && program->fetchAttribute(utils::String("a_uv", true), a_uv)) {
-		glEnableVertexAttribArray(a_uv);
-		glVertexAttribPointer(a_uv, 2, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_texcoord));
-	}
 	GLint a_position;
 	if (program->fetchAttribute(utils::String("a_position", true), a_position)) {
 		glEnableVertexAttribArray(a_position);
-		glVertexAttribPointer(a_position, meshBuffer.m_vertexInfo.count_position, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_position));
+		glVertexAttribPointer(a_position, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->positions()));
+	}
+	GLint a_uv;
+	if (geometry->uvCount() >= positionCount && program->fetchAttribute(utils::String("a_uv", true), a_uv)) {
+		glEnableVertexAttribArray(a_uv);
+		glVertexAttribPointer(a_uv, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->uvs()));
 	}
 	GLint a_normal;
-	if (meshBuffer.m_vertexInfo.offset_normal >= 0 && program->fetchAttribute(utils::String("a_normal", true), a_normal)) {
+	if (geometry->normalCount() >= positionCount && program->fetchAttribute(utils::String("a_normal", true), a_normal)) {
 		glEnableVertexAttribArray(a_normal);
-		glVertexAttribPointer(a_normal, meshBuffer.m_vertexInfo.count_normal, GL_FLOAT, GL_FALSE, meshBuffer.m_vertexInfo.item_size, ((GLbyte*) meshBuffer.getVertexBuffer() + meshBuffer.m_vertexInfo.offset_normal));
+		glVertexAttribPointer(a_normal, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->normals()));
 	}
-	if (meshBuffer.getIndexCount() > 0) {
-		glDrawElements(GL_TRIANGLES, meshBuffer.getIndexCount(), GL_UNSIGNED_SHORT, meshBuffer.getIndexBuffer());
-//		glDrawElements(GL_LINES, meshBuffer.getIndexCount(), GL_UNSIGNED_SHORT, meshBuffer.getIndexBuffer());
-//		glDrawArrays(GL_LINES, 0, meshBuffer.getVertexCount());
+	if (geometry->indexCount() > 0) {
+		glDrawElements(GL_TRIANGLES, geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
 	} else {
-		glDrawArrays(GL_TRIANGLES, 0, meshBuffer.getVertexCount());
+		glDrawArrays(GL_TRIANGLES, 0, positionCount);
 	}
 }
 
@@ -129,6 +128,7 @@ Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
 	 * Deferred texture generation. Generated when prepare to render.
 	 */
 	GLTexture* texture = new GLTexture;
+//	texture->mipMap = true;
 	texture->mBitmap = bitmap;
 
 	return texture;

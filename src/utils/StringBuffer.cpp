@@ -85,10 +85,10 @@ StringBuffer& StringBuffer::append(const StringBuffer& str) {
 const char* StringBuffer::buffer() const {
 	return m_buffer;
 }
-const size_t StringBuffer::length() const {
+size_t StringBuffer::length() const {
 	return m_length;
 }
-const bool StringBuffer::isEmpty() const {
+bool StringBuffer::isEmpty() const {
 	return m_length == 0;
 }
 

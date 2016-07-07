@@ -171,10 +171,10 @@ static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
 				return;
 			} else if (cmd == RLE_EOL) {
 				x = 0;
-				y--;
-				if (y < 0) {
+				if (y == 0) {
 					return;
 				}
+				y--;
 			} else if (cmd == RLE_DELTA) {
 				uint8_t dx = readByte(is);
 				uint8_t dy = readByte(is);
@@ -182,10 +182,10 @@ static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
 				if (x > width_) {
 					x = width_;
 				}
-				y -= dy;
-				if (y < 0) {
+				if (y < dy) {
 					return;
 				}
+				y -= dy;
 			} else {
 				int num = 0;
 				int bytesRead = 0;
@@ -281,7 +281,7 @@ static void doStandardDecode(BMPHeader& header, io::InputStream* is,
 
 	uint32_t row = 0;
 	uint8_t currVal = 0;
-	for (uint32_t h = height_ - 1; h >= 0; h--, row++) {
+	for (uint32_t h = height_ - 1; /*h >= 0*/; h--, row++) {
 		for (uint32_t w = 0; w < width_; w++) {
 			if (header.BPP >= 24) {
 				putPixel1(bitmap, w, h, readByte(is), readByte(is),
@@ -347,7 +347,7 @@ Bitmap* BMPImageDecoder::decode(io::InputStream* is) {
 		LOGE("Compression mode not supported, Compression=%u. We only handle RLE-Compression.\n", header.Compression);
 		return 0;
 	}
-	if (header.Colors < 0 || header.Colors > 256) {
+	if (/*header.Colors < 0 || */header.Colors > 256) {
 		return nullptr;
 	}
 

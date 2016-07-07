@@ -30,7 +30,7 @@ void GL1xGraphicContext::setViewport(int32_t width, int32_t height) {
 	glViewport(0, 0, width, height);
 }
 
-void GL1xGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
+/*void GL1xGraphicContext::renderMeshBuffer(MeshBuffer& meshBuffer) {
 	if (meshBuffer.getVertexCount() == 0) {
 		return;
 	}
@@ -61,7 +61,7 @@ glRotated(x ++, 0, 1, 0);
 	} else {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, meshBuffer.getVertexCount());
 	}
-}
+}*/
 
 Texture* GL1xGraphicContext::doLoadTexture(io::InputStream* is) {
 	Bitmap* bitmap = BitmapFactory::decodeStream(is);

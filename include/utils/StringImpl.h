@@ -10,7 +10,6 @@
 
 #include "log/Log.h"
 #include "utils/RefBase.h"
-
 #include "utils/JenkinsHash.h"
 
 namespace pola {
@@ -61,7 +60,7 @@ public:
 private:
 	int32_t compare(const StringImpl& s) const;
 	void checkIndex(size_t index) const {
-		if (index < 0 || index >= length()) {
+		if (index >= length()) {
 			throwIndexOutOfBounds(index, length());
 		}
 	}

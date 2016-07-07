@@ -71,7 +71,6 @@ const char* StringImpl::characters() const {
 }
 
 bool StringImpl::startsWith(const StringImpl& str, size_t start) const {
-	LOG_FATAL_IF((start < 0), "Can't be less than 0. start=%lud\n", start);
 	size_t len = str.length();
 	if (len <= 0 || len + start > length()) {
 		return false;

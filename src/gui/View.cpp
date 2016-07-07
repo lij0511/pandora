@@ -16,5 +16,8 @@ View::View() {
 View::~View() {
 }
 
+void View::onDraw(graphic::GraphicContext* graphic) {
+}
+
 } /* namespace gui */
 } /* namespace pola */

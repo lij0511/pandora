@@ -178,13 +178,13 @@ Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 		matchResult = nullptr;
 	}
 
-	if (vertexs.size() > 0) {
-		BasicMesh* mesh = new BasicMesh(graphic::VertexType::TYPE_VERTEX3_TEXTURE_NORMAL);
+	/*if (vertexs.size() > 0) {
+		BasicMesh* mesh = new BasicMesh();
 		graphic::NormalTextureVertex3* vs = (graphic::NormalTextureVertex3*) malloc(sizeof(graphic::NormalTextureVertex3) * vertexs.size());
 		memcpy(vs, vertexs.array(), sizeof(graphic::NormalTextureVertex3) * vertexs.size());
 		mesh->getMeshBuffer(0)->setVertexs(vs, vertexs.size());
 		return mesh;
-	}
+	}*/
 
 	return nullptr;
 }

@@ -28,10 +28,7 @@ void GraphicContext::setViewport(int32_t width, int32_t height) {
 
 Texture* GraphicContext::loadTexture(const char* file) {
 	io::FileInputStream is(file);
-	return loadTexture(&is);
-}
-Texture* GraphicContext::loadTexture(io::InputStream* is) {
-	return doLoadTexture(is);
+	return doLoadTexture(&is);
 }
 
 void GraphicContext::beginFrame(const FColor4& clearColor) {

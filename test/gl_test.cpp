@@ -18,6 +18,7 @@
 #include "graphic/material/LambertMaterial.h"
 #include "graphic/material/PhongMaterial.h"
 #include "utils/Math.h"
+#include "graphic/geometries/SphereGeometry.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -88,6 +89,13 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 10, 10));
+	for (int i = 0; i < 100; i ++) {
+		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+		node->setMaterial(m1);
+		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+		scene->addSceneNode(node);
+	}
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();

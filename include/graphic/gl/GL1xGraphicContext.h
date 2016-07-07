@@ -23,8 +23,6 @@ public:
 
 	virtual void setViewport(int32_t width, int32_t height);
 
-	virtual void renderMeshBuffer(MeshBuffer& meshBuffer);
-
 protected:
 	virtual Texture* doLoadTexture(io::InputStream* is);
 };

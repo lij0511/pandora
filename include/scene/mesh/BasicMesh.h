@@ -18,14 +18,14 @@ namespace scene {
  */
 class BasicMesh: public Mesh {
 public:
-	BasicMesh(graphic::VertexType vertexType);
+	BasicMesh();
+	BasicMesh(graphic::Geometry* geometry);
 	virtual ~BasicMesh();
 
-	virtual size_t getMeshBufferCount() const;
-	virtual graphic::MeshBuffer* getMeshBuffer(uint16_t index);
+	virtual graphic::Geometry* geometry();
 
 private:
-	graphic::MeshBuffer mMeshBuffer;
+	graphic::Geometry* mGeometry;
 };
 
 } /* namespace scene */

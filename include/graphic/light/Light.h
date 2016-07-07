@@ -29,15 +29,15 @@ public:
 		LIGHT_DIRECTIONAL,
 	};
 
-	Light(const LightType type, const FColor3& color = {1.f, 1.f, 1.f});
+	Light(LightType type, const FColor3& color = {1.f, 1.f, 1.f});
 	virtual ~Light();
 
 	void setColor(const FColor3 color);
 
-	const LightType lightType() const;
+	LightType lightType() const;
 
 private:
-	const LightType mType;
+	LightType mType;
 
 public:
 	FColor3 color;

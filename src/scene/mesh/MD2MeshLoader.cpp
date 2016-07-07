@@ -102,13 +102,13 @@ Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 	is->seek(header.offsetFrames);
 
 	MD2AnimatedMesh* mesh = new MD2AnimatedMesh;
-	graphic::MeshBuffer* meshBuffer = &mesh->meshBuffer;
-	meshBuffer->alloc(header.numTriangles * 3);
+	graphic::Geometry* geometry = mesh->geometry();
+	geometry->alloc(header.numTriangles * 3, FLAG_GEOMETRY_DEFAULT | FLAG_GEOMETRY_NORMAL | FLAG_GEOMETRY_UV);
 	const int16_t count = header.numTriangles * 3;
 	for (int16_t i = 0; i < count;  i += 3) {
-		meshBuffer->pushIndex((int16_t) i);
-		meshBuffer->pushIndex((int16_t) i + 1);
-		meshBuffer->pushIndex((int16_t) i + 2);
+		geometry->addIndex((uint16_t) i);
+		geometry->addIndex((uint16_t) i + 1);
+		geometry->addIndex((uint16_t) i + 2);
 	}
 
 	mesh->frameTransforms.resize(header.numFrames);
@@ -154,11 +154,11 @@ Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 	if (header.numFrames > 0) {
 		float dmaxs = 1.0f / (header.skinWidth);
 		float dmaxt = 1.0f / (header.skinHeight);
-		graphic::NormalTextureVertex3* vertex = (graphic::NormalTextureVertex3*)meshBuffer->getVertexBuffer();
+		graphic::vec2* uvs = geometry->uvs();;
 		for (int32_t t = 0; t < header.numTriangles; ++t) {
 			for (int32_t n = 0; n < 3; ++n) {
 				int32_t index = t * 3 + n;
-				vertex[index].uv = {(textureCoords[triangles[t].textureIndices[n]].s + 0.5f) * dmaxs, (textureCoords[triangles[t].textureIndices[n]].t + 0.5f) * dmaxt};
+				uvs[index] = {(textureCoords[triangles[t].textureIndices[n]].s + 0.5f) * dmaxs, (textureCoords[triangles[t].textureIndices[n]].t + 0.5f) * dmaxt};
 			}
 		}
 	}

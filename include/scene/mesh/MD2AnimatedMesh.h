@@ -63,12 +63,9 @@ public:
 
 	void updateMeshBuffer(int32_t frame, int32_t startFrameLoop, int32_t endFrameLoop);
 
-	virtual size_t getFrameCount() const;
+	size_t getFrameCount() const;
 
-	virtual size_t getMeshBufferCount() const;
-	virtual graphic::MeshBuffer* getMeshBuffer(uint16_t index);
-
-	graphic::MeshBuffer meshBuffer;
+	virtual graphic::Geometry* geometry();
 
 	utils::Vector<utils::Vector<FrameItem>> frameList;
 	utils::Vector<FrameTransform> frameTransforms;
@@ -78,6 +75,7 @@ private:
 	int32_t mCurentFrame;
 	int32_t mStartFrameLoop;
 	int32_t mEndFrameLoop;
+	graphic::Geometry* mGeometry;
 };
 
 } /* namespace scene */

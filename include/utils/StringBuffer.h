@@ -32,8 +32,8 @@ public:
 	StringBuffer& append(const StringBuffer& str);
 
 	const char* buffer() const;
-	const size_t length() const;
-	const bool isEmpty() const;
+	size_t length() const;
+	bool isEmpty() const;
 
 	void release(String& str);
 	void toString(String& str);

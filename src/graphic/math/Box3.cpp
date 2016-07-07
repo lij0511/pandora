@@ -10,7 +10,7 @@
 namespace pola {
 namespace graphic {
 
-Box3::Box3() : mMinEdge({0.f, 0.f, 0.f}), mMaxEdge(-1.f, -1.f, -1.f) {
+Box3::Box3() : mMinEdge({0.f, 0.f, 0.f}), mMaxEdge(0.f, 0.f, 0.f) {
 }
 
 Box3::~Box3() {

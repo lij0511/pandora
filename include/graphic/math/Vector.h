@@ -264,7 +264,7 @@ struct Vector3 {
 
 	Vector3 getHorizontalAngle() const {
 		Vector3 angle;
-		static double RADTODEG = 180.0 / M_PIl;
+		static double RADTODEG = 180.0 / M_PI;
 
 		const double tmp = (atan2(x, z) * RADTODEG);
 		angle.y = tmp;

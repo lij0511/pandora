@@ -12,6 +12,7 @@
 #include "graphic/math/Quaternion.h"
 #include "graphic/math/Euler.h"
 #include "graphic/math/Matrix4.h"
+#include "graphic/math/Box3.h"
 #include "graphic/GraphicContext.h"
 
 #include "utils/Times.h"
@@ -56,6 +57,8 @@ protected:
 	graphic::mat4 mWorldMatrix;
 	graphic::mat4 mMatrix;
 	bool mMatrixDirty;
+
+	graphic::Box3 mBoundingBox;
 
 	SceneObject* mParent;
 	utils::Vector<SceneObject*> mChildren;

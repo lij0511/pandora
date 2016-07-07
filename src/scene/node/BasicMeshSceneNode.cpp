@@ -17,7 +17,7 @@ BasicMeshSceneNode::~BasicMeshSceneNode() {
 }
 
 void BasicMeshSceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
-	graphic->renderMeshBuffer(*mMesh->getMeshBuffer(0), mMaterial.get());
+	graphic->renderGeometry(mMesh->geometry(), mMaterial.get());
 }
 
 } /* namespace scene */

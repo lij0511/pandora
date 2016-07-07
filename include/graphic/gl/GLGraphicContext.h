@@ -28,7 +28,7 @@ public:
 	virtual void beginFrame(const FColor4& clearColor);
 	virtual void endFrame();
 
-	virtual void renderMeshBuffer(MeshBuffer& meshBuffer, Material* material = nullptr);
+	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr);
 
 protected:
 	virtual Texture* doLoadTexture(io::InputStream* is);

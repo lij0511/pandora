@@ -212,11 +212,12 @@ static const MD2AnimationType MD2AnimationTypeList[21] = {
 	{198, 198,  5}, // BOOM
 };
 
-MD2AnimatedMesh::MD2AnimatedMesh() : meshBuffer(graphic::TYPE_VERTEX3_TEXTURE_NORMAL), frameCount(0),
-	mCurentFrame(-1), mStartFrameLoop(-1), mEndFrameLoop(-1) {
+MD2AnimatedMesh::MD2AnimatedMesh() : frameCount(0),
+	mCurentFrame(-1), mStartFrameLoop(-1), mEndFrameLoop(-1), mGeometry(new graphic::Geometry) {
 }
 
 MD2AnimatedMesh::~MD2AnimatedMesh() {
+	delete mGeometry;
 }
 
 void MD2AnimatedMesh::getFrameLoop(MD2_ANIMATION_TYPE animationType, int32_t& outBegin, int32_t& outEnd, int32_t& outFPS) const {
@@ -264,7 +265,8 @@ void MD2AnimatedMesh::updateMeshBuffer(int32_t frame, int32_t startFrameLoop, in
 		div = frame * MD2_FRAME_SHIFT_RECIPROCAL;
 	}
 
-	graphic::NormalTextureVertex3* vertex = (graphic::NormalTextureVertex3*) meshBuffer.getVertexBuffer();
+	graphic::vec3* positions = mGeometry->positions();
+	graphic::vec3* normals = mGeometry->normals();
 	const FrameItem* first = frameList[firstFrame].array();
 	const FrameItem* second = frameList[secondFrame].array();
 	// interpolate both frames
@@ -274,10 +276,11 @@ void MD2AnimatedMesh::updateMeshBuffer(int32_t frame, int32_t startFrameLoop, in
 			float x = first[0].pos[0] * frameTransforms[firstFrame].scale[0] + frameTransforms[firstFrame].translate[0];
 			float y = first[0].pos[1] * frameTransforms[firstFrame].scale[1] + frameTransforms[firstFrame].translate[1];
 			float z = first[0].pos[2] * frameTransforms[firstFrame].scale[2] + frameTransforms[firstFrame].translate[2];
-			vertex->pos = {x, y, z};
-			vertex->normal = {Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][0], Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][2], Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][1]};
+			*positions = {x, y, z};
+			*normals = {Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][0], Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][2], Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][1]};
 
-			vertex ++;
+			positions ++;
+			normals ++;
 			first ++;
 		}
 	} else {
@@ -288,7 +291,7 @@ void MD2AnimatedMesh::updateMeshBuffer(int32_t frame, int32_t startFrameLoop, in
 			graphic::vec3 two = {second[0].pos[0] * frameTransforms[secondFrame].scale[0] + frameTransforms[secondFrame].translate[0],
 					second[0].pos[1] * frameTransforms[secondFrame].scale[1] + frameTransforms[secondFrame].translate[1],
 					second[0].pos[2] * frameTransforms[secondFrame].scale[2] + frameTransforms[secondFrame].translate[2]};
-			vertex->pos = two.getInterpolated(one, div);
+			*positions = two.getInterpolated(one, div);
 			const graphic::vec3 n1(
 					Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][0],
 					Q2_VERTEX_NORMAL_TABLE[first[0].normal_index][2],
@@ -297,9 +300,10 @@ void MD2AnimatedMesh::updateMeshBuffer(int32_t frame, int32_t startFrameLoop, in
 					Q2_VERTEX_NORMAL_TABLE[second[0].normal_index][0],
 					Q2_VERTEX_NORMAL_TABLE[second[0].normal_index][2],
 					Q2_VERTEX_NORMAL_TABLE[second[0].normal_index][1]);
-			vertex->normal = n2.getInterpolated(n1, div);
+			*normals = n2.getInterpolated(n1, div);
 
-			vertex ++;
+			positions ++;
+			normals ++;
 			first ++;
 			second ++;
 		}
@@ -311,16 +315,8 @@ size_t MD2AnimatedMesh::getFrameCount() const {
 	return frameCount << MD2_FRAME_SHIFT;
 }
 
-size_t MD2AnimatedMesh::getMeshBufferCount() const {
-	return 1;
-}
-
-graphic::MeshBuffer* MD2AnimatedMesh::getMeshBuffer(uint16_t index) {
-	if (index == 0) {
-		return &meshBuffer;
-	} else {
-		return nullptr;
-	}
+graphic::Geometry* MD2AnimatedMesh::geometry() {
+	return mGeometry;
 }
 
 } /* namespace scene */

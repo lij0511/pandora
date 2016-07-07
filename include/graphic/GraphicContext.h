@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#include "graphic/MeshBuffer.h"
+#include "graphic/Geometry.h"
 #include "graphic/math/Matrix4.h"
 #include "graphic/light/Lights.h"
 #include "graphic/Texture.h"
@@ -34,7 +34,6 @@ public:
 	virtual void setViewport(int32_t width, int32_t height);
 
 	Texture* loadTexture(const char* file);
-	Texture* loadTexture(io::InputStream* is);
 
 	virtual void beginFrame(const FColor4& clearColor);
 	virtual void endFrame();
@@ -44,7 +43,7 @@ public:
 
 	void setMatrix(MatrixType type, const mat4& matrix);
 
-	virtual void renderMeshBuffer(MeshBuffer& meshBuffer, Material* material = nullptr) = 0;
+	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr) = 0;
 
 protected:
 	virtual Texture* doLoadTexture(io::InputStream* is) = 0;
