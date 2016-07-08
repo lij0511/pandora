@@ -37,7 +37,7 @@ void Camera::setCameraController(CameraController* controller) {
 	mController = controller;
 }
 
-void Camera::update(graphic::GraphicContext* graphic, nsecs_t timeMs) {
+bool Camera::update(graphic::GraphicContext* graphic, nsecs_t timeMs) {
 	bool animating = false;
 	if (mController != nullptr) {
 		animating = mController->animate(timeMs);
@@ -50,7 +50,9 @@ void Camera::update(graphic::GraphicContext* graphic, nsecs_t timeMs) {
 		viewInverse.loadInverse(getWorldTransform());
 //		viewInverse.load(view);
 		graphic->setMatrix(graphic::GraphicContext::VIEW, viewInverse);
+		return true;
 	}
+	return false;
 }
 
 void Camera::updateTransform() {

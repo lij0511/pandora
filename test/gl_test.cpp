@@ -6,7 +6,7 @@
  */
 
 #include "scene/camera/PerspectiveCamera.h"
-#include "scene/camera/FPSCameraController.h"
+#include "scene/camera/DefaultCameraController.h"
 #include "Device.h"
 #include "io/FileInputStream.h"
 #include "scene/mesh/MeshLoader.h"
@@ -19,6 +19,7 @@
 #include "graphic/material/PhongMaterial.h"
 #include "utils/Math.h"
 #include "graphic/geometries/SphereGeometry.h"
+#include "graphic/geometries/CubeGeometry.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -89,7 +90,15 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 10, 10));
+	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
+	for (int i = 0; i < 100; i ++) {
+		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+		node->setMaterial(m1);
+		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+		scene->addSceneNode(node);
+	}
+
+	m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
 	for (int i = 0; i < 100; i ++) {
 		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
 		node->setMaterial(m1);
@@ -99,7 +108,7 @@ int main(int argc, char *argv[]) {
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();
-	camera->setCameraController(new FPSCameraController(camera));
+	camera->setCameraController(new DefaultCameraController(camera));
 //	camera->setPosition(vec3(0, 0, -100));
 	scene->addCamera(camera);
 

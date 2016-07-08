@@ -12,16 +12,7 @@ namespace graphic {
 
 Geometry::Geometry(size_t size, int flag) {
 	if (size > 0) {
-		mPositions.setCapacity(size);
-		if ((flag & FLAG_GEOMETRY_NORMAL) == FLAG_GEOMETRY_NORMAL) {
-			mNormals.setCapacity(size);
-		}
-		if ((flag & FLAG_GEOMETRY_UV) == FLAG_GEOMETRY_UV) {
-			mUvs.setCapacity(size);
-		}
-		if ((flag & FLAG_GEOMETRY_COLOR) == FLAG_GEOMETRY_COLOR) {
-			mColors.setCapacity(size);
-		}
+		setCapacity(size, flag);
 	}
 }
 
@@ -38,6 +29,21 @@ void Geometry::alloc(size_t size, int flag) {
 	}
 	if ((flag & FLAG_GEOMETRY_COLOR) == FLAG_GEOMETRY_COLOR) {
 		mColors.resize(size);
+	}
+}
+
+void Geometry::setCapacity(size_t size, int flag) {
+	if (mPositions.capacity() != size) {
+		mPositions.setCapacity(size);
+	}
+	if ((flag & FLAG_GEOMETRY_NORMAL) == FLAG_GEOMETRY_NORMAL && mNormals.capacity() != size) {
+		mNormals.setCapacity(size);
+	}
+	if ((flag & FLAG_GEOMETRY_UV) == FLAG_GEOMETRY_UV && mUvs.capacity() != size) {
+		mUvs.setCapacity(size);
+	}
+	if ((flag & FLAG_GEOMETRY_COLOR) == FLAG_GEOMETRY_COLOR && mColors.capacity() != size) {
+		mColors.setCapacity(size);
 	}
 }
 

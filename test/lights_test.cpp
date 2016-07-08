@@ -6,7 +6,7 @@
  */
 
 #include "scene/camera/PerspectiveCamera.h"
-#include "scene/camera/FPSCameraController.h"
+#include "scene/camera/DefaultCameraController.h"
 #include "Device.h"
 #include "io/FileInputStream.h"
 #include "scene/mesh/MeshLoader.h"
@@ -17,6 +17,8 @@
 #include "graphic/gl/GLTexture.h"
 #include "graphic/material/LambertMaterial.h"
 #include "graphic/material/PhongMaterial.h"
+#include "graphic/geometries/SphereGeometry.h"
+#include "graphic/geometries/CubeGeometry.h"
 #include "utils/Math.h"
 
 using namespace pola;
@@ -40,17 +42,23 @@ int main(int argc, char *argv[]) {
 
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 
-	if (mesh) {
+	/*if (mesh) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 		node->setPosition(graphic::vec3(0, 0, - 100));
 		node->setMaterial(tm1);
 		scene->addSceneNode(node);
-	}
+	}*/
+//	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
+	BasicMesh* m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
+	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+	node->setMaterial(new PhongMaterial({1.0f, 1.0f, 1.0f}));
+	node->setPosition(graphic::vec3(0, 0, - 100));
+	scene->addSceneNode(node);
 
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();
-	camera->setCameraController(new FPSCameraController(camera));
+	camera->setCameraController(new DefaultCameraController(camera));
 //	camera->setPosition(vec3(0, 0, -100));
 	scene->addCamera(camera);
 

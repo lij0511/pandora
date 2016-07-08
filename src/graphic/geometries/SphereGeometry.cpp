@@ -14,7 +14,7 @@ SphereGeometry::SphereGeometry(float radius, uint32_t widthSegments, uint32_t he
 	float thetaEnd = thetaStart + thetaLength;
 
 	uint32_t vertexCount = ((widthSegments + 1) * (heightSegments + 1));
-	alloc(vertexCount, FLAG_GEOMETRY_DEFAULT | FLAG_GEOMETRY_NORMAL | FLAG_GEOMETRY_UV);
+	setCapacity(vertexCount, FLAG_GEOMETRY_DEFAULT | FLAG_GEOMETRY_NORMAL | FLAG_GEOMETRY_UV);
 
 	for (uint32_t y = 0; y <= heightSegments; y ++) {
 		float v = float(y) / heightSegments;

@@ -71,6 +71,9 @@ public:
 	virtual bool bufferd();
 
 protected:
+	void setCapacity(size_t size, int flag = FLAG_GEOMETRY_DEFAULT);
+
+protected:
 	pola::utils::Vector<pola::graphic::vec3> mPositions;
 	pola::utils::Vector<pola::graphic::vec3> mNormals;
 	pola::utils::Vector<pola::graphic::vec2> mUvs;

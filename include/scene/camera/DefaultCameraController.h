@@ -22,9 +22,9 @@ public:
 	DefaultCameraController(Camera* camera);
 	virtual ~DefaultCameraController();
 
-//	virtual bool animate(nsecs_t timeMs);
-//	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
-//	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
+	virtual bool animate(nsecs_t timeMs);
+	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
+	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
 private:
 	float mMoveSpeed;
