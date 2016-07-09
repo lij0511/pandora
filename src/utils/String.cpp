@@ -259,7 +259,6 @@ String String::operator+(const String& s) {
 		StringBuffer sb(length() + len);
 		sb.append(*this);
 		sb.append(s);
-		sb.release(*this);
 		String result;
 		sb.release(result);
 		return result;
