@@ -62,7 +62,7 @@ void Camera::updateTransform() {
 		mRotation.getQuaternion(quat);
 		m.compose(mPosition, quat, mScale);
 		if (mController != nullptr) {
-			mMatrix.loadMultiply(mController->getTransform(), m);
+			mMatrix.loadMultiply(mController->getWorldTransform(), m);
 		} else {
 			mMatrix.load(m);
 		}

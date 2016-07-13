@@ -101,6 +101,24 @@ void SceneObject::removeChild(SceneObject* child) {
 	}
 }
 
+void SceneObject::translateX(float dx) {
+	translateOnAxis({1.f, 0.f, 0.f}, dx);
+}
+void SceneObject::translateY(float dy) {
+	translateOnAxis({0.f, 1.f, 0.f}, dy);
+}
+void SceneObject::translateZ(float dz) {
+	translateOnAxis({0.f, 0.f, 1.f}, dz);
+}
+void SceneObject::translateOnAxis(const graphic::vec3& axis, float d) {
+	graphic::vec3 v = axis;
+	graphic::quat4 quat;
+	mRotation.getQuaternion(quat);
+	v.applyQuaternion(quat);
+	mPosition += (v * d);
+	onPropertyChange();
+}
+
 void SceneObject::onPropertyChange() {
 	mMatrixDirty = true;
 	for (unsigned i = 0; i < mChildren.size(); i ++) {

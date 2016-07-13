@@ -45,10 +45,16 @@ public:
 	void addChild(SceneObject* node);
 	void removeChild(SceneObject* node);
 
+	void translateX(float dx);
+	void translateY(float dy);
+	void translateZ(float dz);
+
 protected:
 	virtual void onPropertyChange();
 
 	virtual void updateTransform();
+
+	void translateOnAxis(const graphic::vec3& axis, float d);
 
 	graphic::vec3 mPosition;
 	graphic::Euler mRotation;

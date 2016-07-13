@@ -51,7 +51,7 @@ public:
         return !(*this == b);
     }
 
-    Matrix4 operator *(const Matrix4& b) {
+    Matrix4 operator *(const Matrix4& b) const {
     	Matrix4 m;
     	m.loadMultiply(*this, b);
     	return m;

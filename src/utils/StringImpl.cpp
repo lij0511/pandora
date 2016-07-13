@@ -23,9 +23,7 @@ StringImpl::StringImpl(const char* str, bool isConst) : m_length(strlen(str)), m
 		m_data = str;
 	} else {
 		char* tmp = new char[m_length + 1];
-		for (size_t i = 0; i < m_length; i ++) {
-			*(tmp + i) = str[i];
-		}
+		memcpy(tmp, str, m_length);
 		*(tmp + m_length) = 0;
 		m_data = tmp;
 	}

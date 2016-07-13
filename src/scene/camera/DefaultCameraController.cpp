@@ -24,6 +24,8 @@ const static int FLAG_MOUSE_BUTTON_RIGHT = 0x100;
 
 DefaultCameraController::DefaultCameraController(Camera* camera)
 	: CameraController(camera), mMoveSpeed(0.05f), mRotateSpeed(0.0005f), mAnimatingFlag(0), mLastAnimatingTime(0) {
+	mPitch = new SceneObject;
+	mYaw = new SceneObject;
 }
 
 DefaultCameraController::~DefaultCameraController() {
@@ -36,33 +38,43 @@ bool DefaultCameraController::animate(nsecs_t timeMs) {
 			}
 			nsecs_t interval = timeMs - mLastAnimatingTime;
 			mLastAnimatingTime = timeMs;
-
+			graphic::Euler yaw = mYaw->getRotation();
 			if ((mAnimatingFlag & FLAG_KEYCODE_LEFT) == FLAG_KEYCODE_LEFT) {
-				mRotation.y -= interval * mRotateSpeed;
+				yaw.y += interval * mRotateSpeed;
 			}
 			if ((mAnimatingFlag & FLAG_KEYCODE_RIGHT) == FLAG_KEYCODE_RIGHT) {
-				mRotation.y += interval * mRotateSpeed;
+				yaw.y -= interval * mRotateSpeed;
 			}
+			graphic::Euler pitch = mPitch->getRotation();
 			if ((mAnimatingFlag & FLAG_KEYCODE_UP) == FLAG_KEYCODE_UP) {
-				mRotation.x -= interval * mRotateSpeed;
+				pitch.x += interval * mRotateSpeed;
 			}
 			if ((mAnimatingFlag & FLAG_KEYCODE_DOWN) == FLAG_KEYCODE_DOWN) {
-				mRotation.x += interval * mRotateSpeed;
+				pitch.x -= interval * mRotateSpeed;
 			}
-			mRotation.x = utils::fclamp<float>(mRotation.x, - M_PI_2, M_PI_2);
+//			mRotation.x = utils::fclamp<float>(mRotation.x, - M_PI_2, M_PI_2);
 
+			graphic::vec3 p = mYaw->getPosition();
 			if ((mAnimatingFlag & FLAG_KEYCODE_W) == FLAG_KEYCODE_W) {
-				mPosition.z += interval * mMoveSpeed;
+//				p.z += interval * mMoveSpeed;
+				translateZ(- interval * mMoveSpeed);
 			}
 			if ((mAnimatingFlag & FLAG_KEYCODE_S) == FLAG_KEYCODE_S) {
-				mPosition.z -= interval * mMoveSpeed;
+//				p.z -= interval * mMoveSpeed;
+				translateZ(interval * mMoveSpeed);
 			}
 			if ((mAnimatingFlag & FLAG_KEYCODE_A) == FLAG_KEYCODE_A) {
-				mPosition.x += interval * mMoveSpeed;
+//				p.x += interval * mMoveSpeed;
+				translateX(- interval * mMoveSpeed);
 			}
 			if ((mAnimatingFlag & FLAG_KEYCODE_D) == FLAG_KEYCODE_D) {
-				mPosition.x -= interval * mMoveSpeed;
+//				p.x -= interval * mMoveSpeed;
+				translateX(interval * mMoveSpeed);
 			}
+
+			mYaw->setRotation(yaw);
+			mPitch->setRotation(pitch);
+
 			onPropertyChange();
 			return true;
 		}
@@ -171,6 +183,16 @@ bool DefaultCameraController::dispatchKeyEvent(input::KeyEvent& keyEvent) {
 bool DefaultCameraController::dispatchMouseEvent(input::MouseEvent& mouseEvent) {
 	bool handled = false;
 	return handled;
+}
+
+void DefaultCameraController::updateTransform() {
+	if (mMatrixDirty) {
+		graphic::quat4 quat;
+		mRotation.getQuaternion(quat);
+		mMatrix.compose(mPosition, quat, mScale);
+		mWorldMatrix.loadMultiply(mYaw->getWorldTransform() * mPitch->getWorldTransform(), mMatrix);
+		mMatrixDirty = false;
+	}
 }
 
 } /* namespace scene */
