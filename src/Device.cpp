@@ -6,7 +6,9 @@
  */
 
 #include "Device.h"
+#ifdef POLA_LINUX_X11
 #include "LinuxDevice.h"
+#endif
 
 namespace pola {
 
@@ -17,8 +19,12 @@ Device::~Device() {
 }
 
 Device* createDevice(const DeviceParam& param) {
+#ifdef POLA_LINUX_X11
 	static LinuxDevice* device = new LinuxDevice(param);
 	return device;
+#else
+	return nullptr;
+#endif
 }
 
 }

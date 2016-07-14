@@ -5,12 +5,12 @@
  *      Author: lijing
  */
 
+#ifdef POLA_LINUX_X11
 #ifndef POLA_LINUXDEVICE_H_
 #define POLA_LINUXDEVICE_H_
 
 #include <GL/gl.h>
 #include <GL/glx.h>
-
 #include <X11/keysym.h>
 
 #include "utils/KeyedVector.h"
@@ -52,3 +52,4 @@ private:
 } /* namespace pola */
 
 #endif /* LINUXDEVICE_H_ */
+#endif

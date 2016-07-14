@@ -7,8 +7,41 @@
 
 #include "utils/WStringImpl.h"
 
+size_t wstrlen(const wchar* wstr) {
+	const wchar *ss = wstr;
+	while (*ss)
+		ss++;
+	return ss - wstr;
+}
+
 namespace pola {
 namespace utils {
+
+void utf8_to_utf16(const char* u8str, size_t u8strlen, wchar*& u16str, size_t& u16strlen) {
+	ssize_t len = utf8_to_utf16_length((const uint8_t*) u8str, u8strlen);
+	if (len < 0) {
+		u16strlen = 0;
+		u16str = nullptr;
+		return;
+	}
+	u16strlen = size_t(len);
+	u16str = new wchar[u16strlen + 1];
+	utf8_to_utf16((const uint8_t*) u8str, u8strlen, u16str);
+	u16str[u16strlen] = 0;
+}
+
+void utf16_to_utf8(const wchar* u16str, size_t u16strlen, char*& u8str, size_t& u8strlen) {
+	ssize_t len = utf16_to_utf8_length(u16str, u16strlen);
+	if (len < 0) {
+		u16strlen = 0;
+		u16str = nullptr;
+		return;
+	}
+	u8strlen = size_t(len);
+	u8str = new char[u8strlen + 1];
+	utf16_to_utf8(u16str, u16strlen, u8str);
+	u8str[u8strlen] = 0;
+}
 
 WStringImpl::WStringImpl() : m_data(nullptr), m_length(0), m_hash(0) {
 }
@@ -44,10 +77,14 @@ WStringImpl::~WStringImpl() {
 	m_length = 0;
 }
 void WStringImpl::print() const {
-	for (unsigned i = 0; i < m_length; i ++) {
-		printf("%c", m_data[i]);
+	if (isEmpty()) return;
+	char* tmp = nullptr;
+	size_t l = 0;
+	utf16_to_utf8(m_data, m_length, tmp, l);
+	printf("%s\n", tmp);
+	if (tmp != nullptr) {
+		delete tmp;
 	}
-	printf("\n");
 }
 
 size_t WStringImpl::length() const {

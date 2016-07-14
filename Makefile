@@ -16,6 +16,7 @@ LOCAL_C_INCLUDES = ./src ./include \
 
 LOCAL_CPPFLAGS :=	-O2 -g -Wall -Wno-unused-function -Wno-strict-aliasing -fmessage-length=0  -fPIC -std=c++11 
 LOCAL_CFLAGS :=  -O2 -g -Wall -fmessage-length=0 -fPIC
+LOCAL_CPPFLAGS += -DPOLA_GL -DPOLA_LINUX_X11
 
 LOCAL_SRC_FILES := $(shell find src/ -name '*.cpp')
 include third_party/third_party.mk

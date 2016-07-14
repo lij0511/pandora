@@ -10,18 +10,15 @@
 
 #include "utils/RefBase.h"
 #include "utils/JenkinsHash.h"
+#include "utils/Unicode.h"
 
-typedef uint16_t wchar;
-
-size_t wstrlen(const wchar* wstr) {
-	const wchar *ss = wstr;
-	while (*ss)
-		ss++;
-	return ss - wstr;
-}
+size_t wstrlen(const wchar* wstr);
 
 namespace pola {
 namespace utils {
+
+void utf8_to_utf16(const char* u8str, size_t u8strlen, wchar*& u16str, size_t& u16strlen);
+void utf16_to_utf8(const wchar* u16str, size_t u16strlen, char*& u8str, size_t& u8strlen);
 
 class WString;
 

@@ -12,7 +12,7 @@
 #ifdef POLA_GLES
 #define GLES 2
 #include <GLES2/gl2.h>
-#else
+#elif defined(POLA_LINUX_X11)
 #include <GL/glew.h>
 #endif
 

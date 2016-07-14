@@ -58,9 +58,6 @@ String::String(bool null) {
 		m_impl = StringImpl::emptyString();
 	}
 }
-String::String(char* chars, size_t length) {
-	m_impl = StringImpl::create(chars, length);
-}
 String::String(const char* chars, size_t length) {
 	m_impl = StringImpl::create(chars, length);
 }

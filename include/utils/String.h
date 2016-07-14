@@ -31,7 +31,6 @@ class String {
 public:
 
 	String(bool null = true);
-	String(char* chars, size_t length);
 	String(const char* chars, size_t length);
 	String(const char* str, bool isConst = false);
 	String(const String& o);

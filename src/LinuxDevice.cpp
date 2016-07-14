@@ -5,6 +5,7 @@
  *      Author: lijing
  */
 
+#ifdef POLA_LINUX_X11
 #include "graphic/gl/GLGraphicContext.h"
 #include "log/Log.h"
 #include "LinuxDevice.h"
@@ -275,3 +276,5 @@ void LinuxDevice::createWindow() {
 }
 
 } /* namespace pola */
+
+#endif
