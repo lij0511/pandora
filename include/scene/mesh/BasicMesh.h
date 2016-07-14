@@ -9,6 +9,8 @@
 #define BASICMESH_H_
 
 #include "scene/mesh/Mesh.h"
+#include "graphic/geometries/Geometry3D.h"
+#include "graphic/geometries/Geometry2D.h"
 
 namespace pola {
 namespace scene {

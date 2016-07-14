@@ -531,6 +531,18 @@ void Matrix4::getRotation(Quaternion& rotaion) {
 	}
 }
 
+void Matrix4::makeOrtho(float left, float right, float bottom, float top, float near, float far) {
+    loadIdentity();
+
+    data[0] = 2.0f / (right - left);
+    data[5] = 2.0f / (top - bottom);
+    data[10] = -2.0f / (far - near);
+    data[12] = -(right + left) / (right - left);
+    data[13] = -(top + bottom) / (top - bottom);
+    data[14] = -(far + near) / (far - near);
+
+}
+
 void Matrix4::makeFrustum(float left, float right, float bottom, float top,
         float near, float far) {
 	float* te = data;

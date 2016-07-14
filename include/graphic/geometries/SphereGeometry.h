@@ -8,7 +8,7 @@
 #ifndef POLA_SPHEREGEOMETRY_H_
 #define POLA_SPHEREGEOMETRY_H_
 
-#include "graphic/Geometry.h"
+#include "graphic/geometries/Geometry3D.h"
 
 namespace pola {
 namespace graphic {
@@ -16,7 +16,7 @@ namespace graphic {
 /*
  *
  */
-class SphereGeometry: public Geometry {
+class SphereGeometry: public Geometry3D {
 public:
 	SphereGeometry(float radius, uint32_t widthSegments, uint32_t heightSegments, float phiStart = 0, float phiLength = M_PI * 2, float thetaStart = 0, float thetaLength = M_PI);
 	virtual ~SphereGeometry();

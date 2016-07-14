@@ -102,7 +102,7 @@ Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 	is->seek(header.offsetFrames);
 
 	MD2AnimatedMesh* mesh = new MD2AnimatedMesh;
-	graphic::Geometry* geometry = mesh->geometry();
+	graphic::Geometry3D* geometry = (graphic::Geometry3D*) mesh->geometry();
 	geometry->alloc(header.numTriangles * 3, FLAG_GEOMETRY_DEFAULT | FLAG_GEOMETRY_NORMAL | FLAG_GEOMETRY_UV);
 	const int16_t count = header.numTriangles * 3;
 	for (int16_t i = 0; i < count;  i += 3) {

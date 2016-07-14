@@ -5,6 +5,7 @@
  *      Author: lijing
  */
 
+#include "scene/camera/OrthoCamera.h"
 #include "scene/camera/PerspectiveCamera.h"
 #include "scene/camera/DefaultCameraController.h"
 #include "Device.h"
@@ -20,6 +21,7 @@
 #include "utils/Math.h"
 #include "graphic/geometries/SphereGeometry.h"
 #include "graphic/geometries/CubeGeometry.h"
+#include "graphic/geometries/RectangleGeometry.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -106,8 +108,14 @@ int main(int argc, char *argv[]) {
 		scene->addSceneNode(node);
 	}
 
+	m = new BasicMesh(new RectangleGeometry(0, 0, 100, 100));
+	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+	node->setMaterial(tm1);
+	scene->addSceneNode(node);
+
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();
+//	Camera* camera = new OrthoCamera(-1, 1);
 	camera->setCameraController(new DefaultCameraController(camera));
 //	camera->setPosition(vec3(0, 0, -100));
 	scene->addCamera(camera);

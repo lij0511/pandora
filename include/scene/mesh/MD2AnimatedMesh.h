@@ -9,6 +9,7 @@
 #define MD2ANIMATEDMESH_H_
 
 #include "scene/mesh/AnimatedMesh.h"
+#include "graphic/geometries/Geometry3D.h"
 
 namespace pola {
 namespace scene {
@@ -75,7 +76,7 @@ private:
 	int32_t mCurentFrame;
 	int32_t mStartFrameLoop;
 	int32_t mEndFrameLoop;
-	graphic::Geometry* mGeometry;
+	graphic::Geometry3D* mGeometry;
 };
 
 } /* namespace scene */

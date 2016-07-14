@@ -9,6 +9,7 @@
 #define POLA_COLOR_H_
 
 #include <stdint.h>
+#include "utils/TypeHelpers.h"
 
 namespace pola {
 namespace graphic {
@@ -64,6 +65,10 @@ struct Color {
 };
 
 } /* namespace graphic */
+
+namespace utils {
+POLA_BASIC_TYPES_TRAITS(graphic::FColor4)
+}
 } /* namespace pola */
 
 #endif /* POLA_COLOR_H_ */

@@ -5,21 +5,21 @@
  *      Author: lijing
  */
 
-#include "graphic/Geometry.h"
+#include "graphic/geometries/Geometry3D.h"
 
 namespace pola {
 namespace graphic {
 
-Geometry::Geometry(size_t size, int flag) {
+Geometry3D::Geometry3D(size_t size, int flag) : Geometry(Geometry::Type::GEOMETRY_3D) {
 	if (size > 0) {
 		setCapacity(size, flag);
 	}
 }
 
-Geometry::~Geometry() {
+Geometry3D::~Geometry3D() {
 }
 
-void Geometry::alloc(size_t size, int flag) {
+void Geometry3D::alloc(size_t size, int flag) {
 	mPositions.resize(size);
 	if ((flag & FLAG_GEOMETRY_NORMAL) == FLAG_GEOMETRY_NORMAL) {
 		mNormals.resize(size);
@@ -32,7 +32,7 @@ void Geometry::alloc(size_t size, int flag) {
 	}
 }
 
-void Geometry::setCapacity(size_t size, int flag) {
+void Geometry3D::setCapacity(size_t size, int flag) {
 	if (mPositions.capacity() != size) {
 		mPositions.setCapacity(size);
 	}
@@ -47,94 +47,81 @@ void Geometry::setCapacity(size_t size, int flag) {
 	}
 }
 
-void Geometry::addVerrtex(const Vertex3& v) {
+void Geometry3D::addVerrtex(const Vertex3& v) {
 	addPosition(v.pos);
 }
 
-void Geometry::addVerrtex(const TextureVertex3& v) {
+void Geometry3D::addVerrtex(const TextureVertex3& v) {
 	addPosition(v.pos);
 	addUv(v.uv);
 }
 
-void Geometry::addVerrtex(const NormalTextureVertex3& v) {
+void Geometry3D::addVerrtex(const NormalTextureVertex3& v) {
 	addPosition(v.pos);
 	addNormal(v.normal);
 	addUv(v.uv);
 }
 
-void Geometry::addVerrtex(const NormalColorTextureVertex3& v) {
+void Geometry3D::addVerrtex(const NormalColorTextureVertex3& v) {
 	addPosition(v.pos);
 	addNormal(v.normal);
 	addUv(v.uv);
 	addColor(v.color);
 }
 
-const pola::graphic::vec3* Geometry::positions() const {
+const pola::graphic::vec3* Geometry3D::positions() const {
 	return mPositions.array();
 }
-pola::graphic::vec3* Geometry::positions() {
+pola::graphic::vec3* Geometry3D::positions() {
 	return mPositions.editArray();
 }
-size_t Geometry::positionCount() const {
+size_t Geometry3D::positionCount() const {
 	return mPositions.size();
 }
-void Geometry::addPosition(const pola::graphic::vec3& pos) {
+void Geometry3D::addPosition(const pola::graphic::vec3& pos) {
 	mPositions.push(pos);
 }
 
-const pola::graphic::vec3* Geometry::normals() const {
+const pola::graphic::vec3* Geometry3D::normals() const {
 	return mNormals.array();
 }
-pola::graphic::vec3* Geometry::normals() {
+pola::graphic::vec3* Geometry3D::normals() {
 	return mNormals.editArray();
 }
-size_t Geometry::normalCount() const {
+size_t Geometry3D::normalCount() const {
 	return mNormals.size();
 }
-void Geometry::addNormal(const pola::graphic::vec3& nor) {
+void Geometry3D::addNormal(const pola::graphic::vec3& nor) {
 	mNormals.push(nor);
 }
 
-const pola::graphic::vec2* Geometry::uvs() const {
+const pola::graphic::vec2* Geometry3D::uvs() const {
 	return mUvs.array();
 }
-pola::graphic::vec2* Geometry::uvs() {
+pola::graphic::vec2* Geometry3D::uvs() {
 	return mUvs.editArray();
 }
-size_t Geometry::uvCount() const {
+size_t Geometry3D::uvCount() const {
 	return mUvs.size();
 }
-void Geometry::addUv(const pola::graphic::vec2& uv) {
+void Geometry3D::addUv(const pola::graphic::vec2& uv) {
 	mUvs.push(uv);
 }
 
-const pola::graphic::FColor4* Geometry::colors() const {
+const pola::graphic::FColor4* Geometry3D::colors() const {
 	return mColors.array();
 }
-pola::graphic::FColor4* Geometry::colors() {
+pola::graphic::FColor4* Geometry3D::colors() {
 	return mColors.editArray();
 }
-size_t Geometry::colorCount() const {
+size_t Geometry3D::colorCount() const {
 	return mColors.size();
 }
-void Geometry::addColor(const pola::graphic::FColor4& cor) {
+void Geometry3D::addColor(const pola::graphic::FColor4& cor) {
 	mColors.push(cor);
 }
 
-const uint16_t* Geometry::indices() const {
-	return mIndices.array();
-}
-uint16_t* Geometry::indices() {
-	return mIndices.editArray();
-}
-size_t Geometry::indexCount() const {
-	return mIndices.size();
-}
-void Geometry::addIndex(uint16_t index) {
-	mIndices.push(index);
-}
-
-bool Geometry::bufferd() {
+bool Geometry3D::bufferd() {
 	return false;
 }
 

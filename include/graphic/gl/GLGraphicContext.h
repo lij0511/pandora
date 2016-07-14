@@ -31,6 +31,9 @@ public:
 	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr);
 
 protected:
+	void renderGeometry(Geometry2D* geometry, Material* material = nullptr);
+	void renderGeometry(Geometry3D* geometry, Material* material = nullptr);
+
 	virtual Texture* doLoadTexture(io::InputStream* is);
 
 private:

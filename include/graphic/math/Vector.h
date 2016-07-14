@@ -10,6 +10,7 @@
 
 #include <math.h>
 #include "graphic/math/Quaternion.h"
+#include "utils/TypeHelpers.h"
 
 namespace pola {
 namespace graphic {
@@ -290,6 +291,11 @@ struct Vector3 {
 typedef Vector2 vec2;
 typedef Vector3 vec3;
 
+}
+
+namespace utils {
+POLA_BASIC_TYPES_TRAITS(graphic::vec3)
+POLA_BASIC_TYPES_TRAITS(graphic::vec2)
 }
 }
 

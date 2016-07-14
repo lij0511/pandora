@@ -10,7 +10,7 @@
 namespace pola {
 namespace scene {
 
-BasicMesh::BasicMesh() : mGeometry(new graphic::Geometry) {
+BasicMesh::BasicMesh() : mGeometry(new graphic::Geometry3D) {
 }
 
 BasicMesh::BasicMesh(graphic::Geometry* geometry) : mGeometry(geometry) {

@@ -10,7 +10,8 @@
 
 #include <stdint.h>
 
-#include "graphic/Geometry.h"
+#include "graphic/geometries/Geometry2D.h"
+#include "graphic/geometries/Geometry3D.h"
 #include "graphic/math/Matrix4.h"
 #include "graphic/light/Lights.h"
 #include "graphic/Texture.h"

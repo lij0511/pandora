@@ -144,6 +144,7 @@ public:
     void decompose(Vector3& position, Quaternion& quaternion, Vector3& scale);
     void getRotation(Quaternion& rotation);
 
+    void makeOrtho(float left, float right, float bottom, float top, float near, float far);
     void makeFrustum(float left, float right, float bottom, float top,
             float near, float far);
     void makePerspective(float fovy, float aspect, float near, float far);

@@ -99,6 +99,7 @@ const utils::String Material::generateFragmentShader() {
 		.append("  diffuseColor = vec4(u_color, 1.0f);\n")
 		.append(GLShaderLib::FS_TextureMap())
 		.append("  gl_FragColor = diffuseColor;\n"
+//		.append("  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
 			"}\n");
 #endif
 	utils::String s;
