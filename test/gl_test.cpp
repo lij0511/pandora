@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 
-	Material* m1 = new PhongMaterial({1.f, 0.f, 0.f});
+	Material* m1 = new LambertMaterial({1.f, 0.f, 0.f});
 	Material* m2 = new PhongMaterial({1.f, 0.f, 0.f});
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 	Material* tm2 = new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2);

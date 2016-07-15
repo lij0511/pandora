@@ -34,21 +34,15 @@ public:
 	 */
 	bool blend;
 	/**
-	 * Width of the backing bitmap.
-	 */
-	uint32_t width;
-	/**
-	 * Height of the backing bitmap.
-	 */
-	uint32_t height;
-	/**
 	 * Indicates whether this texture will use trilinear filtering.
 	 */
 	bool mipMap;
 
+	bool releaseBitmap;
+
 	Bitmap* mBitmap;
 
-	bool generateTexture();
+	virtual bool generateTexture();
 
 };
 

@@ -66,14 +66,13 @@ const char* GLShaderLib::FS_TextureMap() {
 }
 
 const char* GLShaderLib::Para_Lighs() {
+	/*"struct BlinnPhongMaterial {\n"
+				"vec3	diffuseColor;\n"
+				"vec3	specularColor;\n"
+				"float	specularShininess;\n"
+				"float	specularStrength;\n"
+				"};\n"*/
 	return
-			"struct BlinnPhongMaterial {\n"
-			"vec3	diffuseColor;\n"
-			"vec3	specularColor;\n"
-			"float	specularShininess;\n"
-			"float	specularStrength;\n"
-			"};\n"
-
 			"uniform vec3 u_ambientLight;\n"
 			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"
 			"struct DirectionalLight {\n"

@@ -31,8 +31,8 @@ static GLenum getGLType(Bitmap::Format format) {
 	return GL_UNSIGNED_BYTE;
 }
 
-GLTexture::GLTexture() : id(0), blend(false), width(0), height(0),
-        mipMap(false), mBitmap(nullptr) {
+GLTexture::GLTexture() : Texture(), id(0), blend(false),
+        mipMap(false), releaseBitmap(true), mBitmap(nullptr) {
 }
 
 GLTexture::~GLTexture() {
@@ -77,7 +77,7 @@ bool GLTexture::generateTexture() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
-	if (mBitmap != nullptr) {
+	if (mBitmap != nullptr && releaseBitmap) {
 		delete mBitmap;
 		mBitmap = nullptr;
 	}

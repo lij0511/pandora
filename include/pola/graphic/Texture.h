@@ -18,7 +18,17 @@ namespace graphic {
  */
 class Texture {
 public:
+	Texture() : width(0), height(0){};
 	virtual ~Texture() {};
+
+	/**
+	 * Width of the backing bitmap.
+	 */
+	uint32_t width;
+	/**
+	 * Height of the backing bitmap.
+	 */
+	uint32_t height;
 };
 
 }

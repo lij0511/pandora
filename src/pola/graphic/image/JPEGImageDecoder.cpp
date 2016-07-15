@@ -86,7 +86,7 @@ pola_jpeg_source_mgr::~pola_jpeg_source_mgr() {
 static void pola_jpeg_error_exit(j_common_ptr cinfo) {
     pola_jpeg_error_mgr* error = (pola_jpeg_error_mgr*) cinfo->err;
     (*error->output_message) (cinfo);
-
+    LOGE("pola_jpeg_error_exit. %d\n", error->msg_code);
     /* Let the memory manager delete any temp files before we die */
     jpeg_destroy(cinfo);
 
@@ -102,7 +102,7 @@ JPEGImageDecoder::~JPEGImageDecoder() {
 }
 
 static Bitmap::Format selectColorType(jpeg_decompress_struct* cinfo) {
-	Bitmap::Format format = Bitmap::RGB565;
+	Bitmap::Format format = Bitmap::RGB888;
 	switch (cinfo->jpeg_color_space) {
 		case JCS_CMYK:
 			// Fall through.

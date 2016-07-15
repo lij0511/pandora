@@ -27,7 +27,7 @@ struct pola_jpeg_source_mgr : jpeg_source_mgr {
 	// fStream is ref'ed and unref'ed
 	io::InputStream*       fStream;
 	enum {
-		kBufferSize = /*1024*/ 1024 * 512
+		kBufferSize = 1024
 	};
 	char    fBuffer[kBufferSize];
 };

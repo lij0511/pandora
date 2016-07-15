@@ -35,12 +35,15 @@ int FileInputStream::read() {
 
 size_t FileInputStream::skip(size_t length) {
 	if (!mFP) return 0;
-	return fseek(mFP, length, SEEK_CUR);
+	size_t p = getPosition();
+	fseek(mFP, length, SEEK_CUR);
+	return getPosition() - p;
 }
 
 size_t FileInputStream::seek(size_t length) {
 	if (!mFP) return 0;
-	return fseek(mFP, length, SEEK_SET);
+	fseek(mFP, length, SEEK_SET);
+	return getPosition();
 }
 
 bool FileInputStream::rewind() {
@@ -60,7 +63,8 @@ void FileInputStream::close() {
 
 size_t FileInputStream::getPosition() const {
 	if (!mFP) return 0;
-	return ftell(mFP);
+	long p = ftell(mFP);
+	return p >=0 ? size_t(p) : 0;
 }
 
 size_t FileInputStream::getLength() const {

@@ -52,18 +52,18 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 	GLProgram* program = mCaches.programCache.get(description);
 	if (!program) {
 		utils::String vs;
+		utils::String fs;
+		if (mLights && mLights->directionalLightCount() > 0) {
+			char buf[40];
+			sprintf(buf, "#define NUM_DIR_LIGHTS %lu\n", mLights->directionalLightCount());
+			vs = fs = buf;
+		}
 		if (material->hasTextureMap()) {
 			vs += "#define TEXTURE_MAP\n";
 		}
 		vs += GLShaderLib::VS_MainUnifroms();
 		vs += GLShaderLib::VS_MainAttributes();
 		vs += material->getVertexShader();
-		utils::String fs;
-		if (mLights && mLights->directionalLightCount() > 0) {
-			char buf[40];
-			sprintf(buf, "#define NUM_DIR_LIGHTS %lu\n", mLights->directionalLightCount());
-			fs = buf;
-		}
 		if (material->hasTextureMap()) {
 			fs += "#define TEXTURE_MAP\n";
 		}
@@ -182,6 +182,8 @@ Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
 	GLTexture* texture = new GLTexture;
 //	texture->mipMap = true;
 	texture->mBitmap = bitmap;
+	texture->width = bitmap->getWidth();
+	texture->height = bitmap->getHeight();
 
 	return texture;
 }

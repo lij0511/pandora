@@ -74,8 +74,19 @@ const utils::String LambertMaterial::generateVertexShader() {
 	sb.append(GLShaderLib::VS_Para_TextureMap())
 		.append(GLShaderLib::Para_Lighs())
 		.append(
+			"varying vec3 v_light;\n"
 			"void main()\n"
-			"{\n")
+			"{\n"
+			" v_light = vec3( 0.0 );\n"
+			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"
+			"  DirectionalLight directionalLight;\n"
+			"  for (int i = 0; i < NUM_DIR_LIGHTS; i ++) {\n"
+			"    directionalLight = u_dirLights[ i ];\n"
+			"    float dotNL = clamp(dot(a_normal, directionalLight.direction), 0.0f, 1.0f);\n"
+			"    v_light += directionalLight.color * dotNL;\n"
+			"  }\n"
+			"  v_light += u_ambientLight;\n"
+			"#endif\n")
 		.append(GLShaderLib::VS_TextureMap())
 		.append(GLShaderLib::VS_MainPosition())
 		.append("}\n");
@@ -92,13 +103,14 @@ const utils::String LambertMaterial::generateFragmentShader() {
 		.append(GLShaderLib::FS_Para_TextureMap())
 		.append(
 			"uniform vec4 u_color;\n"
+			"varying vec3 v_light;\n"
 			"void main()\n"
 			"{\n")
 		.append(GLShaderLib::FS_DiffuseColor())
 		.append("  diffuseColor = u_color;\n")
 		.append(GLShaderLib::FS_TextureMap())
 		.append(
-			"  gl_FragColor = diffuseColor;\n"
+			"  gl_FragColor = diffuseColor * vec4(v_light, 1.0);\n"
 			"}\n");
 #endif
 	utils::String s;

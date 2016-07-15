@@ -28,5 +28,8 @@ v_test: test/v_test.cpp
 
 io_test: test/io_test.cpp
 	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
+
+image_test: test/image_test.cpp
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 	
-test: thread_test gl_test gl2d_test lights_test md2_loader_test v_test io_test
+test: thread_test gl_test gl2d_test lights_test md2_loader_test v_test io_test image_test
