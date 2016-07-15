@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#include "utils/thread/Handler.h"
-#include "utils/thread/FunctionalTask.h"
+#include "pola/utils/thread/Handler.h"
+#include "pola/utils/thread/FunctionalTask.h"
 
 class MyHandler : public pola::utils::Handler {
 public:

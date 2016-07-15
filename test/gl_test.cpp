@@ -5,23 +5,24 @@
  *      Author: lijing
  */
 
-#include "scene/camera/OrthoCamera.h"
-#include "scene/camera/PerspectiveCamera.h"
-#include "scene/camera/DefaultCameraController.h"
-#include "Device.h"
-#include "io/FileInputStream.h"
-#include "scene/mesh/MeshLoader.h"
-#include "scene/mesh/MD2AnimatedMesh.h"
-#include "scene/node/MD2AnimatedMeshSceneNode.h"
-#include "scene/node/BasicMeshSceneNode.h"
-#include "graphic/gl/GLCaches.h"
-#include "graphic/gl/GLTexture.h"
-#include "graphic/material/LambertMaterial.h"
-#include "graphic/material/PhongMaterial.h"
-#include "utils/Math.h"
-#include "graphic/geometries/SphereGeometry.h"
-#include "graphic/geometries/CubeGeometry.h"
-#include "graphic/geometries/RectangleGeometry.h"
+#include "pola/scene/camera/OrthoCamera.h"
+#include "pola/scene/camera/PerspectiveCamera.h"
+#include "pola/scene/camera/DefaultCameraController.h"
+#include "pola/scene/camera/FPSCameraController.h"
+#include "pola/Device.h"
+#include "pola/io/FileInputStream.h"
+#include "pola/scene/mesh/MeshLoader.h"
+#include "pola/scene/mesh/MD2AnimatedMesh.h"
+#include "pola/scene/node/MD2AnimatedMeshSceneNode.h"
+#include "pola/scene/node/BasicMeshSceneNode.h"
+#include "pola/graphic/gl/GLCaches.h"
+#include "pola/graphic/gl/GLTexture.h"
+#include "pola/graphic/material/LambertMaterial.h"
+#include "pola/graphic/material/PhongMaterial.h"
+#include "pola/utils/Math.h"
+#include "pola/graphic/geometries/SphereGeometry.h"
+#include "pola/graphic/geometries/CubeGeometry.h"
+#include "pola/graphic/geometries/RectangleGeometry.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -108,15 +109,16 @@ int main(int argc, char *argv[]) {
 		scene->addSceneNode(node);
 	}
 
-	m = new BasicMesh(new RectangleGeometry(0, 0, 100, 100));
-	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-	node->setMaterial(tm1);
-	scene->addSceneNode(node);
+//	m = new BasicMesh(new RectangleGeometry(0, 0, 100, 100));
+//	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+//	node->setMaterial(tm1);
+//	scene->addSceneNode(node);
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();
 //	Camera* camera = new OrthoCamera(-1, 1);
 	camera->setCameraController(new DefaultCameraController(camera));
+//	camera->setCameraController(new FPSCameraController(camera));
 //	camera->setPosition(vec3(0, 0, -100));
 	scene->addCamera(camera);
 

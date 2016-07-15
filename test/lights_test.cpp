@@ -5,21 +5,21 @@
  *      Author: lijing
  */
 
-#include "scene/camera/PerspectiveCamera.h"
-#include "scene/camera/DefaultCameraController.h"
-#include "Device.h"
-#include "io/FileInputStream.h"
-#include "scene/mesh/MeshLoader.h"
-#include "scene/mesh/MD2AnimatedMesh.h"
-#include "scene/node/MD2AnimatedMeshSceneNode.h"
-#include "scene/node/BasicMeshSceneNode.h"
-#include "graphic/gl/GLCaches.h"
-#include "graphic/gl/GLTexture.h"
-#include "graphic/material/LambertMaterial.h"
-#include "graphic/material/PhongMaterial.h"
-#include "graphic/geometries/SphereGeometry.h"
-#include "graphic/geometries/CubeGeometry.h"
-#include "utils/Math.h"
+#include "pola/scene/camera/PerspectiveCamera.h"
+#include "pola/scene/camera/DefaultCameraController.h"
+#include "pola/Device.h"
+#include "pola/io/FileInputStream.h"
+#include "pola/scene/mesh/MeshLoader.h"
+#include "pola/scene/mesh/MD2AnimatedMesh.h"
+#include "pola/scene/node/MD2AnimatedMeshSceneNode.h"
+#include "pola/scene/node/BasicMeshSceneNode.h"
+#include "pola/graphic/gl/GLCaches.h"
+#include "pola/graphic/gl/GLTexture.h"
+#include "pola/graphic/material/LambertMaterial.h"
+#include "pola/graphic/material/PhongMaterial.h"
+#include "pola/graphic/geometries/SphereGeometry.h"
+#include "pola/graphic/geometries/CubeGeometry.h"
+#include "pola/utils/Math.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 	BasicMesh* m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
 	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
 	node->setMaterial(new PhongMaterial({1.0f, 1.0f, 1.0f}));
-	node->setPosition(graphic::vec3(0, 0, - 100));
+	node->setPosition(graphic::vec3(0, 0, 0));
 	scene->addSceneNode(node);
 
 

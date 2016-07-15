@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#include "scene/mesh/MeshLoader.h"
-#include "io/FileInputStream.h"
+#include "pola/scene/mesh/MeshLoader.h"
+#include "pola/io/FileInputStream.h"
 
 int main(int argc, char *argv[]) {
 

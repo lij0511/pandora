@@ -14,6 +14,9 @@ thread_test: test/thread_test.cpp
 gl_test: test/gl_test.cpp
 	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 
+gl2d_test: test/gl2d_test.cpp
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
+
 lights_test: test/lights_test.cpp
 	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 	
@@ -26,4 +29,4 @@ v_test: test/v_test.cpp
 io_test: test/io_test.cpp
 	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 	
-test: thread_test gl_test md2_loader_test v_test io_test
+test: thread_test gl_test gl2d_test lights_test md2_loader_test v_test io_test

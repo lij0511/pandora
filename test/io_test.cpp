@@ -5,10 +5,10 @@
  *      Author: lijing
  */
 
-#include "utils/Times.h"
-#include "io/FileInputStream.h"
-#include "io/BufferedReader.h"
-#include "io/InputStreamReader.h"
+#include "pola/utils/Times.h"
+#include "pola/io/FileInputStream.h"
+#include "pola/io/BufferedReader.h"
+#include "pola/io/InputStreamReader.h"
 
 using namespace pola;
 
