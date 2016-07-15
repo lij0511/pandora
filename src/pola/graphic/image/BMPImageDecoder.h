@@ -21,7 +21,7 @@ public:
 	BMPImageDecoder();
 	virtual ~BMPImageDecoder();
 
-	virtual Bitmap* decode(io::InputStream* is) override;
+	virtual Bitmap* decode(io::InputStream* is, Bitmap::Format format = Bitmap::Format::UNKONWN) override;
 
 	static bool decodeable(io::InputStream* is);
 };

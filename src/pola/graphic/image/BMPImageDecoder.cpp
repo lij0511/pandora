@@ -332,7 +332,7 @@ BMPImageDecoder::BMPImageDecoder() {
 BMPImageDecoder::~BMPImageDecoder() {
 }
 
-Bitmap* BMPImageDecoder::decode(io::InputStream* is) {
+Bitmap* BMPImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 	BMPHeader header;
 	is->read(&header, sizeof(BMPHeader));
 	LOGI("id=%x, FileSize=%u, Reserved=%u, BitmapDataOffset=%u, BitmapHeaderSize=%u, Width=%u, Height=%u, Planes=%u, BPP=%u, Compression=%u, BitmapDataSize=%u, PixelPerMeterX=%u, PixelPerMeterY=%u, Colors=%u, ImportantColors=%u\n",

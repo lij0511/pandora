@@ -45,7 +45,7 @@ static void png_read_fn(png_structp png_ptr, png_bytep data, png_size_t length) 
 	}
 }
 
-Bitmap* PNGImageDecoder::decode(io::InputStream* is) {
+Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 	png_structp png_ptr;
 	png_infop info_ptr;
 
@@ -120,8 +120,12 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is) {
 	Bitmap::Format format;
 	switch (colorType) {
 		case PNG_COLOR_TYPE_RGB:
+			format = Bitmap::RGB888;
+			png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
+			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
 			format = Bitmap::RGB888;
+			png_set_gray_to_rgb(png_ptr);
 			break;
 		case PNG_COLOR_TYPE_GRAY:
 			format = Bitmap::ALPHA8;
