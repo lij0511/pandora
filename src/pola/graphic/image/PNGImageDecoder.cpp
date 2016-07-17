@@ -8,6 +8,7 @@
 #include "pola/log/Log.h"
 #include "pola/graphic/image/ImageDecoderFactory.h"
 #include "pola/graphic/image/PNGImageDecoder.h"
+#include "pola/graphic/image/ImageSampler.h"
 
 /* These were dropped in libpng >= 1.4 */
 #ifndef png_infopp_NULL
@@ -107,6 +108,12 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 		png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
 	}
 
+	if (colorType==PNG_COLOR_TYPE_PALETTE && png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
+		png_set_tRNS_to_alpha(png_ptr);
+	} else if (colorType==PNG_COLOR_TYPE_PALETTE) {
+		colorType = PNG_COLOR_TYPE_RGB;
+	}
+
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
 		return nullptr;
@@ -121,11 +128,9 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 	switch (colorType) {
 		case PNG_COLOR_TYPE_RGB:
 			format = Bitmap::RGB888;
-			png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
 			format = Bitmap::RGB888;
-			png_set_gray_to_rgb(png_ptr);
 			break;
 		case PNG_COLOR_TYPE_GRAY:
 			format = Bitmap::ALPHA8;
@@ -141,12 +146,25 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 	bitmap = Bitmap::create();
 	bitmap->set(origWidth, origHeight, format);
 
-	for (int i = 0; i < number_passes; i++) {
-		uint8_t* bmRow = bitmap->pixels();
-		for (png_uint_32 y = 0; y < origHeight; y++) {
-			png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
-			bmRow += bitmap->rowBytes();
+	ImageSampler sampler(bitmap, preFormat);
+
+	if (!sampler.needsSample()) { // For accelerate. Ignore sample.
+		for (int i = 0; i < number_passes; i++) {
+			uint8_t* bmRow = bitmap->pixels();
+			for (png_uint_32 y = 0; y < origHeight; y++) {
+				png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
+				bmRow += bitmap->rowBytes();
+			}
 		}
+	} else {
+		uint8_t* bmRow = new uint8_t[bitmap->rowBytes()];
+		for (int i = 0; i < number_passes; i++) {
+			for (png_uint_32 y = 0; y < origHeight; y++) {
+				png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
+				sampler.sample(y, bmRow);
+			}
+		}
+		delete bmRow;
 	}
 
 	return bitmap;

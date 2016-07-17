@@ -189,6 +189,7 @@ Bitmap* JPEGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) 
 	bitmap->set(cinfo.output_width/* - fixed*/, cinfo.output_height, format);
 	uint32_t rowBytes = bitmap->rowBytes();
 	unsigned char* srcRow = bitmap->pixels();
+	// TODO Preformat convert.
 	// now loop through scanlines
 	if (JCS_CMYK == cinfo.out_color_space) {
 		JSAMPLE* rowptr = (JSAMPLE*) malloc(sizeof(JSAMPLE) * 4 * cinfo.output_width);
