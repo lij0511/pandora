@@ -414,7 +414,9 @@ static ImageDecoder* bmp_image_factory(io::InputStream* is) {
 	return nullptr;
 }
 
-ImageDecoderReg bmp_reg(bmp_image_factory);
+void BMPImageDecoder::reg() {
+	ImageDecoderReg reg(bmp_image_factory);
+}
 
 } /* namespace graphic */
 } /* namespace pola */

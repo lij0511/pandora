@@ -10,10 +10,11 @@
 namespace pola {
 namespace graphic {
 
-Typeface::Typeface() {
+Typeface::~Typeface() {
 }
 
-Typeface::~Typeface() {
+Typeface::Style Typeface::style() const {
+	return mStyle;
 }
 
 } /* namespace graphic */

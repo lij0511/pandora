@@ -143,29 +143,31 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 			png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
 			return nullptr;
 	}
+
+//	ImageSampler sampler(origWidth, origHeight, 1);
 	bitmap = Bitmap::create();
 	bitmap->set(origWidth, origHeight, format);
 
-	ImageSampler sampler(bitmap, preFormat);
-
-	if (!sampler.needsSample()) { // For accelerate. Ignore sample.
-		for (int i = 0; i < number_passes; i++) {
-			uint8_t* bmRow = bitmap->pixels();
-			for (png_uint_32 y = 0; y < origHeight; y++) {
-				png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
-				bmRow += bitmap->rowBytes();
-			}
+	for (int i = 0; i < number_passes; i++) {
+		uint8_t* bmRow = bitmap->pixels();
+		for (png_uint_32 y = 0; y < origHeight; y++) {
+			png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
+			bmRow += bitmap->rowBytes();
 		}
-	} else {
-		uint8_t* bmRow = new uint8_t[bitmap->rowBytes()];
-		for (int i = 0; i < number_passes; i++) {
-			for (png_uint_32 y = 0; y < origHeight; y++) {
-				png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
-				sampler.sample(y, bmRow);
-			}
-		}
-		delete bmRow;
 	}
+//	if (!sampler.beginSample(bitmap, preFormat)) { // For accelerate. Ignore sample.
+//		delete bitmap;
+//		return nullptr;
+//	} else {
+//		uint8_t* bmRow = new uint8_t[bitmap->rowBytes()];
+//		for (int i = 0; i < number_passes; i++) {
+//			for (png_uint_32 y = 0; y < origHeight; y++) {
+//				png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
+//				sampler.sample(y, bmRow);
+//			}
+//		}
+//		delete bmRow;
+//	}
 
 	return bitmap;
 }
@@ -190,7 +192,9 @@ static ImageDecoder* png_image_factory(io::InputStream* is) {
 	return nullptr;
 }
 
-ImageDecoderReg png_reg(png_image_factory);
+void PNGImageDecoder::reg() {
+	ImageDecoderReg reg(png_image_factory);
+}
 
 }
 }

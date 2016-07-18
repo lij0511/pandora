@@ -31,5 +31,8 @@ io_test: test/io_test.cpp
 
 image_test: test/image_test.cpp
 	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
+
+blend_test: test/blend_test.cpp
+	$(CXX) $^ $(testlibs) -o $(builddir)/$@ -lGLU -lglut $(includes) $(cppflags)
 	
-test: thread_test gl_test gl2d_test lights_test md2_loader_test v_test io_test image_test
+test: thread_test gl_test gl2d_test lights_test md2_loader_test v_test io_test image_test blend_test

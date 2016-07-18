@@ -29,10 +29,11 @@ public:
 	virtual void endFrame();
 
 	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr);
+	virtual void renderGeometry(Geometry* geometry, const GraphicParameter& parameter, Material* material = nullptr);
 
 protected:
-	void renderGeometry(Geometry2D* geometry, Material* material = nullptr);
-	void renderGeometry(Geometry3D* geometry, Material* material = nullptr);
+	void renderGeometry(Geometry2D* geometry, const GraphicParameter& parameter, Material* material = nullptr);
+	void renderGeometry(Geometry3D* geometry, const GraphicParameter& parameter, Material* material = nullptr);
 
 	virtual Texture* doLoadTexture(io::InputStream* is);
 

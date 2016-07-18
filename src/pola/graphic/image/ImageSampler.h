@@ -15,17 +15,20 @@ namespace graphic {
 
 class ImageSampler {
 public:
-	ImageSampler(Bitmap* bitmap, Bitmap::Format sourceFormat, unsigned sampleSize = 1);
+	ImageSampler(uint32_t width, uint32_t height, unsigned sampleSize = 1);
 	virtual ~ImageSampler();
 
-	bool needsSample() const;
+	bool beginSample(Bitmap* bitmap, Bitmap::Format format);
 
 	void sample(unsigned row, const uint8_t* rowPixels);
 
 private:
+	uint32_t mWidth;
+	uint32_t mHeight;
+	unsigned mSampleSize;
+
 	Bitmap* mBitmap;
 	Bitmap::Format mFormat;
-	unsigned mSampleSize;
 };
 
 } /* namespace graphic */

@@ -253,6 +253,8 @@ static ImageDecoder* jpeg_image_factory(io::InputStream* is) {
 	return nullptr;
 }
 
-ImageDecoderReg jpeg_reg(jpeg_image_factory);
+void JPEGImageDecoder::reg() {
+	ImageDecoderReg reg(jpeg_image_factory);
+}
 }
 }

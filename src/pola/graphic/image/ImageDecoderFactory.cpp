@@ -6,6 +6,9 @@
  */
 
 #include "pola/graphic/image/ImageDecoderFactory.h"
+#include "pola/graphic/image/BMPImageDecoder.h"
+#include "pola/graphic/image/JPEGImageDecoder.h"
+#include "pola/graphic/image/PNGImageDecoder.h"
 
 namespace pola {
 namespace graphic {
@@ -32,6 +35,14 @@ void image_factory_reg(image_factory f) {
 }
 
 ImageDecoder* newDecoder(io::InputStream* is) {
+	static bool reg = false;
+	if (!reg) {
+		BMPImageDecoder::reg();
+		JPEGImageDecoder::reg();
+		PNGImageDecoder::reg();
+		reg = true;
+	}
+
 	 const ImageFactoryReg* curr = head;
 	 ImageDecoder* decoder;
 	 while (curr) {

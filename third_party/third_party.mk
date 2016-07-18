@@ -130,9 +130,44 @@ icu_files +=  third_party/icu/source/stubdata/stubdata.c
 LOCAL_CFLAGS += -DU_COMMON_IMPLEMENTATION
 LOCAL_CPPFLAGS += -DU_COMMON_IMPLEMENTATION
 
+harfbuzz_files = \
+	third_party/harfbuzz_ng/src/hb-blob.cc \
+	third_party/harfbuzz_ng/src/hb-buffer-serialize.cc \
+	third_party/harfbuzz_ng/src/hb-buffer.cc \
+	third_party/harfbuzz_ng/src/hb-common.cc \
+	third_party/harfbuzz_ng/src/hb-face.cc \
+	third_party/harfbuzz_ng/src/hb-font.cc \
+	third_party/harfbuzz_ng/src/hb-ot-tag.cc \
+	third_party/harfbuzz_ng/src/hb-set.cc \
+	third_party/harfbuzz_ng/src/hb-shape.cc \
+	third_party/harfbuzz_ng/src/hb-shape-plan.cc \
+	third_party/harfbuzz_ng/src/hb-shaper.cc \
+	third_party/harfbuzz_ng/src/hb-unicode.cc \
+	third_party/harfbuzz_ng/src/hb-warning.cc \
+	third_party/harfbuzz_ng/src/hb-ot-font.cc \
+	third_party/harfbuzz_ng/src/hb-ot-layout.cc \
+	third_party/harfbuzz_ng/src/hb-ot-map.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-arabic.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-default.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-hangul.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-hebrew.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-indic.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-indic-table.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-myanmar.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-sea.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-thai.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-complex-tibetan.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-normalize.cc \
+	third_party/harfbuzz_ng/src/hb-ot-shape-fallback.cc \
+	third_party/harfbuzz_ng/src/hb-icu.cc \
+
 LOCAL_SRC_FILES += $(ft2_files) \
 	$(zlib_files) \
 	$(png_files) \
 	$(jpeg_files) \
 	$(icu_files) \
-	
+	$(harfbuzz_files) \
+
+LOCAL_CFLAGS += -DHB_NO_MT -DHAVE_OT -DHAVE_ICU -DHAVE_ICU_BUILTIN
+LOCAL_CPPFLAGS += -DHB_NO_MT -DHAVE_OT -DHAVE_ICU -DHAVE_ICU_BUILTIN	

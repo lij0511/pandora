@@ -26,7 +26,14 @@ struct GraphicParameter {
 
 	DrawMode drawMode;
 	float lineWidth;
+
+	GraphicParameter(DrawMode drawMode = TRIANGLES, float lineWidth = 1.f);
 };
+
+inline GraphicParameter::GraphicParameter(DrawMode drawMode, float lineWidth) {
+	this->drawMode = drawMode;
+	this->lineWidth = lineWidth;
+}
 
 }
 }

@@ -10,15 +10,21 @@
 namespace pola {
 namespace graphic {
 
-ImageSampler::ImageSampler(Bitmap* bitmap, Bitmap::Format sourceFormat, unsigned sampleSize) :
-	mBitmap(bitmap), mFormat(sourceFormat), mSampleSize(sampleSize) {
+ImageSampler::ImageSampler(uint32_t width, uint32_t height, unsigned sampleSize) :
+	mWidth(width), mHeight(height), mSampleSize(sampleSize), mBitmap(nullptr), mFormat(Bitmap::Format::UNKONWN) {
 }
 
 ImageSampler::~ImageSampler() {
 }
 
-bool ImageSampler::needsSample() const {
-	return (mFormat != Bitmap::Format::UNKONWN && mBitmap->getFormat() != mFormat) || mSampleSize > 1;
+bool ImageSampler::beginSample(Bitmap* bitmap, Bitmap::Format format) {
+	mBitmap = bitmap;
+	mFormat = format;
+	if (mFormat == Bitmap::Format::UNKONWN) {
+		return false;
+	}
+
+	return true;
 }
 
 void ImageSampler::sample(unsigned row, const uint8_t* rowPixels) {

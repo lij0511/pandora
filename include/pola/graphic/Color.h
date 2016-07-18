@@ -64,6 +64,10 @@ struct Color {
 	}
 };
 
+struct RGB888 {
+	uint8_t r, g, b;
+};
+
 } /* namespace graphic */
 
 namespace utils {

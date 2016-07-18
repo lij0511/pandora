@@ -13,6 +13,7 @@ LOCAL_C_INCLUDES = ./src ./include \
 	third_party/libpng \
 	third_party/libjpeg \
 	third_party/icu/source/common \
+	third_party/harfbuzz_ng/src \
 
 LOCAL_CPPFLAGS :=	-O2 -g -Wall -Wno-unused-function -Wno-strict-aliasing -fmessage-length=0  -fPIC -std=c++11 
 LOCAL_CFLAGS :=  -O2 -g -Wall -fmessage-length=0 -fPIC

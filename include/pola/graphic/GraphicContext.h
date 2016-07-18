@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+#include "pola/graphic/GraphicParameter.h"
 #include "pola/graphic/geometries/Geometry2D.h"
 #include "pola/graphic/geometries/Geometry3D.h"
 #include "pola/graphic/math/Matrix4.h"
@@ -44,6 +45,7 @@ public:
 
 	void setMatrix(MatrixType type, const mat4& matrix);
 
+	virtual void renderGeometry(Geometry* geometry, const GraphicParameter& parameter, Material* material = nullptr) = 0;
 	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr) = 0;
 
 protected:

@@ -12,6 +12,27 @@
 namespace pola {
 namespace graphic {
 
+static GLenum GLDrawMode(GraphicParameter::DrawMode d) {
+	switch (d) {
+	case GraphicParameter::DrawMode::TRIANGLES:
+		return GL_TRIANGLES;
+	case GraphicParameter::DrawMode::TRIANGLE_FAN:
+		return GL_TRIANGLE_FAN;
+	case GraphicParameter::DrawMode::TRIANGLE_STRIP:
+		return GL_TRIANGLE_STRIP;
+	case GraphicParameter::DrawMode::LINES:
+		return GL_LINES;
+	case GraphicParameter::DrawMode::LINE_LOOP:
+		return GL_LINE_LOOP;
+	case GraphicParameter::DrawMode::LINE_STRIP:
+		return GL_LINE_STRIP;
+	case GraphicParameter::DrawMode::POINTS:
+		return GL_POINTS;
+	default:
+		return GL_TRIANGLES;
+	}
+}
+
 GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(true);
@@ -75,14 +96,18 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 }
 
 void GLGraphicContext::renderGeometry(Geometry* geometry, Material* material) {
+	renderGeometry(geometry, GraphicParameter(), material);
+}
+
+void GLGraphicContext::renderGeometry(Geometry* geometry, const GraphicParameter& parameter, Material* material) {
 	if (geometry->type() == Geometry::Type::GEOMETRY_3D) {
-		renderGeometry((Geometry3D*) geometry, material);
+		renderGeometry((Geometry3D*) geometry, parameter, material);
 	} else if (geometry->type() == Geometry::Type::GEOMETRY_2D) {
-		renderGeometry((Geometry2D*) geometry, material);
+		renderGeometry((Geometry2D*) geometry, parameter, material);
 	}
 }
 
-void GLGraphicContext::renderGeometry(Geometry2D* geometry, Material* material) {
+void GLGraphicContext::renderGeometry(Geometry2D* geometry, const GraphicParameter& parameter, Material* material) {
 	size_t positionCount = geometry->positionCount();
 	if (positionCount == 0) {
 		return;
@@ -118,13 +143,13 @@ void GLGraphicContext::renderGeometry(Geometry2D* geometry, Material* material) 
 		glVertexAttribPointer(a_uv, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->uvs()));
 	}
 	if (geometry->indexCount() > 0) {
-		glDrawElements(GL_TRIANGLES, geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
+		glDrawElements(GLDrawMode(parameter.drawMode), geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
 	} else {
-		glDrawArrays(GL_TRIANGLES, 0, positionCount);
+		glDrawArrays(GLDrawMode(parameter.drawMode), 0, positionCount);
 	}
 }
 
-void GLGraphicContext::renderGeometry(Geometry3D* geometry, Material* material) {
+void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParameter& parameter, Material* material) {
 	size_t positionCount = geometry->positionCount();
 	if (positionCount == 0) {
 		return;
@@ -165,9 +190,9 @@ void GLGraphicContext::renderGeometry(Geometry3D* geometry, Material* material) 
 		glVertexAttribPointer(a_normal, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->normals()));
 	}
 	if (geometry->indexCount() > 0) {
-		glDrawElements(GL_TRIANGLES, geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
+		glDrawElements(GLDrawMode(parameter.drawMode), geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
 	} else {
-		glDrawArrays(GL_TRIANGLES, 0, positionCount);
+		glDrawArrays(GLDrawMode(parameter.drawMode), 0, positionCount);
 	}
 }
 

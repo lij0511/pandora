@@ -9,6 +9,7 @@
 #define POLA_BITMAP_H_
 
 #include <stdint.h>
+#include "pola/graphic/Color.h"
 
 namespace pola {
 namespace graphic {

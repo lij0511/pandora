@@ -26,4 +26,16 @@ $(cpp_objects): $(objs)/%.o: \
 -include $(cpp_objects:%.o=%.P)
 endif
 
-all_objects := $(c_objects) $(cpp_objects)
+cc_sources := $(filter %.cc,$(LOCAL_SRC_FILES))
+cc_objects := $(addprefix $(objs)/,$(cc_sources:.cc=.o))
+
+ifneq ($(strip $(cc_objects)),)
+$(cc_objects): $(objs)/%.o: \
+	$(LOCAL_PATH)/%.cc |
+	@mkdir -p $(dir $@)
+	$(CXX) $(LOCAL_CPPFLAGS) -MMD -MF $(patsubst %.o,%.d,$@) -o $@ -c $< $(PRIVATE_C_INCLUDES)
+	$(transform-d-to-p)
+-include $(cpp_objects:%.o=%.P)
+endif
+
+all_objects := $(c_objects) $(cpp_objects) $(cc_objects)
