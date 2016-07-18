@@ -22,7 +22,7 @@ inline double random(double start = 0, double end = 1) {
 		srand((unsigned)time(0));
 		sand = true;
 	}
-	return start + (end - start) * rand() / (RAND_MAX + 1.0);
+	return start + (end - start) * double(rand()) / (RAND_MAX);
 }
 
 template<typename TYPE>

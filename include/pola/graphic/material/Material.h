@@ -8,8 +8,9 @@
 #ifndef POLA_MATERIAL_H_
 #define POLA_MATERIAL_H_
 
-// TODO
+#if defined(POLA_GLES) || defined(POLA_GL)
 #define OGL_RENDERER
+#endif
 
 #include "pola/utils/RefBase.h"
 #include "pola/utils/String.h"
