@@ -31,12 +31,12 @@ DefaultCameraController::DefaultCameraController(Camera* camera)
 DefaultCameraController::~DefaultCameraController() {
 }
 
-bool DefaultCameraController::animate(nsecs_t timeMs) {
+bool DefaultCameraController::animate(p_nsecs_t timeMs) {
 	if (mAnimatingFlag != 0) {
 			if (mLastAnimatingTime == 0) {
 				mLastAnimatingTime = timeMs;
 			}
-			nsecs_t interval = timeMs - mLastAnimatingTime;
+			p_nsecs_t interval = timeMs - mLastAnimatingTime;
 			mLastAnimatingTime = timeMs;
 			graphic::Euler yaw = mYaw->getRotation();
 			if ((mAnimatingFlag & FLAG_KEYCODE_LEFT) == FLAG_KEYCODE_LEFT) {

@@ -31,7 +31,7 @@ public:
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
-	virtual bool update(graphic::GraphicContext* graphic, nsecs_t timeMs);
+	virtual bool update(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
 
 	const graphic::Frustum& frustum() const;
 

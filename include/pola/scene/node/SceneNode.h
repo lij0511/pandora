@@ -27,10 +27,10 @@ public:
 	SceneNode();
 	virtual ~SceneNode();
 
-	void dispatchRender(graphic::GraphicContext* graphic, nsecs_t timeMs);
+	void dispatchRender(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
 
 protected:
-	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
+	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
 };
 
 } /* namespace scene */

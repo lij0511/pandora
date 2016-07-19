@@ -13,7 +13,7 @@ namespace utils {
 Handler::Handler(sp<Looper> looper)  : mLooper(looper) {
 }
 
-bool Handler::postDelayed(Task* task, nsecs_t delayMillis) {
+bool Handler::postDelayed(Task* task, p_nsecs_t delayMillis) {
 	return mLooper->mQueue.enqueueMessage(new Message(this, task), uptimeMillis() + delayMillis);
 }
 
@@ -38,7 +38,7 @@ bool Handler::postAndWait(Task* task) {
 	}
 }
 
-bool Handler::sendMessageDelayed(int what, int arg1, int arg2, nsecs_t delayMillis) {
+bool Handler::sendMessageDelayed(int what, int arg1, int arg2, p_nsecs_t delayMillis) {
 	return mLooper->mQueue.enqueueMessage(new Message(this, what, arg1, arg2), uptimeMillis() + delayMillis);
 }
 

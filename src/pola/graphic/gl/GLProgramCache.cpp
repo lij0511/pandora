@@ -15,7 +15,7 @@ namespace pola {
 namespace graphic {
 
 ProgramDescription::ProgramDescription(const char* type)
-	: material_type(type), texture_map(false),
+	: material_type(type), texture_map(false), texture_map_a8(false),
 	  directional_light_count(0), point_light_count(0), spot_light_count(0),
 	  fog(false) {
 }
@@ -25,6 +25,9 @@ bool ProgramDescription::operator==(const ProgramDescription& other) const {
 		return false;
 	}
 	if (texture_map != other.texture_map) {
+		return false;
+	}
+	if (texture_map_a8 != other.texture_map_a8) {
 		return false;
 	}
 	bool comp = true;
@@ -48,6 +51,7 @@ utils::hash_t ProgramDescription::hash() const {
 		hash = utils::JenkinsHashMix(hash, mFragmentShader.hash());
 	}
 	hash = utils::JenkinsHashMix(hash, utils::hash_type(texture_map));
+	hash = utils::JenkinsHashMix(hash, utils::hash_type(texture_map_a8));
 	hash = utils::JenkinsHashMix(hash, directional_light_count);
 	hash = utils::JenkinsHashMix(hash, point_light_count);
 	hash = utils::JenkinsHashMix(hash, spot_light_count);

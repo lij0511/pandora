@@ -17,7 +17,7 @@ CameraController::CameraController(Camera* camera) : mCamera(camera) {
 CameraController::~CameraController() {
 }
 
-bool CameraController::animate(nsecs_t timeMs) {
+bool CameraController::animate(p_nsecs_t timeMs) {
 	return false;
 }
 

@@ -29,7 +29,7 @@ public:
 	CameraController(Camera* camera);
 	virtual ~CameraController();
 
-	virtual bool animate(nsecs_t timeMs);
+	virtual bool animate(p_nsecs_t timeMs);
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 

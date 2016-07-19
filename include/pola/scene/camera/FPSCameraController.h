@@ -19,7 +19,7 @@ public:
 	FPSCameraController(Camera* camera);
 	virtual ~FPSCameraController();
 
-	virtual bool animate(nsecs_t timeMs);
+	virtual bool animate(p_nsecs_t timeMs);
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
@@ -28,7 +28,7 @@ private:
 	float mRotateSpeed;
 
 	int32_t mAnimatingFlag;
-	nsecs_t mLastAnimatingTime;
+	p_nsecs_t mLastAnimatingTime;
 };
 
 } /* namespace scene */

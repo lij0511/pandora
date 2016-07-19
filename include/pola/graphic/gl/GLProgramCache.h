@@ -34,6 +34,7 @@ public:
 
 	const char* material_type;
 	bool texture_map;
+	bool texture_map_a8;
 
 	unsigned directional_light_count;
 	unsigned point_light_count;

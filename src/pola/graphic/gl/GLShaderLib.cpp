@@ -61,7 +61,11 @@ const char* GLShaderLib::FS_Para_TextureMap() {
 
 const char* GLShaderLib::FS_TextureMap() {
 	return "#ifdef TEXTURE_MAP\n"
-			"diffuseColor *= texture2D(u_textureMap,  v_uv);\n"
+			"	#ifdef TEXTURE_MAP_A8\n"
+			"	diffuseColor *= texture2D(u_textureMap,  v_uv).a;\n"
+			"	#else\n"
+			"	diffuseColor *= texture2D(u_textureMap,  v_uv);\n"
+			"	#endif\n"
 			"#endif\n";
 }
 

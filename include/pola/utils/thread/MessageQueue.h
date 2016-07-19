@@ -30,14 +30,14 @@ public:
 	void removeMessages(Handler* h, int what);
 	void removeMessages(Handler* h, Task* task);
 	void removeMessages(Handler* h);
-	bool enqueueMessage(Message* msg, nsecs_t when);
+	bool enqueueMessage(Message* msg, p_nsecs_t when);
 
 private:
 	int mWakeReadPipeFd;  // immutable
 	int mWakeWritePipeFd; // immutable
 	int mEpollFd; // immutable
 
-	void pollOnce(nsecs_t timeoutMillis);
+	void pollOnce(p_nsecs_t timeoutMillis);
 	void wake();
 
 	Message* mMessages;

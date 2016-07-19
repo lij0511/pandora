@@ -70,6 +70,7 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 		description.mFragmentShader = material->getFragmentShader();
 	}
 	description.texture_map = material->hasTextureMap();
+	description.texture_map_a8 = material->hasA8TextureMap();
 	GLProgram* program = mCaches.programCache.get(description);
 	if (!program) {
 		utils::String vs;
@@ -81,13 +82,15 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 		}
 		if (material->hasTextureMap()) {
 			vs += "#define TEXTURE_MAP\n";
+			fs += "#define TEXTURE_MAP\n";
+			if (material->hasA8TextureMap()) {
+				vs += "#define TEXTURE_MAP_A8\n";
+				fs += "#define TEXTURE_MAP_A8\n";
+			}
 		}
 		vs += GLShaderLib::VS_MainUnifroms();
 		vs += GLShaderLib::VS_MainAttributes();
 		vs += material->getVertexShader();
-		if (material->hasTextureMap()) {
-			fs += "#define TEXTURE_MAP\n";
-		}
 		fs += material->getFragmentShader().characters();
 		program = new GLProgram(vs.characters(), fs.characters());
 		mCaches.programCache.cache(description, program);
@@ -209,6 +212,7 @@ Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
 	texture->mBitmap = bitmap;
 	texture->width = bitmap->getWidth();
 	texture->height = bitmap->getHeight();
+	texture->format = bitmap->getFormat();
 
 	return texture;
 }

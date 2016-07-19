@@ -25,6 +25,10 @@ bool Material::hasTextureMap() const {
 	return mTextureMap != nullptr;
 }
 
+bool Material::hasA8TextureMap() const {
+	return hasTextureMap() && mTextureMap->format == Bitmap::Format::ALPHA8;
+}
+
 const utils::String Material::getVertexShader() {
 	if (mVertexShader.isEmpty()) {
 		mVertexShader = generateVertexShader();

@@ -20,7 +20,7 @@ Mesh* BasicMeshSceneNode::mesh() {
 	return mMesh;
 }
 
-void BasicMeshSceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
+void BasicMeshSceneNode::render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
 	graphic->renderGeometry(mMesh->geometry(), mMaterial.get());
 }
 

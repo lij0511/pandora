@@ -37,7 +37,7 @@ public:
 
 	const uint16_t* indices() const;
 	uint16_t* indices();
-	size_t indexCount() const;
+	virtual size_t indexCount() const;
 	void addIndex(uint16_t index);
 
 	void setBoundingBox(const Box3& boundingBox);

@@ -27,10 +27,10 @@ public:
 	int32_t getEndFrameLoop() const;
 
 protected:
-	virtual void render(graphic::GraphicContext* graphic, nsecs_t timeMs);
+	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
 
 protected:
-	virtual void buildCurrentFrame(nsecs_t timeMs);
+	virtual void buildCurrentFrame(p_nsecs_t timeMs);
 
 private:
 
@@ -39,7 +39,7 @@ private:
 	float mFramesPerMs;
 	float mCurrentFrame;
 
-	nsecs_t mLastTimeMs;
+	p_nsecs_t mLastTimeMs;
 };
 
 } /* namespace scene */

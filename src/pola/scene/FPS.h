@@ -30,7 +30,7 @@ inline FPS::FPS() : mTotalCount(0), mFrameCount(0), mFrameCountingStart(0), mFps
 }
 
 inline double FPS::fps() {
-	long now = uptimeMillis();
+	long now = pola::uptimeMillis();
 	++mFrameCount;
 	if (mFrameCountingStart == 0) {
 		mFrameCountingStart = now;

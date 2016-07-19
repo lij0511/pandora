@@ -61,6 +61,7 @@ bool GLTexture::generateTexture() {
 
 		width = mBitmap->getWidth();
 		height = mBitmap->getHeight();
+		format = mBitmap->getFormat();
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, mBitmap->bytesPerPixel());
 

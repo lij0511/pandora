@@ -62,7 +62,7 @@ MessageQueue::~MessageQueue() {
 	pthread_mutex_destroy(&mutex);
 }
 
-void MessageQueue::pollOnce(nsecs_t timeoutMillis) {
+void MessageQueue::pollOnce(p_nsecs_t timeoutMillis) {
 	if (timeoutMillis < 0) {
 		timeoutMillis = LLONG_MAX;
 	}
@@ -174,7 +174,7 @@ void MessageQueue::removeMessages(Handler* h) {
 	pthread_mutex_unlock(&mutex);
 }
 
-bool MessageQueue::enqueueMessage(Message* msg, nsecs_t when) {
+bool MessageQueue::enqueueMessage(Message* msg, p_nsecs_t when) {
 	if (!msg->target) {
 		throw "Message must have a target.";
 	}
@@ -217,7 +217,7 @@ bool MessageQueue::enqueueMessage(Message* msg, nsecs_t when) {
 }
 
 Message* MessageQueue::next() {
-	nsecs_t nextPollTimeoutMillis = 0;
+	p_nsecs_t nextPollTimeoutMillis = 0;
 	for (;;) {
 		pollOnce(nextPollTimeoutMillis);
 
@@ -225,7 +225,7 @@ Message* MessageQueue::next() {
 		pthread_mutex_lock(&mutex);
 		{
 			// Try to retrieve the next message.  Return if found.
-			const nsecs_t now = uptimeMillis();
+			const p_nsecs_t now = uptimeMillis();
 			msg = mMessages;
 			if (msg) {
 				if (now < msg->when) {

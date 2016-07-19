@@ -37,7 +37,7 @@ void Camera::setCameraController(CameraController* controller) {
 	mController = controller;
 }
 
-bool Camera::update(graphic::GraphicContext* graphic, nsecs_t timeMs) {
+bool Camera::update(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
 	bool animating = false;
 	if (mController != nullptr) {
 		animating = mController->animate(timeMs);

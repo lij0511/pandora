@@ -33,7 +33,7 @@ public:
 	int arg1;
 	int arg2;
 	Task* task;
-	nsecs_t when;
+	p_nsecs_t when;
 	Handler* target;
 
 	Message* next;

@@ -77,7 +77,7 @@ Camera* Scene::getCurrentCamera() const {
 
 void Scene::render() {
 	mGraphic->beginFrame(mClearColor);
-	nsecs_t timeMs = uptimeMillis();
+	p_nsecs_t timeMs = uptimeMillis();
 	if (mCurrentCamera != nullptr) {
 		mCurrentCamera->update(mGraphic, timeMs);
 	}

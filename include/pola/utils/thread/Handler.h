@@ -26,14 +26,14 @@ public:
 	bool post(Task* task) {
 		return postDelayed(task, 0);
 	}
-	bool postDelayed(Task* task, nsecs_t delayMillis);
+	bool postDelayed(Task* task, p_nsecs_t delayMillis);
 
 	bool postAndWait(Task* task);
 
 	bool sendMessage(int what, int arg1 = 0, int arg2 = 0) {
 		return sendMessageDelayed(what, arg1, arg2, 0);
 	}
-	bool sendMessageDelayed(int what, int arg1 = 0, int arg2 = 0, nsecs_t delayMillis = 0);
+	bool sendMessageDelayed(int what, int arg1 = 0, int arg2 = 0, p_nsecs_t delayMillis = 0);
 
 	void removeTask(Task* task);
 	void removeMessages(int what);

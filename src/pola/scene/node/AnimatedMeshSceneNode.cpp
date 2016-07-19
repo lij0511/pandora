@@ -48,16 +48,16 @@ void AnimatedMeshSceneNode::setCurrentFrame(float frame) {
 	mCurrentFrame = utils::fclamp<float>(frame, (float) mStartFrameLoop, (float) mEndFrameLoop);
 }
 
-void AnimatedMeshSceneNode::render(graphic::GraphicContext* graphic, nsecs_t timeMs) {
+void AnimatedMeshSceneNode::render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
 	buildCurrentFrame(timeMs);
 }
 
-void AnimatedMeshSceneNode::buildCurrentFrame(nsecs_t timeMs) {
+void AnimatedMeshSceneNode::buildCurrentFrame(p_nsecs_t timeMs) {
 	if (mLastTimeMs == 0) {
 		mLastTimeMs = timeMs;
 	}
 
-	nsecs_t interval = timeMs - mLastTimeMs;
+	p_nsecs_t interval = timeMs - mLastTimeMs;
 	mLastTimeMs = timeMs;
 
 	if (mStartFrameLoop == mEndFrameLoop) {

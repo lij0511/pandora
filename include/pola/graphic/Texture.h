@@ -10,6 +10,8 @@
 
 #define MAX_TEXTURE_UNITS_COUNT 3
 
+#include "pola/graphic/Bitmap.h"
+
 namespace pola {
 namespace graphic {
 
@@ -18,7 +20,7 @@ namespace graphic {
  */
 class Texture {
 public:
-	Texture() : width(0), height(0){};
+	Texture() : width(0), height(0), format(Bitmap::Format::UNKONWN) {};
 	virtual ~Texture() {};
 
 	/**
@@ -29,6 +31,8 @@ public:
 	 * Height of the backing bitmap.
 	 */
 	uint32_t height;
+
+	Bitmap::Format format;
 };
 
 }

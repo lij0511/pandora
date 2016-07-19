@@ -30,12 +30,12 @@ FPSCameraController::FPSCameraController(Camera* camera)
 FPSCameraController::~FPSCameraController() {
 }
 
-bool FPSCameraController::animate(nsecs_t timeMs) {
+bool FPSCameraController::animate(p_nsecs_t timeMs) {
 	if (mAnimatingFlag != 0) {
 			if (mLastAnimatingTime == 0) {
 				mLastAnimatingTime = timeMs;
 			}
-			nsecs_t interval = timeMs - mLastAnimatingTime;
+			p_nsecs_t interval = timeMs - mLastAnimatingTime;
 			mLastAnimatingTime = timeMs;
 
 			if ((mAnimatingFlag & FLAG_KEYCODE_LEFT) == FLAG_KEYCODE_LEFT) {

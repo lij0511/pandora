@@ -35,6 +35,7 @@ public:
 	virtual ~Material();
 
 	bool hasTextureMap() const;
+	bool hasA8TextureMap() const;
 
 	const utils::String getVertexShader();
 	const utils::String getFragmentShader();
