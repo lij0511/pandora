@@ -124,7 +124,6 @@ int main(int argc, char *argv[]) {
 
 	while (device->run()) {
 		scene->render();
-
 		device->swapBuffers();
 	}
 	return 1;
