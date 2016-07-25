@@ -5,7 +5,7 @@
  *      Author: lijing
  */
 
-#include "PUParticleBoxEmitter.h"
+#include "pola/graphic/particle/pu/PUParticleBoxEmitter.h"
 
 namespace pola {
 namespace graphic {
