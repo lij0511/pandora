@@ -18,6 +18,8 @@
 #include "pola/utils/Times.h"
 #include "pola/utils/RefBase.h"
 
+#include <vector>
+
 namespace pola {
 namespace scene {
 
@@ -70,7 +72,7 @@ protected:
 	graphic::Box3 mBoundingBox;
 
 	SceneObject* mParent;
-	utils::Vector<SceneObject*> mChildren;
+	std::vector<SceneObject*> mChildren;
 };
 
 } /* namespace scene */

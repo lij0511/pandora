@@ -52,10 +52,11 @@ char toUpperCase(char cc) {
     }
 }
 
-
 String::String(bool null) {
 	if (!null) {
 		m_impl = StringImpl::emptyString();
+	} else {
+		m_impl = nullptr;
 	}
 }
 String::String(const char* chars, size_t length) {

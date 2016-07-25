@@ -10,31 +10,31 @@
 #include "pola/scene/mesh/MS3DMeshLoader.h"
 #include "pola/scene/mesh/OBJMeshLoader.h"
 #include "pola/io/FileInputStream.h"
-#include "pola/utils/LruCache.h"
 #include "pola/utils/String.h"
+
+#include <map>
 
 namespace pola {
 namespace scene {
 
 
 static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type) {
-	static utils::LruCache<utils::String, MeshLoader*> meshLoaders(utils::LruCache<utils::String, MeshLoader*>::kUnlimitedCapacity);
+	static std::map<utils::String, MeshLoader*> meshLoaders;
 	static bool initialed = false;
 	if (!initialed) {
 		initialed = true;
-		meshLoaders.put(utils::String("md2"), new MD2MeshLoader);
-		meshLoaders.put(utils::String("ms3d"), new MS3DMeshLoader);
-		meshLoaders.put(utils::String("obj"), new OBJMeshLoader);
+		meshLoaders[utils::String("md2")] = new MD2MeshLoader;
+		meshLoaders[utils::String("ms3d")] = new MS3DMeshLoader;
+		meshLoaders[utils::String("obj")] = new OBJMeshLoader;
 	}
 
-	MeshLoader* meshLoader = meshLoaders.get(type);
+	MeshLoader* meshLoader = meshLoaders[type];
 	if (meshLoader != nullptr) {
 		return meshLoader;
 	}
 
-	utils::LruCache<utils::String, MeshLoader*>::Iterator iter(meshLoaders);
-	while (iter.next()) {
-		meshLoader = iter.value();
+	for (std::map<utils::String, MeshLoader*>::iterator iter = meshLoaders.begin(); iter != meshLoaders.end(); iter ++) {
+		meshLoader = iter->second;
 		if (meshLoader->available(is)) {
 			is->rewind();
 			return meshLoader;

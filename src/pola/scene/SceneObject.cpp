@@ -87,13 +87,13 @@ void SceneObject::addChild(SceneObject* child) {
 	}
 	child->ref();
 	child->mParent = this;
-	mChildren.push(child);
+	mChildren.push_back(child);
 }
 
 void SceneObject::removeChild(SceneObject* child) {
-	for (unsigned i = 0; i < mChildren.size(); i ++) {
-		if (mChildren[i] == child) {
-			mChildren.removeAt(i);
+	for (std::vector<SceneObject*>::iterator iter = mChildren.begin(); iter != mChildren.end(); iter ++) {
+		if (*iter == child) {
+			mChildren.erase(iter);
 			child->deref();
 			child->mParent = nullptr;
 			return;

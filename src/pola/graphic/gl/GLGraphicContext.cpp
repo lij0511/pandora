@@ -71,6 +71,9 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 	}
 	description.texture_map = material->hasTextureMap();
 	description.texture_map_a8 = material->hasA8TextureMap();
+	description.directional_light_count = mLights ? mLights->directionalLightCount() : 0;
+	description.point_light_count = mLights ? mLights->pointLightCount() : 0;
+	description.spot_light_count = mLights ? mLights->spotLightCount() : 0;
 	GLProgram* program = mCaches.programCache.get(description);
 	if (!program) {
 		utils::String vs;

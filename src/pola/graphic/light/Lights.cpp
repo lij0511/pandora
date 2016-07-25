@@ -95,20 +95,20 @@ uint32_t Lights::hash() const {
 	return hash;
 }
 
-void Lights::addLight(utils::Vector<Light*>& lights, Light* light) {
+void Lights::addLight(std::vector<Light*>& lights, Light* light) {
 	for (unsigned i = 0; i < lights.size(); i ++) {
 		if (lights[i] == light) {
 			return;
 		}
 	}
 	light->ref();
-	lights.add(light);
+	lights.push_back(light);
 }
 
-void Lights::removeLight(utils::Vector<Light*>& lights, Light* light) {
-	for (unsigned i = 0; i < lights.size(); i ++) {
-		if (lights[i] == light) {
-			lights.removeAt(i);
+void Lights::removeLight(std::vector<Light*>& lights, Light* light) {
+	for (std::vector<Light*>::iterator iter = lights.begin(); iter != lights.end(); iter ++) {
+		if (*iter == light) {
+			lights.erase(iter);
 			light->deref();
 			return;
 		}

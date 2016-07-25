@@ -8,10 +8,11 @@
 #ifndef POLA_LIGHTS_H_
 #define POLA_LIGHTS_H_
 
-#include "pola/utils/Vector.h"
 #include "pola/graphic/light/Light.h"
 #include "pola/graphic/light/DirectionalLight.h"
 #include "pola/graphic/light/PointLight.h"
+
+#include <vector>
 
 namespace pola {
 namespace graphic {
@@ -38,13 +39,13 @@ public:
 	uint32_t hash() const;
 
 private:
-	void addLight(utils::Vector<Light*>& lights, Light* light);
-	void removeLight(utils::Vector<Light*>& lights, Light* light);
+	void addLight(std::vector<Light*>& lights, Light* light);
+	void removeLight(std::vector<Light*>& lights, Light* light);
 
 	FColor3 mAmbientColor;
-	utils::Vector<Light*> mDirectionalLights;
-	utils::Vector<Light*> mPointLights;
-	utils::Vector<Light*> mSpotLights;
+	std::vector<Light*> mDirectionalLights;
+	std::vector<Light*> mPointLights;
+	std::vector<Light*> mSpotLights;
 
 	mutable uint32_t mHash;
 };
