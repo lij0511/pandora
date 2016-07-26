@@ -52,24 +52,20 @@ char toUpperCase(char cc) {
     }
 }
 
-String::String(bool null) {
-	if (!null) {
-		m_impl = StringImpl::emptyString();
-	} else {
-		m_impl = nullptr;
-	}
+String::String() {
+	m_impl = StringImpl::emptyString();
 }
 String::String(const char* chars, size_t length) {
 	m_impl = StringImpl::create(chars, length);
 }
-String::String(const char* str, bool isConst) {
-	m_impl = StringImpl::create(str, isConst);
+String::String(const char* str) {
+	m_impl = StringImpl::create(str);
 }
 String::String(const String& o) {
 	m_impl = o.m_impl;
 }
 
-String::String(const char* chars, size_t length, bool istatic) {
+String::String(char* chars, size_t length, bool istatic) {
 		if (istatic) {
 			m_impl = new StringImpl;
 			m_impl->m_data = chars;
@@ -82,39 +78,31 @@ String::String(const char* chars, size_t length, bool istatic) {
 String::~String() {
 }
 void String::print() const {
-	impl() ? m_impl->print() : (void)0;
+	m_impl->print();
 }
 
 size_t String::length() const {
-	return impl() ? m_impl->length() : 0;
+	return m_impl->length();
 }
 
 bool String::isEmpty() const {
 	return length() <= 0;
 }
 
-bool String::isNull() const {
-	return !impl();
-}
-
 char String::charAt(size_t index) const {
-	return impl() ? m_impl->charAt(index) : 0;
+	return m_impl->charAt(index);
 }
 
 const char* String::characters() const {
-	return impl() ? m_impl->characters() : nullptr;
-}
-
-const StringImpl* String::impl() const {
-	return m_impl.get();
+	return m_impl->characters();
 }
 
 bool String::startsWith(const String& str, size_t start) const {
-	return impl() && m_impl->startsWith(*str.impl(), start);
+	return m_impl->startsWith(*str.m_impl, start);
 }
 
 bool String::endsWith(const String& str) const {
-	return impl() && str.impl() && m_impl->endsWith(*str.impl());
+	return m_impl->endsWith(*str.m_impl);
 }
 
 bool String::equalIgnoringCase(const String& str) {
@@ -133,7 +121,7 @@ bool String::equalIgnoringCase(const String& str) {
 }
 
 bool String::contains(const String& str) const {
-	return impl() && str.impl() && m_impl->contains(*(str.m_impl));
+	return m_impl->contains(*(str.m_impl));
 }
 
 String String::lower() {
@@ -282,25 +270,16 @@ String String::operator+(const char* s) {
  */
 bool String::operator==(const String& s) const {
 	if (hash() != s.hash()) return false;
-	if (impl() && s.impl()) {
-		return *m_impl == *s.impl();
-	}
-	return !impl() && !s.impl();
+	return *m_impl == *s.m_impl;
 }
 bool String::operator!=(const String& s) const {
 	return !(*this == s);
 }
 bool String::operator>(const String& s) const {
-	if (impl() && s.impl()) {
-		return *m_impl > *s.impl();
-	}
-	return impl();
+	return *m_impl > *s.m_impl;
 }
 bool String::operator>=(const String& s) const {
-	if (impl() && s.impl()) {
-		return *m_impl >= *s.impl();
-	}
-	return impl();
+	return *m_impl >= *s.m_impl;
 }
 bool String::operator<(const String& s) const {
 	return (s > *this);
@@ -309,8 +288,19 @@ bool String::operator<=(const String& s) const {
 	return (s >= *this);
 }
 
+char& String::operator [](size_t index) {
+	if (m_impl->getStrongCount() > 1) {
+		m_impl = StringImpl::create(m_impl->characters(), m_impl->length());
+	}
+	return m_impl->characters()[index];
+}
+
+const char String::operator [](size_t index) const {
+	return charAt(index);
+}
+
 hash_t String::hash() const {
-	return impl() ? impl()->hash() : 0;
+	return m_impl->hash();
 }
 }
 }

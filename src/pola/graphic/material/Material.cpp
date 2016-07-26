@@ -14,8 +14,7 @@ namespace pola {
 namespace graphic {
 
 Material::Material(const FColor4& color, Texture* textureMap)
-	: mVertexShader(true), mFragmentShader(true),
-	  mColor(color), mTextureMap(textureMap) {
+	: mColor(color), mTextureMap(textureMap) {
 }
 
 Material::~Material() {
@@ -46,7 +45,7 @@ const utils::String Material::getFragmentShader() {
 void Material::bind(GraphicContext* graphic, Program* program) {
 #ifdef OGL_RENDERER
 	GLProgram* glProgram = (GLProgram*) program;
-	static utils::String u_color = utils::String("u_color", true);
+	static utils::String u_color = utils::String("u_color");
 	GLint u_colorH;
 	if (glProgram->fetchUniform(u_color, u_colorH)) {
 		glUniform4f(u_colorH, mColor.r * mColor.a, mColor.g * mColor.a, mColor.b * mColor.a, mColor.a);
@@ -58,7 +57,7 @@ void Material::bind(GraphicContext* graphic, Program* program) {
 			GLCaches::get().activeTexture(0);
 			GLCaches::get().bindTexture(glTexture->id);
 			GLProgram* glProgram = (GLProgram*) program;
-			static utils::String u_textureMap = utils::String("u_textureMap", true);
+			static utils::String u_textureMap = utils::String("u_textureMap");
 			GLint u_textureMapH;
 			if (glProgram->fetchUniform(u_textureMap, u_textureMapH)) {
 				glUniform1i(u_textureMapH, 0);

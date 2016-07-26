@@ -5,15 +5,15 @@
  *      Author: lijing
  */
 
-#include "pola/graphic/particle/ParticleAffector.h"
+#include "pola/graphic/particle/Particle3DAffector.h"
 
 namespace pola {
 namespace graphic {
 
-ParticleAffector::ParticleAffector() {
+Particle3DAffector::Particle3DAffector() {
 }
 
-ParticleAffector::~ParticleAffector() {
+Particle3DAffector::~Particle3DAffector() {
 }
 
 } /* namespace graphic */

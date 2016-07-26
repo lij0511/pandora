@@ -1,12 +1,12 @@
 /*
- * Particle.h
+ * Particle3D.h
  *
  *  Created on: 2016年7月25日
  *      Author: lijing
  */
 
-#ifndef POLA_PARTICLE_H_
-#define POLA_PARTICLE_H_
+#ifndef POLA_PARTICLE3D_H_
+#define POLA_PARTICLE3D_H_
 
 #include "pola/graphic/math/Vector.h"
 #include "pola/graphic/math/Quaternion.h"
@@ -18,9 +18,9 @@ namespace graphic {
 /*
  *
  */
-struct Particle {
+struct Particle3D {
 public:
-	virtual ~Particle() {};
+	virtual ~Particle3D() {};
 
 	vec3 position;
 	quat4 orientation;
@@ -36,4 +36,4 @@ public:
 } /* namespace graphic */
 } /* namespace pola */
 
-#endif /* POLA_PARTICLE_H_ */
+#endif /* POLA_PARTICLE3D_H_ */

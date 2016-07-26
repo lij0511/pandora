@@ -31,7 +31,7 @@ class WStringBuffer;
  */
 class WString {
 public:
-	WString(bool null = true);
+	WString();
 	WString(const char* str);
 	WString(const wchar* str);
 	WString(const wchar* chars, size_t length);
@@ -45,13 +45,9 @@ public:
 
 	bool isEmpty() const;
 
-	bool isNull() const;
-
 	wchar charAt(size_t index) const;
 
 	const wchar* characters() const;
-
-	const WStringImpl* impl() const;
 
 	bool startsWith(const WString& str, size_t start = 0) const;
 

@@ -61,7 +61,8 @@ void LambertMaterial::bind(GraphicContext* graphic, Program* program) {
 	}
 
 	GLint u_ambientLight;
-	if (glProgram->fetchUniform(utils::String("u_ambientLight", true), u_ambientLight)) {
+	static utils::String ambientLight("u_ambientLight");
+	if (glProgram->fetchUniform(ambientLight, u_ambientLight)) {
 		FColor3 ambient = lights->ambientLight();
 		glUniform3f(u_ambientLight, ambient.r, ambient.g, ambient.b);
 	}

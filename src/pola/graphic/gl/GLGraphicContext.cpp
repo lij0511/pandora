@@ -12,6 +12,13 @@
 namespace pola {
 namespace graphic {
 
+static utils::String projection("u_projection");
+static utils::String view("u_view");
+static utils::String model("u_model");
+static utils::String position("a_position");
+static utils::String uv("a_uv");
+static utils::String normal("a_normal");
+
 static GLenum GLDrawMode(GraphicParameter::DrawMode d) {
 	switch (d) {
 	case GraphicParameter::DrawMode::TRIANGLES:
@@ -126,25 +133,25 @@ void GLGraphicContext::renderGeometry(Geometry2D* geometry, const GraphicParamet
 	program->use();
 
 	GLint u_mat;
-	if (program->fetchUniform(utils::String("u_projection", true), u_mat)) {
+	if (program->fetchUniform(projection, u_mat)) {
 		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mProjectionMatrix.data[0]);
 	}
-	if (program->fetchUniform(utils::String("u_view", true), u_mat)) {
+	if (program->fetchUniform(view, u_mat)) {
 		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mViewMatrix.data[0]);
 	}
-	if (program->fetchUniform(utils::String("u_model", true), u_mat)) {
+	if (program->fetchUniform(model, u_mat)) {
 		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mModelMatrix.data[0]);
 	}
 
 	material->bind(this, program);
 
 	GLint a_position;
-	if (program->fetchAttribute(utils::String("a_position", true), a_position)) {
+	if (program->fetchAttribute(position, a_position)) {
 		glEnableVertexAttribArray(a_position);
 		glVertexAttribPointer(a_position, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->positions()));
 	}
 	GLint a_uv;
-	if (geometry->uvCount() >= positionCount && program->fetchAttribute(utils::String("a_uv", true), a_uv)) {
+	if (geometry->uvCount() >= positionCount && program->fetchAttribute(uv, a_uv)) {
 		glEnableVertexAttribArray(a_uv);
 		glVertexAttribPointer(a_uv, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->uvs()));
 	}
@@ -168,30 +175,30 @@ void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParamet
 	program->use();
 
 	GLint u_mat;
-	if (program->fetchUniform(utils::String("u_projection", true), u_mat)) {
+	if (program->fetchUniform(projection, u_mat)) {
 		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mProjectionMatrix.data[0]);
 	}
-	if (program->fetchUniform(utils::String("u_view", true), u_mat)) {
+	if (program->fetchUniform(view, u_mat)) {
 		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mViewMatrix.data[0]);
 	}
-	if (program->fetchUniform(utils::String("u_model", true), u_mat)) {
+	if (program->fetchUniform(model, u_mat)) {
 		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mModelMatrix.data[0]);
 	}
 
 	material->bind(this, program);
 
 	GLint a_position;
-	if (program->fetchAttribute(utils::String("a_position", true), a_position)) {
+	if (program->fetchAttribute(position, a_position)) {
 		glEnableVertexAttribArray(a_position);
 		glVertexAttribPointer(a_position, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->positions()));
 	}
 	GLint a_uv;
-	if (geometry->uvCount() >= positionCount && program->fetchAttribute(utils::String("a_uv", true), a_uv)) {
+	if (geometry->uvCount() >= positionCount && program->fetchAttribute(uv, a_uv)) {
 		glEnableVertexAttribArray(a_uv);
 		glVertexAttribPointer(a_uv, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->uvs()));
 	}
 	GLint a_normal;
-	if (geometry->normalCount() >= positionCount && program->fetchAttribute(utils::String("a_normal", true), a_normal)) {
+	if (geometry->normalCount() >= positionCount && program->fetchAttribute(normal, a_normal)) {
 		glEnableVertexAttribArray(a_normal);
 		glVertexAttribPointer(a_normal, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->normals()));
 	}

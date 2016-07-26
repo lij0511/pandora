@@ -99,7 +99,7 @@ void StringBuffer::release(String& str) {
 		m_buffer = nullptr;
 		m_capacity = 0;
 	} else {
-		str = String(true);
+		str = String();
 	}
 }
 

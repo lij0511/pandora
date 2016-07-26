@@ -46,7 +46,7 @@ static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type)
 
 Mesh* MeshLoader::loadMesh(const char* meshFile) {
 	io::FileInputStream is(meshFile);
-	utils::String type(true);
+	utils::String type;
 	utils::String s(meshFile);
 	ssize_t index = s.lastIndexOf('.');
 	if (index >= 0 && size_t(index + 1) < s.length()) {

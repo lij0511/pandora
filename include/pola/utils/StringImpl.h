@@ -22,11 +22,11 @@ private:
 	friend class String;
 	StringImpl();
 	StringImpl(const char* chars, size_t length);
-	StringImpl(const char* str, bool isConst = false);
+	StringImpl(const char* str);
 public:
 	static StringImpl* emptyString();
 	static StringImpl* create(const char* chars, size_t length);
-	static StringImpl* create(const char* str, bool isConst = false);
+	static StringImpl* create(const char* str);
 
 	~StringImpl();
 	void print() const;
@@ -38,6 +38,10 @@ public:
 	char charAt(size_t index) const;
 
 	const char* characters() const;
+
+	char* characters();
+
+	void resize(ssize_t size = -1);
 
 	bool startsWith(const StringImpl& str, size_t start = 0) const;
 
@@ -69,9 +73,8 @@ private:
 		throw "IndexOutOfBounds";
 	}
 
-	const char* m_data;
+	char* m_data;
 	size_t m_length;
-	const bool m_const;
 
 	mutable hash_t m_hash;
 };

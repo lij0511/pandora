@@ -27,7 +27,7 @@ template<typename T> class RefBase {
 
 public:
 
-	~RefBase() {
+	virtual ~RefBase() {
 		if (m_weakref) {
 			m_weakref->clear();
 			m_weakref = nullptr;
@@ -49,6 +49,10 @@ public:
 		if ((-- m_refCount) <= 0) {
 			delete static_cast<T*>(this);
 		}
+	}
+
+	inline int32_t getStrongCount() const {
+		return m_refCount;
 	}
 
 	inline weakref_impl<T>* get_weak_impl() {

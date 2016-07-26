@@ -52,10 +52,8 @@ wchar toUpperCase(wchar cc) {
     }
 }
 
-WString::WString(bool null) {
-	if (!null) {
-		m_impl = WStringImpl::emptyString();
-	}
+WString::WString() {
+	m_impl = WStringImpl::emptyString();
 }
 WString::WString(const char* chars) {
 	m_impl = new WStringImpl;
@@ -86,39 +84,31 @@ WString::WString(const wchar* chars, size_t length, bool istatic) {
 WString::~WString() {
 }
 void WString::print() const {
-	impl() ? m_impl->print() : (void)0;
+	m_impl->print();
 }
 
 size_t WString::length() const {
-	return impl() ? m_impl->length() : 0;
+	return m_impl->length();
 }
 
 bool WString::isEmpty() const {
 	return length() <= 0;
 }
 
-bool WString::isNull() const {
-	return !impl();
-}
-
 wchar WString::charAt(size_t index) const {
-	return impl() ? m_impl->charAt(index) : 0;
+	return m_impl->charAt(index);
 }
 
 const wchar* WString::characters() const {
-	return impl() ? m_impl->characters() : nullptr;
-}
-
-const WStringImpl* WString::impl() const {
-	return m_impl.get();
+	return m_impl->characters();
 }
 
 bool WString::startsWith(const WString& str, size_t start) const {
-	return impl() && m_impl->startsWith(*str.impl(), start);
+	return m_impl->startsWith(*str.m_impl, start);
 }
 
 bool WString::endsWith(const WString& str) const {
-	return impl() && str.impl() && m_impl->endsWith(*str.impl());
+	return m_impl->endsWith(*str.m_impl);
 }
 
 bool WString::equalIgnoringCase(const WString& str) {
@@ -137,7 +127,7 @@ bool WString::equalIgnoringCase(const WString& str) {
 }
 
 bool WString::contains(const WString& str) const {
-	return impl() && str.impl() && m_impl->contains(*(str.m_impl));
+	return m_impl->contains(*(str.m_impl));
 }
 
 WString WString::lower() {
@@ -286,25 +276,16 @@ WString WString::operator+(const wchar* s) {
  */
 bool WString::operator==(const WString& s) const {
 	if (hash() != s.hash()) return false;
-	if (impl() && s.impl()) {
-		return *m_impl == *s.impl();
-	}
-	return !impl() && !s.impl();
+	return *m_impl == *s.m_impl;
 }
 bool WString::operator!=(const WString& s) const {
 	return !(*this == s);
 }
 bool WString::operator>(const WString& s) const {
-	if (impl() && s.impl()) {
-		return *m_impl > *s.impl();
-	}
-	return impl();
+	return *m_impl > *s.m_impl;
 }
 bool WString::operator>=(const WString& s) const {
-	if (impl() && s.impl()) {
-		return *m_impl >= *s.impl();
-	}
-	return impl();
+	return *m_impl >= *s.m_impl;
 }
 bool WString::operator<(const WString& s) const {
 	return (s > *this);
@@ -314,7 +295,7 @@ bool WString::operator<=(const WString& s) const {
 }
 
 hash_t WString::hash() const {
-	return impl() ? impl()->hash() : 0;
+	return m_impl->hash();
 }
 
 } /* namespace utils */

@@ -94,7 +94,7 @@ void WStringBuffer::release(WString& str) {
 		m_buffer = nullptr;
 		m_capacity = 0;
 	} else {
-		str = WString(true);
+		str = WString();
 	}
 }
 

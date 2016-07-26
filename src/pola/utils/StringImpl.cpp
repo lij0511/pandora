@@ -10,23 +10,19 @@
 namespace pola {
 namespace utils {
 
-StringImpl::StringImpl() : m_data(nullptr), m_length(0), m_const(false), m_hash(0) {
+StringImpl::StringImpl() : m_data(nullptr), m_length(0), m_hash(0) {
 }
-StringImpl::StringImpl(const char* chars, size_t length) : m_length(length), m_const(false), m_hash(0) {
+StringImpl::StringImpl(const char* chars, size_t length) : m_length(length), m_hash(0) {
 	char* tmp = new char[length + 1];
 	memcpy(tmp, chars, length);
 	*(tmp + m_length) = 0;
 	m_data = tmp;
 }
-StringImpl::StringImpl(const char* str, bool isConst) : m_length(strlen(str)), m_const(isConst), m_hash(0) {
-	if (m_const) {
-		m_data = str;
-	} else {
-		char* tmp = new char[m_length + 1];
-		memcpy(tmp, str, m_length);
-		*(tmp + m_length) = 0;
-		m_data = tmp;
-	}
+StringImpl::StringImpl(const char* str) : m_length(strlen(str)), m_hash(0) {
+	char* tmp = new char[m_length + 1];
+	memcpy(tmp, str, m_length);
+	*(tmp + m_length) = 0;
+	m_data = tmp;
 }
 
 StringImpl* StringImpl::emptyString() {
@@ -36,12 +32,12 @@ StringImpl* StringImpl::emptyString() {
 StringImpl* StringImpl::create(const char* chars, size_t length) {
 	return new StringImpl(chars, length);
 }
-StringImpl* StringImpl::create(const char* str, bool isConst) {
-	return new StringImpl(str, isConst);
+StringImpl* StringImpl::create(const char* str) {
+	return new StringImpl(str);
 }
 
 StringImpl::~StringImpl() {
-	if (!m_const && m_data != nullptr) {
+	if (m_data != nullptr) {
 		delete m_data;
 	}
 	m_data = nullptr;
@@ -66,6 +62,34 @@ char StringImpl::charAt(size_t index) const {
 
 const char* StringImpl::characters() const {
 	return m_data;
+}
+
+char* StringImpl::characters() {
+	return m_data;
+}
+
+void StringImpl::resize(ssize_t size) {
+	if (size < 0) {
+		m_length = m_data ? strlen(m_data) : 0;
+	} else {
+		size_t len = size_t(size);
+		char* tmp = new char[len + 1];
+		if (!isEmpty()) {
+			if (len > m_length) {
+				memset(tmp, 1, len);
+			}
+			memcpy(tmp, m_data, len > m_length ? m_length : len);
+			tmp[len] = 0;
+			delete m_data;
+			m_data = tmp;
+			m_length = len;
+		} else {
+			memset(tmp, 1, len);
+			tmp[len] = 0;
+			m_data = tmp;
+			m_length = len;
+		}
+	}
 }
 
 bool StringImpl::startsWith(const StringImpl& str, size_t start) const {
