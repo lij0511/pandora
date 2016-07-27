@@ -8,11 +8,26 @@
 #ifndef POLA_GRAPHICPARAMETER_H_
 #define POLA_GRAPHICPARAMETER_H_
 
+#if defined(POLA_GLES) || defined(POLA_GL)
+#include "pola/graphic/gl/GL.h"
+#endif
+
 namespace pola {
 namespace graphic {
 
 struct GraphicParameter {
 	enum DrawMode {
+#if defined(POLA_GLES) || defined(POLA_GL)
+		POINTS									= GL_POINTS,
+
+		LINES									= GL_LINES,
+		LINE_LOOP							= GL_LINE_LOOP,
+		LINE_STRIP							= GL_LINE_STRIP,
+
+		TRIANGLES							= GL_TRIANGLES,
+		TRIANGLE_STRIP				= GL_TRIANGLE_STRIP,
+		TRIANGLE_FAN					= GL_TRIANGLE_FAN,
+#else
 		POINTS,
 
 		LINES,
@@ -22,6 +37,7 @@ struct GraphicParameter {
 		TRIANGLES,
 		TRIANGLE_STRIP,
 		TRIANGLE_FAN,
+#endif
 	};
 
 	DrawMode drawMode;

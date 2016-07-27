@@ -5,7 +5,7 @@
  *      Author: lijing
  */
 
-#include "pola/graphic/utils/Blend.h"
+#include "pola/graphic/Blend.h"
 #include "pola/graphic/utils/ColorPriv.h"
 #include <stdio.h>
 

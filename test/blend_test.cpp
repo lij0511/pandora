@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "pola/graphic/utils/Blend.h"
+#include "pola/graphic/Blend.h"
 
 using namespace pola;
 

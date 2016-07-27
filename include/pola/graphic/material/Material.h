@@ -18,6 +18,7 @@
 #include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/Color.h"
 #include "pola/graphic/Texture.h"
+#include "pola/graphic/Blend.h"
 
 #ifdef OGL_RENDERER
 #include "pola/graphic/gl/GLProgram.h"
@@ -57,6 +58,10 @@ protected:
 	FColor4 mColor;
 	Texture* mTextureMap;
 
+public:
+	bool mBlendEnable;
+	BlendFactor mBlendFuncSrc;
+	BlendFactor mBlendFuncDst;
 };
 
 } /* namespace graphic */

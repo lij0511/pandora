@@ -27,6 +27,10 @@
 #include "PUScriptCompiler.h"
 #include "PUTranslateManager.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <limits.h>
+
 #include <algorithm>
 
 namespace pola {
@@ -66,7 +70,11 @@ bool PUParticleSystem::initSystem(const std::string &filePath) {
 
 bool PUParticleSystem::initWithFilePath( const std::string &filePath )
 {
-    std::string fullPath = filePath;//FileUtils::getInstance()->fullPathForFilename(filePath);
+	char abs_path_buff[PATH_MAX];
+	std::string fullPath = filePath;
+	if(realpath(filePath.c_str(), abs_path_buff)) {
+		fullPath = abs_path_buff;
+	}
     convertToUnixStylePath(fullPath);
     std::string::size_type pos = fullPath.find_last_of("/");
     std::string materialFolder = "materials";

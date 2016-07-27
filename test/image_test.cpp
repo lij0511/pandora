@@ -18,13 +18,13 @@ using namespace pola;
 
 int main(int argc, char *argv[]) {
 
-	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/workspace/git/ws/tt2.jpg");
+	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/cyclone/src/screensaver/screensaver1.jpg");
 //	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/workspace/irrlicht-1.8.3/media/007shot.jpg");
 //	printf("%p\n", b);
 //	return 1;
 	printf("curentTime=%lu\n", uptimeMillis());
 
-	utils::String dir("/home/lijing/work/workspace/irrlicht-1.8.3/media/");
+	/*utils::String dir("/home/lijing/work/workspace/irrlicht-1.8.3/media/");
 	DIR* dp = opendir(dir.characters());
 	if (!dp) {
 		LOGE("opendir failed, dir=%s\n", dir.characters());
@@ -39,12 +39,12 @@ int main(int argc, char *argv[]) {
 		struct stat s;
 		if (0 == stat(str.characters(), &s)) {
 			if (s.st_mode & S_IFDIR) {
-				/*utils::String f(dirent->d_name);
+				utils::String f(dirent->d_name);
 				if (!f.startsWith(".")) {
 					load_directory_fonts(str);
 				} else {
 					LOGD("dir(%s) file(%s) start with '.', ignore.\n", dir.c_str(), f.c_str());
-				}*/
+				}
 			} else if (!(s.st_mode & S_IFDIR)) {
 				utils::String f(dirent->d_name);
 				if (!f.startsWith(".") && f.lower().endsWith(".jpg")) {
@@ -55,7 +55,13 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
-	closedir(dp);
+	closedir(dp);*/
+	graphic::Bitmap* c = nullptr;
+	if (b->scale(c, 1.f, 0.5f)) {
+		printf("bw=%u, bh=%u\n", b->getWidth(), b->getHeight());
+		printf("cw=%u, ch=%u\n", c->getWidth(), c->getHeight());
+	}
+
 
 	printf("curentTime=%lu\n", uptimeMillis());
 }

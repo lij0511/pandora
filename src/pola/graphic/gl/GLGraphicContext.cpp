@@ -20,24 +20,7 @@ static utils::String uv("a_uv");
 static utils::String normal("a_normal");
 
 static GLenum GLDrawMode(GraphicParameter::DrawMode d) {
-	switch (d) {
-	case GraphicParameter::DrawMode::TRIANGLES:
-		return GL_TRIANGLES;
-	case GraphicParameter::DrawMode::TRIANGLE_FAN:
-		return GL_TRIANGLE_FAN;
-	case GraphicParameter::DrawMode::TRIANGLE_STRIP:
-		return GL_TRIANGLE_STRIP;
-	case GraphicParameter::DrawMode::LINES:
-		return GL_LINES;
-	case GraphicParameter::DrawMode::LINE_LOOP:
-		return GL_LINE_LOOP;
-	case GraphicParameter::DrawMode::LINE_STRIP:
-		return GL_LINE_STRIP;
-	case GraphicParameter::DrawMode::POINTS:
-		return GL_POINTS;
-	default:
-		return GL_TRIANGLES;
-	}
+	return d;
 }
 
 GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {

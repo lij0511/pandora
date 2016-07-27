@@ -23,6 +23,7 @@
 #include "pola/graphic/geometries/SphereGeometry.h"
 #include "pola/graphic/geometries/CubeGeometry.h"
 #include "pola/graphic/geometries/RectangleGeometry.h"
+#include "pola/graphic/BitmapFactory.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -59,60 +60,80 @@ int main(int argc, char *argv[]) {
 		basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
 		i ++;
 	}*/
-	if (mesh) {
-		for (int i = 0; i < 100; i ++) {
-			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
-			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-			node->setMaterial(tm1);
-			int ani = random(0, MD2_AT_COUNT + 3);
-			if (ani < MD2_AT_COUNT) {
-				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
-			}
-			scene->addSceneNode(node);
-		}
-	}
-	if (mesh2) {
-		for (int i = 0; i < 100; i ++) {
-			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
-			node->setMaterial(tm2);
-			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-			int ani = random(0, MD2_AT_COUNT + 3);
-			if (ani < MD2_AT_COUNT) {
-				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
-			}
-			scene->addSceneNode(node);
-		}
-	}
-	if (basicMesh) {
-		for (int i = 0; i < 100; i ++) {
-			BasicMeshSceneNode* node = new BasicMeshSceneNode(basicMesh);
-			node->setMaterial(m1);
-			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-			node->setScale({80, 80, 80});
-			scene->addSceneNode(node);
-		}
-	}
+//	if (mesh) {
+//		for (int i = 0; i < 100; i ++) {
+//			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
+//			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+//			node->setMaterial(tm1);
+//			int ani = random(0, MD2_AT_COUNT + 3);
+//			if (ani < MD2_AT_COUNT) {
+//				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
+//			}
+//			scene->addSceneNode(node);
+//		}
+//	}
+//	if (mesh2) {
+//		for (int i = 0; i < 100; i ++) {
+//			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
+//			node->setMaterial(tm2);
+//			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+//			int ani = random(0, MD2_AT_COUNT + 3);
+//			if (ani < MD2_AT_COUNT) {
+//				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
+//			}
+//			scene->addSceneNode(node);
+//		}
+//	}
+//	if (basicMesh) {
+//		for (int i = 0; i < 100; i ++) {
+//			BasicMeshSceneNode* node = new BasicMeshSceneNode(basicMesh);
+//			node->setMaterial(m1);
+//			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+//			node->setScale({80, 80, 80});
+//			scene->addSceneNode(node);
+//		}
+//	}
+//
+//	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
+//	for (int i = 0; i < 100; i ++) {
+//		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+//		node->setMaterial(m1);
+//		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+//		scene->addSceneNode(node);
+//	}
+//
+//	m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
+//	for (int i = 0; i < 100; i ++) {
+//		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+//		node->setMaterial(m1);
+//		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
+//		scene->addSceneNode(node);
+//	}
 
-	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
-	for (int i = 0; i < 100; i ++) {
-		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-		node->setMaterial(m1);
-		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-		scene->addSceneNode(node);
-	}
-
-	m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
-	for (int i = 0; i < 100; i ++) {
-		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-		node->setMaterial(m1);
-		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-		scene->addSceneNode(node);
-	}
-
-//	m = new BasicMesh(new RectangleGeometry(0, 0, 100, 100));
-//	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-//	node->setMaterial(tm1);
+	BasicMesh* m = new BasicMesh(new RectangleGeometry(- 1920, 0, 1920, 1080));
+	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+	GLTexture* t = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/cyclone/src/screensaver/screensaver1.jpg");
+	t->mipMap = false;
+	node->setMaterial(new Material({1.f, 1.f, 1.f, 1.f}, t));
+	node->setPosition({0, 0, -1800});
 //	scene->addSceneNode(node);
+
+	m = new BasicMesh(new RectangleGeometry(0, 0, 1920, 1080));
+	node = new BasicMeshSceneNode(m);
+	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/cyclone/src/screensaver/screensaver1.jpg");
+	graphic::Bitmap* c = nullptr;
+	if (b->scale(c, 1.f, 0.5f)) {
+		t = new GLTexture;
+		t->mBitmap = c;
+		t->width = c->getWidth();
+		t->height = c->getHeight();
+		t->format = c->getFormat();
+		node->setMaterial(new Material({1.f, 1.f, 1.f, 1.f}, t));
+		node->setPosition({0, 0, -1800});
+		scene->addSceneNode(node);
+	}
+//	t = (GLTexture*) scene->graphic()->loadTexture("/home/lijing/work/cyclone/src/screensaver/screensaver1.jpg");
+//	t->mipMap = true;
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();

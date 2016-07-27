@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "pola/graphic/Bitmap.h"
+#include "utils/BitmapUtils.h"
 
 namespace pola {
 namespace graphic {
@@ -135,6 +136,10 @@ uint32_t Bitmap::getGenerationID() const {
 
 unsigned char* Bitmap::pixels() const {
 	return mData;
+}
+
+bool Bitmap::scale(Bitmap*& dst, float scaleW, float scaleH) {
+	return scaleBitmap(*this, dst, scaleW, scaleH);
 }
 
 }

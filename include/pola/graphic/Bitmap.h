@@ -9,7 +9,6 @@
 #define POLA_BITMAP_H_
 
 #include <stdint.h>
-#include "pola/graphic/Color.h"
 
 namespace pola {
 namespace graphic {
@@ -49,6 +48,8 @@ public:
 	uint32_t getGenerationID() const;
 
 	uint8_t* pixels() const;
+
+	bool scale(Bitmap*& dst, float scaleW, float scaleH);
 
 protected:
 	Bitmap(uint32_t w, uint32_t h, Format format);
