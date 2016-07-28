@@ -88,7 +88,7 @@ static void putPixel565(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t* color_t
 
 static void putPixel888(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t* color_table, uint8_t color) {
 	uint32_t base = bitmap->rowBytes() * y + x * bitmap->bytesPerPixel();//((y * width_) + x) * 3;
-	uint8_t* pixels = bitmap->pixels() + base;
+	uint8_t* pixels = bitmap->pixels();
 	uint32_t colBase = color * 3;
 	pixels[base] = color_table[colBase];
 	pixels[base + 1] = color_table[colBase + 1];
@@ -98,14 +98,15 @@ static void putPixel888(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t* color_t
 static void putPixel565_1(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b) {
 	uint32_t base = bitmap->rowBytes() * y + x * bitmap->bytesPerPixel();//((y * width_) + x) * 3;
 	uint16_t* pixels = (uint16_t*) (bitmap->pixels() + base);
+
 	*pixels = (uint16_t) (((r << 8) & 0xF800) |
 			((g << 3) & 0x7E0)  |
-			((b >> 3)));
+			((b >> 3) & 0x1f));
 }
 
 static void putPixel888_1(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b) {
 	uint32_t base = bitmap->rowBytes() * y + x * bitmap->bytesPerPixel();//((y * width_) + x) * 3;
-	uint8_t* pixels = bitmap->pixels() + base;
+	uint8_t* pixels = bitmap->pixels();
 	pixels[base] = r;
 	pixels[base + 1] = g;
 	pixels[base + 2] = b;

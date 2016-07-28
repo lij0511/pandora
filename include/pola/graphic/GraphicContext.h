@@ -37,7 +37,7 @@ public:
 
 	Texture* loadTexture(const char* file);
 
-	virtual void beginFrame(const FColor4& clearColor);
+	virtual void beginFrame(const FColor4& clearColor = {0.f, 0.f, 0.f, 0.f});
 	virtual void endFrame();
 
 	void setLights(Lights* lights);

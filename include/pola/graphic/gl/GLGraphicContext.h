@@ -25,7 +25,7 @@ public:
 
 	virtual void setViewport(int32_t width, int32_t height);
 
-	virtual void beginFrame(const FColor4& clearColor);
+	virtual void beginFrame(const FColor4& clearColor = {0.f, 0.f, 0.f, 0.f});
 	virtual void endFrame();
 
 	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr);

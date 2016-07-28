@@ -5,10 +5,11 @@
  *      Author: lijing
  */
 
+#include <string.h>
+
 #include "pola/log/Log.h"
 #include "pola/graphic/image/ImageDecoderFactory.h"
 #include "pola/graphic/image/PNGImageDecoder.h"
-#include "pola/graphic/image/ImageSampler.h"
 
 /* These were dropped in libpng >= 1.4 */
 #ifndef png_infopp_NULL
@@ -144,30 +145,57 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 			return nullptr;
 	}
 
-//	ImageSampler sampler(origWidth, origHeight, 1);
-	bitmap = Bitmap::create();
-	bitmap->set(origWidth, origHeight, format);
-
-	for (int i = 0; i < number_passes; i++) {
-		uint8_t* bmRow = bitmap->pixels();
-		for (png_uint_32 y = 0; y < origHeight; y++) {
-			png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
-			bmRow += bitmap->rowBytes();
-		}
+	if (preFormat == Bitmap::Format::UNKONWN) {
+		preFormat = format;
 	}
-//	if (!sampler.beginSample(bitmap, preFormat)) { // For accelerate. Ignore sample.
-//		delete bitmap;
-//		return nullptr;
-//	} else {
-//		uint8_t* bmRow = new uint8_t[bitmap->rowBytes()];
-//		for (int i = 0; i < number_passes; i++) {
-//			for (png_uint_32 y = 0; y < origHeight; y++) {
-//				png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
-//				sampler.sample(y, bmRow);
-//			}
-//		}
-//		delete bmRow;
-//	}
+
+	bitmap = Bitmap::create();
+	bitmap->set(origWidth, origHeight, preFormat);
+
+	ImageSampler sampler(format, preFormat);
+
+	bool hasAlpha = false;
+	if (format != Bitmap::RGBA8888) {
+		for (int i = 0; i < number_passes; i++) {
+			uint8_t* bmRow = bitmap->pixels();
+			for (png_uint_32 y = 0; y < origHeight; y++) {
+				png_read_rows(png_ptr, &bmRow, png_bytepp_NULL, 1);
+				bmRow += bitmap->rowBytes();
+			}
+		}
+	} else {
+		size_t rowSize = sizeof(uint8_t) * 4 * origWidth;
+		uint8_t* rowptr = (uint8_t*) malloc(rowSize);
+		for (int i = 0; i < number_passes; i++) {
+			uint8_t* bmRow = bitmap->pixels();
+			for (png_uint_32 y = 0; y < origHeight; y++) {
+				png_read_rows(png_ptr, &rowptr, png_bytepp_NULL, 1);
+
+//				hasAlpha |= sampler.sampleScanline(bmRow, rowptr, origWidth, Bitmap::getByteCountPerPixel(format));
+
+				// Do PreMultiplyAlpha
+				for (uint32_t x = 0; x < origWidth; x ++) {
+					uint8_t a = rowptr[x * 4 + 3];
+					if (a != 255) {
+						hasAlpha |= true;
+						uint8_t r = rowptr[x * 4];
+						uint8_t g = rowptr[x * 4 + 1];
+						uint8_t b = rowptr[x * 4 + 2];
+						r = PreMultiplyAlpha(r, a);
+						g = PreMultiplyAlpha(g, a);
+						b = PreMultiplyAlpha(b, a);
+						rowptr[x * 4] = r;
+						rowptr[x * 4 + 1] = g;
+						rowptr[x * 4 + 2] = b;
+					}
+				}
+				memcpy(bmRow, rowptr, rowSize);
+				bmRow += bitmap->rowBytes();
+			}
+		}
+		free(rowptr);
+	}
+	bitmap->setHasAlpha(hasAlpha);
 
 	return bitmap;
 }

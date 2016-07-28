@@ -27,7 +27,7 @@ Bitmap* BitmapFactory::decodeStream(io::InputStream* is) {
 	Bitmap* bitmap = nullptr;
 	ImageDecoder* decoder = ImageDecoder::Factory(is);
 	if (decoder) {
-		bitmap = decoder->decode(is);
+		bitmap = decoder->decode(is/*, Bitmap::Format::RGB565*/);
 		delete decoder;
 	}
 	return bitmap;

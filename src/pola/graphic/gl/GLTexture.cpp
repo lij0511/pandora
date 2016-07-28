@@ -35,6 +35,15 @@ GLTexture::GLTexture() : Texture(), id(0), blend(false),
         mipMap(false), releaseBitmap(true), mBitmap(nullptr) {
 }
 
+GLTexture::GLTexture(Bitmap* bitmap) : Texture(), id(0), blend(false),
+        mipMap(false), releaseBitmap(true), mBitmap(bitmap) {
+	if (bitmap != nullptr) {
+		width = bitmap->getWidth();
+		height = bitmap->getHeight();
+		format = bitmap->getFormat();
+	}
+}
+
 GLTexture::~GLTexture() {
 	deleteTexture();
 	if (mBitmap != nullptr) {

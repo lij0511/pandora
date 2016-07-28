@@ -5,6 +5,8 @@
  *      Author: lijing
  */
 
+#include <unistd.h>
+
 #include "pola/scene/camera/OrthoCamera.h"
 #include "pola/scene/camera/PerspectiveCamera.h"
 #include "pola/scene/camera/DefaultCameraController.h"
@@ -22,6 +24,7 @@
 #include "pola/graphic/geometries/SphereGeometry.h"
 #include "pola/graphic/geometries/CubeGeometry.h"
 #include "pola/graphic/geometries/RectangleGeometry.h"
+#include "pola/graphic/BitmapFactory.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -30,32 +33,52 @@ using namespace pola::graphic;
 
 int main(int argc, char *argv[]) {
 
-	DeviceParam param = {500, 500, false, 16};
+	DeviceParam param = {1300, 900, false, 16};
 	Device* device = createDevice(param);
+	GraphicContext* graphic = device->getGraphicContext();
 
-	 Scene* scene = device->getSceneManager()->getActiveScene();
-	 scene->setClearColor({0.4f, 0.4f, 0.6f, 1.f});
-	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/faerie2.bmp");
-	Material* tm1 = new Material({1.0f, 1.0f, 1.0f, .1f}, texture);
+	Camera* camera = new OrthoCamera(-1.f, 1.f);
 
-	BasicMesh* m = new BasicMesh(new RectangleGeometry(0, 0, 100, 100));
-	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-	node->setMaterial(tm1);
-//	node->setScale({3, 3, 3});
-	node->setPosition({100, 100, 0});
-	scene->addSceneNode(node);
+	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/workspace/webcore/ws/test.png");
+//	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("./res/faerie2.bmp");
+	GLTexture* t = new GLTexture(b);
+	GLTexture* t2 = nullptr;
 
-//	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
-//	Camera* camera = new PerspectiveCamera();
-	Camera* camera = new OrthoCamera(-1, 1);
-//	camera->setCameraController(new DefaultCameraController(camera));
-//	camera->setPosition(vec3(0, 0, -100));
-	scene->addCamera(camera);
+	graphic::Bitmap* c = nullptr;
+	if (b->scale(c, 2.f, 2.f)) {
+		t2 = new GLTexture(c);
+	}
 
-	while (device->run()) {
-		scene->render();
+	Geometry2D* geometry = new RectangleGeometry(0, 0, b->getWidth(), b->getHeight());
+	Material* m = new Material({1.f, 1.f, 1.f, 1.f}, t);
 
+	Geometry2D* geometry2 = new RectangleGeometry(b->getWidth(), 0, c->getWidth(), c->getHeight());
+	Material* m2 = new Material({1.f, 1.f, 1.f, 1.f}, t2);
+
+
+	graphic->setViewport(1300, 900);
+	camera->setSize(1300, 900);
+	camera->update(graphic, uptimeMillis());
+
+	int x = 0;
+
+	FPS fps;
+	while (/*device->run()*/true) {
+//		scene->render();
+		graphic->beginFrame({1.f, 0.f, 0.f, 1.f});
+
+		graphic->renderGeometry(geometry, m);
+		if (t2 != nullptr) {
+			graphic->renderGeometry(geometry2, m2);
+		}
+
+		graphic->endFrame();
 		device->swapBuffers();
+		if (++ x > 500) {
+			x = 0;
+		}
+		fps.fps();
+		usleep(16000);
 	}
 	return 1;
 }

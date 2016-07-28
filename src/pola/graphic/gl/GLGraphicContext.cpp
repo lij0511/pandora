@@ -30,7 +30,7 @@ GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
-	glEnable(GL_DITHER);
+//	glEnable(GL_DITHER);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
@@ -200,12 +200,8 @@ Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
 	/**
 	 * Deferred texture generation. Generated when prepare to render.
 	 */
-	GLTexture* texture = new GLTexture;
+	GLTexture* texture = new GLTexture(bitmap);
 //	texture->mipMap = true;
-	texture->mBitmap = bitmap;
-	texture->width = bitmap->getWidth();
-	texture->height = bitmap->getHeight();
-	texture->format = bitmap->getFormat();
 
 	return texture;
 }

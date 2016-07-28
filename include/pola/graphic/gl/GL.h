@@ -13,8 +13,8 @@
 #define GLES 2
 #include <GLES2/gl2.h>
 #elif defined(POLA_LINUX_X11)
-#include <GL/glew.h>
 #endif
+#include <GL/glew.h>
 
 
 #endif /* POLA_GRAPHIC_GL_H_ */

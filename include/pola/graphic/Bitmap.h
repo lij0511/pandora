@@ -17,11 +17,11 @@ class Bitmap {
 public:
 
 	enum Format {
-		UNKONWN,
 		ALPHA8,
 		RGBA8888,
 		RGB888,
-		RGB565
+		RGB565,
+		UNKONWN,
 	};
 
 	static uint32_t getByteCountPerPixel(Bitmap::Format format);
@@ -40,14 +40,20 @@ public:
 	bool isRecycled() const;
 	bool hasAlpha() const;
 
+	void setHasAlpha(bool hasAlpha);
+
 	static Bitmap* create(uint32_t w, uint32_t h, Format format);
 	static Bitmap* create();
 
 	void set(uint32_t w, uint32_t h, Format format, uint8_t* pixels = nullptr);
 
 	uint32_t getGenerationID() const;
+	void notifyPixelsChanged();
 
 	uint8_t* pixels() const;
+
+	uint32_t getPixel(uint32_t x, uint32_t y) const;
+	void putPixel(uint32_t x, uint32_t y, uint32_t color);
 
 	bool scale(Bitmap*& dst, float scaleW, float scaleH);
 

@@ -21,6 +21,7 @@ namespace graphic {
 class GLTexture: public Texture {
 public:
 	GLTexture();
+	GLTexture(Bitmap* bitmap);
 	virtual ~GLTexture();
 
 	void deleteTexture();

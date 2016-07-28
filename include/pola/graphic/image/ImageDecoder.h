@@ -9,6 +9,7 @@
 #define POLA_IMAGEDECODER_H_
 
 #include "pola/graphic/Bitmap.h"
+#include "pola/graphic/utils/BitmapUtils.h"
 #include "pola/io/InputStream.h"
 
 namespace pola {
