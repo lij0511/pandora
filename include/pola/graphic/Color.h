@@ -9,7 +9,22 @@
 #define POLA_COLOR_H_
 
 #include <stdint.h>
-#include "pola/utils/TypeHelpers.h"
+
+typedef uint32_t RGBA32; // RGBA quadruplet
+
+#define ColorSetRGBA(r, g, b, a) 	 (r << 24) | (g << 16) | (b << 8) | (a << 0);
+/** Return a RGBA32 value from 8 bit component values, with an implied value
+    of 0xFF for alpha (fully opaque)
+*/
+#define ColorSetRGB(r, g, b)  ColorSetRGBA(r, g, b, 0xFF)
+/** return the red byte from a RGBA32 value */
+#define ColorGetR(color)      (((color) >> 24) & 0xFF)
+/** return the green byte from a RGBA32 value */
+#define ColorGetG(color)      (((color) >>  16) & 0xFF)
+/** return the blue byte from a RGBA32 value */
+#define ColorGetB(color)      (((color) >>  8) & 0xFF)
+/** return the alpha byte from a RGBA32 value */
+#define ColorGetA(color)      (((color) >> 0) & 0xFF)
 
 namespace pola {
 namespace graphic {
@@ -33,18 +48,13 @@ struct FColor4 {
 	}
 };
 
-typedef uint32_t RGBA32; // RGBA quadruplet
-
 struct Color {
 	RGBA32 color;
 
 	Color(RGBA32 rgba) : color(rgba) {}
 
 	Color(uint16_t r, uint16_t g, uint16_t b, uint16_t a) {
-		color = ((r && 0xFF) << 24);
-		color |= ((g && 0xFF) << 16);
-		color |= ((b && 0xFF) << 8);
-		color |= ((a && 0xFF)          );
+		color = ColorSetRGBA(r, g, b, a);
 	}
 
 	Color(FColor4 fcolor) : Color(uint16_t(fcolor.r * 255), uint16_t(fcolor.g * 255), uint16_t(fcolor.b * 255), uint16_t(fcolor.a * 255)) {
@@ -52,11 +62,10 @@ struct Color {
 
 	void getRGBA(float& red, float& green, float& blue, float& alpha) {
 		// RGBA
-		const float a = ((color) & 0xff) / 255.0f;
-		red = ((color >> 24) & 0xff) / 255.0f;
-		green = ((color >> 16) & 0xff) / 255.0f;
-		blue = ((color >> 8) & 0xff) / 255.0f;
-		alpha = a;
+		red = ColorGetR(color);
+		green = ColorGetG(color);
+		blue = ColorGetB(color);
+		alpha = ColorGetA(color);
 	}
 
 	void getFColor(FColor4& c) {
@@ -69,10 +78,6 @@ struct RGB888 {
 };
 
 } /* namespace graphic */
-
-namespace utils {
-POLA_BASIC_TYPES_TRAITS(graphic::FColor4)
-}
 } /* namespace pola */
 
 #endif /* POLA_COLOR_H_ */

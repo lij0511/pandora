@@ -306,10 +306,6 @@ typedef Vector3 Point3F;
 
 }
 
-namespace utils {
-POLA_BASIC_TYPES_TRAITS(graphic::vec3)
-POLA_BASIC_TYPES_TRAITS(graphic::vec2)
-}
 }
 
 #endif /* POLA_GRAPHIC_VECTOR_H_ */

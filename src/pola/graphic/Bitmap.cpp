@@ -8,13 +8,14 @@
 #include <string.h>
 
 #include "pola/graphic/Bitmap.h"
-#include "pola/graphic/utils/BitmapUtils.h"
+#include "utils/BitmapUtils.h"
+#include "utils/ColorPriv.h"
 
 namespace pola {
 namespace graphic {
 
 static uint32_t rowBytesAlign(uint32_t w, uint32_t bytesPerPixel) {
-	uint32_t align = 2;//bytesPerPixel % 2 == 0 ? bytesPerPixel : bytesPerPixel + 1;
+	uint32_t align = 2;
 	uint32_t widthInBytes = w * bytesPerPixel;
 	return widthInBytes + ((align - (widthInBytes % align))) % align;
 }
@@ -112,6 +113,10 @@ void Bitmap::setHasAlpha(bool hasAlpha) {
 	mHasAlpha = hasAlpha;
 }
 
+unsigned char* Bitmap::pixels() const {
+	return mData;
+}
+
 Bitmap* Bitmap::create(uint32_t w, uint32_t h, Format format) {
 	return new Bitmap(w, h, format);
 }
@@ -144,28 +149,33 @@ void Bitmap::notifyPixelsChanged() {
 	++ mGenerationID;
 }
 
-unsigned char* Bitmap::pixels() const {
-	return mData;
-}
-
 uint32_t Bitmap::getPixel(uint32_t x, uint32_t y) const {
 	if (x >= mWidth || y >= mHeight) {
 		return 0;
 	}
 	uint8_t* row = mData + rowBytes() * y;
 	uint32_t p = x * bytesPerPixel();
+	uint32_t color = 0;
 	switch (mFormat) {
 		case ALPHA8:
-			return row[p];
+			color = ColorSetRGBA(0xff, 0xff, 0xff, row[p]);
+			break;
 		case RGBA8888:
-			return ((row[p] << 24) & 0xff000000) | ((row[p + 1] << 16) & 0xff0000)  | ((row[p + 2] << 8) & 0xff00)  | (row[p + 3]);
+			color = ColorSetRGBA(row[p], row[p + 1], row[p + 2], row[p + 3]);
+			break;
 		case RGB888:
-			return ((row[p] << 16) & 0xff0000) | ((row[p + 1] << 8) & 0xff00)  | (row[p + 2]);
-		case RGB565:
-			return ((uint16_t*) (row))[x];
+			color = ColorSetRGBA(row[p], row[p + 1], row[p + 2], 0xff);
+			break;
+		case RGB565: {
+			uint16_t* r = (uint16_t*) (row);
+			r += x;
+			color = ((r[0] << 16) & 0xf8000000) | ((r[0] << 13) & 0xfc0000) | ((r[0] << 11) & 0xf800) | 0xff;
+			break;
+		}
 		default:
-			return 0;
+			break;
 	}
+	return color;
 }
 
 void Bitmap::putPixel(uint32_t x, uint32_t y, uint32_t color) {
@@ -176,21 +186,21 @@ void Bitmap::putPixel(uint32_t x, uint32_t y, uint32_t color) {
 	uint32_t p = x * bytesPerPixel();
 	switch (mFormat) {
 		case ALPHA8:
-			row[p] = color & 0xff;
+			row[p] = ColorGetA(color);
 			break;
 		case RGBA8888:
-			row[p] = (color >> 24) & 0xff;
-			row[p + 1] = (color >> 16) & 0xff;
-			row[p + 2] = (color >> 8) & 0xff;
-			row[p + 3] = color & 0xff;
+			row[p] = ColorGetR(color);
+			row[p + 1] = ColorGetG(color);
+			row[p + 2] = ColorGetB(color);
+			row[p + 3] = ColorGetA(color);
 			break;
 		case RGB888:
-			row[p] = (color >> 16) & 0xff;
-			row[p + 1] = (color >> 8) & 0xff;
-			row[p + 2] = color & 0xff;
+			row[p] = ColorGetR(color);
+			row[p + 1] = ColorGetG(color);
+			row[p + 2] = ColorGetB(color);
 			break;
 		case RGB565:
-			((uint16_t*) row)[x] = color;
+			((uint16_t*) row)[x] = ((ColorGetR(color) >> 3) << 11) | ((ColorGetG(color) >> 2) << 5) | (ColorGetB(color) >> 3);
 			break;
 		default:
 			break;

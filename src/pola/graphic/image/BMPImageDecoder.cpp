@@ -12,6 +12,9 @@
 
 #include "pola/graphic/image/BMPImageDecoder.h"
 #include "pola/graphic/image/ImageDecoderFactory.h"
+#include "pola/graphic/Color.h"
+
+#include <map>
 
 namespace pola {
 namespace graphic {
@@ -75,41 +78,17 @@ static int16_t readInt(io::InputStream* is) {
 	return b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
 }
 
-static void putPixel565(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t* color_table, uint8_t color) {
-	uint32_t base = bitmap->rowBytes() * y + x * bitmap->bytesPerPixel();//((y * width_) + x) * 3;
-	uint16_t* pixels = (uint16_t*) (bitmap->pixels() + base);
-	uint32_t colBase = color * 3;
-	uint8_t* c = color_table + colBase;
-
-	*pixels = (uint16_t) (((unsigned(c[0]) << 8) & 0xF800) |
-			((unsigned(c[1]) << 3) & 0x7E0)  |
-			((unsigned(c[2]) >> 3)));
+uint32_t getColor(uint8_t r, uint8_t g, uint8_t b) {
+	uint32_t color = ColorSetRGB(r, g, b);
+	return color;
 }
 
-static void putPixel888(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t* color_table, uint8_t color) {
-	uint32_t base = bitmap->rowBytes() * y + x * bitmap->bytesPerPixel();//((y * width_) + x) * 3;
-	uint8_t* pixels = bitmap->pixels();
-	uint32_t colBase = color * 3;
-	pixels[base] = color_table[colBase];
-	pixels[base + 1] = color_table[colBase + 1];
-	pixels[base + 2] = color_table[colBase + 2];
-}
-
-static void putPixel565_1(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b) {
-	uint32_t base = bitmap->rowBytes() * y + x * bitmap->bytesPerPixel();//((y * width_) + x) * 3;
-	uint16_t* pixels = (uint16_t*) (bitmap->pixels() + base);
-
-	*pixels = (uint16_t) (((r << 8) & 0xF800) |
-			((g << 3) & 0x7E0)  |
-			((b >> 3) & 0x1f));
-}
-
-static void putPixel888_1(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b) {
-	uint32_t base = bitmap->rowBytes() * y + x * bitmap->bytesPerPixel();//((y * width_) + x) * 3;
-	uint8_t* pixels = bitmap->pixels();
-	pixels[base] = r;
-	pixels[base + 1] = g;
-	pixels[base + 2] = b;
+uint32_t getColor(uint8_t* color_table, uint8_t colorIndex) {
+	uint32_t colBase = colorIndex * 3;
+	uint8_t r = color_table[colBase];
+	uint8_t g = color_table[colBase + 1];
+	uint8_t b = color_table[colBase + 2];
+	return getColor(r, g, b);
 }
 
 static int calcShiftRight(uint32_t mask) {
@@ -140,10 +119,6 @@ static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
 	static const uint8_t RLE_EOF = 1;
 	static const uint8_t RLE_DELTA = 2;
 
-	void (*putPixel)(Bitmap*, uint32_t, uint32_t, uint8_t*, uint8_t);
-	putPixel =
-			bitmap->getFormat() == Bitmap::RGB565 ? &putPixel565 : &putPixel888;
-
 	uint32_t width_ = bitmap->getWidth();
 	uint32_t height_ = bitmap->getHeight();
 
@@ -163,7 +138,7 @@ static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
 						col = pixels >> 4;
 					}
 				}
-				putPixel(bitmap, x++, y, color_table, col);
+				bitmap->putPixel(x++, y, getColor(color_table, col));
 				num++;
 			}
 		} else {
@@ -205,7 +180,7 @@ static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
 						}
 					}
 					if (x < width_) {
-						putPixel(bitmap, x++, y, color_table, col);
+						bitmap->putPixel(x++, y, getColor(color_table, col));
 					}
 					num++;
 				}
@@ -271,28 +246,19 @@ static void doStandardDecode(BMPHeader& header, io::InputStream* is,
 		rowLen += rowPad_;
 	}
 
-	void (*putPixel)(Bitmap*, uint32_t, uint32_t, uint8_t*, uint8_t);
-	putPixel =
-			bitmap->getFormat() == Bitmap::RGB565 ? &putPixel565 : &putPixel888;
-	void (*putPixel1)(Bitmap* bitmap, uint32_t x, uint32_t y, uint8_t r,
-			uint8_t g, uint8_t b);
-	putPixel1 =
-			bitmap->getFormat() == Bitmap::RGB565 ?
-					&putPixel565_1 : &putPixel888_1;
-
 	uint32_t row = 0;
 	uint8_t currVal = 0;
 	for (uint32_t h = height_ - 1; /*h >= 0*/; h--, row++) {
 		for (uint32_t w = 0; w < width_; w++) {
 			if (header.BPP >= 24) {
-				putPixel1(bitmap, w, h, readByte(is), readByte(is),
-						readByte(is));
+				bitmap->putPixel(w, h, getColor(readByte(is), readByte(is),
+						readByte(is)));
 			} else if (header.BPP == 16) {
 				 uint32_t val = readShort(is);
 				 uint8_t c1 = ((val & redBits_) >> redShiftRight_) << redShiftLeft_;
 				 uint8_t c2 = ((val & greenBits_) >> greenShiftRight_) << greenShiftLeft_;
 				 uint8_t c3 = ((val & blueBits_) >> blueShiftRight_) << blueShiftLeft_;
-				 putPixel1(bitmap, w, h, c1, c2, c3);
+				 bitmap->putPixel(w, h, getColor(c1, c2, c3));
 			} else if (header.BPP <= 8) {
 				uint8_t col;
 				if (header.BPP == 8) {
@@ -312,7 +278,7 @@ static void doStandardDecode(BMPHeader& header, io::InputStream* is,
 					col = ((currVal >> (7 - bit)) & 1);
 				}
 
-				putPixel(bitmap, w, h, color_table, col);
+				bitmap->putPixel(w, h, getColor(color_table, col));
 			}
 			for (uint32_t i = 0; i < pixelPad_; ++i) {
 				readByte(is);
@@ -333,7 +299,7 @@ BMPImageDecoder::BMPImageDecoder() {
 BMPImageDecoder::~BMPImageDecoder() {
 }
 
-Bitmap* BMPImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
+bool BMPImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Format preFormat) {
 	BMPHeader header;
 	is->read(&header, sizeof(BMPHeader));
 	LOGI("id=%x, FileSize=%u, Reserved=%u, BitmapDataOffset=%u, BitmapHeaderSize=%u, Width=%u, Height=%u, Planes=%u, BPP=%u, Compression=%u, BitmapDataSize=%u, PixelPerMeterX=%u, PixelPerMeterY=%u, Colors=%u, ImportantColors=%u\n",
@@ -341,15 +307,15 @@ Bitmap* BMPImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 
 	if (!header.Width || !header.Height) {
 		LOGE("Invalid Width or Height, Width=%u, Height=%u\n", header.Width, header.Height);
-		return nullptr;
+		return false;
 	}
 	if (header.Compression > 2) // we'll only handle RLE-Compression
 	{
 		LOGE("Compression mode not supported, Compression=%u. We only handle RLE-Compression.\n", header.Compression);
-		return 0;
+		return false;
 	}
 	if (/*header.Colors < 0 || */header.Colors > 256) {
-		return nullptr;
+		return false;
 	}
 
 	// Allocate then read in the colour map.
@@ -371,17 +337,14 @@ Bitmap* BMPImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 
 	is->seek(header.BitmapDataOffset);
 
-	Bitmap::Format format = Bitmap::RGB565;
-	switch (header.BPP) {
-		case 32:
-		case 24:
-			format = Bitmap::RGB888;
-			break;
-		default:
-			break;
+	Bitmap::Format format = preFormat;
+	if (format == Bitmap::Format::UNKONWN) {
+		format = Bitmap::RGB888;
 	}
 
-	Bitmap* bitmap = Bitmap::create();
+	if (bitmap == nullptr) {
+		bitmap = Bitmap::create();
+	}
 	bitmap->set(header.Width, header.Height, format);
 
 	bool rle = false;
@@ -394,7 +357,7 @@ Bitmap* BMPImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 	} else {
 		doStandardDecode(header, is, bitmap, color_table);
 	}
-	return bitmap;
+	return true;
 }
 
 static bool is_bmp(io::InputStream* is) {

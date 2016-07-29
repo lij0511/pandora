@@ -20,7 +20,7 @@ public:
 	PNGImageDecoder();
 	virtual ~PNGImageDecoder();
 
-	virtual Bitmap* decode(io::InputStream* is, Bitmap::Format format = Bitmap::Format::UNKONWN) override;
+	virtual bool decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Format format = Bitmap::Format::UNKONWN);
 
 	static bool decodeable(io::InputStream* is);
 

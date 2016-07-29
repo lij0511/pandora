@@ -8,6 +8,7 @@
 #include "pola/log/Log.h"
 #include "pola/graphic/image/ImageDecoderFactory.h"
 #include "pola/graphic/image/JPEGImageDecoder.h"
+#include "ImageSampler.h"
 
 #include <string.h>
 
@@ -111,7 +112,6 @@ static Bitmap::Format selectColorType(jpeg_decompress_struct* cinfo) {
 			// so libjpeg will give us CMYK samples back and we will later
 			// manually convert them to RGB
 			cinfo->out_color_space = JCS_CMYK;
-			format = Bitmap::RGBA8888;
 			break;
 		case JCS_GRAYSCALE:
 			format = Bitmap::ALPHA8;
@@ -142,15 +142,14 @@ static void convert_CMYK_to_RGB(unsigned char* scanline, unsigned char* output, 
     //  CMYK -> CMY
     //    C = ( (1-C) * (1 - (1-K) + (1-K) ) -> C = 1 - C*K
     // The conversion from CMY->RGB remains the same
-    for (uint32_t x = 0; x < width; ++x, scanline += 4, output += 4) {
+    for (uint32_t x = 0; x < width; ++x, scanline += 4, output += 3) {
     	output[0] = MulDiv255Round(scanline[0], scanline[3]);
     	output[1] = MulDiv255Round(scanline[1], scanline[3]);
     	output[2] = MulDiv255Round(scanline[2], scanline[3]);
-    	output[3] = 255;
     }
 }
 
-Bitmap* JPEGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
+bool JPEGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Format preFormat) {
 	JPEGAutoClean autoClean;
 	struct jpeg_decompress_struct  cinfo;
 
@@ -162,7 +161,7 @@ Bitmap* JPEGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) 
 	// they will be cleaned up properly if an error occurs.
 	if (setjmp(errorManager.fJmpBuf)) {
 		LOGE("ReadJpegFile: Failed to setjmp.\n");
-		return nullptr;
+		return false;
 	}
 	pola_jpeg_source_mgr       srcManager(is);
 
@@ -174,7 +173,7 @@ Bitmap* JPEGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) 
 	int status = jpeg_read_header(&cinfo, TRUE);
 	if (status != JPEG_HEADER_OK) {
 		LOGE("ReadJpegFile: Failed to read header.\n");
-		return nullptr;
+		return false;
 	}
 
 	cinfo.dct_method = JDCT_ISLOW;
@@ -182,48 +181,65 @@ Bitmap* JPEGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) 
 
 	if (!jpeg_start_decompress(&cinfo)) {
 		LOGE("ReadJpegFile: Failed to jpeg_start_decompress.\n");
-		return nullptr;
+		return false;
 	}
 
-	Bitmap* bitmap = Bitmap::create();;
-	bitmap->set(cinfo.output_width/* - fixed*/, cinfo.output_height, format);
+	if (preFormat == Bitmap::Format::UNKONWN) {
+		preFormat = format;
+	}
+
+	if (bitmap == nullptr) {
+		bitmap = Bitmap::create();
+	}
+	bitmap->set(cinfo.output_width, cinfo.output_height, preFormat);
 	uint32_t rowBytes = bitmap->rowBytes();
 	unsigned char* srcRow = bitmap->pixels();
 	// TODO Preformat convert.
 	// now loop through scanlines
-	if (JCS_CMYK == cinfo.out_color_space) {
+	if (format == preFormat && JCS_CMYK != cinfo.out_color_space) {
+		while (cinfo.output_scanline < cinfo.output_height) {
+			JSAMPLE* rowptr = (JSAMPLE*) srcRow;
+			jpeg_read_scanlines(&cinfo, &rowptr, 1);
+			srcRow += rowBytes;
+		}
+	} else if (JCS_CMYK == cinfo.out_color_space) {
+		ImageSampler* sampler = nullptr;
 		JSAMPLE* rowptr = (JSAMPLE*) malloc(sizeof(JSAMPLE) * 4 * cinfo.output_width);
+		uint8_t* tmp = nullptr;
+		if (format == preFormat) {
+			tmp = (uint8_t*) malloc(sizeof(uint8_t) * 3 * cinfo.output_width);
+			sampler = new ImageSampler(format, preFormat, 1, mPreMultiplyAlpha);
+		}
 		while (cinfo.output_scanline < cinfo.output_height) {
 			jpeg_read_scanlines(&cinfo, &rowptr, 1);
-			convert_CMYK_to_RGB(rowptr, srcRow, cinfo.output_width);
+			if (tmp != nullptr) {
+				convert_CMYK_to_RGB(rowptr, tmp, cinfo.output_width);
+				sampler->sampleScanline(srcRow, tmp, cinfo.output_width, Bitmap::getByteCountPerPixel(format));
+			} else {
+				convert_CMYK_to_RGB(rowptr, srcRow, cinfo.output_width);
+			}
 			srcRow += rowBytes;
 		}
 		free(rowptr);
-	} else {
-		if (format == Bitmap::RGB565) {
-			JSAMPLE* rowptr = (JSAMPLE*) malloc(sizeof(JSAMPLE) * 3 * cinfo.output_width);
-			uint16_t* srcRow_s = (uint16_t*) srcRow;
-			while (cinfo.output_scanline < cinfo.output_height) {
-				JSAMPLE* scanline = rowptr;
-				jpeg_read_scanlines(&cinfo, &rowptr, 1);
-				for (uint32_t x = 0; x < cinfo.output_width; ++x, scanline += 3, srcRow_s += 1) {
-					srcRow_s[0] = (uint16_t) (((unsigned(scanline[0]) << 8) & 0xF800) |
-							((unsigned(scanline[1]) << 3) & 0x7E0)  |
-							((unsigned(scanline[2]) >> 3)));
-				}
-			}
-		} else {
-			while (cinfo.output_scanline < cinfo.output_height) {
-				JSAMPLE* rowptr = (JSAMPLE*) srcRow;
-				jpeg_read_scanlines(&cinfo, &rowptr, 1);
-				srcRow += rowBytes;
-			}
+		if (tmp != nullptr) {
+			free(tmp);
+			delete sampler;
 		}
-
+	} else {
+		ImageSampler sampler(format, preFormat);
+		size_t rowSize = sizeof(uint8_t) * Bitmap::getByteCountPerPixel(format) * cinfo.output_width;
+		uint8_t* rowptr = (uint8_t*) malloc(rowSize);
+		JSAMPLE* jsample = (JSAMPLE*) rowptr;
+		while (cinfo.output_scanline < cinfo.output_height) {
+			jpeg_read_scanlines(&cinfo, &jsample, 1);
+			sampler.sampleScanline(srcRow, rowptr, cinfo.output_width, Bitmap::getByteCountPerPixel(format));
+			srcRow += rowBytes;
+		}
+		free(rowptr);
 	}
 
 	jpeg_finish_decompress(&cinfo);
-	return bitmap;
+	return true;
 }
 
 static bool is_jpeg(io::InputStream* is) {

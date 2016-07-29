@@ -10,6 +10,7 @@
 #include "pola/log/Log.h"
 #include "pola/graphic/image/ImageDecoderFactory.h"
 #include "pola/graphic/image/PNGImageDecoder.h"
+#include "ImageSampler.h"
 
 /* These were dropped in libpng >= 1.4 */
 #ifndef png_infopp_NULL
@@ -47,7 +48,15 @@ static void png_read_fn(png_structp png_ptr, png_bytep data, png_size_t length) 
 	}
 }
 
-Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
+static int read_user_chunk(png_structp png_ptr, png_unknown_chunkp chunk) {
+    ImageDecoder::Peeker* peeker =
+                    (ImageDecoder::Peeker*) png_get_user_chunk_ptr(png_ptr);
+    // peek() returning true means continue decoding
+    return peeker->peek((const char*)chunk->name, chunk->data, chunk->size) ?
+            1 : -1;
+}
+
+bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Format preFormat) {
 	png_structp png_ptr;
 	png_infop info_ptr;
 
@@ -55,25 +64,28 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 	if (!png_ptr)
 	{
 		LOGE("ReadPngFile: Failed to create png_ptr");
-		return nullptr;
+		return false;
 	}
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)
 	{
 		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
 		LOGE("ReadPngFile: Failed to create info_ptr");
-		return nullptr;
+		return false;
 	}
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
 		png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
 		LOGE("ReadPngFile: Failed to read the PNG file");
-		return nullptr;
+		return false;
 	}
 
 	png_set_read_fn(png_ptr, (void *)is, png_read_fn);
 
 	png_set_keep_unknown_chunks(png_ptr, PNG_HANDLE_CHUNK_ALWAYS, (png_byte*)"", 0);
+	if (this->getPeeker()) {
+		png_set_read_user_chunk_fn(png_ptr, (png_voidp)this->getPeeker(), read_user_chunk);
+	}
 
 	png_read_info(png_ptr, info_ptr);
 
@@ -117,18 +129,17 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
-		return nullptr;
+		return false;
 	}
 
 	const int number_passes = (interlaceType != PNG_INTERLACE_NONE) ?
 	                              png_set_interlace_handling(png_ptr) : 1;
 	png_read_update_info(png_ptr, info_ptr);
 
-	Bitmap* bitmap;
 	Bitmap::Format format;
 	switch (colorType) {
 		case PNG_COLOR_TYPE_RGB:
-			format = Bitmap::RGB888;
+			format = Bitmap::RGBA8888;
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
 			format = Bitmap::RGB888;
@@ -149,13 +160,14 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 		preFormat = format;
 	}
 
-	bitmap = Bitmap::create();
+	if (bitmap == nullptr) {
+		bitmap = Bitmap::create();
+	}
 	bitmap->set(origWidth, origHeight, preFormat);
 
-	ImageSampler sampler(format, preFormat);
 
 	bool hasAlpha = false;
-	if (format != Bitmap::RGBA8888) {
+	if (format == preFormat && format != Bitmap::RGBA8888) {
 		for (int i = 0; i < number_passes; i++) {
 			uint8_t* bmRow = bitmap->pixels();
 			for (png_uint_32 y = 0; y < origHeight; y++) {
@@ -164,6 +176,7 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 			}
 		}
 	} else {
+		ImageSampler sampler(format, preFormat, 1, mPreMultiplyAlpha);
 		size_t rowSize = sizeof(uint8_t) * 4 * origWidth;
 		uint8_t* rowptr = (uint8_t*) malloc(rowSize);
 		for (int i = 0; i < number_passes; i++) {
@@ -171,25 +184,8 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 			for (png_uint_32 y = 0; y < origHeight; y++) {
 				png_read_rows(png_ptr, &rowptr, png_bytepp_NULL, 1);
 
-//				hasAlpha |= sampler.sampleScanline(bmRow, rowptr, origWidth, Bitmap::getByteCountPerPixel(format));
+				hasAlpha |= sampler.sampleScanline(bmRow, rowptr, origWidth, Bitmap::getByteCountPerPixel(format));
 
-				// Do PreMultiplyAlpha
-				for (uint32_t x = 0; x < origWidth; x ++) {
-					uint8_t a = rowptr[x * 4 + 3];
-					if (a != 255) {
-						hasAlpha |= true;
-						uint8_t r = rowptr[x * 4];
-						uint8_t g = rowptr[x * 4 + 1];
-						uint8_t b = rowptr[x * 4 + 2];
-						r = PreMultiplyAlpha(r, a);
-						g = PreMultiplyAlpha(g, a);
-						b = PreMultiplyAlpha(b, a);
-						rowptr[x * 4] = r;
-						rowptr[x * 4 + 1] = g;
-						rowptr[x * 4 + 2] = b;
-					}
-				}
-				memcpy(bmRow, rowptr, rowSize);
 				bmRow += bitmap->rowBytes();
 			}
 		}
@@ -197,7 +193,7 @@ Bitmap* PNGImageDecoder::decode(io::InputStream* is, Bitmap::Format preFormat) {
 	}
 	bitmap->setHasAlpha(hasAlpha);
 
-	return bitmap;
+	return true;
 }
 
 static bool is_png(io::InputStream* is) {

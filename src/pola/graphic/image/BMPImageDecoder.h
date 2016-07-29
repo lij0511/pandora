@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef BMPIMAGEDECODER_H_
-#define BMPIMAGEDECODER_H_
+#ifndef POLA_BMPIMAGEDECODER_H_
+#define POLA_BMPIMAGEDECODER_H_
 
 #include "pola/graphic/image/ImageDecoder.h"
 
@@ -21,14 +21,15 @@ public:
 	BMPImageDecoder();
 	virtual ~BMPImageDecoder();
 
-	virtual Bitmap* decode(io::InputStream* is, Bitmap::Format format = Bitmap::Format::UNKONWN) override;
+	virtual bool decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Format format = Bitmap::Format::UNKONWN);
 
 	static bool decodeable(io::InputStream* is);
 
 	static void reg();
+
 };
 
 } /* namespace graphic */
 } /* namespace pola */
 
-#endif /* BMPIMAGEDECODER_H_ */
+#endif /* POLA_BMPIMAGEDECODER_H_ */

@@ -16,8 +16,8 @@ namespace graphic {
 
 class BitmapFactory {
 public:
-	static Bitmap* decodeFile(const char *file);
-	static Bitmap* decodeStream(io::InputStream* is);
+	static Bitmap* decodeFile(const char *file, Bitmap::Format format = Bitmap::Format::UNKONWN);
+	static Bitmap* decodeStream(io::InputStream* is, Bitmap::Format format = Bitmap::Format::UNKONWN);
 };
 
 }

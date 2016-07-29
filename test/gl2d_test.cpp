@@ -39,8 +39,10 @@ int main(int argc, char *argv[]) {
 
 	Camera* camera = new OrthoCamera(-1.f, 1.f);
 
-	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/workspace/webcore/ws/test.png");
+//	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/workspace/webcore/ws/test2.jpg");
+	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/cyclone/src/screensaver9.png"/*, Bitmap::Format::ALPHA8*/);
 //	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("./res/faerie2.bmp");
+//	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/cyclone/src/pageloaderror.png");
 	GLTexture* t = new GLTexture(b);
 	GLTexture* t2 = nullptr;
 
@@ -52,7 +54,7 @@ int main(int argc, char *argv[]) {
 	Geometry2D* geometry = new RectangleGeometry(0, 0, b->getWidth(), b->getHeight());
 	Material* m = new Material({1.f, 1.f, 1.f, 1.f}, t);
 
-	Geometry2D* geometry2 = new RectangleGeometry(b->getWidth(), 0, c->getWidth(), c->getHeight());
+	Geometry2D* geometry2 = new RectangleGeometry(/*b->getWidth()*/0, 0, c->getWidth(), c->getHeight());
 	Material* m2 = new Material({1.f, 1.f, 1.f, 1.f}, t2);
 
 
@@ -69,7 +71,7 @@ int main(int argc, char *argv[]) {
 
 		graphic->renderGeometry(geometry, m);
 		if (t2 != nullptr) {
-			graphic->renderGeometry(geometry2, m2);
+//			graphic->renderGeometry(geometry2, m2);
 		}
 
 		graphic->endFrame();

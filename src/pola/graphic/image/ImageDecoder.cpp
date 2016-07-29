@@ -12,6 +12,9 @@
 namespace pola {
 namespace graphic {
 
+ImageDecoder::ImageDecoder() : mPeeker(nullptr), mPreMultiplyAlpha(true) {
+}
+
 ImageDecoder::~ImageDecoder() {
 }
 

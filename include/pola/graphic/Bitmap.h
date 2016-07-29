@@ -42,6 +42,8 @@ public:
 
 	void setHasAlpha(bool hasAlpha);
 
+	uint8_t* pixels() const;
+
 	static Bitmap* create(uint32_t w, uint32_t h, Format format);
 	static Bitmap* create();
 
@@ -50,7 +52,6 @@ public:
 	uint32_t getGenerationID() const;
 	void notifyPixelsChanged();
 
-	uint8_t* pixels() const;
 
 	uint32_t getPixel(uint32_t x, uint32_t y) const;
 	void putPixel(uint32_t x, uint32_t y, uint32_t color);

@@ -11,6 +11,7 @@
 #include "pola/graphic/Vertex.h"
 #include "pola/utils/Vector.h"
 #include "pola/graphic/math/Box3.h"
+#include "pola/utils/TypeHelpers.h"
 
 namespace pola {
 namespace graphic {
@@ -89,6 +90,13 @@ inline const Box3& Geometry::getBoundingBox() const {
 }
 
 } /* namespace graphic */
+
+namespace utils {
+POLA_BASIC_TYPES_TRAITS(graphic::vec3)
+POLA_BASIC_TYPES_TRAITS(graphic::vec2)
+POLA_BASIC_TYPES_TRAITS(graphic::FColor4)
+}
+
 } /* namespace pola */
 
 #endif /* POLA_GEOMETRY_H_ */

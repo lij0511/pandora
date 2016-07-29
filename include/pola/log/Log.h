@@ -39,6 +39,11 @@ inline void polaris_printAssert(bool cond, const char* str, ...) {
 	(void)fprintf(stderr, str, ## __VA_ARGS__);
 #endif
 
+#ifndef LOGW
+#define LOGW(str, ...) \
+	(void)fprintf(stderr, str, ## __VA_ARGS__);
+#endif
+
 #ifndef LOGI
 #define LOGI(str, ...) \
 	fprintf(stdout, str, ## __VA_ARGS__);
