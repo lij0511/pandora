@@ -41,12 +41,16 @@ int main(int argc, char *argv[]) {
 	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/faerie2.bmp");
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
 	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("./res/sydney.bmp");
-	DirectionalLight* light = new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
-	scene->environment()->addLight(light);
-	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
+	DirectionalLight* dlight = new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
+	PointLight* plight = new PointLight({0.f, 0.f, 0.f}, 500, {1.f, 1.f, 1.f});
+
+//	scene->environment()->addLight(dlight);
+	scene->environment()->addLight(plight);
+	scene->environment()->addLight(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f}));
+//	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 
-	Material* m1 = new LambertMaterial({1.f, 0.f, 0.f});
+	Material* m1 = new LambertMaterial({1.f, 1.f, 1.f});
 	Material* m2 = new PhongMaterial({1.f, 0.f, 0.f});
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 	Material* tm2 = new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2);
@@ -118,9 +122,20 @@ int main(int argc, char *argv[]) {
 //	camera->setPosition(vec3(0, 0, -100));
 	scene->addCamera(camera);
 
+	BasicMesh* light = new BasicMesh(new SphereGeometry(5.f, 4, 4));
+	BasicMeshSceneNode* lightNode = new BasicMeshSceneNode(light);
+	lightNode->setMaterial(new Material({1.f, 1.f, 1.f, 1.f}));
+	scene->addSceneNode(lightNode);
+
+	int x = 0;
 	while (device->run()) {
+		plight->position = {float(- x), 0.f, - 300};
+		lightNode->setPosition({float(- x), 0.f, - 300});
 		scene->render();
 		device->swapBuffers();
+		if (++x > 500) {
+			x = -500;
+		}
 	}
 	return 1;
 }

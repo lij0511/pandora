@@ -72,7 +72,7 @@ bool GLTexture::generateTexture() {
 		height = mBitmap->getHeight();
 		format = mBitmap->getFormat();
 
-		glPixelStorei(GL_UNPACK_ALIGNMENT, mBitmap->bytesPerPixel());
+		glPixelStorei(GL_UNPACK_ALIGNMENT, /*mBitmap->bytesPerPixel()*/4);
 
 		GLenum format = getGLFormat(mBitmap->getFormat());
 		GLenum type = getGLType(mBitmap->getFormat());

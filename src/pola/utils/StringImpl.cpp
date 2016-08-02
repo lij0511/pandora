@@ -73,6 +73,9 @@ void StringImpl::resize(ssize_t size) {
 		m_length = m_data ? strlen(m_data) : 0;
 	} else {
 		size_t len = size_t(size);
+		if (len == m_length) {
+			return;
+		}
 		char* tmp = new char[len + 1];
 		if (!isEmpty()) {
 			if (len > m_length) {
@@ -163,6 +166,10 @@ hash_t StringImpl::hash() const {
 		m_hash = hash;
 	}
 	return hash;
+}
+
+void StringImpl::rehash() const {
+	m_hash = 0;
 }
 
 int32_t StringImpl::compare(const StringImpl& s) const {

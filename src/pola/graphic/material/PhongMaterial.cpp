@@ -8,6 +8,7 @@
 #include "pola/graphic/material/PhongMaterial.h"
 
 #include "pola/utils/StringBuffer.h"
+#include <vector>
 
 namespace pola {
 namespace graphic {
@@ -24,8 +25,8 @@ void PhongMaterial::bind(GraphicContext* graphic, Program* program) {
 	const Lights* lights = graphic->lights();
 	GLProgram* glProgram = (GLProgram*) program;
 	if (lights && lights->directionalLightCount() > 0) {
-		static utils::Vector<utils::String> dirLightsColors;
-		static utils::Vector<utils::String> dirLightsDirections;
+		static std::vector<utils::String> dirLightsColors;
+		static std::vector<utils::String> dirLightsDirections;
 		for (unsigned i = 0; i < lights->directionalLightCount(); i ++) {
 			DirectionalLight* light = (DirectionalLight*) lights->directionalLight(i);
 			GLint u_dl;
@@ -37,7 +38,7 @@ void PhongMaterial::bind(GraphicContext* graphic, Program* program) {
 				char buf[40];
 				sprintf(buf, "u_dirLights[%u].color", i);
 				color = buf;
-				dirLightsColors.push(color);
+				dirLightsColors.push_back(color);
 			}
 			if (!glProgram->fetchUniform(color, u_dl)) {
 				return;
@@ -51,7 +52,7 @@ void PhongMaterial::bind(GraphicContext* graphic, Program* program) {
 				char buf[40];
 				sprintf(buf, "u_dirLights[%u].direction", i);
 				direction = buf;
-				dirLightsDirections.push(direction);
+				dirLightsDirections.push_back(direction);
 			}
 			if (!glProgram->fetchUniform(direction, u_dl)) {
 				return;
@@ -73,13 +74,13 @@ const utils::String PhongMaterial::generateVertexShader() {
 	utils::StringBuffer sb;
 #ifdef OGL_RENDERER
 	sb.append(GLShaderLib::VS_Para_TextureMap())
-		.append("varying vec3 v_normal;\n"
-			"void main()\n"
-			"{\n")
+		.append("varying vec3 v_normal;"
+			"void main()"
+			"{")
 		.append(GLShaderLib::VS_TextureMap())
 		.append(GLShaderLib::VS_MainPosition())
-		.append("  v_normal = a_normal;\n");
-	sb.append("}\n");
+		.append("  v_normal = a_normal;");
+	sb.append("}");
 #endif
 	utils::String s;
 	sb.release(s);
@@ -92,27 +93,27 @@ const utils::String PhongMaterial::generateFragmentShader() {
 	sb.append(GLShaderLib::FS_MainHeader())
 		.append(GLShaderLib::Para_Lighs())
 		.append(GLShaderLib::FS_Para_TextureMap())
-		.append("varying vec3 v_normal;\n"
-			"uniform vec4 u_color;\n"
-			"void main()\n"
-			"{\n"
-			"  vec3 normal = normalize(v_normal);\n")
+		.append("varying vec3 v_normal;"
+			"uniform vec4 u_color;"
+			"void main()"
+			"{"
+			"  vec3 normal = normalize(v_normal);")
 		.append(GLShaderLib::FS_DiffuseColor())
 		.append("  diffuseColor = u_color;\n")
 		.append(GLShaderLib::FS_TextureMap())
 		.append(
-			"  vec3 outgoing = vec3(0.0f, 0.0f, 0.0f);\n"
-			"#if defined(NUM_DIR_LIGHTS) && NUM_DIR_LIGHTS > 0\n"
-			"  DirectionalLight directionalLight;\n"
-			"  for (int i = 0; i < NUM_DIR_LIGHTS; i ++) {\n"
-			"    directionalLight = u_dirLights[ i ];\n"
-			"    float dotNL = clamp(dot(normal, directionalLight.direction), 0.0f, 1.0f);\n"
-			"    outgoing += directionalLight.color * dotNL * diffuseColor.rgb;\n"
-			"  }\n"
-			"#endif\n"
-			"  outgoing += u_ambientLight * diffuseColor.rgb;\n"
-			"  gl_FragColor = vec4(outgoing, diffuseColor.a);\n"
-			"}\n");
+			"  vec3 outgoing = vec3(0.0f, 0.0f, 0.0f);"
+			"\n#if (NUM_DIR_LIGHTS > 0)\n"
+			"  DirectionalLight directionalLight;"
+			"  for (int i = 0; i < NUM_DIR_LIGHTS; i ++) {"
+			"    directionalLight = u_dirLights[ i ];"
+			"    float dotNL = clamp(dot(normal, directionalLight.direction), 0.0f, 1.0f);"
+			"    outgoing += directionalLight.color * dotNL * diffuseColor.rgb;"
+			"  }"
+			"\n#endif\n"
+			"  outgoing += u_ambientLight * diffuseColor.rgb;"
+			"  gl_FragColor = vec4(outgoing, diffuseColor.a);"
+			"}");
 #endif
 	utils::String s;
 	sb.release(s);

@@ -8,6 +8,8 @@
 #ifndef POLA_MATERIAL_H_
 #define POLA_MATERIAL_H_
 
+#define STRINGIFY(A)  #A
+
 #if defined(POLA_GLES) || defined(POLA_GL)
 #define OGL_RENDERER
 #endif

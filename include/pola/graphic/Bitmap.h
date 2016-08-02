@@ -44,13 +44,16 @@ public:
 
 	uint8_t* pixels() const;
 
+	bool isEmpty() const;
+
 	static Bitmap* create(uint32_t w, uint32_t h, Format format);
 	static Bitmap* create();
+	Bitmap();
 
 	void set(uint32_t w, uint32_t h, Format format, uint8_t* pixels = nullptr);
 
 	uint32_t getGenerationID() const;
-	void notifyPixelsChanged();
+	void notifyPixelsChanged() const;
 
 
 	uint32_t getPixel(uint32_t x, uint32_t y) const;
@@ -60,13 +63,14 @@ public:
 
 protected:
 	Bitmap(uint32_t w, uint32_t h, Format format);
-	Bitmap();
 private:
+	Bitmap& operator=(const Bitmap& other);
+	Bitmap(const Bitmap& other);
 
 	uint32_t mWidth;
 	uint32_t mHeight;
 	Format mFormat;
-	uint32_t mGenerationID;
+	mutable uint32_t mGenerationID;
 	bool mRecycled;
 	bool mHasAlpha;
 	uint8_t* mData;

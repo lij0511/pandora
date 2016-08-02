@@ -15,13 +15,13 @@ namespace graphic {
 
 class PointLight: public Light {
 public:
-	PointLight();
+	PointLight(const vec3& pos = {1.f, 1.f, 1.f}, float dis = 0, const FColor3& color = {1.f, 1.f, 1.f});
 	virtual ~PointLight();
 
-	void setPosition(const vec3& position);
+	void setPosition(const vec3& pos);
 
-private:
-	vec3 m_position;
+	vec3 position;
+	float distance;
 };
 
 } /* namespace graphic */

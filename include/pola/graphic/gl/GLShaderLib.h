@@ -26,7 +26,6 @@ public:
 	static const char* FS_TextureMap();
 	static const char* FS_Para_TextureMap();
 
-
 	/* lights */
 	static const char* Para_Lighs();
 };

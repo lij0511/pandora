@@ -15,7 +15,7 @@ namespace pola {
 namespace graphic {
 
 static uint32_t rowBytesAlign(uint32_t w, uint32_t bytesPerPixel) {
-	uint32_t align = 2;
+	uint32_t align = 4;
 	uint32_t widthInBytes = w * bytesPerPixel;
 	return widthInBytes + ((align - (widthInBytes % align))) % align;
 }
@@ -41,6 +41,20 @@ Bitmap::Bitmap() :
 	mData(nullptr),
 	mRowBytes(0)
 {
+}
+Bitmap::Bitmap(const Bitmap& other) :
+	mWidth(0),
+	mHeight(0),
+	mFormat(UNKONWN),
+	mGenerationID(0),
+	mRecycled(true),
+	mHasAlpha(false),
+	mData(nullptr),
+	mRowBytes(0) {
+}
+
+Bitmap& Bitmap::operator=(const Bitmap& other) {
+	return *this;
 }
 
 Bitmap::~Bitmap() {
@@ -114,7 +128,12 @@ void Bitmap::setHasAlpha(bool hasAlpha) {
 }
 
 unsigned char* Bitmap::pixels() const {
+	notifyPixelsChanged();
 	return mData;
+}
+
+bool Bitmap::isEmpty() const {
+	return mWidth <= 0 || mHeight <= 0;
 }
 
 Bitmap* Bitmap::create(uint32_t w, uint32_t h, Format format) {
@@ -145,7 +164,7 @@ uint32_t Bitmap::getGenerationID() const {
 		return mGenerationID;
 }
 
-void Bitmap::notifyPixelsChanged() {
+void Bitmap::notifyPixelsChanged() const {
 	++ mGenerationID;
 }
 

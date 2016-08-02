@@ -65,10 +65,16 @@ WStringBuffer& WStringBuffer::append(const wchar* data, size_t len) {
 	return *this;
 }
 WStringBuffer& WStringBuffer::append(const char* data) {
-	return *this;
+	wchar* tmp = nullptr;
+	size_t rlen = 0;
+	utf8_to_utf16(data, strlen(data), tmp, rlen);
+	return append(tmp, rlen);
 }
 WStringBuffer& WStringBuffer::append(const char* data, size_t len) {
-	return *this;
+	wchar* tmp = nullptr;
+	size_t rlen = 0;
+	utf8_to_utf16(data, len, tmp, rlen);
+	return append(tmp, rlen);
 }
 WStringBuffer& WStringBuffer::append(const WString& str) {
 	return append(str.characters(), str.length());

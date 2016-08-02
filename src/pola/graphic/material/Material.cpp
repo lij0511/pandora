@@ -82,11 +82,11 @@ const utils::String Material::generateVertexShader() {
 	utils::StringBuffer sb(256);
 #ifdef OGL_RENDERER
 	sb.append(GLShaderLib::VS_Para_TextureMap())
-		.append("void main()\n"
-			"{\n")
+		.append("void main()"
+			"{")
 		.append(GLShaderLib::VS_TextureMap())
 		.append(GLShaderLib::VS_MainPosition())
-		.append("}\n");
+		.append("}");
 #endif
 	utils::String s;
 	sb.release(s);
@@ -98,14 +98,14 @@ const utils::String Material::generateFragmentShader() {
 #ifdef OGL_RENDERER
 	sb.append(GLShaderLib::FS_MainHeader())
 		.append(GLShaderLib::FS_Para_TextureMap())
-		.append("uniform vec4 u_color;\n"
-			"void main()\n"
-			"{\n")
+		.append("uniform vec4 u_color;"
+			"void main()"
+			"{")
 		.append(GLShaderLib::FS_DiffuseColor())
-		.append("  diffuseColor = u_color;\n")
+		.append("  diffuseColor = u_color;")
 		.append(GLShaderLib::FS_TextureMap())
-		.append("  gl_FragColor = diffuseColor;\n"
-			"}\n");
+		.append("  gl_FragColor = diffuseColor;"
+			"}");
 #endif
 	utils::String s;
 	sb.release(s);

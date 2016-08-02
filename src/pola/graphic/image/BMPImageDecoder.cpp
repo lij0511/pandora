@@ -14,8 +14,6 @@
 #include "pola/graphic/image/ImageDecoderFactory.h"
 #include "pola/graphic/Color.h"
 
-#include <map>
-
 namespace pola {
 namespace graphic {
 

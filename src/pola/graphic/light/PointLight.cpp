@@ -10,14 +10,14 @@
 namespace pola {
 namespace graphic {
 
-PointLight::PointLight() : Light(LIGHT_POINT){
+PointLight::PointLight(const vec3& pos, float dis, const FColor3& color) : Light(LIGHT_POINT, color), position(pos), distance(dis) {
 }
 
 PointLight::~PointLight() {
 }
 
-void PointLight::setPosition(const vec3& position) {
-	m_position = position;
+void PointLight::setPosition(const vec3& pos) {
+	position = pos;
 }
 
 } /* namespace graphic */

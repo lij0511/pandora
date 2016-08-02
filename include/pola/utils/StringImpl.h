@@ -60,6 +60,7 @@ public:
 	bool operator<=(const StringImpl& s) const;
 
 	hash_t hash() const;
+	void rehash() const;
 
 private:
 	int32_t compare(const StringImpl& s) const;

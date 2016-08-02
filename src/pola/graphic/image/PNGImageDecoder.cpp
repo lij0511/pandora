@@ -113,13 +113,13 @@ bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Forma
 		png_set_expand_gray_1_2_4_to_8(png_ptr);
 	}
 
-	if (colorType == PNG_COLOR_TYPE_GRAY_ALPHA) {
+	if (colorType == PNG_COLOR_TYPE_GRAY_ALPHA/* || colorType == PNG_COLOR_TYPE_GRAY*/) {
 		png_set_gray_to_rgb(png_ptr);
 	}
 
-	if (colorType == PNG_COLOR_TYPE_RGB) {
+	/*if (colorType == PNG_COLOR_TYPE_RGB) {
 		png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
-	}
+	}*/
 
 	if (colorType==PNG_COLOR_TYPE_PALETTE && png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
 		png_set_tRNS_to_alpha(png_ptr);
@@ -139,10 +139,10 @@ bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Forma
 	Bitmap::Format format;
 	switch (colorType) {
 		case PNG_COLOR_TYPE_RGB:
-			format = Bitmap::RGBA8888;
+			format = Bitmap::RGB888;
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
-			format = Bitmap::RGB888;
+			format = Bitmap::RGBA8888;
 			break;
 		case PNG_COLOR_TYPE_GRAY:
 			format = Bitmap::ALPHA8;

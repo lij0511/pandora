@@ -292,6 +292,7 @@ char& String::operator [](size_t index) {
 	if (m_impl->getStrongCount() > 1) {
 		m_impl = StringImpl::create(m_impl->characters(), m_impl->length());
 	}
+	m_impl->rehash();
 	return m_impl->characters()[index];
 }
 

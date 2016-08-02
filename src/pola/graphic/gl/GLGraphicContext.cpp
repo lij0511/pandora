@@ -31,9 +31,9 @@ GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 //	glEnable(GL_DITHER);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+//	glEnable(GL_BLEND);
+//	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+//	glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
 }
 
 GLGraphicContext::~GLGraphicContext() {
@@ -46,7 +46,7 @@ void GLGraphicContext::setViewport(int32_t width, int32_t height) {
 
 void GLGraphicContext::beginFrame(const FColor4& clearColor) {
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-	glClearDepthf(1.0f);
+	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -72,6 +72,12 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 			char buf[40];
 			sprintf(buf, "#define NUM_DIR_LIGHTS %lu\n", mLights->directionalLightCount());
 			vs = fs = buf;
+		}
+		if (mLights && mLights->pointLightCount() > 0) {
+			char buf[40];
+			sprintf(buf, "#define NUM_POINT_LIGHTS %lu\n", mLights->pointLightCount());
+			fs += buf;
+			vs = fs;
 		}
 		if (material->hasTextureMap()) {
 			vs += "#define TEXTURE_MAP\n";
@@ -201,7 +207,6 @@ Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
 	 * Deferred texture generation. Generated when prepare to render.
 	 */
 	GLTexture* texture = new GLTexture(bitmap);
-//	texture->mipMap = true;
 
 	return texture;
 }
