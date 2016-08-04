@@ -297,7 +297,7 @@ BMPImageDecoder::BMPImageDecoder() {
 BMPImageDecoder::~BMPImageDecoder() {
 }
 
-bool BMPImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Format preFormat) {
+bool BMPImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat preFormat) {
 	BMPHeader header;
 	is->read(&header, sizeof(BMPHeader));
 	LOGI("id=%x, FileSize=%u, Reserved=%u, BitmapDataOffset=%u, BitmapHeaderSize=%u, Width=%u, Height=%u, Planes=%u, BPP=%u, Compression=%u, BitmapDataSize=%u, PixelPerMeterX=%u, PixelPerMeterY=%u, Colors=%u, ImportantColors=%u\n",
@@ -335,9 +335,9 @@ bool BMPImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Forma
 
 	is->seek(header.BitmapDataOffset);
 
-	Bitmap::Format format = preFormat;
-	if (format == Bitmap::Format::UNKONWN) {
-		format = Bitmap::RGB888;
+	PixelFormat format = preFormat;
+	if (format == PixelFormat::UNKONWN) {
+		format = PixelFormat::RGB888;
 	}
 
 	if (bitmap == nullptr) {

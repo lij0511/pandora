@@ -31,10 +31,9 @@ Mesh* MD2AnimatedMeshSceneNode::mesh() {
 	return mMesh;
 }
 
-void MD2AnimatedMeshSceneNode::render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
-	AnimatedMeshSceneNode::render(graphic, timeMs);
+void MD2AnimatedMeshSceneNode::update(p_nsecs_t timeMs) {
+	AnimatedMeshSceneNode::update(timeMs);
 	mMesh->updateMeshBuffer(getCurrentFrame(), getStartFrameLoop(), getEndFrameLoop());
-	graphic->renderGeometry(mMesh->geometry(), mMaterial.get());
 }
 
 } /* namespace scene */

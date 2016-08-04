@@ -48,7 +48,7 @@ void AnimatedMeshSceneNode::setCurrentFrame(float frame) {
 	mCurrentFrame = utils::fclamp<float>(frame, (float) mStartFrameLoop, (float) mEndFrameLoop);
 }
 
-void AnimatedMeshSceneNode::render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
+void AnimatedMeshSceneNode::update(p_nsecs_t timeMs) {
 	buildCurrentFrame(timeMs);
 }
 

@@ -102,8 +102,8 @@ JPEGImageDecoder::JPEGImageDecoder() {
 JPEGImageDecoder::~JPEGImageDecoder() {
 }
 
-static Bitmap::Format selectColorType(jpeg_decompress_struct* cinfo) {
-	Bitmap::Format format = Bitmap::RGB888;
+static PixelFormat selectColorType(jpeg_decompress_struct* cinfo) {
+	PixelFormat format = PixelFormat::RGB888;
 	switch (cinfo->jpeg_color_space) {
 		case JCS_CMYK:
 			// Fall through.
@@ -114,7 +114,7 @@ static Bitmap::Format selectColorType(jpeg_decompress_struct* cinfo) {
 			cinfo->out_color_space = JCS_CMYK;
 			break;
 		case JCS_GRAYSCALE:
-			format = Bitmap::ALPHA8;
+			format = PixelFormat::ALPHA8;
 			break;
 		default:
 			cinfo->out_color_space = JCS_RGB;
@@ -149,7 +149,7 @@ static void convert_CMYK_to_RGB(unsigned char* scanline, unsigned char* output, 
     }
 }
 
-bool JPEGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Format preFormat) {
+bool JPEGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat preFormat) {
 	JPEGAutoClean autoClean;
 	struct jpeg_decompress_struct  cinfo;
 
@@ -177,14 +177,14 @@ bool JPEGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Form
 	}
 
 	cinfo.dct_method = JDCT_ISLOW;
-	Bitmap::Format format = selectColorType(&cinfo);
+	PixelFormat format = selectColorType(&cinfo);
 
 	if (!jpeg_start_decompress(&cinfo)) {
 		LOGE("ReadJpegFile: Failed to jpeg_start_decompress.\n");
 		return false;
 	}
 
-	if (preFormat == Bitmap::Format::UNKONWN) {
+	if (preFormat == PixelFormat::UNKONWN) {
 		preFormat = format;
 	}
 

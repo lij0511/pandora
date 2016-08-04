@@ -530,7 +530,7 @@ void Matrix4::getRotation(Quaternion& rotaion) {
 	}
 }
 
-void Matrix4::makeOrtho(float left, float right, float bottom, float top, float near, float far) {
+void Matrix4::makeOrtho(float left, float right, float top, float bottom, float near, float far) {
     loadIdentity();
 
     data[0] = 2.0f / (right - left);

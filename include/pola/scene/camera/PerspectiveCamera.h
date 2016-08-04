@@ -18,7 +18,7 @@ namespace scene {
  */
 class PerspectiveCamera: public Camera {
 public:
-	PerspectiveCamera(float fovy = M_PI / 2.5f, float aspect = 1.f, float near = 1.f, float far = 3000.f);
+	PerspectiveCamera(float fovy = M_PI / 2.5f, float aspect = 1.f, float near = 1.f, float far = 1000.f);
 	virtual ~PerspectiveCamera();
 
 	virtual void setSize(int32_t width, int32_t height);

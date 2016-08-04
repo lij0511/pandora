@@ -9,6 +9,7 @@
 #define POLA_BITMAP_H_
 
 #include <stdint.h>
+#include "pola/graphic/PixelFormat.h"
 
 namespace pola {
 namespace graphic {
@@ -16,21 +17,13 @@ namespace graphic {
 class Bitmap {
 public:
 
-	enum Format {
-		ALPHA8,
-		RGBA8888,
-		RGB888,
-		RGB565,
-		UNKONWN,
-	};
-
-	static uint32_t getByteCountPerPixel(Bitmap::Format format);
+	static uint32_t getByteCountPerPixel(PixelFormat format);
 
 	virtual ~Bitmap();
 
 	uint32_t getWidth() const;
 	uint32_t getHeight() const;
-	Format getFormat() const;
+	PixelFormat getFormat() const;
 	uint32_t bytesPerPixel() const;
 	uint32_t rowBytes() const;
 	uint32_t getByteCount() const;
@@ -46,11 +39,11 @@ public:
 
 	bool isEmpty() const;
 
-	static Bitmap* create(uint32_t w, uint32_t h, Format format);
+	static Bitmap* create(uint32_t w, uint32_t h, PixelFormat format);
 	static Bitmap* create();
 	Bitmap();
 
-	void set(uint32_t w, uint32_t h, Format format, uint8_t* pixels = nullptr);
+	void set(uint32_t w, uint32_t h, PixelFormat format, uint8_t* pixels = nullptr);
 
 	uint32_t getGenerationID() const;
 	void notifyPixelsChanged() const;
@@ -62,14 +55,14 @@ public:
 	bool scale(Bitmap*& dst, float scaleW, float scaleH);
 
 protected:
-	Bitmap(uint32_t w, uint32_t h, Format format);
+	Bitmap(uint32_t w, uint32_t h, PixelFormat format);
 private:
 	Bitmap& operator=(const Bitmap& other);
 	Bitmap(const Bitmap& other);
 
 	uint32_t mWidth;
 	uint32_t mHeight;
-	Format mFormat;
+	PixelFormat mFormat;
 	mutable uint32_t mGenerationID;
 	bool mRecycled;
 	bool mHasAlpha;

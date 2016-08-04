@@ -14,6 +14,8 @@ GLCaches::GLCaches() {
 	glActiveTexture(gTextureUnits[0]);
 	mTextureUnit = 0;
 
+	mFramebuffer = 0;
+
 	resetBoundTextures();
 }
 
@@ -72,6 +74,20 @@ GLenum GLCaches::activeTexture(GLuint textureUnit) {
 
 void GLCaches::resetActiveTexture() {
     mTextureUnit = -1;
+}
+
+void GLCaches::bindFrameBuffer(GLuint frameBuffer) {
+	if (mFramebuffer != frameBuffer) {
+		mFramebuffer = frameBuffer;
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+	}
+}
+
+void GLCaches::unbindFrameBuffer(GLuint frameBuffer) {
+	if (mFramebuffer == frameBuffer) {
+		mFramebuffer = 0;
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }
 
 } /* namespace graphic */

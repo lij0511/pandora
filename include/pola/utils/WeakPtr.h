@@ -74,6 +74,7 @@ public:
     inline  T&      operator* () const  { return *get(); }
     inline  T*      operator-> () const { return get();  }
     inline  T*      get() const         { return m_ptr ? m_ptr->get() : nullptr; }
+    inline sp<T> promote() const { return m_ptr ? m_ptr->get() : nullptr; }
 
     // Operators
 

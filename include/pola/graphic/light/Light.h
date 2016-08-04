@@ -8,17 +8,21 @@
 #ifndef POLA_LIGHT_H_
 #define POLA_LIGHT_H_
 
-#include "pola/utils/RefBase.h"
 #include "pola/graphic/Color.h"
+#include "pola/graphic/RenderTarget.h"
 #include "pola/graphic/math/Vector.h"
-
-#define LIGHT_MAX_COUNT 8;
 
 namespace pola {
 namespace graphic {
 
-class Light : public utils::RefBase<Light> {
+class Lights;
+
+class Light {
 public:
+
+	struct MapSize {
+		uint32_t width, height;
+	};
 
 	enum LightType {
 		//! point light, it has a position in space and radiates light in all directions
@@ -36,12 +40,31 @@ public:
 
 	LightType lightType() const;
 
+	bool isDirectionalLight() const;
+	bool isPointLight() const;
+	bool isSpotLight() const;
+
+	bool lightOn() const;
+	void setLightOn(bool lightOn);
+
+	bool inUsed() const;
+
+private:
+	friend class Lights;
+	void setInUsed(bool inUsed);
+
 private:
 	LightType mType;
+	bool mLightOn;
+
+	bool mInUsed;
 
 public:
 	FColor3 color;
 
+	bool castShadow;
+	MapSize mapSize;
+	RenderTarget* map;
 };
 
 } /* namespace graphic */

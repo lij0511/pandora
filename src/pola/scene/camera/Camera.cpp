@@ -56,7 +56,7 @@ bool Camera::update(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
 	return false;
 }
 
-void Camera::updateTransform() {
+bool Camera::updateTransform() {
 	if (mMatrixDirty) {
 		graphic::mat4 m;
 		graphic::quat4 quat;
@@ -73,7 +73,9 @@ void Camera::updateTransform() {
 			mWorldMatrix.load(mMatrix);
 		}
 		mMatrixDirty = false;
+		return true;
 	}
+	return false;
 }
 
 const graphic::Frustum& Camera::frustum() const {

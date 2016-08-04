@@ -10,7 +10,8 @@
 namespace pola {
 namespace scene {
 
-OrthoCamera::OrthoCamera(float near, float far) : mNear(near), mFar(far) {
+OrthoCamera::OrthoCamera(float left, float right, float top, float bottom, float near, float far) : mNear(near), mFar(far) {
+	mProjection.makeOrtho(left, right, top, bottom, mNear, mFar);
 }
 
 OrthoCamera::~OrthoCamera() {

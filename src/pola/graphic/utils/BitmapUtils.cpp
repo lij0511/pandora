@@ -24,7 +24,7 @@ bool clearBitmap(Bitmap& bitmap, uint32_t color) {
 	uint32_t rowBytes = bitmap.rowBytes();
 	uint8_t* data = bitmap.pixels();
 	switch (bitmap.getFormat()) {
-	case Bitmap::Format::RGBA8888: {
+	case PixelFormat::RGBA8888: {
 		uint32_t* pixels = (uint32_t*) data;
 		for (unsigned w = 0; w < width; w ++) {
 			pixels[w] = PackRGBA8888(ColorGetR(color), ColorGetG(color), ColorGetB(color), ColorGetA(color));
@@ -35,10 +35,10 @@ bool clearBitmap(Bitmap& bitmap, uint32_t color) {
 		}
 		break;
 	}
-	case Bitmap::Format::ALPHA8:
+	case PixelFormat::ALPHA8:
 		memset(data, ColorGetA(color) & 0xFF, height * rowBytes);
 		break;
-	case Bitmap::Format::RGB888: {
+	case PixelFormat::RGB888: {
 		uint8_t r = ColorGetR(color);
 		uint8_t g = ColorGetG(color);
 		uint8_t b = ColorGetB(color);
@@ -54,7 +54,7 @@ bool clearBitmap(Bitmap& bitmap, uint32_t color) {
 		break;
 	}
 		break;
-	case Bitmap::Format::RGB565: {
+	case PixelFormat::RGB565: {
 		for (unsigned w = 0; w < width; w ++) {
 			bitmap.putPixel(w, 0, color);
 		}
@@ -170,7 +170,7 @@ void blit_bilinear(const Bitmap& src, Bitmap& dst) {
 bool scaleBitmap(const Bitmap& src, Bitmap*& dst, float scaleW, float scaleH, BitmapScaleMode scaleMode) {
 	uint32_t width = src.getWidth();
 	uint32_t height = src.getHeight();
-	Bitmap::Format format = src.getFormat();
+	PixelFormat format = src.getFormat();
 	if (width <= 0 || height <= 0 || scaleW <= 0 || scaleH <= 0) {
 		return false;
 	}

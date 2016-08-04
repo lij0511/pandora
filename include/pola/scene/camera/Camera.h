@@ -35,9 +35,8 @@ public:
 
 	const graphic::Frustum& frustum() const;
 
+	virtual bool updateTransform();
 protected:
-
-	virtual void updateTransform();
 
 	virtual void onPropertyChange();
 protected:

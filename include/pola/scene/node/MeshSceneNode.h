@@ -23,6 +23,7 @@ public:
 	void setMaterial(graphic::Material* material);
 
 	virtual Mesh* mesh() = 0;
+	virtual graphic::Material* material() const;
 
 protected:
 	utils::sp<graphic::Material> mMaterial;

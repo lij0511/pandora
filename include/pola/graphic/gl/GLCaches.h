@@ -55,12 +55,17 @@ public:
 	GLenum activeTexture(GLuint textureUnit);
 	void resetActiveTexture();
 
+	void bindFrameBuffer(GLuint frameBuffer);
+	void unbindFrameBuffer(GLuint frameBuffer);
+
 	GLProgramCache programCache;
 
 private:
 
 	GLuint mTextureUnit;
 	GLuint mBoundTextures[MAX_TEXTURE_UNITS_COUNT];
+
+	GLuint mFramebuffer;
 };
 
 } /* namespace graphic */

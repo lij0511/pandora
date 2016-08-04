@@ -10,12 +10,14 @@
 
 #include <stdint.h>
 
+#include "pola/graphic/PixelFormat.h"
 #include "pola/graphic/GraphicParameter.h"
 #include "pola/graphic/geometries/Geometry2D.h"
 #include "pola/graphic/geometries/Geometry3D.h"
 #include "pola/graphic/math/Matrix4.h"
 #include "pola/graphic/light/Lights.h"
 #include "pola/graphic/Texture.h"
+#include "pola/graphic/RenderTarget.h"
 #include "pola/io/InputStream.h"
 
 namespace pola {
@@ -36,6 +38,10 @@ public:
 	virtual void setViewport(int32_t width, int32_t height);
 
 	Texture* loadTexture(const char* file);
+
+	virtual RenderTarget* createRenderTarget(uint32_t width, uint32_t height, PixelFormat format = PixelFormat::RGBA8888) = 0;
+
+	virtual void setRenderTarget(RenderTarget* renderTarget);
 
 	virtual void beginFrame(const FColor4& clearColor = {0.f, 0.f, 0.f, 0.f});
 	virtual void endFrame();
@@ -58,9 +64,11 @@ protected:
 
 	Material* mDefaultMaterial;
 	Lights* mLights;
-private:
+protected:
 	int32_t mWidth;
 	int32_t mHeight;
+
+	RenderTarget* mRenderTarget;
 };
 
 } /* namespace graphic */

@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef SHADERMATERIAL_H_
-#define SHADERMATERIAL_H_
+#ifndef POLA_SHADERMATERIAL_H_
+#define POLA_SHADERMATERIAL_H_
 
 #include "pola/graphic/material/Material.h"
 
@@ -31,4 +31,4 @@ protected:
 } /* namespace graphic */
 } /* namespace pola */
 
-#endif /* SHADERMATERIAL_H_ */
+#endif /* POLA_SHADERMATERIAL_H_ */

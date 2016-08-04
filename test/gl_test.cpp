@@ -45,10 +45,12 @@ int main(int argc, char *argv[]) {
 	PointLight* plight = new PointLight({0.f, 0.f, 0.f}, 500, {1.f, 1.f, 1.f});
 
 //	scene->environment()->addLight(dlight);
-	scene->environment()->addLight(plight);
-	scene->environment()->addLight(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f}));
+//	scene->environment()->addLight(plight);
+//	scene->environment()->addLight(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f}));
 //	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
+	scene->addSceneNode(new LightNode(plight));
+	scene->addSceneNode(new LightNode(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f})));
 
 	Material* m1 = new LambertMaterial({1.f, 1.f, 1.f});
 	Material* m2 = new PhongMaterial({1.f, 0.f, 0.f});

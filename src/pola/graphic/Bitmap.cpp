@@ -20,7 +20,7 @@ static uint32_t rowBytesAlign(uint32_t w, uint32_t bytesPerPixel) {
 	return widthInBytes + ((align - (widthInBytes % align))) % align;
 }
 
-Bitmap::Bitmap(uint32_t w, uint32_t h, Format format) :
+Bitmap::Bitmap(uint32_t w, uint32_t h, PixelFormat format) :
 	mWidth(w),
 	mHeight(h),
 	mFormat(format),
@@ -64,19 +64,19 @@ Bitmap::~Bitmap() {
 	}
 }
 
-uint32_t Bitmap::getByteCountPerPixel(Bitmap::Format format) {
+uint32_t Bitmap::getByteCountPerPixel(PixelFormat format) {
 	int c;
 	switch (format) {
-	case Bitmap::ALPHA8:
+	case PixelFormat::ALPHA8:
 		c = 1;
 		break;
-	case Bitmap::RGBA8888:
+	case PixelFormat::RGBA8888:
 		c = 4;
 		break;
-	case Bitmap::RGB888:
+	case PixelFormat::RGB888:
 		c = 3;
 		break;
-	case Bitmap::RGB565:
+	case PixelFormat::RGB565:
 		c = 2;
 		break;
 	default:
@@ -92,7 +92,7 @@ uint32_t Bitmap::getWidth() const {
 uint32_t Bitmap::getHeight() const {
 	return mHeight;
 };
-Bitmap::Format Bitmap::getFormat() const {
+PixelFormat Bitmap::getFormat() const {
 	return mFormat;
 };
 uint32_t Bitmap::bytesPerPixel() const {
@@ -136,7 +136,7 @@ bool Bitmap::isEmpty() const {
 	return mWidth <= 0 || mHeight <= 0;
 }
 
-Bitmap* Bitmap::create(uint32_t w, uint32_t h, Format format) {
+Bitmap* Bitmap::create(uint32_t w, uint32_t h, PixelFormat format) {
 	return new Bitmap(w, h, format);
 }
 
@@ -144,17 +144,23 @@ Bitmap* Bitmap::create() {
 	return new Bitmap();
 }
 
-void Bitmap::set(uint32_t w, uint32_t h, Format format, uint8_t* pixels) {
+void Bitmap::set(uint32_t w, uint32_t h, PixelFormat format, uint8_t* pixels) {
 	mWidth = w;
 	mHeight = h;
 	mFormat = format;
 	mRecycled = false;
-	if (mData) {
-		delete mData;
+	uint32_t rowBytes = rowBytesAlign(w, getByteCountPerPixel(format));
+	if (getByteCount() != rowBytes * h) {
+		if (mData) {
+			delete mData;
+			mData = nullptr;
+		}
+		if (rowBytes * h > 0) {
+			mData = new unsigned char[rowBytes * h];
+		}
 	}
-	mRowBytes = rowBytesAlign(mWidth, bytesPerPixel());
-	mData = new unsigned char[rowBytes() * mHeight];
-	if (pixels != nullptr) {
+	mRowBytes = rowBytes;
+	if (pixels != nullptr && getByteCount() > 0) {
 		memcpy(mData, pixels, getByteCount());
 	}
 	notifyPixelsChanged();

@@ -26,8 +26,7 @@ public:
 	int32_t getStartFrameLoop() const;
 	int32_t getEndFrameLoop() const;
 
-protected:
-	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
+	virtual void update(p_nsecs_t timeMs);
 
 protected:
 	virtual void buildCurrentFrame(p_nsecs_t timeMs);

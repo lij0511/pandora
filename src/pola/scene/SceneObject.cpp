@@ -11,7 +11,6 @@ namespace pola {
 namespace scene {
 
 SceneObject::SceneObject() : mMatrixDirty(true) {
-	mScale = {1, 1, 1};
 	mParent = nullptr;
 }
 
@@ -26,44 +25,18 @@ SceneObject::~SceneObject() {
 }
 
 void SceneObject::setPosition(const graphic::vec3& position) {
-	mPosition = position;
+	Object3D::setPosition(position);
 	onPropertyChange();
-}
-
-const graphic::vec3& SceneObject::getPosition() const {
-	return mPosition;
 }
 
 void SceneObject::setRotation(const graphic::Euler& rotation) {
-	mRotation = rotation;
+	Object3D::setRotation(rotation);
 	onPropertyChange();
-}
-
-const graphic::Euler& SceneObject::getRotation() const {
-	return mRotation;
 }
 
 void SceneObject::setScale(const graphic::vec3& scale) {
-	mScale = scale;
+	Object3D::setScale(scale);
 	onPropertyChange();
-}
-
-const graphic::vec3& SceneObject::getScale() const {
-	return mScale;
-}
-
-void SceneObject::updateTransform() {
-	if (mMatrixDirty) {
-		graphic::quat4 quat;
-		mRotation.getQuaternion(quat);
-		mMatrix.compose(mPosition, quat, mScale);
-		if (mParent != nullptr) {
-			mWorldMatrix.loadMultiply(mParent->getWorldTransform(), mMatrix);
-		} else {
-			mWorldMatrix.load(mMatrix);
-		}
-		mMatrixDirty = false;
-	}
 }
 
 const graphic::mat4 SceneObject::getTransform() {
@@ -74,6 +47,22 @@ const graphic::mat4 SceneObject::getTransform() {
 const graphic::mat4 SceneObject::getWorldTransform() {
 	updateTransform();
 	return mWorldMatrix;
+}
+
+bool SceneObject::updateTransform() {
+	if (mMatrixDirty) {
+		graphic::quat4 quat;
+		mRotation.getQuaternion(quat);
+		mMatrix.compose(mPosition, quat, mScale);
+		if (mParent != nullptr) {
+			mWorldMatrix.loadMultiply(mParent->getWorldTransform(), mMatrix);
+		} else {
+			mWorldMatrix.load(mMatrix);
+		}
+		mMatrixDirty = false;
+		return true;
+	}
+	return false;
 }
 
 void SceneObject::addChild(SceneObject* child) {
@@ -132,6 +121,10 @@ void SceneObject::onPropertyChange() {
 	for (unsigned i = 0; i < mChildren.size(); i ++) {
 		mChildren[i]->onPropertyChange();
 	}
+}
+
+void SceneObject::requestPropertyChange() {
+	onPropertyChange();
 }
 
 } /* namespace scene */

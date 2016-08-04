@@ -12,6 +12,7 @@
 #include <atomic>
 
 #include "pola/utils/StrongPtr.h"
+#include "pola/utils/WeakPtr.h"
 
 using namespace std;
 

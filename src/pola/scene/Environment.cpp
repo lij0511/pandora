@@ -16,6 +16,15 @@ Environment::Environment() {
 }
 
 Environment::~Environment() {
+	delete mLights;
+}
+
+Environment::Environment(const Environment& other) {
+	mLights = nullptr;
+}
+
+Environment& Environment::operator=(const Environment& other) {
+	return *this;
 }
 
 void Environment::addLight(graphic::Light* light) {

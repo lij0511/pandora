@@ -165,29 +165,29 @@ static bool Sample_RGB888_2_RGB565(void* dstRow, const uint8_t* src, uint32_t wi
 	return false;
 }
 
-uint32_t convertColorFormat(uint32_t srcColor, Bitmap::Format srcFormat, Bitmap::Format dstFormat) {
-	if (dstFormat == Bitmap::Format::UNKONWN || srcFormat == dstFormat) {
+uint32_t convertColorFormat(uint32_t srcColor, PixelFormat srcFormat, PixelFormat dstFormat) {
+	if (dstFormat == PixelFormat::UNKONWN || srcFormat == dstFormat) {
 		return srcColor;
 	}
 
 	return srcColor;
 }
 
-ImageSampler::ImageSampler(Bitmap::Format srcFormat, Bitmap::Format dstFormat, unsigned samplesize, bool preMultiplyAlpha) : mSampleSize(samplesize), mPreMultiplyAlpha(preMultiplyAlpha) {
-	if (dstFormat == Bitmap::Format::UNKONWN) {
+ImageSampler::ImageSampler(PixelFormat srcFormat, PixelFormat dstFormat, unsigned samplesize, bool preMultiplyAlpha) : mSampleSize(samplesize), mPreMultiplyAlpha(preMultiplyAlpha) {
+	if (dstFormat == PixelFormat::UNKONWN) {
 		dstFormat = srcFormat;
 	}
 	RowProc rowProc = nullptr;
 	switch (dstFormat) {
-		case Bitmap::Format::RGBA8888: {
+		case PixelFormat::RGBA8888: {
 			switch (srcFormat) {
-				case Bitmap::Format::RGBA8888:
+				case PixelFormat::RGBA8888:
 					rowProc = Sample_RGBA8888_2_RGBA8888;
 					break;
-				case Bitmap::Format::ALPHA8:
+				case PixelFormat::ALPHA8:
 					rowProc = Sample_ALPHA8_2_RGBA8888;
 					break;
-				case Bitmap::Format::RGB888:
+				case PixelFormat::RGB888:
 					rowProc = Sample_RGB888_2_RGBA8888;
 					break;
 				default:
@@ -195,15 +195,15 @@ ImageSampler::ImageSampler(Bitmap::Format srcFormat, Bitmap::Format dstFormat, u
 			}
 			break;
 		}
-		case Bitmap::Format::RGB888: {
+		case PixelFormat::RGB888: {
 			switch (srcFormat) {
-				case Bitmap::Format::RGBA8888:
+				case PixelFormat::RGBA8888:
 					rowProc = Sample_RGBA8888_2_RGB888;
 					break;
-				case Bitmap::Format::ALPHA8:
+				case PixelFormat::ALPHA8:
 					rowProc = Sample_ALPHA8_2_RGB888;
 					break;
-				case Bitmap::Format::RGB888:
+				case PixelFormat::RGB888:
 					rowProc = Sample_RGB888_2_RGB888;
 					break;
 				default:
@@ -211,15 +211,15 @@ ImageSampler::ImageSampler(Bitmap::Format srcFormat, Bitmap::Format dstFormat, u
 			}
 			break;
 		}
-		case Bitmap::Format::ALPHA8: {
+		case PixelFormat::ALPHA8: {
 			switch (srcFormat) {
-				case Bitmap::Format::RGBA8888:
+				case PixelFormat::RGBA8888:
 					rowProc = Sample_RGBA8888_2_ALPHA8;
 					break;
-				case Bitmap::Format::ALPHA8:
+				case PixelFormat::ALPHA8:
 					rowProc = Sample_ALPHA8_2_ALPHA8;
 					break;
-				case Bitmap::Format::RGB888:
+				case PixelFormat::RGB888:
 					rowProc = Sample_RGB888_2_ALPHA8;
 					break;
 				default:
@@ -227,15 +227,15 @@ ImageSampler::ImageSampler(Bitmap::Format srcFormat, Bitmap::Format dstFormat, u
 			}
 			break;
 		}
-		case Bitmap::Format::RGB565: {
+		case PixelFormat::RGB565: {
 			switch (srcFormat) {
-				case Bitmap::Format::RGBA8888:
+				case PixelFormat::RGBA8888:
 					rowProc = Sample_RGBA8888_2_RGB565;
 					break;
-				case Bitmap::Format::ALPHA8:
+				case PixelFormat::ALPHA8:
 					rowProc = Sample_ALPHA8_2_RGB565;
 					break;
-				case Bitmap::Format::RGB888:
+				case PixelFormat::RGB888:
 					rowProc = Sample_RGB888_2_RGB565;
 					break;
 				default:

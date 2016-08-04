@@ -15,7 +15,7 @@ namespace scene {
 
 class OrthoCamera: public Camera {
 public:
-	OrthoCamera(float near = 1.f, float far = 3000.f);
+	OrthoCamera(float left, float right, float top, float bottom, float near, float far);
 	virtual ~OrthoCamera();
 
 	virtual void setSize(int32_t width, int32_t height);

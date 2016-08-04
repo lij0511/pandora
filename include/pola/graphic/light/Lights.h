@@ -22,10 +22,12 @@ public:
 	Lights();
 	virtual ~Lights();
 
+	void clear();
+
 	void addLight(Light* light);
 	void removeLight(Light* light);
 
-	void setAmbientLight(const FColor3& color);
+	void setAmbientLight(const FColor3& light);
 	FColor3 ambientLight() const;
 
 	size_t directionalLightCount() const;
@@ -36,16 +38,21 @@ public:
 	Light* pointLight(unsigned index) const;
 	Light* spotLight(unsigned index) const;
 
+	size_t lightCount() const;
+	Light* lightAt(unsigned index) const;
+
 	uint32_t hash() const;
 
 private:
 	void addLight(std::vector<Light*>& lights, Light* light);
 	void removeLight(std::vector<Light*>& lights, Light* light);
+	void clearLights(std::vector<Light*>& lights);
 
-	FColor3 mAmbientColor;
+	FColor3 mAmbientLight;
 	std::vector<Light*> mDirectionalLights;
 	std::vector<Light*> mPointLights;
 	std::vector<Light*> mSpotLights;
+	std::vector<Light*> mAllLights;
 
 	mutable uint32_t mHash;
 };

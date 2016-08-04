@@ -15,7 +15,7 @@
 namespace pola {
 namespace graphic {
 
-Bitmap* BitmapFactory::decodeFile(const char *file, Bitmap::Format format) {
+Bitmap* BitmapFactory::decodeFile(const char *file, PixelFormat format) {
 	io::InputStream* is = new io::FileInputStream(file);
 	Bitmap* bitmap = decodeStream(is, format);
 	is->close();
@@ -23,7 +23,7 @@ Bitmap* BitmapFactory::decodeFile(const char *file, Bitmap::Format format) {
 	return bitmap;
 }
 
-Bitmap* BitmapFactory::decodeStream(io::InputStream* is, Bitmap::Format format) {
+Bitmap* BitmapFactory::decodeStream(io::InputStream* is, PixelFormat format) {
 	Bitmap* bitmap = nullptr;
 	ImageDecoder* decoder = ImageDecoder::Factory(is);
 	if (decoder) {

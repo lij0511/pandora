@@ -185,14 +185,16 @@ bool DefaultCameraController::dispatchMouseEvent(input::MouseEvent& mouseEvent) 
 	return handled;
 }
 
-void DefaultCameraController::updateTransform() {
+bool DefaultCameraController::updateTransform() {
 	if (mMatrixDirty) {
 		graphic::quat4 quat;
 		mRotation.getQuaternion(quat);
 		mMatrix.compose(mPosition, quat, mScale);
 		mWorldMatrix.loadMultiply(mYaw->getWorldTransform() * mPitch->getWorldTransform(), mMatrix);
 		mMatrixDirty = false;
+		return true;
 	}
+	return false;
 }
 
 } /* namespace scene */

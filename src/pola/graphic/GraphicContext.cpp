@@ -15,6 +15,7 @@ namespace graphic {
 GraphicContext::GraphicContext() : mWidth(0), mHeight(0) {
 	mLights = nullptr;
 	mDefaultMaterial = new Material;
+	mRenderTarget = nullptr;
 }
 
 GraphicContext::~GraphicContext() {
@@ -29,6 +30,10 @@ void GraphicContext::setViewport(int32_t width, int32_t height) {
 Texture* GraphicContext::loadTexture(const char* file) {
 	io::FileInputStream is(file);
 	return doLoadTexture(&is);
+}
+
+void GraphicContext::setRenderTarget(RenderTarget* renderTarget) {
+	mRenderTarget = renderTarget;
 }
 
 void GraphicContext::beginFrame(const FColor4& clearColor) {

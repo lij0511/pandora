@@ -14,6 +14,7 @@
 #include "pola/graphic/math/Matrix4.h"
 #include "pola/graphic/gl/GLTexture.h"
 #include "pola/graphic/gl/GLCaches.h"
+#include "pola/graphic/gl/GLRenderTarget.h"
 
 namespace pola {
 namespace graphic {
@@ -24,6 +25,10 @@ public:
 	virtual ~GLGraphicContext();
 
 	virtual void setViewport(int32_t width, int32_t height);
+
+	virtual RenderTarget* createRenderTarget(uint32_t width, uint32_t height, PixelFormat format = PixelFormat::RGBA8888);
+
+	virtual void setRenderTarget(RenderTarget* renderTarget);
 
 	virtual void beginFrame(const FColor4& clearColor = {0.f, 0.f, 0.f, 0.f});
 	virtual void endFrame();

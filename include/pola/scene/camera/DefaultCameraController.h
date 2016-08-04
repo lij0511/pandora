@@ -26,8 +26,7 @@ public:
 	virtual bool dispatchKeyEvent(input::KeyEvent& keyEvent);
 	virtual bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
-protected:
-	virtual void updateTransform();
+	virtual bool updateTransform();
 
 private:
 	float mMoveSpeed;

@@ -11,21 +11,21 @@
 namespace pola {
 namespace graphic {
 
-static GLenum getGLFormat(Bitmap::Format format) {
+static GLenum getGLFormat(PixelFormat format) {
 	switch (format) {
-		case Bitmap::RGBA8888:
+		case PixelFormat::RGBA8888:
 			return GL_RGBA;
-		case Bitmap::ALPHA8:
+		case PixelFormat::ALPHA8:
 			return GL_ALPHA;
-		case Bitmap::RGB888:
-		case Bitmap::RGB565:
+		case PixelFormat::RGB888:
+		case PixelFormat::RGB565:
 			return GL_RGB;
 		default:
 			return GL_RGBA;
 	}
 }
-static GLenum getGLType(Bitmap::Format format) {
-	if (format == Bitmap::RGB565) {
+static GLenum getGLType(PixelFormat format) {
+	if (format == PixelFormat::RGB565) {
 		return GL_UNSIGNED_SHORT_5_6_5;
 	}
 	return GL_UNSIGNED_BYTE;
@@ -54,13 +54,13 @@ GLTexture::~GLTexture() {
 
 void GLTexture::deleteTexture() {
 	if (id > 0) {
-		glDeleteTextures(1, &id);
+		GLCaches::get().deleteTexture(id);
 		id = 0;
 	}
 }
 
-bool GLTexture::generateTexture() {
-	if (id <= 0 && mBitmap != nullptr) {
+bool GLTexture::generateTexture(bool useBitmap) {
+	if (id <= 0 && (mBitmap != nullptr || !useBitmap)) {
 
 		glEnable( GL_TEXTURE_2D);
 
@@ -68,16 +68,18 @@ bool GLTexture::generateTexture() {
 
 		GLCaches::get().bindTexture(id);
 
-		width = mBitmap->getWidth();
-		height = mBitmap->getHeight();
-		format = mBitmap->getFormat();
+		if (useBitmap) {
+			width = mBitmap->getWidth();
+			height = mBitmap->getHeight();
+			format = mBitmap->getFormat();
+		}
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, /*mBitmap->bytesPerPixel()*/4);
 
-		GLenum format = getGLFormat(mBitmap->getFormat());
-		GLenum type = getGLType(mBitmap->getFormat());
+		GLenum f = getGLFormat(format);
+		GLenum type = getGLType(format);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type, mBitmap->pixels());
+		glTexImage2D(GL_TEXTURE_2D, 0, f, width, height, 0, f, type, useBitmap ? mBitmap->pixels() : 0);
 
 		if (mipMap) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);

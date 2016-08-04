@@ -68,13 +68,7 @@ public:
 private:
 	int32_t compare(const WStringImpl& s) const;
 	void checkIndex(size_t index) const {
-		if (index >= length()) {
-			throwIndexOutOfBounds(index, length());
-		}
-	}
-	void throwIndexOutOfBounds(int index, int len) const {
-		printf("IndexOutOfBounds index=%d, length=%d!\n", index, len);
-		throw "IndexOutOfBounds";
+		LOG_FATAL_IF(index >= length(), "IndexOutOfBounds index=%d, length=%d!\n", index, m_length);
 	}
 
 	const wchar* m_data;

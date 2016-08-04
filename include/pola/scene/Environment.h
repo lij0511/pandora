@@ -28,6 +28,10 @@ public:
 	graphic::Lights* lights() const;
 
 private:
+	Environment& operator=(const Environment& other);
+	Environment(const Environment& other);
+
+private:
 	graphic::Lights* mLights;
 };
 

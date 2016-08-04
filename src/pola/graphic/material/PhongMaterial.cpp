@@ -10,6 +10,7 @@
 #include "pola/utils/StringBuffer.h"
 #include <vector>
 
+
 namespace pola {
 namespace graphic {
 

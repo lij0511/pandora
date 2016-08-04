@@ -23,7 +23,7 @@ enum BitmapScaleMode {
 
 bool scaleBitmap(const Bitmap& src, Bitmap*& dst, float scaleW, float scaleH, BitmapScaleMode scaleMode = BILINEAR);
 
-uint32_t convertColorFormat(uint32_t srcColor, Bitmap::Format srcFormat, Bitmap::Format dstFormat);
+uint32_t convertColorFormat(uint32_t srcColor, PixelFormat srcFormat, PixelFormat dstFormat);
 
 } /* namespace graphic */
 } /* namespace pola */

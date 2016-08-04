@@ -33,7 +33,6 @@ GLGraphicContext::GLGraphicContext() : mCaches(GLCaches::get()) {
 //	glEnable(GL_DITHER);
 //	glEnable(GL_BLEND);
 //	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-//	glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
 }
 
 GLGraphicContext::~GLGraphicContext() {
@@ -42,6 +41,20 @@ GLGraphicContext::~GLGraphicContext() {
 void GLGraphicContext::setViewport(int32_t width, int32_t height) {
 	GraphicContext::setViewport(width, height);
 	glViewport(0, 0, width, height);
+}
+
+RenderTarget* GLGraphicContext::createRenderTarget(uint32_t width, uint32_t height, PixelFormat format) {
+	return new GLRenderTarget(width, height, format);
+}
+
+void GLGraphicContext::setRenderTarget(RenderTarget* renderTarget) {
+	GLRenderTarget* glRenderTarget = dynamic_cast<GLRenderTarget*>(renderTarget);
+	GraphicContext::setRenderTarget(glRenderTarget);
+	if (glRenderTarget == nullptr) {
+		GLCaches::get().bindFrameBuffer(0);
+		glViewport(0, 0, mWidth, mHeight);
+	} else {
+	}
 }
 
 void GLGraphicContext::beginFrame(const FColor4& clearColor) {

@@ -23,8 +23,7 @@ public:
 
 	virtual Mesh* mesh();
 
-protected:
-	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
+	virtual void update(p_nsecs_t timeMs);
 
 private:
 	MD2AnimatedMesh* mMesh;

@@ -20,7 +20,7 @@ namespace graphic {
  */
 class Texture {
 public:
-	Texture() : width(0), height(0), format(Bitmap::Format::UNKONWN) {};
+	Texture() : width(0), height(0), format(PixelFormat::UNKONWN) {};
 	virtual ~Texture() {};
 
 	/**
@@ -32,7 +32,7 @@ public:
 	 */
 	uint32_t height;
 
-	Bitmap::Format format;
+	PixelFormat format;
 };
 
 }

@@ -8,11 +8,7 @@
 #ifndef POLA_SCENEOBJECT_H_
 #define POLA_SCENEOBJECT_H_
 
-#include "pola/graphic/math/Vector.h"
-#include "pola/graphic/math/Quaternion.h"
-#include "pola/graphic/math/Euler.h"
-#include "pola/graphic/math/Matrix4.h"
-#include "pola/graphic/math/Box3.h"
+#include "pola/graphic/Object3D.h"
 #include "pola/graphic/GraphicContext.h"
 
 #include "pola/utils/Times.h"
@@ -26,23 +22,20 @@ namespace scene {
 /*
  *
  */
-class SceneObject : public utils::RefBase<SceneObject> {
+class SceneObject : public graphic::Object3D, public utils::RefBase<SceneObject> {
 public:
 	SceneObject();
 	virtual ~SceneObject();
 
-	void setPosition(const graphic::vec3& position);
-	const graphic::vec3& getPosition() const;
+	virtual void setPosition(const graphic::vec3& position);
 
-	void setRotation(const graphic::Euler& rotation);
-	const graphic::Euler& getRotation() const;
+	virtual void setRotation(const graphic::Euler& rotation);
 
-	void setScale(const graphic::vec3& scale);
-	const graphic::vec3& getScale() const;
+	virtual void setScale(const graphic::vec3& scale);
 
 	const graphic::mat4 getTransform();
-
 	const graphic::mat4 getWorldTransform();
+	virtual bool updateTransform();
 
 	void addChild(SceneObject* node);
 	void removeChild(SceneObject* node);
@@ -54,16 +47,11 @@ public:
 	void translateY(float dy);
 	void translateZ(float dz);
 
+	void requestPropertyChange();
 protected:
 	virtual void onPropertyChange();
 
-	virtual void updateTransform();
-
 	void translateOnAxis(const graphic::vec3& axis, float d);
-
-	graphic::vec3 mPosition;
-	graphic::Euler mRotation;
-	graphic::vec3 mScale;
 
 	graphic::mat4 mWorldMatrix;
 	graphic::mat4 mMatrix;

@@ -43,7 +43,7 @@ public:
 
 	Bitmap* mBitmap;
 
-	virtual bool generateTexture();
+	virtual bool generateTexture(bool useBitmap = true);
 
 };
 

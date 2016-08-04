@@ -20,5 +20,9 @@ void MeshSceneNode::setMaterial(graphic::Material* material) {
 	mMaterial = material;
 }
 
+graphic::Material* MeshSceneNode::material() const {
+	return mMaterial.get();
+}
+
 } /* namespace scene */
 } /* namespace pola */

@@ -14,8 +14,8 @@
 #include <GLES2/gl2.h>
 #elif defined(POLA_LINUX_X11)
 #define OPENGL
-#include <GL/glew.h>
 #endif
+#include <GL/glew.h>
 
 #ifdef OPENGL_ES
 #define glClearDepth glClearDepthf

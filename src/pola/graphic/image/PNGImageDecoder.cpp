@@ -56,7 +56,7 @@ static int read_user_chunk(png_structp png_ptr, png_unknown_chunkp chunk) {
             1 : -1;
 }
 
-bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Format preFormat) {
+bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat preFormat) {
 	png_structp png_ptr;
 	png_infop info_ptr;
 
@@ -136,27 +136,27 @@ bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Forma
 	                              png_set_interlace_handling(png_ptr) : 1;
 	png_read_update_info(png_ptr, info_ptr);
 
-	Bitmap::Format format;
+	PixelFormat format;
 	switch (colorType) {
 		case PNG_COLOR_TYPE_RGB:
-			format = Bitmap::RGB888;
+			format = PixelFormat::RGB888;
 			break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
-			format = Bitmap::RGBA8888;
+			format = PixelFormat::RGBA8888;
 			break;
 		case PNG_COLOR_TYPE_GRAY:
-			format = Bitmap::ALPHA8;
+			format = PixelFormat::ALPHA8;
 			break;
 		case PNG_COLOR_TYPE_RGB_ALPHA:
 		case PNG_COLOR_TYPE_PALETTE:
-			format = Bitmap::RGBA8888;
+			format = PixelFormat::RGBA8888;
 			break;
 		default:
 			png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
 			return nullptr;
 	}
 
-	if (preFormat == Bitmap::Format::UNKONWN) {
+	if (preFormat == PixelFormat::UNKONWN) {
 		preFormat = format;
 	}
 
@@ -167,7 +167,7 @@ bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, Bitmap::Forma
 
 
 	bool hasAlpha = false;
-	if (format == preFormat && format != Bitmap::RGBA8888) {
+	if (format == preFormat && format != PixelFormat::RGBA8888) {
 		for (int i = 0; i < number_passes; i++) {
 			uint8_t* bmRow = bitmap->pixels();
 			for (png_uint_32 y = 0; y < origHeight; y++) {

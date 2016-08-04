@@ -19,7 +19,7 @@ typedef bool (*RowProc)(void* dstRow,
 
 class ImageSampler {
 public:
-	ImageSampler(Bitmap::Format srcFormat, Bitmap::Format dstFormat, unsigned samplesize = 1, bool preMultiplyAlpha = true);
+	ImageSampler(PixelFormat srcFormat, PixelFormat dstFormat, unsigned samplesize = 1, bool preMultiplyAlpha = true);
 	bool sampleScanline(void* dst, const uint8_t* src, uint32_t width, uint32_t deltaSrc);
 private:
 	RowProc mRowProc;

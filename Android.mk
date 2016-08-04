@@ -21,6 +21,8 @@ LOCAL_C_INCLUDES := \
 LOCAL_CPPFLAGS :=	-O2 -g -Wall -Wno-unused-function -Wno-unused-parameter -Wno-strict-aliasing -fmessage-length=0  -fPIC -std=c++11 
 #LOCAL_CFLAGS :=  -O2 -g -Wall -fmessage-length=0 -fPIC
 LOCAL_CPPFLAGS += -DPOLA_GLES
+LOCAL_CPPFLAGS += -DANDROID
+#LOCAL_CPPFLAGS += -DCYCLONE
 
 LOCAL_CPPFLAGS += -fexceptions -frtti
 

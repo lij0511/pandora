@@ -13,7 +13,9 @@
 #include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/Color.h"
 #include "pola/scene/FPS.h"
-#include "pola/scene/node/SceneNode.h"
+#include "pola/scene/node/MeshSceneNode.h"
+#include "pola/scene/light/LightNode.h"
+#include "pola/scene/light/ShadowMap.h"
 #include "pola/scene/camera/Camera.h"
 #include "pola/scene/Environment.h"
 #include "pola/input/KeyEvent.h"
@@ -50,7 +52,7 @@ public:
 	bool dispatchMouseEvent(input::MouseEvent& mouseEvent);
 
 private:
-	void projectNodes(SceneNode*);
+	void projectNodes(SceneObject*);
 
 private:
 	graphic::GraphicContext* mGraphic;
@@ -60,11 +62,12 @@ private:
 
 	utils::Vector<SceneNode*> mNodes;
 
-	utils::Vector<SceneNode*> mViewableNodes;
+	utils::Vector<MeshSceneNode*> mViewableNodes;
 
 	Camera* mCurrentCamera;
 
 	Environment mEnvironment;
+	ShadowMap mShadowMap;
 
 	FPS fps;
 };

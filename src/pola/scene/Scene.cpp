@@ -13,7 +13,7 @@
 namespace pola {
 namespace scene {
 
-Scene::Scene(graphic::GraphicContext* graphic) : mGraphic(graphic), mWidth(0), mHeight(0) {
+Scene::Scene(graphic::GraphicContext* graphic) : mGraphic(graphic), mWidth(0), mHeight(0), mEnvironment(), mShadowMap(mEnvironment.lights()) {
 	mCurrentCamera = nullptr;
 	mViewableNodes.setCapacity(100);
 }
@@ -81,15 +81,19 @@ void Scene::render() {
 	if (mCurrentCamera != nullptr) {
 		mCurrentCamera->update(mGraphic, timeMs);
 	}
-	mGraphic->setLights(mEnvironment.lights());
 
-	/* TODO Project RenderNodes */
+	/* Project RenderNodes */
 	for (unsigned i = 0; i < mNodes.size(); i ++) {
 		projectNodes(mNodes[i]);
 	}
+
+	mShadowMap.render(mGraphic, timeMs);
+
+	mGraphic->setLights(mEnvironment.lights());
 	for (unsigned i = 0; i < mViewableNodes.size(); i ++) {
 		mGraphic->setMatrix(graphic::GraphicContext::MODEL, mViewableNodes[i]->getTransform());
-		mViewableNodes[i]->dispatchRender(mGraphic, timeMs);
+		mViewableNodes[i]->update(timeMs);
+		mGraphic->renderGeometry(mViewableNodes[i]->mesh()->geometry(), mViewableNodes[i]->material());
 	}
 	mViewableNodes.clear(false);
 
@@ -119,7 +123,7 @@ bool Scene::dispatchMouseEvent(input::MouseEvent& mouseEvent) {
 	return false;
 }
 
-void Scene::projectNodes(SceneNode* node) {
+void Scene::projectNodes(SceneObject* node) {
 	if (mCurrentCamera == nullptr || node == nullptr) {
 		return;
 	}
@@ -130,9 +134,15 @@ void Scene::projectNodes(SceneNode* node) {
 		if (mCurrentCamera->frustum().intersectsBox(boundingBox)) {
 			mViewableNodes.push_back(m);
 		}
+	} else {
+		node->updateTransform();
+		LightNode* light = dynamic_cast<LightNode*>(node);
+		if (light != nullptr) {
+			mEnvironment.addLight(light->light());
+		}
 	}
 	for (unsigned i = 0; i < node->getChildCount(); i ++) {
-		projectNodes(dynamic_cast<SceneNode*>(node->getChild(i)));
+		projectNodes(node->getChild(i));
 	}
 }
 
