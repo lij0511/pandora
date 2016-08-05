@@ -38,11 +38,7 @@ public:
 	Light* pointLight(unsigned index) const;
 	Light* spotLight(unsigned index) const;
 
-	size_t lightCount() const;
-	Light* lightAt(unsigned index) const;
-
-	uint32_t hash() const;
-
+	bool shadowMap() const;
 private:
 	void addLight(std::vector<Light*>& lights, Light* light);
 	void removeLight(std::vector<Light*>& lights, Light* light);
@@ -52,9 +48,9 @@ private:
 	std::vector<Light*> mDirectionalLights;
 	std::vector<Light*> mPointLights;
 	std::vector<Light*> mSpotLights;
-	std::vector<Light*> mAllLights;
 
-	mutable uint32_t mHash;
+	bool mShadowMap;
+
 };
 
 } /* namespace graphic */

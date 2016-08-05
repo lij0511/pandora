@@ -13,9 +13,8 @@
 namespace pola {
 namespace scene {
 
-Scene::Scene(graphic::GraphicContext* graphic) : mGraphic(graphic), mWidth(0), mHeight(0), mEnvironment(), mShadowMap(mEnvironment.lights()) {
+Scene::Scene(graphic::GraphicContext* graphic) : mGraphic(graphic), mWidth(0), mHeight(0), mEnvironment(), mShadowMap(this) {
 	mCurrentCamera = nullptr;
-	mViewableNodes.setCapacity(100);
 }
 
 Scene::~Scene() {
@@ -42,26 +41,6 @@ void Scene::setClearColor(graphic::FColor4 color) {
 	mClearColor = color;
 }
 
-void Scene::addSceneNode(SceneNode* node) {
-	for (unsigned i = 0; i < mNodes.size(); i ++) {
-		if (mNodes[i] == node) {
-			return;
-		}
-	}
-	node->ref();
-	mNodes.push(node);
-}
-
-void Scene::removeSceneNode(SceneNode* node) {
-	for (unsigned i = 0; i < mNodes.size(); i ++) {
-		if (mNodes[i] == node) {
-			mNodes.removeAt(i);
-			node->deref();
-			return;
-		}
-	}
-}
-
 void Scene::addCamera(Camera* camera) {
 	// TODO
 	if (mCurrentCamera != nullptr) {
@@ -83,11 +62,14 @@ void Scene::render() {
 	}
 
 	/* Project RenderNodes */
-	for (unsigned i = 0; i < mNodes.size(); i ++) {
-		projectNodes(mNodes[i]);
-	}
+	projectNodes(this);
 
-	mShadowMap.render(mGraphic, timeMs);
+	mShadowMap.render(mGraphic, mLightNodes, timeMs);
+
+	if (mCurrentCamera != nullptr) {
+		mCurrentCamera->requestPropertyChange();
+		mCurrentCamera->update(mGraphic, timeMs);
+	}
 
 	mGraphic->setLights(mEnvironment.lights());
 	for (unsigned i = 0; i < mViewableNodes.size(); i ++) {
@@ -95,7 +77,8 @@ void Scene::render() {
 		mViewableNodes[i]->update(timeMs);
 		mGraphic->renderGeometry(mViewableNodes[i]->mesh()->geometry(), mViewableNodes[i]->material());
 	}
-	mViewableNodes.clear(false);
+	mLightNodes.clear();
+	mViewableNodes.clear();
 
 	mGraphic->endFrame();
 	fps.fps();
@@ -138,7 +121,7 @@ void Scene::projectNodes(SceneObject* node) {
 		node->updateTransform();
 		LightNode* light = dynamic_cast<LightNode*>(node);
 		if (light != nullptr) {
-			mEnvironment.addLight(light->light());
+			mLightNodes.push_back(light);
 		}
 	}
 	for (unsigned i = 0; i < node->getChildCount(); i ++) {

@@ -24,7 +24,7 @@
 namespace pola {
 namespace scene {
 
-class Scene {
+class Scene : public SceneObject {
 public:
 	Scene(graphic::GraphicContext* graphic);
 	virtual ~Scene();
@@ -35,9 +35,6 @@ public:
 	int32_t getHeight() const;
 
 	void setClearColor(graphic::FColor4 color);
-
-	void addSceneNode(SceneNode* node);
-	void removeSceneNode(SceneNode* node);
 
 	void addCamera(Camera* camera);
 	Camera* getCurrentCamera() const;
@@ -60,9 +57,8 @@ private:
 	int32_t mHeight;
 	graphic::FColor4 mClearColor;
 
-	utils::Vector<SceneNode*> mNodes;
-
-	utils::Vector<MeshSceneNode*> mViewableNodes;
+	std::vector<MeshSceneNode*> mViewableNodes;
+	std::vector<LightNode*> mLightNodes;
 
 	Camera* mCurrentCamera;
 

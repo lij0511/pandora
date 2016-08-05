@@ -36,24 +36,25 @@ int main(int argc, char *argv[]) {
 	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/faerie.md2");
 	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/faerie2.bmp");
 	DirectionalLight* light = new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
-	scene->environment()->addLight(light);
+//	light->castShadow = true;
+	scene->addChild(new LightNode(light));
 	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 
-	/*if (mesh) {
+	if (mesh) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 		node->setPosition(graphic::vec3(0, 0, - 100));
 		node->setMaterial(tm1);
-		scene->addSceneNode(node);
-	}*/
+		scene->addChild(node);
+	}
 //	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
 	BasicMesh* m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
 	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-	node->setMaterial(new PhongMaterial({1.0f, 1.0f, 1.0f}));
-	node->setPosition(graphic::vec3(0, 0, 0));
-	scene->addSceneNode(node);
+	node->setMaterial(new LambertMaterial({1.0f, 1.0f, 1.0f}));
+	node->setPosition(graphic::vec3(50, 0, - 100));
+	scene->addChild(node);
 
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));

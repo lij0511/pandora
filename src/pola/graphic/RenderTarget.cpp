@@ -17,6 +17,13 @@ RenderTarget::RenderTarget(uint32_t width, uint32_t height, PixelFormat format) 
 RenderTarget::~RenderTarget() {
 }
 
+uint32_t RenderTarget::getWidth() const {
+	return mWidth;
+}
+uint32_t RenderTarget::getHeight() const {
+	return mHeight;
+}
+
 }
 }
 

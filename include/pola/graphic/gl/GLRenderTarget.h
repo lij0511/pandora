@@ -22,6 +22,9 @@ public:
 	GLRenderTarget(uint32_t width, uint32_t height, PixelFormat format);
 	virtual ~GLRenderTarget();
 
+	GLTexture* getTexture() const;
+	GLuint getFrameBuffer() const;
+
 private:
 	GLTexture* mTexture;
 	GLuint mFrameBuffer;

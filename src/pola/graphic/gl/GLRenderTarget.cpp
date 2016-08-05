@@ -32,5 +32,12 @@ GLRenderTarget::~GLRenderTarget() {
 	glDeleteFramebuffers(1, &mFrameBuffer);
 }
 
+GLTexture* GLRenderTarget::getTexture() const {
+	return mTexture;
+}
+GLuint GLRenderTarget::getFrameBuffer() const {
+	return mFrameBuffer;
+}
+
 } /* namespace graphic */
 } /* namespace pola */

@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
 	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("./res/sydney.bmp");
 	DirectionalLight* dlight = new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
+	dlight->castShadow = true;
 	PointLight* plight = new PointLight({0.f, 0.f, 0.f}, 500, {1.f, 1.f, 1.f});
 
 //	scene->environment()->addLight(dlight);
@@ -49,8 +50,9 @@ int main(int argc, char *argv[]) {
 //	scene->environment()->addLight(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f}));
 //	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
-	scene->addSceneNode(new LightNode(plight));
-	scene->addSceneNode(new LightNode(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f})));
+	scene->addChild(new LightNode(dlight));
+//	scene->addChild(new LightNode(plight));
+//	scene->addChild(new LightNode(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f})));
 
 	Material* m1 = new LambertMaterial({1.f, 1.f, 1.f});
 	Material* m2 = new PhongMaterial({1.f, 0.f, 0.f});
@@ -75,7 +77,7 @@ int main(int argc, char *argv[]) {
 			if (ani < MD2_AT_COUNT) {
 				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
 			}
-			scene->addSceneNode(node);
+			scene->addChild(node);
 		}
 	}
 	if (mesh2) {
@@ -87,7 +89,7 @@ int main(int argc, char *argv[]) {
 			if (ani < MD2_AT_COUNT) {
 				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
 			}
-			scene->addSceneNode(node);
+			scene->addChild(node);
 		}
 	}
 	if (basicMesh) {
@@ -96,7 +98,7 @@ int main(int argc, char *argv[]) {
 			node->setMaterial(m1);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setScale({80, 80, 80});
-			scene->addSceneNode(node);
+			scene->addChild(node);
 		}
 	}
 
@@ -105,7 +107,7 @@ int main(int argc, char *argv[]) {
 		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
 		node->setMaterial(m1);
 		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-		scene->addSceneNode(node);
+		scene->addChild(node);
 	}
 
 	m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
@@ -113,7 +115,7 @@ int main(int argc, char *argv[]) {
 		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
 		node->setMaterial(m1);
 		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-		scene->addSceneNode(node);
+		scene->addChild(node);
 	}
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
@@ -127,7 +129,7 @@ int main(int argc, char *argv[]) {
 	BasicMesh* light = new BasicMesh(new SphereGeometry(5.f, 4, 4));
 	BasicMeshSceneNode* lightNode = new BasicMeshSceneNode(light);
 	lightNode->setMaterial(new Material({1.f, 1.f, 1.f, 1.f}));
-	scene->addSceneNode(lightNode);
+	scene->addChild(lightNode);
 
 	int x = 0;
 	while (device->run()) {

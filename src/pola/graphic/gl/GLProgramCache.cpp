@@ -16,7 +16,7 @@ namespace graphic {
 
 ProgramDescription::ProgramDescription(const char* type)
 	: material_type(type), texture_map(false), texture_map_a8(false),
-	  directional_light_count(0), point_light_count(0), spot_light_count(0),
+	  directional_light_count(0), point_light_count(0), spot_light_count(0), shadow_map(false),
 	  fog(false) {
 }
 
@@ -34,6 +34,7 @@ bool ProgramDescription::operator==(const ProgramDescription& other) const {
 	comp &= directional_light_count == other.directional_light_count;
 	comp &= point_light_count == other.point_light_count;
 	comp &= spot_light_count == other.spot_light_count;
+	comp &= shadow_map == other.shadow_map;
 	// TODO
 	if (material_type == nullptr) {
 		comp &= (mVertexShader == other.mVertexShader && mFragmentShader == other.mFragmentShader);
@@ -55,6 +56,7 @@ utils::hash_t ProgramDescription::hash() const {
 	hash = utils::JenkinsHashMix(hash, directional_light_count);
 	hash = utils::JenkinsHashMix(hash, point_light_count);
 	hash = utils::JenkinsHashMix(hash, spot_light_count);
+	hash = utils::JenkinsHashMix(hash, utils::hash_type(shadow_map));
 	// TODO
 	hash = utils::JenkinsHashWhiten(hash);
 	return hash;

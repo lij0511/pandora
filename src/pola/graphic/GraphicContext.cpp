@@ -42,6 +42,9 @@ void GraphicContext::beginFrame(const FColor4& clearColor) {
 void GraphicContext::endFrame() {
 }
 
+void GraphicContext::clear(const FColor4& clearColor, bool depth) {
+}
+
 void GraphicContext::setLights(Lights* lights) {
 	mLights = lights;
 }
@@ -63,6 +66,19 @@ void GraphicContext::setMatrix(MatrixType type, const mat4& matrix) {
 			break;
 		default:
 			break;
+	}
+}
+
+mat4 GraphicContext::getMatrix(MatrixType type) {
+	switch (type) {
+		case VIEW:
+			return mViewMatrix;
+		case MODEL:
+			return mModelMatrix;
+		case PROJECTION:
+			return mProjectionMatrix;
+		default:
+			return mProjectionMatrix;
 	}
 }
 

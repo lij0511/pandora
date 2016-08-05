@@ -33,6 +33,8 @@ public:
 	virtual void beginFrame(const FColor4& clearColor = {0.f, 0.f, 0.f, 0.f});
 	virtual void endFrame();
 
+	virtual void clear(const FColor4& clearColor = {0.f, 0.f, 0.f, 0.f}, bool depth = true);
+
 	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr);
 	virtual void renderGeometry(Geometry* geometry, const GraphicParameter& parameter, Material* material = nullptr);
 

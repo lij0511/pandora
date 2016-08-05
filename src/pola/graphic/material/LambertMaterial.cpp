@@ -27,6 +27,11 @@ void LambertMaterial::bind(GraphicContext* graphic, Program* program) {
 	if (lights && lights->directionalLightCount() > 0) {
 		static std::vector<utils::String> dirLightsColors;
 		static std::vector<utils::String> dirLightsDirections;
+		static std::vector<utils::String> dirLightsShadows;
+		static std::vector<utils::String> dirLightsShadowBias;
+		static std::vector<utils::String> dirLightsShadowRadius;
+		static std::vector<utils::String> dirLightsShadowMapSize;
+
 		for (unsigned i = 0; i < lights->directionalLightCount(); i ++) {
 			DirectionalLight* light = (DirectionalLight*) lights->directionalLight(i);
 			GLint u_dl;
@@ -58,6 +63,82 @@ void LambertMaterial::bind(GraphicContext* graphic, Program* program) {
 				break;
 			}
 			glUniform3f(u_dl, light->direction.x, light->direction.y, light->direction.z);
+
+			utils::String shadow;
+			if (i < dirLightsShadows.size()) {
+				shadow = dirLightsShadows[i];
+			} else {
+				char buf[40];
+				sprintf(buf, "u_dirLights[%u].shadow", i);
+				shadow = buf;
+				dirLightsShadows.push_back(shadow);
+			}
+			if (!glProgram->fetchUniform(shadow, u_dl)) {
+				break;
+			}
+			glUniform1i(u_dl, light->castShadow ? 1 : 0);
+
+			if (light->castShadow) {
+				utils::String shadowBias;
+				if (i < dirLightsShadowBias.size()) {
+					shadowBias = dirLightsShadowBias[i];
+				} else {
+					char buf[40];
+					sprintf(buf, "u_dirLights[%u].shadowBias", i);
+					shadowBias = buf;
+					dirLightsShadowBias.push_back(shadowBias);
+				}
+				if (!glProgram->fetchUniform(shadowBias, u_dl)) {
+					break;
+				}
+				glUniform1f(u_dl, 0);
+
+				utils::String shadowRadius;
+				if (i < dirLightsShadowRadius.size()) {
+					shadowRadius = dirLightsShadowRadius[i];
+				} else {
+					char buf[40];
+					sprintf(buf, "u_dirLights[%u].shadowRadius", i);
+					shadowRadius = buf;
+					dirLightsShadowRadius.push_back(shadowRadius);
+				}
+				if (!glProgram->fetchUniform(shadowRadius, u_dl)) {
+					break;
+				}
+				glUniform1f(u_dl, 1);
+
+				utils::String shadowMapSize;
+				if (i < dirLightsShadowMapSize.size()) {
+					shadowMapSize = dirLightsShadowMapSize[i];
+				} else {
+					char buf[40];
+					sprintf(buf, "u_dirLights[%u].shadowMapSize", i);
+					shadowMapSize = buf;
+					dirLightsShadowMapSize.push_back(shadowMapSize);
+				}
+				if (!glProgram->fetchUniform(shadowMapSize, u_dl)) {
+					break;
+				}
+				glUniform2f(u_dl, float(light->mapSize.width), float(light->mapSize.height));
+
+				static utils::String shadowMatrix("u_directionalShadowMatrix[0]");
+				if (!glProgram->fetchUniform(shadowMatrix, u_dl)) {
+					break;
+				}
+				glUniformMatrix4fv(u_dl, 1, GL_FALSE, &light->matrix[0]);
+				if (light->map != nullptr) {
+					GLCaches& cache = GLCaches::get();
+					cache.activeTexture(cache.activeTexture() + 1);
+					GLTexture* texture = ((GLRenderTarget*) light->map)->getTexture();
+					cache.bindTexture(texture->id);
+					GLProgram* glProgram = (GLProgram*) program;
+					static utils::String shadowMap("directionalShadowMap[0]");
+					GLint u_textureMapH;
+					if (glProgram->fetchUniform(shadowMap, u_textureMapH)) {
+						glUniform1i(u_textureMapH, cache.activeTexture());
+					}
+				}
+			}
 		}
 	}
 
@@ -126,17 +207,18 @@ const utils::String LambertMaterial::generateVertexShader() {
 	utils::StringBuffer sb;
 #ifdef OGL_RENDERER
 	sb.append(GLShaderLib::VS_Para_TextureMap())
+		.append(GLShaderLib::VS_Para_ShadowMap())
 		.append(GLShaderLib::Para_Lighs())
 		.append(STRINGIFY(
 			varying vec3 v_light;
 			void main()
 			{\n
-			 v_light = vec3( 0.0 );
+			v_light = vec3( 0.0 );
 			\n#if defined(NUM_DIR_LIGHTS) && (NUM_DIR_LIGHTS > 0)\n
 			  DirectionalLight directionalLight;
 			  for (int i = 0; i < NUM_DIR_LIGHTS; i ++) {
 			    directionalLight = u_dirLights[ i ];
-			    float dotNL = clamp(dot(a_normal, normalize(directionalLight.direction)), 0.0f, 1.0f);
+			    float dotNL = clamp(dot(a_normal, - normalize(directionalLight.direction)), 0.0f, 1.0f);
 			    v_light += directionalLight.color * dotNL;
 			  }
 			\n#endif\n
@@ -154,8 +236,10 @@ const utils::String LambertMaterial::generateVertexShader() {
 			  }
 			\n#endif\n
 			  v_light += u_ambientLight;
+			  v_light = clamp(v_light, vec3(0.0), vec3(1.0));
 			))
 		.append(GLShaderLib::VS_TextureMap())
+		.append(GLShaderLib::VS_ShadowMap())
 		.append(GLShaderLib::VS_MainPosition())
 		.append("}");
 #endif
@@ -167,8 +251,11 @@ const utils::String LambertMaterial::generateVertexShader() {
 const utils::String LambertMaterial::generateFragmentShader() {
 	utils::StringBuffer sb(256);
 #ifdef OGL_RENDERER
-	sb.append(GLShaderLib::FS_MainHeader())
+	sb.append(GLShaderLib::Para_Packing())
+		.append(GLShaderLib::FS_MainHeader())
 		.append(GLShaderLib::FS_Para_TextureMap())
+		.append(GLShaderLib::Para_Lighs())
+		.append(GLShaderLib::FS_Para_ShadowMap())
 		.append(
 				STRINGIFY(
 				uniform vec4 u_color;
@@ -180,7 +267,7 @@ const utils::String LambertMaterial::generateFragmentShader() {
 		.append("  diffuseColor = u_color;")
 		.append(GLShaderLib::FS_TextureMap())
 		.append(
-			"  gl_FragColor = diffuseColor * vec4(v_light, 1.0);"
+			"  gl_FragColor = diffuseColor * vec4(v_light, 1.0) * getShadowMask();"
 			"}");
 #endif
 	utils::String s;

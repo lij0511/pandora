@@ -79,8 +79,6 @@ public:
     void loadMultiply(const Matrix4& u, const Matrix4& v);
 
     void loadOrtho(float left, float right, float bottom, float top, float near, float far);
-    void loadLookAt(const vec3& position, const vec3& target, const vec3& upper);
-    void loadLookAtLH(vec3& position, vec3& target, vec3& upper);
 
     void multiply(const Matrix4& v) {
         Matrix4 u;

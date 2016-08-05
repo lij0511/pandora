@@ -11,6 +11,7 @@
 #include "pola/graphic/Color.h"
 #include "pola/graphic/RenderTarget.h"
 #include "pola/graphic/math/Vector.h"
+#include "pola/graphic/math/Matrix4.h"
 
 namespace pola {
 namespace graphic {
@@ -65,6 +66,7 @@ public:
 	bool castShadow;
 	MapSize mapSize;
 	RenderTarget* map;
+	mat4 matrix;
 };
 
 } /* namespace graphic */

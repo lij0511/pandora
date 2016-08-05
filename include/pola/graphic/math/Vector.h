@@ -263,6 +263,12 @@ struct Vector3 {
 		this->z = e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ];
 	}
 
+	void setFromMatrixPosition(const float m[]) {
+		this->x = m[12];
+		this->x = m[13];
+		this->x = m[14];
+	}
+
 	//! Creates an interpolated vector between this vector and another vector.
 	/** \param other The other vector to interpolate with.
 	\param d Interpolation value between 0.0f (all the other vector) and 1.0f (all this vector).

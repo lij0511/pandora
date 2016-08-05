@@ -46,10 +46,13 @@ public:
 	virtual void beginFrame(const FColor4& clearColor = {0.f, 0.f, 0.f, 0.f});
 	virtual void endFrame();
 
+	virtual void clear(const FColor4& clearColor = {0.f, 0.f, 0.f, 0.f}, bool depth = true);
+
 	void setLights(Lights* lights);
 	Lights* lights() const;
 
 	void setMatrix(MatrixType type, const mat4& matrix);
+	mat4 getMatrix(MatrixType type);
 
 	virtual void renderGeometry(Geometry* geometry, const GraphicParameter& parameter, Material* material = nullptr) = 0;
 	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr) = 0;

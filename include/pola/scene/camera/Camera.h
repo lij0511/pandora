@@ -36,12 +36,16 @@ public:
 	const graphic::Frustum& frustum() const;
 
 	virtual bool updateTransform();
+
+	virtual void lookAt(graphic::vec3 target);
 protected:
 
 	virtual void onPropertyChange();
 protected:
 	int32_t mWidth;
 	int32_t mHeight;
+	graphic::vec3 mUp;
+
 	bool mCameraDirty;
 
 	graphic::mat4 mProjection;

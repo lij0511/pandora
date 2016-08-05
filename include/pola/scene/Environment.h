@@ -8,7 +8,6 @@
 #ifndef POLA_ENVIRONMENT_H_
 #define POLA_ENVIRONMENT_H_
 
-#include "pola/utils/Vector.h"
 #include "pola/graphic/light/Lights.h"
 
 namespace pola {

@@ -54,13 +54,23 @@ void GLGraphicContext::setRenderTarget(RenderTarget* renderTarget) {
 		GLCaches::get().bindFrameBuffer(0);
 		glViewport(0, 0, mWidth, mHeight);
 	} else {
+		GLCaches::get().bindFrameBuffer(glRenderTarget->getFrameBuffer());
+		glViewport(0, 0, glRenderTarget->getWidth(), glRenderTarget->getHeight());
 	}
 }
 
 void GLGraphicContext::beginFrame(const FColor4& clearColor) {
+	clear(clearColor, true);
+}
+
+void GLGraphicContext::clear(const FColor4& clearColor, bool depth) {
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-	glClearDepth(1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (depth) {
+		glClearDepth(1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	} else {
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 }
 
 void GLGraphicContext::endFrame() {
@@ -77,6 +87,7 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 	description.directional_light_count = mLights ? mLights->directionalLightCount() : 0;
 	description.point_light_count = mLights ? mLights->pointLightCount() : 0;
 	description.spot_light_count = mLights ? mLights->spotLightCount() : 0;
+	description.shadow_map = mLights ? mLights->shadowMap() : false;
 	GLProgram* program = mCaches.programCache.get(description);
 	if (!program) {
 		utils::String vs;
@@ -84,26 +95,28 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 		if (mLights && mLights->directionalLightCount() > 0) {
 			char buf[40];
 			sprintf(buf, "#define NUM_DIR_LIGHTS %lu\n", mLights->directionalLightCount());
-			vs = fs = buf;
+			vs = buf;
 		}
 		if (mLights && mLights->pointLightCount() > 0) {
-			char buf[40];
+			char buf[100];
 			sprintf(buf, "#define NUM_POINT_LIGHTS %lu\n", mLights->pointLightCount());
-			fs += buf;
-			vs = fs;
+			vs += buf;
+		}
+		if (mLights && mLights->shadowMap()) {
+			vs += "#define USE_SHADOW_MAP\n";
 		}
 		if (material->hasTextureMap()) {
 			vs += "#define TEXTURE_MAP\n";
-			fs += "#define TEXTURE_MAP\n";
 			if (material->hasA8TextureMap()) {
 				vs += "#define TEXTURE_MAP_A8\n";
-				fs += "#define TEXTURE_MAP_A8\n";
 			}
 		}
+		fs = vs;
+
 		vs += GLShaderLib::VS_MainUnifroms();
 		vs += GLShaderLib::VS_MainAttributes();
 		vs += material->getVertexShader();
-		fs += material->getFragmentShader().characters();
+		fs += material->getFragmentShader();
 		program = new GLProgram(vs.characters(), fs.characters());
 		mCaches.programCache.cache(description, program);
 	}
@@ -162,6 +175,7 @@ void GLGraphicContext::renderGeometry(Geometry2D* geometry, const GraphicParamet
 	} else {
 		glDrawArrays(GLDrawMode(parameter.drawMode), 0, positionCount);
 	}
+	GLCaches::get().resetActiveTexture();
 }
 
 void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParameter& parameter, Material* material) {
@@ -209,6 +223,7 @@ void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParamet
 	} else {
 		glDrawArrays(GLDrawMode(parameter.drawMode), 0, positionCount);
 	}
+	GLCaches::get().resetActiveTexture();
 }
 
 Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {

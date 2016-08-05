@@ -66,8 +66,11 @@ bool SceneObject::updateTransform() {
 }
 
 void SceneObject::addChild(SceneObject* child) {
-	if (child->mParent != nullptr) {
+	if (child == this) {
 		return;
+	}
+	if (child->mParent != nullptr) {
+		child->mParent->removeChild(child);
 	}
 	for (unsigned i = 0; i < mChildren.size(); i ++) {
 		if (mChildren[i] == child) {
@@ -80,6 +83,9 @@ void SceneObject::addChild(SceneObject* child) {
 }
 
 void SceneObject::removeChild(SceneObject* child) {
+	if (child->mParent != this) {
+		return;
+	}
 	for (std::vector<SceneObject*>::iterator iter = mChildren.begin(); iter != mChildren.end(); iter ++) {
 		if (*iter == child) {
 			mChildren.erase(iter);

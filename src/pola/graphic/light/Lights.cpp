@@ -11,7 +11,7 @@
 namespace pola {
 namespace graphic {
 
-Lights::Lights() : mHash() {
+Lights::Lights() : mShadowMap(false) {
 }
 
 Lights::~Lights() {
@@ -22,48 +22,41 @@ void Lights::clear() {
 	clearLights(mDirectionalLights);
 	clearLights(mPointLights);
 	clearLights(mSpotLights);
-	mAllLights.clear();
+	mShadowMap = false;
 }
 
 void Lights::addLight(Light* light) {
 	if (light->inUsed()) return;
+	if (!light->lightOn()) return;
 	switch (light->lightType()) {
 		case Light::LIGHT_DIRECTIONAL:
 			addLight(mDirectionalLights, light);
-			addLight(mAllLights, light);
 			break;
 		case Light::LIGHT_POINT:
 			addLight(mPointLights, light);
-			addLight(mAllLights, light);
 			break;
 		case Light::LIGHT_SPOT:
 			addLight(mSpotLights, light);
-			addLight(mAllLights, light);
 			break;
 		default:
 			break;
 	}
-	mHash = 0;
 }
 
 void Lights::removeLight(Light* light) {
 	switch (light->lightType()) {
 		case Light::LIGHT_DIRECTIONAL:
 			removeLight(mDirectionalLights, light);
-			removeLight(mAllLights, light);
 			break;
 		case Light::LIGHT_POINT:
 			removeLight(mPointLights, light);
-			removeLight(mAllLights, light);
 			break;
 		case Light::LIGHT_SPOT:
 			removeLight(mSpotLights, light);
-			removeLight(mAllLights, light);
 			break;
 		default:
 			break;
 	}
-	mHash = 0;
 }
 
 void Lights::setAmbientLight(const FColor3& light) {
@@ -98,24 +91,8 @@ Light* Lights::spotLight(unsigned index) const {
 	return mSpotLights[index];
 }
 
-size_t Lights::lightCount() const {
-	return mAllLights.size();
-}
-
-Light* Lights::lightAt(unsigned index) const {
-	return mAllLights[index];
-}
-
-uint32_t Lights::hash() const {
-	uint32_t hash = mHash;
-	if (hash == 0) {
-		hash = utils::JenkinsHashMix(hash, mDirectionalLights.size());
-		hash = utils::JenkinsHashMix(hash, mPointLights.size());
-		hash = utils::JenkinsHashMix(hash, mSpotLights.size());
-		hash = utils::JenkinsHashWhiten(hash);
-		mHash = hash;
-	}
-	return hash;
+bool Lights::shadowMap() const {
+	return mShadowMap;
 }
 
 void Lights::addLight(std::vector<Light*>& lights, Light* light) {
@@ -126,6 +103,7 @@ void Lights::addLight(std::vector<Light*>& lights, Light* light) {
 	}
 	light->setInUsed(true);
 	lights.push_back(light);
+	mShadowMap |= light->castShadow;
 }
 
 void Lights::removeLight(std::vector<Light*>& lights, Light* light) {

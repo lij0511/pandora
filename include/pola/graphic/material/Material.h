@@ -8,11 +8,13 @@
 #ifndef POLA_MATERIAL_H_
 #define POLA_MATERIAL_H_
 
+#ifndef STRINGIFY
 #define STRINGIFY(A)  #A
+#endif
 
 #if defined(POLA_GLES) || defined(POLA_GL)
-#define OGL_RENDERER
 #endif
+#define OGL_RENDERER
 
 #include "pola/utils/RefBase.h"
 #include "pola/utils/String.h"
@@ -26,6 +28,7 @@
 #include "pola/graphic/gl/GLProgram.h"
 #include "pola/graphic/gl/GLShaderLib.h"
 #include "pola/graphic/gl/GLTexture.h"
+#include "pola/graphic/gl/GLRenderTarget.h"
 #include "pola/graphic/gl/GLCaches.h"
 #endif
 

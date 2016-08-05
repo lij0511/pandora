@@ -6,11 +6,12 @@
  */
 
 #include "pola/scene/light/ShadowMap.h"
+#include "pola/scene/Scene.h"
 
 namespace pola {
 namespace scene {
 
-ShadowMap::ShadowMap(graphic::Lights* lights) : mLights(lights) {
+ShadowMap::ShadowMap(Scene* scene) : mScene(scene) {
 }
 
 ShadowMap::~ShadowMap() {
@@ -20,17 +21,76 @@ ShadowMap& ShadowMap::operator=(const ShadowMap& other) {
 	return *this;
 }
 ShadowMap::ShadowMap(const ShadowMap& other) {
-	mLights = nullptr;
+	mScene = nullptr;
 }
 
-void ShadowMap::render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
+void ShadowMap::render(graphic::GraphicContext* graphic, const std::vector<LightNode*>& lightNodes, p_nsecs_t timeMs) {
 	graphic->setLights(nullptr);
 
-	for (unsigned index = 0; index < mLights->lightCount(); index ++) {
-		graphic::Light* light = mLights->lightAt(index);
-		if (light->map == nullptr) {
-			light->map = graphic->createRenderTarget(light->mapSize.width, light->mapSize.height);
+	Environment* environment = mScene->environment();
+	environment->lights()->clear();
+
+	for (unsigned index = 0; index < lightNodes.size(); index ++) {
+		environment->addLight(lightNodes[index]->light());
+		renderShadowMap(graphic, lightNodes[index], timeMs);
+	}
+
+	graphic->setRenderTarget(nullptr);
+}
+
+void ShadowMap::renderShadowMap(graphic::GraphicContext* graphic, LightNode* lightNode, p_nsecs_t timeMs) {
+	graphic::Light* light = lightNode->light();
+	if (!light->lightOn() || !light->castShadow) {
+		return;
+	}
+	Camera* shadowCamera = lightNode->shadowCamera();
+	if (light->map == nullptr) {
+		light->map = graphic->createRenderTarget(light->mapSize.width, light->mapSize.height);
+	}
+	graphic->setRenderTarget(light->map);
+	graphic->clear();
+
+	graphic::vec3 pos;
+	pos.setFromMatrixPosition(lightNode->getWorldTransform().data);
+	shadowCamera->setPosition(pos);
+	if (light->isDirectionalLight()) {
+		shadowCamera->lookAt(pos + ((graphic::DirectionalLight*) light)->direction);
+	}
+	shadowCamera->update(graphic, timeMs);
+
+	static float m[] = {0.5, 0.0, 0.0, 0.5,
+			0.0, 0.5, 0.0, 0.5,
+			0.0, 0.0, 0.5, 0.5,
+			0.0, 0.0, 0.0, 1.0};
+	light->matrix.load(m);
+	light->matrix.multiply(graphic->getMatrix(graphic::GraphicContext::PROJECTION));
+	light->matrix.multiply(graphic->getMatrix(graphic::GraphicContext::VIEW));
+
+	projectNodes(lightNode->shadowCamera(), mScene);
+
+	for (unsigned i = 0; i < mViewableNodes.size(); i ++) {
+		graphic->setMatrix(graphic::GraphicContext::MODEL, mViewableNodes[i]->getTransform());
+		mViewableNodes[i]->update(timeMs);
+		graphic->renderGeometry(mViewableNodes[i]->mesh()->geometry(), &mShadowMapMaterial);
+	}
+
+	mViewableNodes.clear();
+}
+
+void ShadowMap::projectNodes(Camera* shadowCamera, SceneObject* node) {
+	if (node == nullptr) {
+		return;
+	}
+	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
+	if (m != nullptr) {
+		graphic::Box3 boundingBox =  m->mesh()->geometry()->getBoundingBox();
+		boundingBox.applyMatrix(m->getWorldTransform());
+		if (shadowCamera->frustum().intersectsBox(boundingBox)) {
+			mViewableNodes.push_back(m);
 		}
+	}
+	for (unsigned i = 0; i < node->getChildCount(); i ++) {
+		projectNodes(shadowCamera, node->getChild(i));
 	}
 }
 

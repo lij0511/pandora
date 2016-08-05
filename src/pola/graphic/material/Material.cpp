@@ -55,15 +55,15 @@ void Material::bind(GraphicContext* graphic, Program* program) {
 	}
 	if (hasTextureMap()) {
 		GLTexture* glTexture = (GLTexture*) mTextureMap;
+		GLCaches& cache = GLCaches::get();
 		if (glTexture->generateTexture()) {
-			GLCaches::get().resetActiveTexture();
-			GLCaches::get().activeTexture(0);
-			GLCaches::get().bindTexture(glTexture->id);
+			cache.activeTexture(cache.activeTexture() + 1);
+			cache.bindTexture(glTexture->id);
 			GLProgram* glProgram = (GLProgram*) program;
 			static utils::String u_textureMap = utils::String("u_textureMap");
 			GLint u_textureMapH;
 			if (glProgram->fetchUniform(u_textureMap, u_textureMapH)) {
-				glUniform1i(u_textureMapH, 0);
+				glUniform1i(u_textureMapH, cache.activeTexture());
 			}
 		}
 	}

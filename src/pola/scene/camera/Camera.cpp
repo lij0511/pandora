@@ -10,7 +10,7 @@
 namespace pola {
 namespace scene {
 
-Camera::Camera() : SceneObject(), mWidth(1), mHeight(1), mCameraDirty(true), mController(nullptr) {
+Camera::Camera() : SceneObject(), mWidth(1), mHeight(1), mUp({0, 1, 0}), mCameraDirty(true), mController(nullptr) {
 }
 
 Camera::~Camera() {
@@ -76,6 +76,13 @@ bool Camera::updateTransform() {
 		return true;
 	}
 	return false;
+}
+
+void Camera::lookAt(graphic::vec3 target) {
+	graphic::mat4 m;
+	m.lookAt(mPosition, target, mUp);
+	mRotation.setFromRotationMatrix(m);
+	onPropertyChange();
 }
 
 const graphic::Frustum& Camera::frustum() const {

@@ -18,6 +18,9 @@ Light::Light(LightType type, const FColor3& c) : mType(type), mLightOn(true), mI
 }
 
 Light::~Light() {
+	if (map != nullptr) {
+		delete map;
+	}
 }
 
 void Light::setColor(FColor3 color) {

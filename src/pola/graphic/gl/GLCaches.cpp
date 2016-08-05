@@ -64,6 +64,10 @@ void GLCaches::unbindTexture(GLuint texture) {
     }
 }
 
+GLuint GLCaches::activeTexture() const {
+	return mTextureUnit;
+}
+
 GLenum GLCaches::activeTexture(GLuint textureUnit) {
     if (mTextureUnit != textureUnit) {
         glActiveTexture(gTextureUnits[textureUnit]);
@@ -73,7 +77,7 @@ GLenum GLCaches::activeTexture(GLuint textureUnit) {
 }
 
 void GLCaches::resetActiveTexture() {
-    mTextureUnit = -1;
+    mTextureUnit = 0;
 }
 
 void GLCaches::bindFrameBuffer(GLuint frameBuffer) {

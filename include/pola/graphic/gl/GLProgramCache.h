@@ -39,6 +39,7 @@ public:
 	unsigned directional_light_count;
 	unsigned point_light_count;
 	unsigned spot_light_count;
+	bool shadow_map;
 
 	bool fog;
 };

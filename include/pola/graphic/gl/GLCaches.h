@@ -52,6 +52,7 @@ public:
 	void deleteTexture(GLuint texture);
 	void resetBoundTextures();
 
+	GLuint activeTexture() const;
 	GLenum activeTexture(GLuint textureUnit);
 	void resetActiveTexture();
 

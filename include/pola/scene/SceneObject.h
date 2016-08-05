@@ -19,6 +19,8 @@
 namespace pola {
 namespace scene {
 
+class Scene;
+
 /*
  *
  */
