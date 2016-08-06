@@ -28,6 +28,7 @@ public:
 private:
 	GLTexture* mTexture;
 	GLuint mFrameBuffer;
+	GLuint mRenderBuffer;
 };
 
 } /* namespace graphic */

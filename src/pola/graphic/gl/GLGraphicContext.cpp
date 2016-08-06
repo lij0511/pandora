@@ -56,6 +56,7 @@ void GLGraphicContext::setRenderTarget(RenderTarget* renderTarget) {
 	} else {
 		GLCaches::get().bindFrameBuffer(glRenderTarget->getFrameBuffer());
 		glViewport(0, 0, glRenderTarget->getWidth(), glRenderTarget->getHeight());
+		glEnable(GL_DEPTH_TEST);
 	}
 }
 
@@ -111,6 +112,7 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 				vs += "#define TEXTURE_MAP_A8\n";
 			}
 		}
+//		vs += "#define SHADOWMAP_TYPE_PCF\n";
 		fs = vs;
 
 		vs += GLShaderLib::VS_MainUnifroms();

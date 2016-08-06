@@ -10,6 +10,11 @@
 #include "pola/scene/node/MeshSceneNode.h"
 #include "pola/utils/Times.h"
 
+// TODO
+#include "pola/graphic/gl/GLRenderTarget.h"
+#include "pola/graphic/gl/GLTexture.h"
+#include "pola/graphic/geometries/RectangleGeometry.h"
+
 namespace pola {
 namespace scene {
 
@@ -73,10 +78,23 @@ void Scene::render() {
 
 	mGraphic->setLights(mEnvironment.lights());
 	for (unsigned i = 0; i < mViewableNodes.size(); i ++) {
-		mGraphic->setMatrix(graphic::GraphicContext::MODEL, mViewableNodes[i]->getTransform());
+		mGraphic->setMatrix(graphic::GraphicContext::MODEL, mViewableNodes[i]->getWorldTransform());
 		mViewableNodes[i]->update(timeMs);
 		mGraphic->renderGeometry(mViewableNodes[i]->mesh()->geometry(), mViewableNodes[i]->material());
 	}
+
+	// TODO
+	static graphic::RectangleGeometry r(0, 0, 512, 512);
+	SceneNode node;
+	node.setPosition({- 200, - 200, -300});
+	if (mLightNodes.size() > 0 && mLightNodes[0]->light()->map != nullptr) {
+		mGraphic->setMatrix(graphic::GraphicContext::MODEL, node.getWorldTransform());
+		graphic::GLTexture* t = ((graphic::GLRenderTarget*)mLightNodes[0]->light()->map)->getTexture();
+		graphic::Material m({1.f, 1.f, 1.f, 1.f}, t);
+		mGraphic->renderGeometry(&r, &m);
+	}
+	// TODO
+
 	mLightNodes.clear();
 	mViewableNodes.clear();
 

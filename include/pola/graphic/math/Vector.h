@@ -265,8 +265,8 @@ struct Vector3 {
 
 	void setFromMatrixPosition(const float m[]) {
 		this->x = m[12];
-		this->x = m[13];
-		this->x = m[14];
+		this->y = m[13];
+		this->z = m[14];
 	}
 
 	//! Creates an interpolated vector between this vector and another vector.

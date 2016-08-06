@@ -15,7 +15,7 @@ namespace scene {
 
 LightNode::LightNode(graphic::Light* light) : mLight(light) {
 	if (isDirectionalLight()) {
-		mShadowCamera = new OrthoCamera(- 500, 500, 500, - 500, -5000, 5000);
+		mShadowCamera = new OrthoCamera(- 256, 256, - 256, 256, 0.5f, 200);
 	} else if (isSpotLight()) {
 		mShadowCamera = new PerspectiveCamera(M_PI / 180.f * 50, 1, 0.5, 500);
 	} else if (isPointLight()) {

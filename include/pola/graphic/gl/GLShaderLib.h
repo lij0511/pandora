@@ -30,7 +30,6 @@ public:
 	static const char* FS_Para_TextureMap();
 
 	static const char* FS_Para_ShadowMap();
-	static const char* FS_ShadowMap();
 
 	static const char* Para_Packing();
 

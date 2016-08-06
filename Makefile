@@ -35,8 +35,5 @@ include test/test.mk
 .PHONY: clean
 	#@find src/core -name '*.cpp' | xargs echo;
 clean:
-	@if [ -d out ]; then find out/ -name '*.o' -o -name '*.a' -o -name '*.d'  -o -name '*.P' | xargs rm -rf; fi
-
-cleanall:
 	@if [ -d out ]; then find out/ -name '*' | xargs rm -rf; fi
 	

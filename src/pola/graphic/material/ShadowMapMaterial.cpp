@@ -35,11 +35,11 @@ void ShadowMapMaterial::bind(GraphicContext* graphic, Program* program) {
 const utils::String ShadowMapMaterial::generateVertexShader() {
 	utils::StringBuffer sb(256);
 #ifdef OGL_RENDERER
-	sb.append("varying vec4 v_worldPosition;"
+	sb.append(
 			"void main()"
 			"{")
 		.append(GLShaderLib::VS_MainPosition())
-		.append("v_worldPosition = u_model * a_position;"
+		.append(
 				"}");
 #endif
 	utils::String s;
@@ -53,12 +53,10 @@ const utils::String ShadowMapMaterial::generateFragmentShader() {
 	sb.append(GLShaderLib::FS_MainHeader())
 		.append(GLShaderLib::Para_Packing())
 		.append(STRINGIFY(
-				varying vec4 v_worldPosition;
-				uniform vec3 u_lightPos;
 				void main()
 				{
 		))
-		.append("  gl_FragColor = packDepthToRGBA(length( v_worldPosition.xyz - u_lightPos) / 1000.0);"
+		.append("  gl_FragColor = packDepthToRGBA( gl_FragCoord.z );"
 			"}");
 #endif
 	utils::String s;

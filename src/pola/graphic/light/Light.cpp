@@ -13,7 +13,7 @@ namespace graphic {
 
 Light::Light(LightType type, const FColor3& c) : mType(type), mLightOn(true), mInUsed(false), color(c) {
 	castShadow = false;
-	mapSize = {512, 512};
+	mapSize = {2048, 2048};
 	map = nullptr;
 }
 

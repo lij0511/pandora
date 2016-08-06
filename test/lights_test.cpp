@@ -35,9 +35,11 @@ int main(int argc, char *argv[]) {
 	 scene->setClearColor({0.4f, 0.4f, 0.6f, 1.f});
 	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/faerie.md2");
 	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/faerie2.bmp");
-	DirectionalLight* light = new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
-//	light->castShadow = true;
-	scene->addChild(new LightNode(light));
+	DirectionalLight* light = new DirectionalLight({1.f, 0.f, -0.1f}, {1.f, 1.f, 1.f});
+	light->castShadow = true;
+	LightNode* lightNode = new LightNode(light);
+	lightNode->setPosition({-100.f, 0.f, 0.f});
+	scene->addChild(lightNode);
 	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 
@@ -45,7 +47,7 @@ int main(int argc, char *argv[]) {
 
 	if (mesh) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
-		node->setPosition(graphic::vec3(0, 0, - 100));
+		node->setPosition(graphic::vec3(0, 0, 0));
 		node->setMaterial(tm1);
 		scene->addChild(node);
 	}
@@ -53,14 +55,14 @@ int main(int argc, char *argv[]) {
 	BasicMesh* m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
 	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
 	node->setMaterial(new LambertMaterial({1.0f, 1.0f, 1.0f}));
-	node->setPosition(graphic::vec3(50, 0, - 100));
+	node->setPosition(graphic::vec3(50, 0, - 0));
 	scene->addChild(node);
 
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();
 	camera->setCameraController(new DefaultCameraController(camera));
-//	camera->setPosition(vec3(0, 0, -100));
+	camera->setPosition(vec3(0, 0, 100));
 	scene->addCamera(camera);
 
 	while (device->run()) {

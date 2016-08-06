@@ -22,13 +22,13 @@ const char* GLShaderLib::VS_MainUnifroms() {
 }
 
 const char* GLShaderLib::VS_MainAttributes() {
-	return "attribute vec4 a_position;"
+	return "attribute vec3 a_position;"
 			"attribute vec2 a_uv;"
 			"attribute vec3 a_normal;";
 }
 
 const char* GLShaderLib::VS_MainPosition() {
-	return "  gl_Position = u_projection * u_view * u_model * a_position;";
+	return "  gl_Position = u_projection * u_view * u_model * vec4(a_position, 1.0);";
 }
 
 const char* GLShaderLib::VS_Para_TextureMap() {
@@ -65,7 +65,7 @@ const char* GLShaderLib::VS_Para_ShadowMap() {
 const char* GLShaderLib::VS_ShadowMap() {
 	return STRINGIFY(
 				\n#ifdef USE_SHADOW_MAP\n
-				vec4 worldPosition =  u_model * a_position;
+				vec4 worldPosition =  u_model * vec4(a_position, 1.0);
 				\n#if defined(NUM_DIR_LIGHTS) && (NUM_DIR_LIGHTS > 0)\n
 				for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
 					v_directionalShadowCoord[ i ] = u_directionalShadowMatrix[ i ] * worldPosition;
@@ -183,7 +183,7 @@ const char* GLShaderLib::FS_Para_ShadowMap() {
 
 					bool frustumTest = all( frustumTestVec );
 
-					if ( frustumTest ) {
+					if ( inFrustum ) {
 
 						\n#if defined( SHADOWMAP_TYPE_PCF )\n
 
@@ -399,29 +399,6 @@ const char* GLShaderLib::FS_Para_ShadowMap() {
 
 				}
 		);
-}
-
-const char* GLShaderLib::FS_ShadowMap() {
-	return STRINGIFY(
-				\n#ifdef USE_SHADOW_MAP\n
-				vec4 worldPosition =  u_model * a_position;
-				\n#if defined(NUM_DIR_LIGHTS) && (NUM_DIR_LIGHTS > 0)\n
-				for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
-					v_directionalShadowCoord[ i ] = u_directionalShadowMatrix[ i ] * worldPosition;
-				}
-				\n#endif\n
-				\n#if defined(NUM_POINT_LIGHTS) && (NUM_POINT_LIGHTS > 0)\n
-				for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
-					v_pointShadowCoord[ i ] = u_pointShadowMatrix[ i ] * worldPosition;
-				}
-				\n#endif\n
-				\n#if defined(NUM_SPOT_LIGHTS) && (NUM_SPOT_LIGHTS > 0)\n
-				for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {
-					v_spotShadowCoord[ i ] = u_spotShadowMatrix[ i ] * worldPosition;
-				}
-				\n#endif\n
-				\n#endif\n
-	);
 }
 
 const char* GLShaderLib::Para_Packing() {

@@ -503,9 +503,9 @@ void Matrix4::lookAt(const vec3& eye, const vec3& target, const vec3& upper) {
 	data[9] = zaxis.y;
 	data[10] = zaxis.z;
 
-	data[12] = xaxis.dot(eye);
-	data[13] = yaxis.dot(eye);
-	data[14] = zaxis.dot(eye);
+//	data[12] = xaxis.dot(eye);
+//	data[13] = yaxis.dot(eye);
+//	data[14] = zaxis.dot(eye);
 }
 
 float Matrix4::determinant() {

@@ -153,7 +153,7 @@ bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat p
 			break;
 		default:
 			png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
-			return nullptr;
+			return false;
 	}
 
 	if (preFormat == PixelFormat::UNKONWN) {

@@ -48,23 +48,27 @@ void ShadowMap::renderShadowMap(graphic::GraphicContext* graphic, LightNode* lig
 		light->map = graphic->createRenderTarget(light->mapSize.width, light->mapSize.height);
 	}
 	graphic->setRenderTarget(light->map);
-	graphic->clear();
+	graphic->clear({1.f, 1.f, 1.f, 1.f});
 
 	graphic::vec3 pos;
 	pos.setFromMatrixPosition(lightNode->getWorldTransform().data);
 	shadowCamera->setPosition(pos);
+	mShadowMapMaterial.setLightPosition(pos);
 	if (light->isDirectionalLight()) {
 		shadowCamera->lookAt(pos + ((graphic::DirectionalLight*) light)->direction);
+	} else if (light->isSpotLight()) {
+
 	}
 	shadowCamera->update(graphic, timeMs);
 
-	static float m[] = {0.5, 0.0, 0.0, 0.5,
-			0.0, 0.5, 0.0, 0.5,
-			0.0, 0.0, 0.5, 0.5,
-			0.0, 0.0, 0.0, 1.0};
+	static float m[] = {0.5f, 0.0f, 0.0f, 0.0f,
+			0.0f, 0.5f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.5f, 0.0f,
+			0.5f, 0.5f, 0.5f, 1.0f};
 	light->matrix.load(m);
 	light->matrix.multiply(graphic->getMatrix(graphic::GraphicContext::PROJECTION));
 	light->matrix.multiply(graphic->getMatrix(graphic::GraphicContext::VIEW));
+
 
 	projectNodes(lightNode->shadowCamera(), mScene);
 

@@ -38,6 +38,8 @@ public:
 	virtual bool updateTransform();
 
 	virtual void lookAt(graphic::vec3 target);
+
+	graphic::mat4 getProjection() const;
 protected:
 
 	virtual void onPropertyChange();

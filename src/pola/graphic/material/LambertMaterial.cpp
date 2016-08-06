@@ -267,7 +267,7 @@ const utils::String LambertMaterial::generateFragmentShader() {
 		.append("  diffuseColor = u_color;")
 		.append(GLShaderLib::FS_TextureMap())
 		.append(
-			"  gl_FragColor = diffuseColor * vec4(v_light, 1.0) * getShadowMask();"
+			"  gl_FragColor = diffuseColor * vec4(v_light * getShadowMask(), 1.0);"
 			"}");
 #endif
 	utils::String s;

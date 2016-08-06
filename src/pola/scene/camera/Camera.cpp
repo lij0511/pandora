@@ -89,6 +89,10 @@ const graphic::Frustum& Camera::frustum() const {
 	return mFrustum;
 }
 
+graphic::mat4 Camera::getProjection() const {
+	return mProjection;
+}
+
 void Camera::onPropertyChange() {
 	SceneObject::onPropertyChange();
 	mCameraDirty = true;
