@@ -105,6 +105,7 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 		}
 		if (mLights && mLights->shadowMap()) {
 			vs += "#define USE_SHADOW_MAP\n";
+//			vs += "#define SHADOWMAP_TYPE_PCF_SOFT\n";
 		}
 		if (material->hasTextureMap()) {
 			vs += "#define TEXTURE_MAP\n";
@@ -112,7 +113,6 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 				vs += "#define TEXTURE_MAP_A8\n";
 			}
 		}
-//		vs += "#define SHADOWMAP_TYPE_PCF\n";
 		fs = vs;
 
 		vs += GLShaderLib::VS_MainUnifroms();

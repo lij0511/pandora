@@ -235,8 +235,6 @@ const utils::String LambertMaterial::generateVertexShader() {
 			    }
 			  }
 			\n#endif\n
-			  v_light += u_ambientLight;
-			  v_light = clamp(v_light, vec3(0.0), vec3(1.0));
 			))
 		.append(GLShaderLib::VS_TextureMap())
 		.append(GLShaderLib::VS_ShadowMap())
@@ -267,7 +265,9 @@ const utils::String LambertMaterial::generateFragmentShader() {
 		.append("  diffuseColor = u_color;")
 		.append(GLShaderLib::FS_TextureMap())
 		.append(
-			"  gl_FragColor = diffuseColor * vec4(v_light * getShadowMask(), 1.0);"
+			"  vec3 light = v_light * getShadowMask() + u_ambientLight;"
+			"  light = clamp(light, vec3(0.0), vec3(1.0));"
+			"  gl_FragColor = diffuseColor * vec4(light, 1.0);"
 			"}");
 #endif
 	utils::String s;

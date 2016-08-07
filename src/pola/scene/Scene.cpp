@@ -83,7 +83,7 @@ void Scene::render() {
 		mGraphic->renderGeometry(mViewableNodes[i]->mesh()->geometry(), mViewableNodes[i]->material());
 	}
 
-	// TODO
+	// TODO ShadowMap debug
 	static graphic::RectangleGeometry r(0, 0, 512, 512);
 	SceneNode node;
 	node.setPosition({- 200, - 200, -300});

@@ -183,7 +183,7 @@ const char* GLShaderLib::FS_Para_ShadowMap() {
 
 					bool frustumTest = all( frustumTestVec );
 
-					if ( inFrustum ) {
+					if ( frustumTest ) {
 
 						\n#if defined( SHADOWMAP_TYPE_PCF )\n
 
