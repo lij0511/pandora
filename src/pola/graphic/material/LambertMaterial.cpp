@@ -10,6 +10,14 @@
 #include "pola/utils/StringBuffer.h"
 #include <vector>
 
+#ifdef OGL_RENDERER
+#include "pola/graphic/gl/GLProgram.h"
+#include "pola/graphic/gl/GLShaderLib.h"
+#include "pola/graphic/gl/GLTexture.h"
+#include "pola/graphic/gl/GLRenderTarget.h"
+#include "pola/graphic/gl/GLCaches.h"
+#endif
+
 namespace pola {
 namespace graphic {
 
@@ -62,7 +70,11 @@ void LambertMaterial::bind(GraphicContext* graphic, Program* program) {
 			if (!glProgram->fetchUniform(direction, u_dl)) {
 				break;
 			}
-			glUniform3f(u_dl, light->direction.x, light->direction.y, light->direction.z);
+			GLUniform* uniform = glProgram->fetchUniform("u_dirLights", i, "direction");
+			if (uniform == nullptr) {
+				break;
+			}
+			glUniform3f(uniform->location, light->direction.x, light->direction.y, light->direction.z);
 
 			utils::String shadow;
 			if (i < dirLightsShadows.size()) {

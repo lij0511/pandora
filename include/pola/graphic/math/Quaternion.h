@@ -8,7 +8,7 @@
 #ifndef QUATERNION_H_
 #define QUATERNION_H_
 
-#include <math.h>
+#include <cmath>
 
 namespace pola {
 namespace graphic {

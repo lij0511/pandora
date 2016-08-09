@@ -20,7 +20,7 @@ OrthoCamera::~OrthoCamera() {
 void OrthoCamera::setSize(int32_t width, int32_t height) {
 	Camera::setSize(width, height);
 	if (width > 0 && height > 0) {
-		mProjection.makeOrtho(0, width, 0, height, mNear, mFar);
+		mProjection.makeOrtho(0, width, height, 0, mNear, mFar);
 		onPropertyChange();
 	}
 }

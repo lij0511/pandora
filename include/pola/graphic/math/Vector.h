@@ -8,7 +8,7 @@
 #ifndef POLA_GRAPHIC_VECTOR_H_
 #define POLA_GRAPHIC_VECTOR_H_
 
-#include <math.h>
+#include <cmath>
 #include "pola/graphic/math/Quaternion.h"
 #include "pola/utils/TypeHelpers.h"
 

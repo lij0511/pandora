@@ -5,7 +5,7 @@
  *      Author: lijing
  */
 
-#include <math.h>
+#include <cmath>
 #include <stdlib.h>
 #include <time.h>
 

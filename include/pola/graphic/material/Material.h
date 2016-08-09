@@ -13,8 +13,8 @@
 #endif
 
 #if defined(POLA_GLES) || defined(POLA_GL)
-#endif
 #define OGL_RENDERER
+#endif
 
 #include "pola/utils/RefBase.h"
 #include "pola/utils/String.h"
@@ -23,14 +23,6 @@
 #include "pola/graphic/Color.h"
 #include "pola/graphic/Texture.h"
 #include "pola/graphic/Blend.h"
-
-#ifdef OGL_RENDERER
-#include "pola/graphic/gl/GLProgram.h"
-#include "pola/graphic/gl/GLShaderLib.h"
-#include "pola/graphic/gl/GLTexture.h"
-#include "pola/graphic/gl/GLRenderTarget.h"
-#include "pola/graphic/gl/GLCaches.h"
-#endif
 
 namespace pola {
 namespace graphic {

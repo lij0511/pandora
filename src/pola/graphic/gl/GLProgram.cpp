@@ -20,10 +20,21 @@ GLProgram::GLProgram(const char* vertexShader, const char* fragmentShader) :
 	compile(vertexShader, fragmentShader);
 	glDeleteShader(mVertexShaderHandle);
 	glDeleteShader(mFragmentShaderHandle);
+
+	parseUniforms();
 }
 
 GLProgram::~GLProgram() {
 	glDeleteProgram(mProgramId);
+
+	for (std::map<std::string, GLUniform*>::iterator iter = mUniforms.begin(); iter != mUniforms.end(); iter ++) {
+		delete iter->second;
+		mUniforms.erase(iter);
+	}
+	for (std::map<std::string, GLAttribute*>::iterator iter = mAttributes.begin(); iter != mAttributes.end(); iter ++) {
+		delete iter->second;
+		mAttributes.erase(iter);
+	}
 }
 
 void GLProgram::use() {
@@ -31,19 +42,48 @@ void GLProgram::use() {
 }
 
 bool GLProgram::fetchAttribute(const utils::String& name, GLint& location) {
-	if (!mAttributes.get(name, location)) {
+	if (!mAAttributes.get(name, location)) {
 		location = glGetAttribLocation(mProgramId, name.characters());
-		mAttributes.put(name, location);
+		mAAttributes.put(name, location);
 	}
 	return location >= 0;
 }
 
 bool GLProgram::fetchUniform(const utils::String& name, GLint& location) {
-	if (!mUniforms.get(name, location)) {
+	if (!mAUniforms.get(name, location)) {
 		location = glGetUniformLocation(mProgramId, name.characters());
-		mUniforms.put(name, location);
+		mAUniforms.put(name, location);
 	}
 	return location >= 0;
+}
+
+GLUniform* GLProgram::fetchUniform(const std::string& name) {
+	std::map<std::string, GLUniform*>::iterator iter = mUniforms.find(name);
+	if (iter == mUniforms.end()) return nullptr;
+	return iter->second;
+}
+
+GLUniform* GLProgram::fetchUniform(const std::string& name, int index) {
+	std::map<std::string, GLUniform*>::iterator iter = mUniforms.find(name);
+	if (iter == mUniforms.end()) return nullptr;
+	GLUniformArray* array = dynamic_cast<GLUniformArray*>(iter->second);
+	if (array != nullptr && ssize_t(array->uniforms.size()) > index) {
+		return array->uniforms[index];
+	}
+	return nullptr;
+}
+
+GLUniform* GLProgram::fetchUniform(const std::string& name, int index, const std::string& subName) {
+	std::map<std::string, GLUniform*>::iterator iter = mUniforms.find(name);
+	if (iter == mUniforms.end()) return nullptr;
+	GLUniformArray* array = dynamic_cast<GLUniformArray*>(iter->second);
+	if (array != nullptr && ssize_t(array->uniforms.size()) > index) {
+		GLUniformStructure* structure = dynamic_cast<GLUniformStructure*>(array->uniforms[index]);
+		if (structure != nullptr && (iter = structure->uniforms.find(subName)) != structure->uniforms.end()) {
+			return iter->second;
+		}
+	}
+	return nullptr;
 }
 
 void GLProgram::compile(const char* vertexShader, const char* fragmentShader) {
@@ -103,6 +143,131 @@ GLuint GLProgram::buildShader(const char* source, GLenum type) {
 	}
 
 	return shader;
+}
+
+void GLProgram::parseUniforms() {
+	GLint activeUniforms;
+	glGetProgramiv(mProgramId, GL_ACTIVE_UNIFORMS, &activeUniforms);
+	if (activeUniforms > 0) {
+		GLint length;
+		glGetProgramiv(mProgramId, GL_ACTIVE_UNIFORM_MAX_LENGTH, &length);
+		if (length > 0) {
+			GLchar* uniformName = (GLchar*) malloc(length + 1);
+			for (int i = 0; i < activeUniforms; ++i) {
+				GLsizei name_length = 0;
+				GLint size = 0;
+				GLenum type = GL_ZERO;
+				glGetActiveUniform(mProgramId, i, length, &name_length, &size, &type, uniformName);
+				uniformName[name_length] = '\0';
+				GLint location = glGetUniformLocation(mProgramId, uniformName);
+				std::string name = uniformName;
+				addUniform(mUniforms, name, location, size, type);
+			}
+			free(uniformName);
+		}
+	}
+}
+
+void GLProgram::addUniform(std::map<std::string, GLUniform*>& uniformContainer, std::string& name, GLint location, GLsizei size, GLenum type) {
+	if (name.length() == 0) return;
+	ssize_t dot = name.find_first_of('.');
+	ssize_t bracket = name.find_first_of('[');
+	ssize_t bracketRight = name.find_first_of(']');
+	if (dot == 0 || bracket == 0 || bracketRight == 0) {
+		LOGW("Uniform(%s) parse failed\n", name.c_str());
+		return;
+	}
+	if (dot < 0 && bracket < 0) {
+		GLUniform* uniform = uniformContainer[name];
+		if (uniform != nullptr) {
+			delete uniform;
+		}
+		uniformContainer[name] = new GLUniform(name, location, type);
+		return;
+	}
+	if (dot < 0 && bracketRight + 1 == ssize_t(name.length())) {
+		std::string subName = name.substr(0, bracket);
+		GLUniform* uniform = uniformContainer[subName];
+		if (uniform != nullptr) {
+			delete uniform;
+		}
+		uniformContainer[subName] = new GLUniformArray(subName, location, size, type);
+		return;
+	} else if (dot < 0) {
+		LOGW("Uniform(%s) parse failed\n", name.c_str());
+		return;
+	}
+	if (bracket < 0 || (dot > 0 && dot < bracket)) {
+		std::string subName = name.substr(0, dot);
+		GLUniform* uniform = uniformContainer[subName];
+		GLUniformStructure* structure = dynamic_cast<GLUniformStructure*>(uniform);
+		if (structure == nullptr) {
+			if (uniform != nullptr) {
+				delete uniform;
+			}
+			structure = new GLUniformStructure(subName);
+			uniformContainer[subName] = structure;
+		}
+		std::string subStr = name.substr(dot + 1, name.length());
+		addUniform(structure->uniforms, subStr, location, size, type);
+	} else {
+		std::string subName = name.substr(0, bracket);
+		GLUniform* uniform = uniformContainer[subName];
+		GLUniformArray* array = dynamic_cast<GLUniformArray*>(uniform);
+		if (array == nullptr) {
+			if (uniform != nullptr) {
+				delete uniform;
+			}
+			array = new GLUniformArray(subName);
+			uniformContainer[subName] = array;
+		}
+		ssize_t i = atoi(name.substr(bracket + 1, bracketRight).c_str());
+		if (i < 0) {
+			LOGW("Uniform(%s) parse failed\n", name.c_str());
+			return;
+		}
+		if (i >= ssize_t(array->uniforms.size())) {
+			array->uniforms.resize(i + 1);
+			array->uniforms[i] = nullptr;;
+		}
+		uniform = array->uniforms[i];
+		GLUniformStructure* structure = dynamic_cast<GLUniformStructure*>(uniform);
+		if (structure == nullptr) {
+			if (uniform != nullptr) {
+				delete uniform;
+			}
+			structure = new GLUniformStructure(subName);
+			array->uniforms[i] = structure;
+		}
+		std::string subStr = name.substr(dot + 1);
+		addUniform(structure->uniforms, subStr, location, size, type);
+	}
+}
+
+void GLProgram::parseAttributes() {
+	GLint activeAttributes;
+	glGetProgramiv(mProgramId, GL_ACTIVE_ATTRIBUTES, &activeAttributes);
+	if (activeAttributes > 0) {
+		GLint length;
+		glGetProgramiv(mProgramId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &length);
+		if (length > 0) {
+			GLchar* attributeName = (GLchar*) malloc(length + 1);
+			for (int i = 0; i < activeAttributes; ++i) {
+				GLsizei name_length = 0;
+				GLint size = 0;
+				GLenum type = GL_ZERO;
+				glGetActiveAttrib(mProgramId, i, length, &name_length, &size, &type, attributeName);
+				attributeName[name_length] = '\0';
+				GLint location = glGetUniformLocation(mProgramId, attributeName);
+				std::string name = attributeName;
+				GLAttribute* attribute = mAttributes[name];
+				if (attribute == nullptr) {
+					mAttributes[name] = new GLAttribute(name, location, type);
+				}
+			}
+			free(attributeName);
+		}
+	}
 }
 
 } /* namespace graphic */

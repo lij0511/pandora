@@ -13,8 +13,6 @@
 #include "pola/scene/mesh/MD2AnimatedMesh.h"
 #include "pola/scene/node/MD2AnimatedMeshSceneNode.h"
 #include "pola/scene/node/BasicMeshSceneNode.h"
-#include "pola/graphic/gl/GLCaches.h"
-#include "pola/graphic/gl/GLTexture.h"
 #include "pola/graphic/material/LambertMaterial.h"
 #include "pola/graphic/material/PhongMaterial.h"
 #include "pola/graphic/geometries/SphereGeometry.h"
@@ -33,13 +31,15 @@ int main(int argc, char *argv[]) {
 
 	 Scene* scene = device->getSceneManager()->getActiveScene();
 	 scene->setClearColor({0.4f, 0.4f, 0.6f, 1.f});
-	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/ogro.md2");
-	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/darkam.png");
+	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/ratamahatta.md2");
+	MD2AnimatedMesh* weapon = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/weapon.md2");
+	Texture* texture = scene->graphic()->loadTexture("./res/ratamahatta.png");
 	DirectionalLight* light = new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
 	light->castShadow = true;
 	LightNode* lightNode = new LightNode(light);
-	lightNode->setPosition({-100.f, 0.f, 0.f});
+	lightNode->setPosition({-150.f, 0.f, 0.f});
 	scene->addChild(lightNode);
+	scene->addChild(new LightNode(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f})));
 	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 
@@ -47,8 +47,13 @@ int main(int argc, char *argv[]) {
 
 	if (mesh) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
-		node->setPosition(graphic::vec3(0, 0, 0));
+		node->setPosition(graphic::vec3(-100, 0, 0));
 		node->setMaterial(tm1);
+		if (weapon != nullptr) {
+			MD2AnimatedMeshSceneNode* weaponNode = new MD2AnimatedMeshSceneNode(weapon);
+			weaponNode->setMaterial(new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture("./res/weapon.png")));
+			node->addChild(weaponNode);
+		}
 		scene->addChild(node);
 	}
 	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));

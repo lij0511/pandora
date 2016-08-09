@@ -1,5 +1,5 @@
 
-#include <math.h>
+#include <cmath>
 
 #include "pola/utils/BasicHashtable.h"
 #include "pola/log/Log.h"

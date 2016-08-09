@@ -8,6 +8,14 @@
 #include "pola/graphic/material/ShadowMapMaterial.h"
 #include "pola/utils/StringBuffer.h"
 
+#ifdef OGL_RENDERER
+#include "pola/graphic/gl/GLProgram.h"
+#include "pola/graphic/gl/GLShaderLib.h"
+#include "pola/graphic/gl/GLTexture.h"
+#include "pola/graphic/gl/GLRenderTarget.h"
+#include "pola/graphic/gl/GLCaches.h"
+#endif
+
 namespace pola {
 namespace graphic {
 

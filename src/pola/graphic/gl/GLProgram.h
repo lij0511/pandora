@@ -12,6 +12,11 @@
 #include "pola/utils/TinyHashMap.h"
 #include "pola/utils/String.h"
 #include "pola/graphic/Program.h"
+#include "pola/graphic/gl/GLUniform.h"
+#include "pola/graphic/gl/GLAttribute.h"
+
+#include <map>
+#include <vector>
 
 namespace pola {
 namespace graphic {
@@ -27,17 +32,29 @@ public:
 	bool fetchAttribute(const utils::String& name, GLint& outLocation);
 	bool fetchUniform(const utils::String& name, GLint& outLocation);
 
+	GLUniform* fetchUniform(const std::string& name);
+	GLUniform* fetchUniform(const std::string& name, int index);
+	GLUniform* fetchUniform(const std::string& name, int index, const std::string& subName);
+
 private:
 	void compile(const char* vertexShader, const char* fragmentShader);
 	GLuint buildShader(const char* source, GLenum type);
+
+	void parseUniforms();
+	void addUniform(std::map<std::string, GLUniform*>& uniformContainer, std::string& name, GLint location, GLsizei size, GLenum type);
+
+	void parseAttributes();
 private:
 	// Name of the OpenGL program and shaders
 	GLuint mProgramId;
 	GLuint mVertexShaderHandle;
 	GLuint mFragmentShaderHandle;
 
-	pola::utils::TinyHashMap<utils::String, GLint> mAttributes;
-	pola::utils::TinyHashMap<utils::String, GLint> mUniforms;
+	pola::utils::TinyHashMap<utils::String, GLint> mAAttributes;
+	pola::utils::TinyHashMap<utils::String, GLint> mAUniforms;
+
+	std::map<std::string, GLUniform*> mUniforms;
+	std::map<std::string, GLAttribute*> mAttributes;
 };
 
 } /* namespace graphic */

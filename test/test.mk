@@ -6,7 +6,17 @@ cppflags += -lpthread -lX11 -lGL -lGLEW -D_GNU_SOURCE
 builddir := out
 
 testlibs = -L./out/libs/libpola -lpola
-includes := $(addprefix -I , $(LOCAL_C_INCLUDES))
+
+c_includes = ./include \
+	third_party/freetype/include \
+	third_party/zlib \
+	third_party/libpng \
+	third_party/libjpeg \
+	third_party/icu/source/common \
+	third_party/harfbuzz_ng/src \
+	extensions/ParticleUniverse \
+	
+includes := $(addprefix -I , $(c_includes))
 
 thread_test: test/thread_test.cpp
 	$(CXX) $^ $(testlibs) -o $(builddir)/$@ $(includes) $(cppflags) 

@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 	Device* device = createDevice(param);
 	GraphicContext* graphic = device->getGraphicContext();
 
-	Camera* camera = new OrthoCamera(-1000.f, 1000.f);
+	Camera* camera = new OrthoCamera(0, 13000,  0, 900, -1000.f, 1000.f);
 //	Camera* camera = new PerspectiveCamera();
 
 	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/workspace/webcore/ws/test.png");
