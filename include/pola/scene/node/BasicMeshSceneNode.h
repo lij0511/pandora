@@ -19,10 +19,7 @@ public:
 	BasicMeshSceneNode(BasicMesh* mesh);
 	virtual ~BasicMeshSceneNode();
 
-	virtual Mesh* mesh();
-
-protected:
-	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
+	virtual Mesh* mesh(uint32_t index);
 
 private:
 	BasicMesh* mMesh;

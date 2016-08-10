@@ -267,8 +267,8 @@ void MD2AnimatedMesh::updateMeshBuffer(int32_t frame, int32_t startFrameLoop, in
 
 	graphic::vec3* positions = mGeometry->positions();
 	graphic::vec3* normals = mGeometry->normals();
-	const FrameItem* first = frameList[firstFrame].array();
-	const FrameItem* second = frameList[secondFrame].array();
+	const FrameItem* first = frameList[firstFrame].data();
+	const FrameItem* second = frameList[secondFrame].data();
 	// interpolate both frames
 	const size_t count = frameList[firstFrame].size();
 	if (first == second) {

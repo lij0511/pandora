@@ -16,10 +16,16 @@ namespace scene {
 
 class Mesh : public utils::RefBase<Mesh> {
 public:
-	virtual ~Mesh() {};
+	Mesh();
+	virtual ~Mesh();
 
 	virtual graphic::Geometry* geometry() = 0;
 
+	void setMaterialId(uint32_t materialId);
+	uint32_t materialId() const;
+
+private:
+	uint32_t mMaterialId;
 };
 
 }

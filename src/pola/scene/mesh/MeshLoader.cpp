@@ -28,11 +28,12 @@ static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type)
 		meshLoaders[utils::String("obj")] = new OBJMeshLoader;
 	}
 
-	MeshLoader* meshLoader = meshLoaders[type];
-	if (meshLoader != nullptr) {
-		return meshLoader;
+	std::map<utils::String, MeshLoader*>::iterator iter = meshLoaders.find(type);
+	if (iter != meshLoaders.end()) {
+		return iter->second;
 	}
 
+	MeshLoader* meshLoader = nullptr;
 	for (std::map<utils::String, MeshLoader*>::iterator iter = meshLoaders.begin(); iter != meshLoaders.end(); iter ++) {
 		meshLoader = iter->second;
 		if (meshLoader->available(is)) {

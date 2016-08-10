@@ -22,6 +22,7 @@ GLProgram::GLProgram(const char* vertexShader, const char* fragmentShader) :
 	glDeleteShader(mFragmentShaderHandle);
 
 	parseUniforms();
+	parseAttributes();
 }
 
 GLProgram::~GLProgram() {
@@ -41,26 +42,16 @@ void GLProgram::use() {
 	glUseProgram(mProgramId);
 }
 
-bool GLProgram::fetchAttribute(const utils::String& name, GLint& location) {
-	if (!mAAttributes.get(name, location)) {
-		location = glGetAttribLocation(mProgramId, name.characters());
-		mAAttributes.put(name, location);
-	}
-	return location >= 0;
-}
-
-bool GLProgram::fetchUniform(const utils::String& name, GLint& location) {
-	if (!mAUniforms.get(name, location)) {
-		location = glGetUniformLocation(mProgramId, name.characters());
-		mAUniforms.put(name, location);
-	}
-	return location >= 0;
+GLAttribute* GLProgram::fetchAttribute(const std::string& name) {
+	std::map<std::string, GLAttribute*>::iterator iter = mAttributes.find(name);
+	if (iter == mAttributes.end()) return nullptr;
+	return iter->second;
 }
 
 GLUniform* GLProgram::fetchUniform(const std::string& name) {
 	std::map<std::string, GLUniform*>::iterator iter = mUniforms.find(name);
 	if (iter == mUniforms.end()) return nullptr;
-	return iter->second;
+	return iter->second->location >= 0 ? iter->second : nullptr;
 }
 
 GLUniform* GLProgram::fetchUniform(const std::string& name, int index) {
@@ -68,7 +59,7 @@ GLUniform* GLProgram::fetchUniform(const std::string& name, int index) {
 	if (iter == mUniforms.end()) return nullptr;
 	GLUniformArray* array = dynamic_cast<GLUniformArray*>(iter->second);
 	if (array != nullptr && ssize_t(array->uniforms.size()) > index) {
-		return array->uniforms[index];
+		return array->uniforms[index]->location >= 0 ? array->uniforms[index] : nullptr;
 	}
 	return nullptr;
 }
@@ -80,7 +71,7 @@ GLUniform* GLProgram::fetchUniform(const std::string& name, int index, const std
 	if (array != nullptr && ssize_t(array->uniforms.size()) > index) {
 		GLUniformStructure* structure = dynamic_cast<GLUniformStructure*>(array->uniforms[index]);
 		if (structure != nullptr && (iter = structure->uniforms.find(subName)) != structure->uniforms.end()) {
-			return iter->second;
+			return iter->second->location >= 0 ? iter->second : nullptr;
 		}
 	}
 	return nullptr;
@@ -258,7 +249,7 @@ void GLProgram::parseAttributes() {
 				GLenum type = GL_ZERO;
 				glGetActiveAttrib(mProgramId, i, length, &name_length, &size, &type, attributeName);
 				attributeName[name_length] = '\0';
-				GLint location = glGetUniformLocation(mProgramId, attributeName);
+				GLint location = glGetAttribLocation(mProgramId, attributeName);
 				std::string name = attributeName;
 				GLAttribute* attribute = mAttributes[name];
 				if (attribute == nullptr) {

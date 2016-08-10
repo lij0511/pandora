@@ -13,8 +13,9 @@
 #include <GL/glx.h>
 #include <X11/keysym.h>
 
-#include "pola/utils/KeyedVector.h"
 #include "pola/Device.h"
+
+#include <map>
 
 namespace pola {
 
@@ -45,7 +46,7 @@ private:
 	graphic::GraphicContext* mGraphicContext;
 	scene::SceneManager* mSceneManager;
 
-	utils::KeyedVector<KeySym, input::KeyEvent::KeyCode> mKeyMap;
+	std::map<KeySym, input::KeyEvent::KeyCode> mKeyMap;
 
 };
 

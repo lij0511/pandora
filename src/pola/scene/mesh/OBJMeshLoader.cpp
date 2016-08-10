@@ -101,9 +101,9 @@ Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 	graphic::Geometry3D* geometry = new graphic::Geometry3D;
 	graphic::Box3 boundingBox;
 
-	utils::Vector<graphic::vec3> vertexBuffer;
-	utils::Vector<graphic::vec2> uvBuffer;
-	utils::Vector<graphic::vec3> normalBuffer;
+	std::vector<graphic::vec3> vertexBuffer;
+	std::vector<graphic::vec2> uvBuffer;
+	std::vector<graphic::vec3> normalBuffer;
 	utils::String line;
 	utils::String* matchResult = nullptr;
 	int32_t matchCount = 0;
@@ -122,17 +122,17 @@ Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 					if (line.charAt(1) == 'n') {
 						regexMatch("^vn\\s+([0-9\\.\\+-eE]+)\\s+([0-9\\.\\+-eE]+)\\s+([0-9\\.\\+-eE]+)", line.characters(), matchResult, matchCount);
 						if (matchCount == 4) {
-							normalBuffer.push({(float) atof(matchResult[1].characters()), (float) atof(matchResult[2].characters()), (float) atof(matchResult[3].characters())});
+							normalBuffer.push_back({(float) atof(matchResult[1].characters()), (float) atof(matchResult[2].characters()), (float) atof(matchResult[3].characters())});
 						}
 					} else if ((line.charAt(1) == 't')) {
 						regexMatch("^vt\\s+([0-9\\.\\+-eE]+)\\s+([0-9\\.\\+-eE]+)", line.characters(), matchResult, matchCount);
 						if (matchCount == 3) {
-							uvBuffer.push({(float) atof(matchResult[1].characters()), (float) atof(matchResult[2].characters())});
+							uvBuffer.push_back({(float) atof(matchResult[1].characters()), (float) atof(matchResult[2].characters())});
 						}
 					} else {
 						regexMatch("^v\\s+([0-9\\.\\+-eE]+)\\s+([0-9\\.\\+-eE]+)\\s+([0-9\\.\\+-eE]+)", line.characters(), matchResult, matchCount);
 						if (matchCount == 4) {
-							vertexBuffer.push({(float) atof(matchResult[1].characters()), (float) atof(matchResult[2].characters()), (float) atof(matchResult[3].characters())});
+							vertexBuffer.push_back({(float) atof(matchResult[1].characters()), (float) atof(matchResult[2].characters()), (float) atof(matchResult[3].characters())});
 						}
 					}
 				}

@@ -80,7 +80,7 @@ void Scene::render() {
 	for (unsigned i = 0; i < mViewableNodes.size(); i ++) {
 		mGraphic->setMatrix(graphic::GraphicContext::MODEL, mViewableNodes[i]->getWorldTransform());
 		mViewableNodes[i]->update(timeMs);
-		mGraphic->renderGeometry(mViewableNodes[i]->mesh()->geometry(), mViewableNodes[i]->material());
+		mViewableNodes[i]->render(mGraphic, timeMs);
 	}
 
 	// TODO ShadowMap debug
@@ -130,10 +130,14 @@ void Scene::projectNodes(SceneObject* node) {
 	}
 	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
 	if (m != nullptr) {
-		graphic::Box3 boundingBox =  m->mesh()->geometry()->getBoundingBox();
-		boundingBox.applyMatrix(m->getWorldTransform());
-		if (mCurrentCamera->frustum().intersectsBox(boundingBox)) {
-			mViewableNodes.push_back(m);
+		uint32_t meshCount = m->meshCount();
+		for (unsigned i = 0; i < meshCount; i ++) {
+			graphic::Box3 boundingBox =  m->mesh(i)->geometry()->getBoundingBox();
+			boundingBox.applyMatrix(m->getWorldTransform());
+			if (mCurrentCamera->frustum().intersectsBox(boundingBox)) {
+				mViewableNodes.push_back(m);
+				break;
+			}
 		}
 	} else {
 		node->updateTransform();

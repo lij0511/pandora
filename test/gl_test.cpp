@@ -15,8 +15,6 @@
 #include "pola/scene/mesh/MD2AnimatedMesh.h"
 #include "pola/scene/node/MD2AnimatedMeshSceneNode.h"
 #include "pola/scene/node/BasicMeshSceneNode.h"
-#include "pola/graphic/gl/GLCaches.h"
-#include "pola/graphic/gl/GLTexture.h"
 #include "pola/graphic/material/LambertMaterial.h"
 #include "pola/graphic/material/PhongMaterial.h"
 #include "pola/utils/Math.h"
@@ -38,11 +36,11 @@ int main(int argc, char *argv[]) {
 	 Scene* scene = device->getSceneManager()->getActiveScene();
 	 scene->setClearColor({0.4f, 0.4f, 0.6f, 1.f});
 	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/faerie.md2");
-	GLTexture* texture = (GLTexture*) scene->graphic()->loadTexture("./res/faerie2.bmp");
+	Texture* texture = scene->graphic()->loadTexture("./res/faerie2.bmp");
 	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
-	GLTexture* texture2 = (GLTexture*) scene->graphic()->loadTexture("./res/sydney.bmp");
+	Texture* texture2 = scene->graphic()->loadTexture("./res/sydney.bmp");
 	DirectionalLight* dlight = new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
-	dlight->castShadow = true;
+//	dlight->castShadow = true;
 	PointLight* plight = new PointLight({0.f, 0.f, 0.f}, 500, {1.f, 1.f, 1.f});
 
 //	scene->environment()->addLight(dlight);
@@ -72,7 +70,7 @@ int main(int argc, char *argv[]) {
 		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-			node->setMaterial(tm1);
+			node->setMaterial(0, tm1);
 			int ani = random(0, MD2_AT_COUNT + 3);
 			if (ani < MD2_AT_COUNT) {
 				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
@@ -83,7 +81,7 @@ int main(int argc, char *argv[]) {
 	if (mesh2) {
 		for (int i = 0; i < 100; i ++) {
 			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
-			node->setMaterial(tm2);
+			node->setMaterial(0, tm2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			int ani = random(0, MD2_AT_COUNT + 3);
 			if (ani < MD2_AT_COUNT) {
@@ -95,7 +93,7 @@ int main(int argc, char *argv[]) {
 	if (basicMesh) {
 		for (int i = 0; i < 100; i ++) {
 			BasicMeshSceneNode* node = new BasicMeshSceneNode(basicMesh);
-			node->setMaterial(m1);
+			node->setMaterial(0, m1);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setScale({80, 80, 80});
 			scene->addChild(node);
@@ -105,7 +103,7 @@ int main(int argc, char *argv[]) {
 	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
 	for (int i = 0; i < 100; i ++) {
 		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-		node->setMaterial(m1);
+		node->setMaterial(0, m1);
 		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 		scene->addChild(node);
 	}
@@ -113,7 +111,7 @@ int main(int argc, char *argv[]) {
 	m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
 	for (int i = 0; i < 100; i ++) {
 		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-		node->setMaterial(m1);
+		node->setMaterial(0, m1);
 		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 		scene->addChild(node);
 	}
@@ -128,7 +126,7 @@ int main(int argc, char *argv[]) {
 
 	BasicMesh* light = new BasicMesh(new SphereGeometry(5.f, 4, 4));
 	BasicMeshSceneNode* lightNode = new BasicMeshSceneNode(light);
-	lightNode->setMaterial(new Material({1.f, 1.f, 1.f, 1.f}));
+	lightNode->setMaterial(0, new Material({1.f, 1.f, 1.f, 1.f}));
 	scene->addChild(lightNode);
 
 	int x = 0;

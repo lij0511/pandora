@@ -16,12 +16,8 @@ BasicMeshSceneNode::BasicMeshSceneNode(BasicMesh* mesh) : mMesh(mesh) {
 BasicMeshSceneNode::~BasicMeshSceneNode() {
 }
 
-Mesh* BasicMeshSceneNode::mesh() {
+Mesh* BasicMeshSceneNode::mesh(uint32_t index) {
 	return mMesh;
-}
-
-void BasicMeshSceneNode::render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
-	graphic->renderGeometry(mMesh->geometry(), mMaterial.get());
 }
 
 } /* namespace scene */

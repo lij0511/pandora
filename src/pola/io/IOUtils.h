@@ -8,15 +8,16 @@
 #ifndef POLA_IOUTILS_H_
 #define POLA_IOUTILS_H_
 
-#include "pola/utils/Vector.h"
 #include "pola/io/InputStream.h"
+
+#include <vector>
 
 namespace pola {
 namespace io {
 
 template<typename TYPE>
-utils::Vector<TYPE> copyStreamToVector(InputStream* is) {
-	utils::Vector<TYPE> vector;
+std::vector<TYPE> copyStreamToVector(InputStream* is) {
+	std::vector<TYPE> vector;
 	size_t length = is->getLength();
 	size_t position = is->getPosition();
 	if (length > 0 && position < length) {
@@ -30,7 +31,7 @@ utils::Vector<TYPE> copyStreamToVector(InputStream* is) {
 		size_t size = sizeof(TYPE);
 		void* ch = new char[size];
 		while (is->read(ch, size) == size) {
-			vector.push(*((TYPE*) ch));
+			vector.push_back(*((TYPE*) ch));
 		}
 	}
 	return vector;

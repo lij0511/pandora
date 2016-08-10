@@ -9,9 +9,10 @@
 #define POLA_GEOMETRY_H_
 
 #include "pola/graphic/Vertex.h"
-#include "pola/utils/Vector.h"
 #include "pola/graphic/math/Box3.h"
 #include "pola/utils/TypeHelpers.h"
+
+#include <vector>
 
 namespace pola {
 namespace graphic {
@@ -48,7 +49,7 @@ public:
 protected:
 	void setIndicesCapacity(size_t size);
 protected:
-	pola::utils::Vector<uint16_t> mIndices;
+	std::vector<uint16_t> mIndices;
 
 	Box3 mBoundingBox;
 
@@ -65,21 +66,21 @@ inline Geometry::Type Geometry::type() const {
 
 inline void Geometry::setIndicesCapacity(size_t size) {
 	if (mIndices.capacity() != size) {
-		mIndices.setCapacity(size);
+		mIndices.reserve(size);
 	}
 }
 
 inline const uint16_t* Geometry::indices() const {
-	return mIndices.array();
+	return mIndices.data();
 }
 inline uint16_t* Geometry::indices() {
-	return mIndices.editArray();
+	return mIndices.data();
 }
 inline size_t Geometry::indexCount() const {
 	return mIndices.size();
 }
 inline void Geometry::addIndex(uint16_t index) {
-	mIndices.push(index);
+	mIndices.push_back(index);
 }
 
 inline void Geometry::setBoundingBox(const Box3& boundingBox) {

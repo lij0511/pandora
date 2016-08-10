@@ -75,7 +75,7 @@ void ShadowMap::renderShadowMap(graphic::GraphicContext* graphic, LightNode* lig
 	for (unsigned i = 0; i < mViewableNodes.size(); i ++) {
 		graphic->setMatrix(graphic::GraphicContext::MODEL, mViewableNodes[i]->getTransform());
 		mViewableNodes[i]->update(timeMs);
-		graphic->renderGeometry(mViewableNodes[i]->mesh()->geometry(), &mShadowMapMaterial);
+		mViewableNodes[i]->render(graphic, &mShadowMapMaterial, timeMs);
 	}
 
 	mViewableNodes.clear();
@@ -87,10 +87,14 @@ void ShadowMap::projectNodes(Camera* shadowCamera, SceneObject* node) {
 	}
 	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
 	if (m != nullptr) {
-		graphic::Box3 boundingBox =  m->mesh()->geometry()->getBoundingBox();
-		boundingBox.applyMatrix(m->getWorldTransform());
-		if (shadowCamera->frustum().intersectsBox(boundingBox)) {
-			mViewableNodes.push_back(m);
+		uint32_t meshCount = m->meshCount();
+		for (unsigned i = 0; i < meshCount; i ++) {
+			graphic::Box3 boundingBox =  m->mesh(i)->geometry()->getBoundingBox();
+			boundingBox.applyMatrix(m->getWorldTransform());
+			if (shadowCamera->frustum().intersectsBox(boundingBox)) {
+				mViewableNodes.push_back(m);
+				break;
+			}
 		}
 	}
 	for (unsigned i = 0; i < node->getChildCount(); i ++) {

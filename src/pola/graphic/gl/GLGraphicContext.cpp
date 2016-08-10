@@ -149,28 +149,27 @@ void GLGraphicContext::renderGeometry(Geometry2D* geometry, const GraphicParamet
 	GLProgram* program = currentProgram(material);
 	program->use();
 
-	GLint u_mat;
-	if (program->fetchUniform(projection, u_mat)) {
-		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mProjectionMatrix.data[0]);
+	GLUniform* uniform;
+	if ((uniform = program->fetchUniform("u_projection")) != nullptr) {
+		glUniformMatrix4fv(uniform->location, 1, GL_FALSE, &mProjectionMatrix.data[0]);
 	}
-	if (program->fetchUniform(view, u_mat)) {
-		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mViewMatrix.data[0]);
+	if ((uniform = program->fetchUniform("u_view")) != nullptr) {
+		glUniformMatrix4fv(uniform->location, 1, GL_FALSE, &mViewMatrix.data[0]);
 	}
-	if (program->fetchUniform(model, u_mat)) {
-		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mModelMatrix.data[0]);
+	if ((uniform = program->fetchUniform("u_model")) != nullptr) {
+		glUniformMatrix4fv(uniform->location, 1, GL_FALSE, &mModelMatrix.data[0]);
 	}
 
 	material->bind(this, program);
 
-	GLint a_position;
-	if (program->fetchAttribute(position, a_position)) {
-		glEnableVertexAttribArray(a_position);
-		glVertexAttribPointer(a_position, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->positions()));
+	GLAttribute* attribute;
+	if ((attribute = program->fetchAttribute("a_position")) != nullptr) {
+		glEnableVertexAttribArray(attribute->location);
+		glVertexAttribPointer(attribute->location, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->positions()));
 	}
-	GLint a_uv;
-	if (geometry->uvCount() >= positionCount && program->fetchAttribute(uv, a_uv)) {
-		glEnableVertexAttribArray(a_uv);
-		glVertexAttribPointer(a_uv, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->uvs()));
+	if (geometry->uvCount() >= positionCount && (attribute = program->fetchAttribute("a_uv")) != nullptr) {
+		glEnableVertexAttribArray(attribute->location);
+		glVertexAttribPointer(attribute->location, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->uvs()));
 	}
 	if (geometry->indexCount() > 0) {
 		glDrawElements(GLDrawMode(parameter.drawMode), geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
@@ -192,7 +191,17 @@ void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParamet
 	GLProgram* program = currentProgram(material);
 	program->use();
 
-	GLint u_mat;
+	GLUniform* uniform;
+	if ((uniform = program->fetchUniform("u_projection")) != nullptr) {
+		glUniformMatrix4fv(uniform->location, 1, GL_FALSE, &mProjectionMatrix.data[0]);
+	}
+	if ((uniform = program->fetchUniform("u_view")) != nullptr) {
+		glUniformMatrix4fv(uniform->location, 1, GL_FALSE, &mViewMatrix.data[0]);
+	}
+	if ((uniform = program->fetchUniform("u_model")) != nullptr) {
+		glUniformMatrix4fv(uniform->location, 1, GL_FALSE, &mModelMatrix.data[0]);
+	}
+	/*GLint u_mat;
 	if (program->fetchUniform(projection, u_mat)) {
 		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mProjectionMatrix.data[0]);
 	}
@@ -201,11 +210,24 @@ void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParamet
 	}
 	if (program->fetchUniform(model, u_mat)) {
 		glUniformMatrix4fv(u_mat, 1, GL_FALSE, &mModelMatrix.data[0]);
-	}
+	}*/
 
 	material->bind(this, program);
 
-	GLint a_position;
+	GLAttribute* attribute;
+	if ((attribute = program->fetchAttribute("a_position")) != nullptr) {
+		glEnableVertexAttribArray(attribute->location);
+		glVertexAttribPointer(attribute->location, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->positions()));
+	}
+	if (geometry->uvCount() >= positionCount && (attribute = program->fetchAttribute("a_uv")) != nullptr) {
+		glEnableVertexAttribArray(attribute->location);
+		glVertexAttribPointer(attribute->location, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->uvs()));
+	}
+	if (geometry->normalCount() >= positionCount && (attribute = program->fetchAttribute("a_normal")) != nullptr) {
+		glEnableVertexAttribArray(attribute->location);
+		glVertexAttribPointer(attribute->location, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->normals()));
+	}
+	/*GLint a_position;
 	if (program->fetchAttribute(position, a_position)) {
 		glEnableVertexAttribArray(a_position);
 		glVertexAttribPointer(a_position, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->positions()));
@@ -219,7 +241,7 @@ void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParamet
 	if (geometry->normalCount() >= positionCount && program->fetchAttribute(normal, a_normal)) {
 		glEnableVertexAttribArray(a_normal);
 		glVertexAttribPointer(a_normal, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->normals()));
-	}
+	}*/
 	if (geometry->indexCount() > 0) {
 		glDrawElements(GLDrawMode(parameter.drawMode), geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
 	} else {

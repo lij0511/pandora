@@ -27,7 +27,7 @@ void MD2AnimatedMeshSceneNode::setAnimationType(MD2_ANIMATION_TYPE type) {
 	setFramesPerMs((float) fps / 1000.0f);
 }
 
-Mesh* MD2AnimatedMeshSceneNode::mesh() {
+Mesh* MD2AnimatedMeshSceneNode::mesh(uint32_t index) {
 	return mMesh;
 }
 

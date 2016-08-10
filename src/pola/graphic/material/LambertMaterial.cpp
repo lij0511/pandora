@@ -33,184 +33,97 @@ void LambertMaterial::bind(GraphicContext* graphic, Program* program) {
 	const Lights* lights = graphic->lights();
 	GLProgram* glProgram = (GLProgram*) program;
 	if (lights && lights->directionalLightCount() > 0) {
-		static std::vector<utils::String> dirLightsColors;
-		static std::vector<utils::String> dirLightsDirections;
-		static std::vector<utils::String> dirLightsShadows;
-		static std::vector<utils::String> dirLightsShadowBias;
-		static std::vector<utils::String> dirLightsShadowRadius;
-		static std::vector<utils::String> dirLightsShadowMapSize;
 
 		for (unsigned i = 0; i < lights->directionalLightCount(); i ++) {
 			DirectionalLight* light = (DirectionalLight*) lights->directionalLight(i);
-			GLint u_dl;
 
-			utils::String color;
-			if (i < dirLightsColors.size()) {
-				color = dirLightsColors[i];
-			} else {
-				char buf[40];
-				sprintf(buf, "u_dirLights[%u].color", i);
-				color = buf;
-				dirLightsColors.push_back(color);
-			}
-			if (!glProgram->fetchUniform(color, u_dl)) {
+			GLUniform* uniform = glProgram->fetchUniform("u_dirLights", i, "color");
+			if (uniform == nullptr) {
 				break;
 			}
-			glUniform3f(u_dl, light->color.r, light->color.g, light->color.b);
+			glUniform3f(uniform->location, light->color.r, light->color.g, light->color.b);
 
-			utils::String direction;
-			if (i < dirLightsDirections.size()) {
-				direction = dirLightsDirections[i];
-			} else {
-				char buf[40];
-				sprintf(buf, "u_dirLights[%u].direction", i);
-				direction = buf;
-				dirLightsDirections.push_back(direction);
-			}
-			if (!glProgram->fetchUniform(direction, u_dl)) {
-				break;
-			}
-			GLUniform* uniform = glProgram->fetchUniform("u_dirLights", i, "direction");
+			uniform = glProgram->fetchUniform("u_dirLights", i, "direction");
 			if (uniform == nullptr) {
 				break;
 			}
 			glUniform3f(uniform->location, light->direction.x, light->direction.y, light->direction.z);
 
-			utils::String shadow;
-			if (i < dirLightsShadows.size()) {
-				shadow = dirLightsShadows[i];
-			} else {
-				char buf[40];
-				sprintf(buf, "u_dirLights[%u].shadow", i);
-				shadow = buf;
-				dirLightsShadows.push_back(shadow);
-			}
-			if (!glProgram->fetchUniform(shadow, u_dl)) {
+			uniform = glProgram->fetchUniform("u_dirLights", i, "shadow");
+			if (uniform == nullptr) {
 				break;
 			}
-			glUniform1i(u_dl, light->castShadow ? 1 : 0);
+			glUniform1i(uniform->location, light->castShadow ? 1 : 0);
 
 			if (light->castShadow) {
-				utils::String shadowBias;
-				if (i < dirLightsShadowBias.size()) {
-					shadowBias = dirLightsShadowBias[i];
-				} else {
-					char buf[40];
-					sprintf(buf, "u_dirLights[%u].shadowBias", i);
-					shadowBias = buf;
-					dirLightsShadowBias.push_back(shadowBias);
-				}
-				if (!glProgram->fetchUniform(shadowBias, u_dl)) {
+				uniform = glProgram->fetchUniform("u_dirLights", i, "shadowBias");
+				if (uniform == nullptr) {
 					break;
 				}
-				glUniform1f(u_dl, 0);
+				glUniform1i(uniform->location, 0);
 
-				utils::String shadowRadius;
-				if (i < dirLightsShadowRadius.size()) {
-					shadowRadius = dirLightsShadowRadius[i];
-				} else {
-					char buf[40];
-					sprintf(buf, "u_dirLights[%u].shadowRadius", i);
-					shadowRadius = buf;
-					dirLightsShadowRadius.push_back(shadowRadius);
-				}
-				if (!glProgram->fetchUniform(shadowRadius, u_dl)) {
+				uniform = glProgram->fetchUniform("u_dirLights", i, "shadowRadius");
+				if (uniform == nullptr) {
 					break;
 				}
-				glUniform1f(u_dl, 1);
+				glUniform1i(uniform->location, 1);
 
-				utils::String shadowMapSize;
-				if (i < dirLightsShadowMapSize.size()) {
-					shadowMapSize = dirLightsShadowMapSize[i];
-				} else {
-					char buf[40];
-					sprintf(buf, "u_dirLights[%u].shadowMapSize", i);
-					shadowMapSize = buf;
-					dirLightsShadowMapSize.push_back(shadowMapSize);
-				}
-				if (!glProgram->fetchUniform(shadowMapSize, u_dl)) {
+				uniform = glProgram->fetchUniform("u_dirLights", i, "shadowMapSize");
+				if (uniform == nullptr) {
 					break;
 				}
-				glUniform2f(u_dl, float(light->mapSize.width), float(light->mapSize.height));
+				glUniform2f(uniform->location, float(light->mapSize.width), float(light->mapSize.height));
 
-				static utils::String shadowMatrix("u_directionalShadowMatrix[0]");
-				if (!glProgram->fetchUniform(shadowMatrix, u_dl)) {
+				uniform = glProgram->fetchUniform("u_directionalShadowMatrix", i);
+				if (uniform == nullptr) {
 					break;
 				}
-				glUniformMatrix4fv(u_dl, 1, GL_FALSE, &light->matrix[0]);
+				glUniformMatrix4fv(uniform->location, 1, GL_FALSE, &light->matrix[0]);
+
 				if (light->map != nullptr) {
 					GLCaches& cache = GLCaches::get();
 					cache.activeTexture(cache.activeTexture() + 1);
 					GLTexture* texture = ((GLRenderTarget*) light->map)->getTexture();
 					cache.bindTexture(texture->id);
-					GLProgram* glProgram = (GLProgram*) program;
-					static utils::String shadowMap("directionalShadowMap[0]");
-					GLint u_textureMapH;
-					if (glProgram->fetchUniform(shadowMap, u_textureMapH)) {
-						glUniform1i(u_textureMapH, cache.activeTexture());
+
+					uniform = glProgram->fetchUniform("directionalShadowMap", i);
+					if (uniform == nullptr) {
+						break;
 					}
+					glUniform1i(uniform->location, cache.activeTexture());
 				}
 			}
 		}
 	}
 
 	if (lights && lights->pointLightCount() > 0) {
-		static std::vector<utils::String> pointLightsColors;
-		static std::vector<utils::String> pointLightsDistances;
-		static std::vector<utils::String> pointLightsPositions;
 		for (unsigned i = 0; i < lights->pointLightCount(); i ++) {
 			PointLight* light = (PointLight*) lights->pointLight(i);
-			GLint u_pl;
 
-			utils::String color;
-			if (i < pointLightsColors.size()) {
-				color = pointLightsColors[i];
-			} else {
-				char buf[40];
-				sprintf(buf, "u_pointLights[%u].color", i);
-				color = buf;
-				pointLightsColors.push_back(color);
-			}
-			if (!glProgram->fetchUniform(color, u_pl)) {
+			GLUniform* uniform = glProgram->fetchUniform("u_pointLights", i, "color");
+			if (uniform == nullptr) {
 				break;
 			}
-			glUniform3f(u_pl, light->color.r, light->color.g, light->color.b);
+			glUniform3f(uniform->location, light->color.r, light->color.g, light->color.b);
 
-			utils::String distance;
-			if (i < pointLightsDistances.size()) {
-				distance = pointLightsDistances[i];
-			} else {
-				char buf[40];
-				sprintf(buf, "u_pointLights[%u].distance", i);
-				distance = buf;
-				pointLightsDistances.push_back(distance);
-			}
-			if (!glProgram->fetchUniform(distance, u_pl)) {
+			uniform = glProgram->fetchUniform("u_pointLights", i, "distance");
+			if (uniform == nullptr) {
 				break;
 			}
-			glUniform1f(u_pl, light->distance);
+			glUniform1f(uniform->location, light->distance);
 
-			utils::String position;
-			if (i < pointLightsPositions.size()) {
-				position = pointLightsPositions[i];
-			} else {
-				char buf[40];
-				sprintf(buf, "u_pointLights[%u].position", i);
-				position = buf;
-				pointLightsPositions.push_back(position);
-			}
-			if (!glProgram->fetchUniform(position, u_pl)) {
+			uniform = glProgram->fetchUniform("u_pointLights", i, "position");
+			if (uniform == nullptr) {
 				break;
 			}
-			glUniform3f(u_pl, light->position.x, light->position.y, light->position.z);
+			glUniform3f(uniform->location, light->position.x, light->position.y, light->position.z);
 		}
 	}
 
-	GLint u_ambientLight;
-	static utils::String ambientLight("u_ambientLight");
-	if (glProgram->fetchUniform(ambientLight, u_ambientLight)) {
+	GLUniform* uniform = glProgram->fetchUniform("u_ambientLight");
+	if (uniform != nullptr) {
 		FColor3 ambient = lights->ambientLight();
-		glUniform3f(u_ambientLight, ambient.r, ambient.g, ambient.b);
+		glUniform3f(uniform->location, ambient.r, ambient.g, ambient.b);
 	}
 #endif
 }

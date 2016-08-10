@@ -8,9 +8,12 @@
 #ifndef POLA_MESHSCENENODE_H_
 #define POLA_MESHSCENENODE_H_
 
+#include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/material/Material.h"
 #include "pola/scene/node/SceneNode.h"
 #include "pola/scene/mesh/Mesh.h"
+
+#include <vector>
 
 namespace pola {
 namespace scene {
@@ -20,13 +23,17 @@ public:
 	MeshSceneNode();
 	virtual ~MeshSceneNode();
 
-	void setMaterial(graphic::Material* material);
+	void setMaterial(uint32_t index, graphic::Material* material);
 
-	virtual Mesh* mesh() = 0;
-	virtual graphic::Material* material() const;
+	virtual Mesh* mesh(uint32_t index) = 0;
+	virtual uint32_t meshCount() const;
+	virtual graphic::Material* material(uint32_t index) const;
+
+	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
+	virtual void render(graphic::GraphicContext* graphic, graphic::Material* m, p_nsecs_t timeMs);
 
 protected:
-	utils::sp<graphic::Material> mMaterial;
+	std::vector<graphic::Material*> mMaterials;
 
 };
 

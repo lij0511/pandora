@@ -68,8 +68,8 @@ public:
 
 	virtual graphic::Geometry* geometry();
 
-	utils::Vector<utils::Vector<FrameItem>> frameList;
-	utils::Vector<FrameTransform> frameTransforms;
+	std::vector<std::vector<FrameItem> > frameList;
+	std::vector<FrameTransform> frameTransforms;
 	size_t frameCount;
 
 private:

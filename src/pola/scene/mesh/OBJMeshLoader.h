@@ -18,8 +18,8 @@ public:
 	OBJMeshLoader();
 	virtual ~OBJMeshLoader();
 
-	virtual bool available(io::InputStream* is);
 protected:
+	virtual bool available(io::InputStream* is);
 	virtual Mesh* doLoadMesh(io::InputStream* is);
 };
 

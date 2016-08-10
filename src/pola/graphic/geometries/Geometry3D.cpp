@@ -34,16 +34,16 @@ void Geometry3D::alloc(size_t size, int flag) {
 
 void Geometry3D::setCapacity(size_t size, int flag) {
 	if (mPositions.capacity() != size) {
-		mPositions.setCapacity(size);
+		mPositions.reserve(size);
 	}
 	if ((flag & FLAG_GEOMETRY_NORMAL) == FLAG_GEOMETRY_NORMAL && mNormals.capacity() != size) {
-		mNormals.setCapacity(size);
+		mNormals.reserve(size);
 	}
 	if ((flag & FLAG_GEOMETRY_UV) == FLAG_GEOMETRY_UV && mUvs.capacity() != size) {
-		mUvs.setCapacity(size);
+		mUvs.reserve(size);
 	}
 	if ((flag & FLAG_GEOMETRY_COLOR) == FLAG_GEOMETRY_COLOR && mColors.capacity() != size) {
-		mColors.setCapacity(size);
+		mColors.reserve(size);
 	}
 }
 
@@ -70,55 +70,55 @@ void Geometry3D::addVerrtex(const NormalColorTextureVertex3& v) {
 }
 
 const pola::graphic::vec3* Geometry3D::positions() const {
-	return mPositions.array();
+	return mPositions.data();
 }
 pola::graphic::vec3* Geometry3D::positions() {
-	return mPositions.editArray();
+	return mPositions.data();
 }
 size_t Geometry3D::positionCount() const {
 	return mPositions.size();
 }
 void Geometry3D::addPosition(const pola::graphic::vec3& pos) {
-	mPositions.push(pos);
+	mPositions.push_back(pos);
 }
 
 const pola::graphic::vec3* Geometry3D::normals() const {
-	return mNormals.array();
+	return mNormals.data();
 }
 pola::graphic::vec3* Geometry3D::normals() {
-	return mNormals.editArray();
+	return mNormals.data();
 }
 size_t Geometry3D::normalCount() const {
 	return mNormals.size();
 }
 void Geometry3D::addNormal(const pola::graphic::vec3& nor) {
-	mNormals.push(nor);
+	mNormals.push_back(nor);
 }
 
 const pola::graphic::vec2* Geometry3D::uvs() const {
-	return mUvs.array();
+	return mUvs.data();
 }
 pola::graphic::vec2* Geometry3D::uvs() {
-	return mUvs.editArray();
+	return mUvs.data();
 }
 size_t Geometry3D::uvCount() const {
 	return mUvs.size();
 }
 void Geometry3D::addUv(const pola::graphic::vec2& uv) {
-	mUvs.push(uv);
+	mUvs.push_back(uv);
 }
 
 const pola::graphic::FColor4* Geometry3D::colors() const {
-	return mColors.array();
+	return mColors.data();
 }
 pola::graphic::FColor4* Geometry3D::colors() {
-	return mColors.editArray();
+	return mColors.data();
 }
 size_t Geometry3D::colorCount() const {
 	return mColors.size();
 }
 void Geometry3D::addColor(const pola::graphic::FColor4& cor) {
-	mColors.push(cor);
+	mColors.push_back(cor);
 }
 
 void Geometry3D::computeBoundingBox() {

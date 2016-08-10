@@ -18,8 +18,8 @@ public:
 	MS3DMeshLoader();
 	virtual ~MS3DMeshLoader();
 
-	virtual bool available(io::InputStream* is);
 protected:
+	virtual bool available(io::InputStream* is);
 	virtual Mesh* doLoadMesh(io::InputStream* is);
 };
 

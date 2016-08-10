@@ -32,10 +32,10 @@ void ShadowMapMaterial::setLightPosition(const vec3& lightPos) {
 void ShadowMapMaterial::bind(GraphicContext* graphic, Program* program) {
 #ifdef OGL_RENDERER
 	GLProgram* glProgram = (GLProgram*) program;
-	static utils::String u_lightPos("u_lightPos");
-	GLint u_lightPosH;
-	if (glProgram->fetchUniform(u_lightPos, u_lightPosH)) {
-		glUniform3f(u_lightPosH, mLightPosition.x, mLightPosition.y, mLightPosition.z);
+
+	GLUniform* uniform = glProgram->fetchUniform("u_lightPos");
+	if (uniform != nullptr) {
+		glUniform3f(uniform->location, mLightPosition.x, mLightPosition.y, mLightPosition.z);
 	}
 #endif
 }

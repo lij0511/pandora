@@ -33,47 +33,28 @@ void PhongMaterial::bind(GraphicContext* graphic, Program* program) {
 	const Lights* lights = graphic->lights();
 	GLProgram* glProgram = (GLProgram*) program;
 	if (lights && lights->directionalLightCount() > 0) {
-		static std::vector<utils::String> dirLightsColors;
-		static std::vector<utils::String> dirLightsDirections;
 		for (unsigned i = 0; i < lights->directionalLightCount(); i ++) {
 			DirectionalLight* light = (DirectionalLight*) lights->directionalLight(i);
-			GLint u_dl;
 
-			utils::String color;
-			if (i < dirLightsColors.size()) {
-				color = dirLightsColors[i];
-			} else {
-				char buf[40];
-				sprintf(buf, "u_dirLights[%u].color", i);
-				color = buf;
-				dirLightsColors.push_back(color);
+			GLUniform* uniform = glProgram->fetchUniform("u_dirLights", i, "color");
+			if (uniform == nullptr) {
+				break;
 			}
-			if (!glProgram->fetchUniform(color, u_dl)) {
-				return;
-			}
-			glUniform3f(u_dl, light->color.r, light->color.g, light->color.b);
+			glUniform3f(uniform->location, light->color.r, light->color.g, light->color.b);
 
-			utils::String direction;
-			if (i < dirLightsDirections.size()) {
-				direction = dirLightsDirections[i];
-			} else {
-				char buf[40];
-				sprintf(buf, "u_dirLights[%u].direction", i);
-				direction = buf;
-				dirLightsDirections.push_back(direction);
+			uniform = glProgram->fetchUniform("u_dirLights", i, "direction");
+			if (uniform == nullptr) {
+				break;
 			}
-			if (!glProgram->fetchUniform(direction, u_dl)) {
-				return;
-			}
-			glUniform3f(u_dl, light->direction.x, light->direction.y, light->direction.z);
+			glUniform3f(uniform->location, light->direction.x, light->direction.y, light->direction.z);
+
 		}
 	}
 
-	GLint u_ambientLight;
-	static utils::String ambientLight("u_ambientLight");
-	if (glProgram->fetchUniform(ambientLight, u_ambientLight)) {
+	GLUniform* uniform = glProgram->fetchUniform("u_ambientLight");
+	if (uniform != nullptr) {
 		FColor3 ambient = lights->ambientLight();
-		glUniform3f(u_ambientLight, ambient.r, ambient.g, ambient.b);
+		glUniform3f(uniform->location, ambient.r, ambient.g, ambient.b);
 	}
 #endif
 }

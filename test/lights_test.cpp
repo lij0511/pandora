@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 	 scene->setClearColor({0.4f, 0.4f, 0.6f, 1.f});
 	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/ratamahatta.md2");
 	MD2AnimatedMesh* weapon = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/weapon.md2");
-	Texture* texture = scene->graphic()->loadTexture("./res/ratamahatta.png");
+	Texture* texture = scene->graphic()->loadTexture("./res/ctf_r.png");
 	DirectionalLight* light = new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
 	light->castShadow = true;
 	LightNode* lightNode = new LightNode(light);
@@ -48,10 +48,10 @@ int main(int argc, char *argv[]) {
 	if (mesh) {
 		MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
 		node->setPosition(graphic::vec3(-100, 0, 0));
-		node->setMaterial(tm1);
+		node->setMaterial(0, tm1);
 		if (weapon != nullptr) {
 			MD2AnimatedMeshSceneNode* weaponNode = new MD2AnimatedMeshSceneNode(weapon);
-			weaponNode->setMaterial(new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture("./res/weapon.png")));
+			weaponNode->setMaterial(0, new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture("./res/weapon.png")));
 			node->addChild(weaponNode);
 		}
 		scene->addChild(node);
@@ -59,13 +59,13 @@ int main(int argc, char *argv[]) {
 	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
 //	BasicMesh* m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
 	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
-	node->setMaterial(new LambertMaterial({1.0f, 1.0f, 1.0f}));
+	node->setMaterial(0, new LambertMaterial({1.0f, 1.0f, 1.0f}));
 	node->setPosition(graphic::vec3(50, 0, 0));
 	scene->addChild(node);
 
 	m = new BasicMesh(new CubeGeometry(60.f, 60.f, 60.f));
 	node = new BasicMeshSceneNode(m);
-	node->setMaterial(new LambertMaterial({1.0f, 1.0f, 1.0f}));
+	node->setMaterial(0, new LambertMaterial({1.0f, 1.0f, 1.0f}));
 	node->setPosition(graphic::vec3(100, 0, 0));
 	scene->addChild(node);
 

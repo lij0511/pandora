@@ -26,7 +26,7 @@ public:
 
 private:
 	Scene* mActiveScene;
-	utils::Vector<Scene*> mHistroyScenes;
+	std::vector<Scene*> mHistroyScenes;
 };
 
 } /* namespace scene */

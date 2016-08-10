@@ -122,7 +122,7 @@ Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 		is->read(frame, header.frameSize);
 
 		// save keyframe scale and translation
-		FrameTransform* frameTransforms = mesh->frameTransforms.editArray();
+		FrameTransform* frameTransforms = mesh->frameTransforms.data();
 		frameTransforms[i].scale[0] = frame->scale[0];
 		frameTransforms[i].scale[2] = frame->scale[1];
 		frameTransforms[i].scale[1] = frame->scale[2];
@@ -132,8 +132,8 @@ Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 
 		graphic::Box3 boundingBox;
 
-		mesh->frameList.editItemAt(i).resize(header.numTriangles * 3);
-		FrameItem* frameItems = mesh->frameList.editItemAt(i).editArray();
+		mesh->frameList[i].resize(header.numTriangles * 3);
+		FrameItem* frameItems = mesh->frameList[i].data();
 		// add vertices
 		for (int32_t j = 0; j < header.numTriangles; ++j) {
 			for (int32_t ti = 0; ti < 3; ++ti) {

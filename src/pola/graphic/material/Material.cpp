@@ -56,10 +56,10 @@ const utils::String Material::getFragmentShader() {
 void Material::bind(GraphicContext* graphic, Program* program) {
 #ifdef OGL_RENDERER
 	GLProgram* glProgram = (GLProgram*) program;
-	static utils::String u_color = utils::String("u_color");
-	GLint u_colorH;
-	if (glProgram->fetchUniform(u_color, u_colorH)) {
-		glUniform4f(u_colorH, mColor.r * mColor.a, mColor.g * mColor.a, mColor.b * mColor.a, mColor.a);
+
+	GLUniform* uniform = glProgram->fetchUniform("u_color");
+	if (uniform != nullptr && uniform->location >= 0) {
+		glUniform4f(uniform->location, mColor.r * mColor.a, mColor.g * mColor.a, mColor.b * mColor.a, mColor.a);
 	}
 	if (hasTextureMap()) {
 		GLTexture* glTexture = (GLTexture*) mTextureMap;
@@ -67,11 +67,9 @@ void Material::bind(GraphicContext* graphic, Program* program) {
 		if (glTexture->generateTexture()) {
 			cache.activeTexture(cache.activeTexture() + 1);
 			cache.bindTexture(glTexture->id);
-			GLProgram* glProgram = (GLProgram*) program;
-			static utils::String u_textureMap = utils::String("u_textureMap");
-			GLint u_textureMapH;
-			if (glProgram->fetchUniform(u_textureMap, u_textureMapH)) {
-				glUniform1i(u_textureMapH, cache.activeTexture());
+			uniform = glProgram->fetchUniform("u_textureMap");
+			if (uniform != nullptr && uniform->location >= 0) {
+				glUniform1i(uniform->location, cache.activeTexture());
 			}
 		}
 	}

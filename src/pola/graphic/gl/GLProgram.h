@@ -9,7 +9,6 @@
 #define POLA_GLPROGRAM_H_
 
 #include "pola/graphic/gl/GL.h"
-#include "pola/utils/TinyHashMap.h"
 #include "pola/utils/String.h"
 #include "pola/graphic/Program.h"
 #include "pola/graphic/gl/GLUniform.h"
@@ -30,7 +29,8 @@ public:
 	GLuint programId() const {return mProgramId;};
 
 	bool fetchAttribute(const utils::String& name, GLint& outLocation);
-	bool fetchUniform(const utils::String& name, GLint& outLocation);
+
+	GLAttribute* fetchAttribute(const std::string& name);
 
 	GLUniform* fetchUniform(const std::string& name);
 	GLUniform* fetchUniform(const std::string& name, int index);
@@ -49,9 +49,6 @@ private:
 	GLuint mProgramId;
 	GLuint mVertexShaderHandle;
 	GLuint mFragmentShaderHandle;
-
-	pola::utils::TinyHashMap<utils::String, GLint> mAAttributes;
-	pola::utils::TinyHashMap<utils::String, GLint> mAUniforms;
 
 	std::map<std::string, GLUniform*> mUniforms;
 	std::map<std::string, GLAttribute*> mAttributes;
