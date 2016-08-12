@@ -16,16 +16,25 @@ namespace scene {
 
 class Mesh : public utils::RefBase<Mesh> {
 public:
+	struct Group {
+		uint32_t start;
+		uint32_t end;
+		uint32_t materialId;
+	};
+
 	Mesh();
 	virtual ~Mesh();
 
 	virtual graphic::Geometry* geometry() = 0;
 
-	void setMaterialId(uint32_t materialId);
-	uint32_t materialId() const;
+	void addGroup(uint32_t start, uint32_t end, uint32_t materialId);
+	void addGroup(const Group& group);
+
+	uint8_t groupCount() const;
+	Group group(uint8_t index) const;
 
 private:
-	uint32_t mMaterialId;
+	std::vector<Group> mGroups;
 };
 
 }

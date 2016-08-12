@@ -12,7 +12,7 @@ namespace graphic {
 
 GLCaches::GLCaches() {
 	glActiveTexture(gTextureUnits[0]);
-	mTextureUnit = 0;
+	mTextureUnit = -1;
 
 	mFramebuffer = 0;
 
@@ -64,11 +64,11 @@ void GLCaches::unbindTexture(GLuint texture) {
     }
 }
 
-GLuint GLCaches::activeTexture() const {
+GLint GLCaches::activeTexture() const {
 	return mTextureUnit;
 }
 
-GLenum GLCaches::activeTexture(GLuint textureUnit) {
+GLenum GLCaches::activeTexture(GLint textureUnit) {
     if (mTextureUnit != textureUnit) {
         glActiveTexture(gTextureUnits[textureUnit]);
         mTextureUnit = textureUnit;
@@ -77,7 +77,7 @@ GLenum GLCaches::activeTexture(GLuint textureUnit) {
 }
 
 void GLCaches::resetActiveTexture() {
-    mTextureUnit = 0;
+    mTextureUnit = -1;
 }
 
 void GLCaches::bindFrameBuffer(GLuint frameBuffer) {

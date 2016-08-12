@@ -94,7 +94,8 @@ bool OBJMeshLoader::available(io::InputStream* is) {
 	return false;
 }
 
-Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
+// TODO
+bool OBJMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& meshes, std::vector<MaterialDescription>& materials) {
 	io::InputStreamReader isReader(is);
 	io::BufferedReader reader(&isReader);
 
@@ -181,7 +182,8 @@ Mesh* OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 		matchResult = nullptr;
 	}
 	geometry->setBoundingBox(boundingBox);
-	return new BasicMesh(geometry);
+	meshes = new BasicMesh(geometry);
+	return true;
 }
 
 } /* namespace scene */

@@ -9,20 +9,20 @@
 #define POLA_BASICMESHSCENENODE_H_
 
 #include "pola/scene/node/MeshSceneNode.h"
-#include "pola/scene/mesh/BasicMesh.h"
+#include "pola/scene/mesh/Mesh.h"
 
 namespace pola {
 namespace scene {
 
 class BasicMeshSceneNode: public MeshSceneNode {
 public:
-	BasicMeshSceneNode(BasicMesh* mesh);
+	BasicMeshSceneNode(Mesh* mesh);
 	virtual ~BasicMeshSceneNode();
 
-	virtual Mesh* mesh(uint32_t index);
+	virtual Mesh* mesh();
 
 private:
-	BasicMesh* mMesh;
+	Mesh* mMesh;
 };
 
 } /* namespace scene */

@@ -149,7 +149,7 @@ const utils::String LambertMaterial::generateVertexShader() {
 			\n#endif\n
 			\n#if defined(NUM_POINT_LIGHTS) && (NUM_POINT_LIGHTS > 0)\n
 			  PointLight pointLight;
-			  vec3 pos = (u_model * a_position).xyz;
+			  vec3 pos = (u_model * vec4(a_position, 1.0)).xyz;
 			  for (int i = 0; i < NUM_POINT_LIGHTS; i ++) {
 			    pointLight = u_pointLights[ i ];
 			    vec3 dir = pointLight.position - pos;

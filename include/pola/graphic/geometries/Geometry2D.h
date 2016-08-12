@@ -18,6 +18,7 @@ public:
 	Geometry2D(size_t size = 0, int flag = FLAG_GEOMETRY_DEFAULT);
 	virtual ~Geometry2D();
 
+	void setCapacity(size_t size, int flag = FLAG_GEOMETRY_DEFAULT);
 	void alloc(size_t size = 0, int flag = FLAG_GEOMETRY_DEFAULT);
 
 	void addVerrtex(const Vertex2& v);
@@ -40,9 +41,6 @@ public:
 	void addColor(const pola::graphic::FColor4& cor);
 
 	virtual void computeBoundingBox();
-
-protected:
-	void setCapacity(size_t size, int flag = FLAG_GEOMETRY_DEFAULT);
 
 protected:
 	std::vector<pola::graphic::vec2> mPositions;

@@ -13,6 +13,7 @@
 #include "pola/utils/String.h"
 
 #include <map>
+#include <vector>
 
 namespace pola {
 namespace scene {
@@ -45,7 +46,7 @@ static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type)
 	return nullptr;
 }
 
-Mesh* MeshLoader::loadMesh(const char* meshFile) {
+bool MeshLoader::loadMesh(const char* meshFile, Mesh*& meshes, std::vector<MaterialDescription>& materials) {
 	io::FileInputStream is(meshFile);
 	utils::String type;
 	utils::String s(meshFile);
@@ -53,14 +54,14 @@ Mesh* MeshLoader::loadMesh(const char* meshFile) {
 	if (index >= 0 && size_t(index + 1) < s.length()) {
 		type = s.substring(index + 1);
 	}
-	return loadMesh(&is, type);
+	return loadMesh(&is, type, meshes, materials);
 }
-Mesh* MeshLoader::loadMesh(io::InputStream* is, const utils::String& type) {
+bool MeshLoader::loadMesh(io::InputStream* is, const utils::String& type, Mesh*& meshes, std::vector<MaterialDescription>& materials) {
 	MeshLoader* meshLoader = getMeshLoader(is, type);
 	if (meshLoader != nullptr) {
-		return meshLoader->doLoadMesh(is);
+		return meshLoader->doLoadMesh(is, meshes, materials);
 	}
-	return nullptr;
+	return false;
 }
 
 }

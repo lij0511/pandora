@@ -38,7 +38,7 @@ inline double FPS::fps() {
 		mFps = (double) mFrameCount
 				* 1000 / (now - mFrameCountingStart);
 #ifdef DEBUG_FPS
-		LOGI("FPS:%f\n", mFps);
+		LOGI("FPS:%f", mFps);
 #endif
 		mFrameCountingStart = now;
 		mFrameCount = 0;

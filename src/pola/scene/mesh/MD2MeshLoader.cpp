@@ -75,14 +75,13 @@ bool MD2MeshLoader::available(io::InputStream* is) {
 	return accept;
 }
 
-Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
-
+bool MD2MeshLoader::doLoadMesh(io::InputStream* is, Mesh*& meshes, std::vector<MaterialDescription>& materials) {
 	MD2Header header;
 	is->read(&header, sizeof(MD2Header));
 
 	if (header.magic != MD2_MAGIC_NUMBER || header.version != MD2_VERSION) {
 		LOGE("MD2 Loader: Wrong file header\n");
-		return nullptr;
+		return false;
 	}
 
 	// read Triangles
@@ -93,7 +92,7 @@ Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 		delete[] triangles;
 
 		LOGE("MD2 Loader: Error reading triangles.");
-		return nullptr;
+		return false;
 	}
 
 	// read Vertices
@@ -172,7 +171,8 @@ Mesh* MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 
 	delete[] triangles;
 	delete[] textureCoords;
-	return mesh;
+	meshes = mesh;
+	return true;
 }
 
 } /* namespace scene */

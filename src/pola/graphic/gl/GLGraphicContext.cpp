@@ -125,19 +125,19 @@ GLProgram* GLGraphicContext::currentProgram(Material* material) {
 	return program;
 }
 
-void GLGraphicContext::renderGeometry(Geometry* geometry, Material* material) {
-	renderGeometry(geometry, GraphicParameter(), material);
+void GLGraphicContext::renderGeometry(Geometry* geometry, uint32_t start, uint32_t end, Material* material) {
+	renderGeometry(geometry, start, end, GraphicParameter(), material);
 }
 
-void GLGraphicContext::renderGeometry(Geometry* geometry, const GraphicParameter& parameter, Material* material) {
+void GLGraphicContext::renderGeometry(Geometry* geometry, uint32_t start, uint32_t end, const GraphicParameter& parameter, Material* material) {
 	if (geometry->type() == Geometry::Type::GEOMETRY_3D) {
-		renderGeometry((Geometry3D*) geometry, parameter, material);
+		renderGeometry((Geometry3D*) geometry, start, end, parameter, material);
 	} else if (geometry->type() == Geometry::Type::GEOMETRY_2D) {
-		renderGeometry((Geometry2D*) geometry, parameter, material);
+		renderGeometry((Geometry2D*) geometry, start, end, parameter, material);
 	}
 }
 
-void GLGraphicContext::renderGeometry(Geometry2D* geometry, const GraphicParameter& parameter, Material* material) {
+void GLGraphicContext::renderGeometry(Geometry2D* geometry, uint32_t start, uint32_t end, const GraphicParameter& parameter, Material* material) {
 	size_t positionCount = geometry->positionCount();
 	if (positionCount == 0) {
 		return;
@@ -172,14 +172,26 @@ void GLGraphicContext::renderGeometry(Geometry2D* geometry, const GraphicParamet
 		glVertexAttribPointer(attribute->location, 2, GL_FLOAT, GL_FALSE, sizeof(graphic::vec2), ((GLbyte*) geometry->uvs()));
 	}
 	if (geometry->indexCount() > 0) {
-		glDrawElements(GLDrawMode(parameter.drawMode), geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
+		if (start >= geometry->indexCount()) {
+			start = geometry->indexCount() - 1;
+		}
+		if (end <= start) {
+			end = geometry->indexCount();
+		}
+		glDrawElements(GLDrawMode(parameter.drawMode), end - start, GL_UNSIGNED_SHORT, (const GLvoid*) (geometry->indices() + start));
 	} else {
-		glDrawArrays(GLDrawMode(parameter.drawMode), 0, positionCount);
+		if (start >= positionCount) {
+			start = positionCount - 1;
+		}
+		if (end <= start) {
+			end = positionCount;
+		}
+		glDrawArrays(GLDrawMode(parameter.drawMode), start, end - start);
 	}
 	GLCaches::get().resetActiveTexture();
 }
 
-void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParameter& parameter, Material* material) {
+void GLGraphicContext::renderGeometry(Geometry3D* geometry, uint32_t start, uint32_t end, const GraphicParameter& parameter, Material* material) {
 	size_t positionCount = geometry->positionCount();
 	if (positionCount == 0) {
 		return;
@@ -243,9 +255,21 @@ void GLGraphicContext::renderGeometry(Geometry3D* geometry, const GraphicParamet
 		glVertexAttribPointer(a_normal, 3, GL_FLOAT, GL_FALSE, sizeof(graphic::vec3), ((GLbyte*) geometry->normals()));
 	}*/
 	if (geometry->indexCount() > 0) {
-		glDrawElements(GLDrawMode(parameter.drawMode), geometry->indexCount(), GL_UNSIGNED_SHORT, (const GLvoid*) geometry->indices());
+		if (start >= geometry->indexCount()) {
+			start = geometry->indexCount() - 1;
+		}
+		if (end <= start) {
+			end = geometry->indexCount();
+		}
+		glDrawElements(GLDrawMode(parameter.drawMode), end - start, GL_UNSIGNED_SHORT, (const GLvoid*) (geometry->indices() + start));
 	} else {
-		glDrawArrays(GLDrawMode(parameter.drawMode), 0, positionCount);
+		if (start >= positionCount) {
+			start = positionCount - 1;
+		}
+		if (end <= start) {
+			end = positionCount;
+		}
+		glDrawArrays(GLDrawMode(parameter.drawMode), start, end - start);
 	}
 	GLCaches::get().resetActiveTexture();
 }

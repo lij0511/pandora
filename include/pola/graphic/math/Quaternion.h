@@ -5,8 +5,8 @@
  *      Author: lijing
  */
 
-#ifndef QUATERNION_H_
-#define QUATERNION_H_
+#ifndef POLA_QUATERNION_H_
+#define POLA_QUATERNION_H_
 
 #include <cmath>
 
@@ -122,4 +122,4 @@ typedef Quaternion quat4;
 } /* namespace graphic */
 } /* namespace pola */
 
-#endif /* QUATERNION_H_ */
+#endif /* POLA_QUATERNION_H_ */

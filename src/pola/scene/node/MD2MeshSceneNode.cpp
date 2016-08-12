@@ -5,19 +5,19 @@
  *      Author: lijing
  */
 
-#include "pola/scene/node/MD2AnimatedMeshSceneNode.h"
+#include "pola/scene/node/MD2MeshSceneNode.h"
 
 namespace pola {
 namespace scene {
 
-MD2AnimatedMeshSceneNode::MD2AnimatedMeshSceneNode(MD2AnimatedMesh* mesh) : mMesh(mesh) {
+MD2MeshSceneNode::MD2MeshSceneNode(MD2AnimatedMesh* mesh) : mMesh(mesh) {
 	setFrameLoop(0, mMesh->getFrameCount());
 }
 
-MD2AnimatedMeshSceneNode::~MD2AnimatedMeshSceneNode() {
+MD2MeshSceneNode::~MD2MeshSceneNode() {
 }
 
-void MD2AnimatedMeshSceneNode::setAnimationType(MD2_ANIMATION_TYPE type) {
+void MD2MeshSceneNode::setAnimationType(MD2_ANIMATION_TYPE type) {
 	if (type < 0 || type >= MD2_AT_COUNT) {
 		return;
 	}
@@ -27,11 +27,11 @@ void MD2AnimatedMeshSceneNode::setAnimationType(MD2_ANIMATION_TYPE type) {
 	setFramesPerMs((float) fps / 1000.0f);
 }
 
-Mesh* MD2AnimatedMeshSceneNode::mesh(uint32_t index) {
+Mesh* MD2MeshSceneNode::mesh() {
 	return mMesh;
 }
 
-void MD2AnimatedMeshSceneNode::update(p_nsecs_t timeMs) {
+void MD2MeshSceneNode::update(p_nsecs_t timeMs) {
 	AnimatedMeshSceneNode::update(timeMs);
 	mMesh->updateMeshBuffer(getCurrentFrame(), getStartFrameLoop(), getEndFrameLoop());
 }

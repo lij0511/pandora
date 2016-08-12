@@ -21,6 +21,7 @@ public:
 	Geometry3D(size_t size = 0, int flag = FLAG_GEOMETRY_DEFAULT);
 	virtual ~Geometry3D();
 
+	void setCapacity(size_t size, int flag = FLAG_GEOMETRY_DEFAULT);
 	void alloc(size_t size = 0, int flag = FLAG_GEOMETRY_DEFAULT);
 
 	void addVerrtex(const Vertex3& v);
@@ -52,9 +53,6 @@ public:
 
 	/* Declare for Buffered Objects */
 	virtual bool bufferd();
-
-protected:
-	void setCapacity(size_t size, int flag = FLAG_GEOMETRY_DEFAULT);
 
 protected:
 	std::vector<pola::graphic::vec3> mPositions;

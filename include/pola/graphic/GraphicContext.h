@@ -54,8 +54,8 @@ public:
 	void setMatrix(MatrixType type, const mat4& matrix);
 	mat4 getMatrix(MatrixType type);
 
-	virtual void renderGeometry(Geometry* geometry, const GraphicParameter& parameter, Material* material = nullptr) = 0;
-	virtual void renderGeometry(Geometry* geometry, Material* material = nullptr) = 0;
+	virtual void renderGeometry(Geometry* geometry, uint32_t start, uint32_t end, const GraphicParameter& parameter, Material* material = nullptr) = 0;
+	virtual void renderGeometry(Geometry* geometry, uint32_t start, uint32_t end, Material* material = nullptr) = 0;
 
 protected:
 	virtual Texture* doLoadTexture(io::InputStream* is) = 0;

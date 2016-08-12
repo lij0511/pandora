@@ -10,13 +10,13 @@
 namespace pola {
 namespace scene {
 
-BasicMeshSceneNode::BasicMeshSceneNode(BasicMesh* mesh) : mMesh(mesh) {
+BasicMeshSceneNode::BasicMeshSceneNode(Mesh* mesh) : mMesh(mesh) {
 }
 
 BasicMeshSceneNode::~BasicMeshSceneNode() {
 }
 
-Mesh* BasicMeshSceneNode::mesh(uint32_t index) {
+Mesh* BasicMeshSceneNode::mesh() {
 	return mMesh;
 }
 

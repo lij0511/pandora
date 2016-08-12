@@ -25,8 +25,7 @@ public:
 
 	void setMaterial(uint32_t index, graphic::Material* material);
 
-	virtual Mesh* mesh(uint32_t index) = 0;
-	virtual uint32_t meshCount() const;
+	virtual Mesh* mesh() = 0;
 	virtual graphic::Material* material(uint32_t index) const;
 
 	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);

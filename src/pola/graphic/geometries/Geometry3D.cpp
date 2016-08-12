@@ -33,16 +33,16 @@ void Geometry3D::alloc(size_t size, int flag) {
 }
 
 void Geometry3D::setCapacity(size_t size, int flag) {
-	if (mPositions.capacity() != size) {
+	if (mPositions.capacity() < size) {
 		mPositions.reserve(size);
 	}
-	if ((flag & FLAG_GEOMETRY_NORMAL) == FLAG_GEOMETRY_NORMAL && mNormals.capacity() != size) {
+	if ((flag & FLAG_GEOMETRY_NORMAL) == FLAG_GEOMETRY_NORMAL && mNormals.capacity() < size) {
 		mNormals.reserve(size);
 	}
-	if ((flag & FLAG_GEOMETRY_UV) == FLAG_GEOMETRY_UV && mUvs.capacity() != size) {
+	if ((flag & FLAG_GEOMETRY_UV) == FLAG_GEOMETRY_UV && mUvs.capacity() < size) {
 		mUvs.reserve(size);
 	}
-	if ((flag & FLAG_GEOMETRY_COLOR) == FLAG_GEOMETRY_COLOR && mColors.capacity() != size) {
+	if ((flag & FLAG_GEOMETRY_COLOR) == FLAG_GEOMETRY_COLOR && mColors.capacity() < size) {
 		mColors.reserve(size);
 	}
 }

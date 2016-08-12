@@ -87,14 +87,10 @@ void ShadowMap::projectNodes(Camera* shadowCamera, SceneObject* node) {
 	}
 	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
 	if (m != nullptr) {
-		uint32_t meshCount = m->meshCount();
-		for (unsigned i = 0; i < meshCount; i ++) {
-			graphic::Box3 boundingBox =  m->mesh(i)->geometry()->getBoundingBox();
-			boundingBox.applyMatrix(m->getWorldTransform());
-			if (shadowCamera->frustum().intersectsBox(boundingBox)) {
-				mViewableNodes.push_back(m);
-				break;
-			}
+		graphic::Box3 boundingBox =  m->mesh()->geometry()->getBoundingBox();
+		boundingBox.applyMatrix(m->getWorldTransform());
+		if (shadowCamera->frustum().intersectsBox(boundingBox)) {
+			mViewableNodes.push_back(m);
 		}
 	}
 	for (unsigned i = 0; i < node->getChildCount(); i ++) {

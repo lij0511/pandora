@@ -300,7 +300,7 @@ BMPImageDecoder::~BMPImageDecoder() {
 bool BMPImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat preFormat) {
 	BMPHeader header;
 	is->read(&header, sizeof(BMPHeader));
-	LOGI("id=%x, FileSize=%u, Reserved=%u, BitmapDataOffset=%u, BitmapHeaderSize=%u, Width=%u, Height=%u, Planes=%u, BPP=%u, Compression=%u, BitmapDataSize=%u, PixelPerMeterX=%u, PixelPerMeterY=%u, Colors=%u, ImportantColors=%u\n",
+	LOGD("id=%x, FileSize=%u, Reserved=%u, BitmapDataOffset=%u, BitmapHeaderSize=%u, Width=%u, Height=%u, Planes=%u, BPP=%u, Compression=%u, BitmapDataSize=%u, PixelPerMeterX=%u, PixelPerMeterY=%u, Colors=%u, ImportantColors=%u\n",
 			header.Id, header.FileSize, header.Reserved, header.BitmapDataOffset, header.BitmapHeaderSize, header.Width, header.Height, header.Planes, header.BPP, header.Compression, header.BitmapDataSize, header.PixelPerMeterX, header.PixelPerMeterY, header.Colors, header.ImportantColors);
 
 	if (!header.Width || !header.Height) {

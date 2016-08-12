@@ -52,8 +52,8 @@ public:
 	void deleteTexture(GLuint texture);
 	void resetBoundTextures();
 
-	GLuint activeTexture() const;
-	GLenum activeTexture(GLuint textureUnit);
+	GLint activeTexture() const;
+	GLenum activeTexture(GLint textureUnit);
 	void resetActiveTexture();
 
 	void bindFrameBuffer(GLuint frameBuffer);
@@ -63,7 +63,7 @@ public:
 
 private:
 
-	GLuint mTextureUnit;
+	GLint mTextureUnit;
 	GLuint mBoundTextures[MAX_TEXTURE_UNITS_COUNT];
 
 	GLuint mFramebuffer;

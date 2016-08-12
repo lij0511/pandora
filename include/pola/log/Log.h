@@ -12,22 +12,24 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-//#define DEBUG 1
+#define DEBUG 1
 
-inline void polaris_printAssert(bool cond, const char* str, ...) {
-	if (cond) {
-		va_list   pArgList;
-		va_start(pArgList, str);
-		fprintf(stdout, str, pArgList);
-		va_end(pArgList);
-		abort();
-	}
+inline void polaris_printAbort(const char* str, ...) {
+	va_list   pArgList;
+	va_start(pArgList, str);
+	vfprintf(stderr, str, pArgList);
+	fprintf(stderr, "\n");
+	va_end(pArgList);
+	abort();
 }
+
+#define polaris_printLog(io, str, ...) \
+		fprintf(io, str, ## __VA_ARGS__);fprintf(io, "\n");
 
 #ifndef LOGD
 #ifdef DEBUG
 #define LOGD(str, ...) \
-		(void)fprintf(stdout, str, ## __VA_ARGS__);
+		polaris_printLog(stdout, str, ## __VA_ARGS__);
 #else
 #define LOGD(...) \
 	;
@@ -36,29 +38,29 @@ inline void polaris_printAssert(bool cond, const char* str, ...) {
 
 #ifndef LOGE
 #define LOGE(str, ...) \
-	(void)fprintf(stderr, str, ## __VA_ARGS__);
+		polaris_printLog(stderr, str, ## __VA_ARGS__);
 #endif
 
 #ifndef LOGW
 #define LOGW(str, ...) \
-	(void)fprintf(stderr, str, ## __VA_ARGS__);
+		polaris_printLog(stderr, str, ## __VA_ARGS__);
 #endif
 
 #ifndef LOGI
 #define LOGI(str, ...) \
-	fprintf(stdout, str, ## __VA_ARGS__);
+		polaris_printLog(stdout, str, ## __VA_ARGS__);
 #endif
 
 #ifndef LOG_FATAL_IF
 #define LOG_FATAL_IF(cond, str, ...)  \
 	(cond) \
-    ? ((void)polaris_printAssert(#cond, str, ##__VA_ARGS__)) \
+    ? ((void)polaris_printAbort(str, ##__VA_ARGS__)) \
     : (void)0
 #endif
 
 #ifndef LOG_ALWAYS_FATAL
 #define LOG_ALWAYS_FATAL(str, ...)  \
-    ((void)polaris_printAssert(true, str, ##__VA_ARGS__))
+		((void)polaris_printAbort(str, ##__VA_ARGS__))
 #endif
 
 #ifndef LOG_IF

@@ -13,8 +13,9 @@
 #include "pola/io/FileInputStream.h"
 #include "pola/scene/mesh/MeshLoader.h"
 #include "pola/scene/mesh/MD2AnimatedMesh.h"
-#include "pola/scene/node/MD2AnimatedMeshSceneNode.h"
+#include "pola/scene/node/MD2MeshSceneNode.h"
 #include "pola/scene/node/BasicMeshSceneNode.h"
+#include "pola/scene/mesh/BasicMesh.h"
 #include "pola/graphic/material/LambertMaterial.h"
 #include "pola/graphic/material/PhongMaterial.h"
 #include "pola/utils/Math.h"
@@ -35,9 +36,7 @@ int main(int argc, char *argv[]) {
 
 	 Scene* scene = device->getSceneManager()->getActiveScene();
 	 scene->setClearColor({0.4f, 0.4f, 0.6f, 1.f});
-	MD2AnimatedMesh* mesh = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/faerie.md2");
 	Texture* texture = scene->graphic()->loadTexture("./res/faerie2.bmp");
-	MD2AnimatedMesh* mesh2 = (MD2AnimatedMesh*) MeshLoader::loadMesh("./res/sydney.md2");
 	Texture* texture2 = scene->graphic()->loadTexture("./res/sydney.bmp");
 	DirectionalLight* dlight = new DirectionalLight({- 1.f, 0.f, 0.f}, {1.f, 1.f, 1.f});
 //	dlight->castShadow = true;
@@ -48,27 +47,20 @@ int main(int argc, char *argv[]) {
 //	scene->environment()->addLight(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f}));
 //	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
-	scene->addChild(new LightNode(dlight));
-//	scene->addChild(new LightNode(plight));
-//	scene->addChild(new LightNode(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f})));
+//	scene->addChild(new LightNode(dlight));
+	scene->addChild(new LightNode(plight));
+	scene->addChild(new LightNode(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f})));
 
 	Material* m1 = new LambertMaterial({1.f, 1.f, 1.f});
 	Material* m2 = new PhongMaterial({1.f, 0.f, 0.f});
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 	Material* tm2 = new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2);
 
-	BasicMesh* basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
-	/*int i = 0;
-	while (i < 30) {
-		if (basicMesh != nullptr) {
-			delete basicMesh;
-		}
-		basicMesh = (BasicMesh*) MeshLoader::loadMesh("./res/tree.obj");
-		i ++;
-	}*/
-	if (mesh) {
+	Mesh* meshs;
+	std::vector<MaterialDescription> materials;
+	if (MeshLoader::loadMesh("./res/faerie.md2", meshs, materials)) {
 		for (int i = 0; i < 100; i ++) {
-			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh);
+			MD2MeshSceneNode* node = new MD2MeshSceneNode((MD2AnimatedMesh*) meshs);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setMaterial(0, tm1);
 			int ani = random(0, MD2_AT_COUNT + 3);
@@ -78,9 +70,10 @@ int main(int argc, char *argv[]) {
 			scene->addChild(node);
 		}
 	}
-	if (mesh2) {
+	materials.clear();
+	if (MeshLoader::loadMesh("./res/sydney.md2", meshs, materials)) {
 		for (int i = 0; i < 100; i ++) {
-			MD2AnimatedMeshSceneNode* node = new MD2AnimatedMeshSceneNode(mesh2);
+			MD2MeshSceneNode* node = new MD2MeshSceneNode((MD2AnimatedMesh*) meshs);
 			node->setMaterial(0, tm2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			int ani = random(0, MD2_AT_COUNT + 3);
@@ -90,9 +83,10 @@ int main(int argc, char *argv[]) {
 			scene->addChild(node);
 		}
 	}
-	if (basicMesh) {
+	materials.clear();
+	if (MeshLoader::loadMesh("./res/tree.obj", meshs, materials)) {
 		for (int i = 0; i < 100; i ++) {
-			BasicMeshSceneNode* node = new BasicMeshSceneNode(basicMesh);
+			BasicMeshSceneNode* node = new BasicMeshSceneNode((BasicMesh*) meshs);
 			node->setMaterial(0, m1);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setScale({80, 80, 80});

@@ -91,7 +91,7 @@ void Scene::render() {
 		mGraphic->setMatrix(graphic::GraphicContext::MODEL, node.getWorldTransform());
 		graphic::GLTexture* t = ((graphic::GLRenderTarget*)mLightNodes[0]->light()->map)->getTexture();
 		graphic::Material m({1.f, 1.f, 1.f, 1.f}, t);
-		mGraphic->renderGeometry(&r, &m);
+		mGraphic->renderGeometry(&r, 0, 0, &m);
 	}
 	// TODO
 
@@ -130,14 +130,10 @@ void Scene::projectNodes(SceneObject* node) {
 	}
 	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
 	if (m != nullptr) {
-		uint32_t meshCount = m->meshCount();
-		for (unsigned i = 0; i < meshCount; i ++) {
-			graphic::Box3 boundingBox =  m->mesh(i)->geometry()->getBoundingBox();
-			boundingBox.applyMatrix(m->getWorldTransform());
-			if (mCurrentCamera->frustum().intersectsBox(boundingBox)) {
-				mViewableNodes.push_back(m);
-				break;
-			}
+		graphic::Box3 boundingBox =  m->mesh()->geometry()->getBoundingBox();
+		boundingBox.applyMatrix(m->getWorldTransform());
+		if (mCurrentCamera->frustum().intersectsBox(boundingBox)) {
+			mViewableNodes.push_back(m);
 		}
 	} else {
 		node->updateTransform();

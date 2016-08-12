@@ -127,7 +127,7 @@ GLuint GLProgram::buildShader(const char* source, GLenum type) {
 		// Some drivers return wrong values for GL_INFO_LOG_LENGTH
 		// use a fixed size instead
 		GLchar log[512];
-		glGetShaderInfoLog(shader, sizeof(log), 0, &log[0]);
+		glGetShaderInfoLog(shader, 512, 0, log);
 		LOGE("Error while compiling shader:%s\n", source);
 		LOG_ALWAYS_FATAL("Error log: %s\n", log);
 		return 0;
