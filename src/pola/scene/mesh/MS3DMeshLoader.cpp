@@ -204,7 +204,7 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vect
 
 			keyFrames.resize(jointInfo.numTranslationFrames);
 			is->read(keyFrames.data(), sizeof(MS3DKeyFrame) * jointInfo.numTranslationFrames);
-			LOGD("joint=%s, numRotationFrames=%u, numTranslationFrames=%u", jointInfo.name, jointInfo.numRotationFrames, jointInfo.numTranslationFrames);
+			LOGD("joint=%s, parent=%s, numRotationFrames=%u, numTranslationFrames=%u", jointInfo.name, jointInfo.parent, jointInfo.numRotationFrames, jointInfo.numTranslationFrames);
 		}
 	}
 
