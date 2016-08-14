@@ -10,6 +10,7 @@
 
 #include "pola/graphic/math/Quaternion.h"
 #include "pola/graphic/math/Matrix4.h"
+#include "pola/graphic/math/Vector.h"
 #include "pola/utils/Math.h"
 
 namespace pola {
@@ -22,6 +23,13 @@ struct Euler {
 
 	float x, y, z;
 	Order order;
+
+	inline Euler(const vec3& xyz, Order order = XYZ) {
+		this->x = xyz.x;
+		this->y = xyz.y;
+		this->z = xyz.z;
+		this->order = order;
+	}
 
 	inline Euler(float x = 0, float y = 0, float z = 0, Order order = XYZ) {
 		this->x = x;

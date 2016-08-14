@@ -212,7 +212,7 @@ static const MD2AnimationType MD2AnimationTypeList[21] = {
 	{198, 198,  5}, // BOOM
 };
 
-MD2AnimatedMesh::MD2AnimatedMesh() : frameCount(0),
+MD2AnimatedMesh::MD2AnimatedMesh() :
 	mCurentFrame(-1), mStartFrameLoop(-1), mEndFrameLoop(-1), mGeometry(new graphic::Geometry3D) {
 }
 
@@ -257,8 +257,8 @@ void MD2AnimatedMesh::updateMeshBuffer(int32_t frame, int32_t startFrameLoop, in
 		firstFrame = frame >> MD2_FRAME_SHIFT;
 		secondFrame = firstFrame + 1 > e ? s : firstFrame + 1;
 
-		firstFrame = fmin(frameCount - 1, firstFrame);
-		secondFrame = fmin(frameCount - 1, secondFrame);
+		firstFrame = fmin(mFrameCount - 1, firstFrame);
+		secondFrame = fmin(mFrameCount - 1, secondFrame);
 
 		//div = (frame % (1<<MD2_FRAME_SHIFT)) / (f32)(1<<MD2_FRAME_SHIFT);
 		frame &= (1 << MD2_FRAME_SHIFT) - 1;
@@ -312,7 +312,7 @@ void MD2AnimatedMesh::updateMeshBuffer(int32_t frame, int32_t startFrameLoop, in
 }
 
 size_t MD2AnimatedMesh::getFrameCount() const {
-	return frameCount << MD2_FRAME_SHIFT;
+	return mFrameCount << MD2_FRAME_SHIFT;
 }
 
 graphic::Geometry* MD2AnimatedMesh::geometry() {

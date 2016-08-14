@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 	lightNode->setPosition({-150.f, 0.f, 0.f});
 	scene->addChild(lightNode);
 //	scene->addChild(new LightNode(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f})));
-	scene->environment()->setAmbientLight({0.2f, 0.2f, 0.2f});
+	scene->environment()->setAmbientLight({0.5f, 0.5f, 0.5f});
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 //	scene->addChild(new LightNode(new PointLight(graphic::vec3(200, 0, 0), 500, {0.f, 1.f, 0.f})));
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 			n->setMaterial(i, new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture(texName.c_str())));
 		}
 //		n->setPosition(graphic::vec3(150, 0, 0));
-//		n->setScale(graphic::vec3(5, 5, 5));
+		n->setScale(graphic::vec3(10, 10, 10));
 		scene->addChild(n);
 	}
 

@@ -101,8 +101,6 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vect
 		return false;
 	}
 
-	SkinnedMesh* mesh = new SkinnedMesh;
-
 	uint16_t numVertices = 0;
 	is->read(&numVertices, sizeof(uint16_t));
 	LOGD("numVertices=%u", numVertices);
@@ -131,6 +129,72 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vect
 		is->read(&groups[i].materialIndex, sizeof(char));
 		LOGW("groupName=%s, materialIndex=%d, numTriangles=%u", groups[i].name, groups[i].materialIndex, groups[i].numTriangles);
 		totalNumTriangles += groups[i].numTriangles;
+	}
+
+	uint16_t numMaterials = 0;
+	is->read(&numMaterials, sizeof(uint16_t));
+	LOGW("numMaterials=%u", numMaterials);
+	if (numMaterials > 0) {
+		outMaterials.clear();
+		MS3DMaterial* materials = new MS3DMaterial[numMaterials];
+		is->read(materials, sizeof(MS3DMaterial) * numMaterials);
+		for (unsigned i = 0; i < numMaterials; i ++) {
+			MaterialDescription material;
+			material.ambient = {materials[i].ambient[0], materials[i].ambient[1], materials[i].ambient[2], materials[i].ambient[3]};
+			material.diffuse = {materials[i].diffuse[0], materials[i].diffuse[1], materials[i].diffuse[2], materials[i].diffuse[3]};
+			material.specular = {materials[i].specular[0], materials[i].specular[1], materials[i].specular[2], materials[i].specular[3]};
+			material.emissive = {materials[i].emissive[0], materials[i].emissive[1], materials[i].emissive[2], materials[i].emissive[3]};
+			material.shininess = materials[i].shininess;
+			material.texture = materials[i].texture;
+			outMaterials.push_back(material);
+			LOGD("materialName=%s, texture=%s", materials[i].name, materials[i].texture);
+		}
+	}
+
+	float fps = 1.f;
+	float time = 0.f;
+	int32_t frameCount = 0;
+	is->read(&fps, sizeof(float));
+	is->read(&time, sizeof(float));
+	is->read(&frameCount, sizeof(int32_t));
+	if (fps < 1.f) fps = 1.f;
+	LOGD("fps=%f, time=%f, frameCount=%d", fps, time, frameCount);
+
+	SkinnedMesh* mesh = new SkinnedMesh;
+
+	uint16_t numJoints = 0;
+	is->read(&numJoints, sizeof(uint16_t));
+	LOGD("numJoints=%u", numJoints);
+	if (numJoints > 0) {
+		MS3DJointInfo jointInfo;
+		std::vector<MS3DKeyFrame> keyFrames;
+		for (unsigned i = 0; i < numJoints; i ++) {
+			is->read(&jointInfo, sizeof(MS3DJointInfo));
+			SkinnedMesh::Joint* joint = mesh->addJoint();
+			joint->name = jointInfo.name;
+			joint->parentName = jointInfo.parent;
+			joint->parent = nullptr;
+			graphic::Euler(jointInfo.rotation.x, jointInfo.rotation.z, jointInfo.rotation.z).getQuaternion(joint->rotation);
+			joint->position = jointInfo.position;
+			joint->scale = {1.f, 1.f, 1.f};
+			joint->transform.compose(joint->position, joint->rotation, joint->scale);
+			keyFrames.resize(jointInfo.numRotationFrames);
+			is->read(keyFrames.data(), sizeof(MS3DKeyFrame) * jointInfo.numRotationFrames);
+			for (unsigned frame = 0; frame < jointInfo.numRotationFrames; frame ++) {
+				graphic::quat4 q;
+				graphic::Euler(keyFrames[frame].param).getQuaternion(q);
+				joint->rotationKeyFrames.push_back({keyFrames[frame].time * fps - 1, q});
+			}
+
+			keyFrames.resize(jointInfo.numTranslationFrames);
+			is->read(keyFrames.data(), sizeof(MS3DKeyFrame) * jointInfo.numTranslationFrames);
+			for (unsigned frame = 0; frame < jointInfo.numTranslationFrames; frame ++) {
+				joint->positionKeyFrames.push_back({keyFrames[frame].time * fps - 1, keyFrames[frame].param});
+			}
+			LOGD("joint=%s, parent=%s, numRotationFrames=%u, numTranslationFrames=%u", jointInfo.name, jointInfo.parent, jointInfo.numRotationFrames, jointInfo.numTranslationFrames);
+
+		}
+
 	}
 
 	graphic::Geometry3D* geometry = (graphic::Geometry3D*) mesh->localGeometry();
@@ -166,53 +230,13 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vect
 	memcpy(geometryM->positions(), geometry->positions(), geometry->positionCount() * sizeof(graphic::vec3));
 	memcpy(geometryM->normals(), geometry->normals(), geometry->normalCount() * sizeof(graphic::vec3));
 
-	uint16_t numMaterials = 0;
-	is->read(&numMaterials, sizeof(uint16_t));
-	LOGW("numMaterials=%u", numMaterials);
-	if (numMaterials > 0) {
-		outMaterials.clear();
-		MS3DMaterial* materials = new MS3DMaterial[numMaterials];
-		is->read(materials, sizeof(MS3DMaterial) * numMaterials);
-		for (unsigned i = 0; i < numMaterials; i ++) {
-			MaterialDescription material;
-			material.ambient = {materials[i].ambient[0], materials[i].ambient[1], materials[i].ambient[2], materials[i].ambient[3]};
-			material.diffuse = {materials[i].diffuse[0], materials[i].diffuse[1], materials[i].diffuse[2], materials[i].diffuse[3]};
-			material.specular = {materials[i].specular[0], materials[i].specular[1], materials[i].specular[2], materials[i].specular[3]};
-			material.emissive = {materials[i].emissive[0], materials[i].emissive[1], materials[i].emissive[2], materials[i].emissive[3]};
-			material.shininess = materials[i].shininess;
-			material.texture = materials[i].texture;
-			outMaterials.push_back(material);
-			LOGD("materialName=%s, texture=%s", materials[i].name, materials[i].texture);
-		}
-	}
-
-	float fps = 2.f;
-	is->read(&fps, sizeof(float));
-	LOGD("fps=%f", fps);
-	is->skip(4 + 4);
-
-	uint16_t numJoints = 0;
-	is->read(&numJoints, sizeof(uint16_t));
-	LOGD("numJoints=%u", numJoints);
-	if (numJoints > 0) {
-		MS3DJointInfo jointInfo;
-		std::vector<MS3DKeyFrame> keyFrames;
-		for (unsigned i = 0; i < numJoints; i ++) {
-			is->read(&jointInfo, sizeof(MS3DJointInfo));
-			keyFrames.resize(jointInfo.numRotationFrames);
-			is->read(keyFrames.data(), sizeof(MS3DKeyFrame) * jointInfo.numRotationFrames);
-
-			keyFrames.resize(jointInfo.numTranslationFrames);
-			is->read(keyFrames.data(), sizeof(MS3DKeyFrame) * jointInfo.numTranslationFrames);
-			LOGD("joint=%s, parent=%s, numRotationFrames=%u, numTranslationFrames=%u", jointInfo.name, jointInfo.parent, jointInfo.numRotationFrames, jointInfo.numTranslationFrames);
-		}
-	}
-
 	delete[] vertices;
 	delete[] triangles;
 	delete[] groups;
 
 	geometry->computeBoundingBox();
+	geometryM->setBoundingBox(geometry->getBoundingBox());
+	mesh->finalize();
 	outMeshes = mesh;
 	return true;
 }

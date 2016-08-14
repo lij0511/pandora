@@ -9,6 +9,7 @@
 #define POLA_SKINNEDMESH_H_
 
 #include "pola/graphic/math/Quaternion.h"
+#include "pola/graphic/math/Euler.h"
 #include "pola/graphic/math/Vector.h"
 #include "pola/graphic/math/Matrix4.h"
 #include "pola/graphic/geometries/Geometry3D.h"
@@ -44,8 +45,17 @@ public:
 	};
 	struct Joint {
 		std::string name;
-		std::vector<Joint> children;
+		std::string parentName;
+		Joint* parent;
+		std::vector<Joint*> children;
 		std::vector<VertexWeight> vertices;
+
+		graphic::vec3 position;
+		graphic::vec3 scale;
+		graphic::quat4 rotation;
+		graphic::mat4 transform;
+		graphic::mat4 absoluteTransform;
+
 		std::vector<PositionKeyFrame> positionKeyFrames;
 		std::vector<ScaleKeyFrame> scaleKeyFrames;
 		std::vector<RotationKeyFrame> rotationKeyFrames;
@@ -57,11 +67,14 @@ public:
 	virtual graphic::Geometry* geometry();
 
 	graphic::Geometry3D* localGeometry();
-	Joint& addJoint();
+	Joint* addJoint();
 
+	void finalize();
 private:
+	bool mFinalized;
 	graphic::Geometry3D* mLocalGeometry;
-	std::vector<Joint> mJoints;
+	std::vector<Joint*> mJoints;
+	std::vector<Joint*> mAllJoints;
 
 	graphic::Geometry3D* mGeometry;
 };

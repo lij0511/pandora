@@ -64,13 +64,12 @@ public:
 
 	void updateMeshBuffer(int32_t frame, int32_t startFrameLoop, int32_t endFrameLoop);
 
-	size_t getFrameCount() const;
+	virtual size_t getFrameCount() const;
 
 	virtual graphic::Geometry* geometry();
 
 	std::vector<std::vector<FrameItem> > frameList;
 	std::vector<FrameTransform> frameTransforms;
-	size_t frameCount;
 
 private:
 	int32_t mCurentFrame;

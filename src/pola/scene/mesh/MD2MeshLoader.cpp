@@ -112,7 +112,7 @@ bool MD2MeshLoader::doLoadMesh(io::InputStream* is, Mesh*& meshes, std::vector<M
 
 	mesh->frameTransforms.resize(header.numFrames);
 	mesh->frameList.resize(header.numFrames);
-	mesh->frameCount = header.numFrames;
+	mesh->setFrameCount(header.numFrames);
 
 	is->seek(header.offsetFrames);
 
