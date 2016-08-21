@@ -95,7 +95,7 @@ bool OBJMeshLoader::available(io::InputStream* is) {
 }
 
 // TODO
-bool OBJMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& meshes, std::vector<MaterialDescription>& materials) {
+bool OBJMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& meshes, std::vector<MaterialDescription>& materials) {
 	io::InputStreamReader isReader(is);
 	io::BufferedReader reader(&isReader);
 

@@ -25,21 +25,6 @@ ShadowMapMaterial::ShadowMapMaterial() {
 ShadowMapMaterial::~ShadowMapMaterial() {
 }
 
-void ShadowMapMaterial::setLightPosition(const vec3& lightPos) {
-	mLightPosition = lightPos;
-}
-
-void ShadowMapMaterial::bind(GraphicContext* graphic, Program* program) {
-#ifdef OGL_RENDERER
-	GLProgram* glProgram = (GLProgram*) program;
-
-	GLUniform* uniform = glProgram->fetchUniform("u_lightPos");
-	if (uniform != nullptr) {
-		glUniform3f(uniform->location, mLightPosition.x, mLightPosition.y, mLightPosition.z);
-	}
-#endif
-}
-
 const utils::String ShadowMapMaterial::generateVertexShader() {
 	utils::StringBuffer sb(256);
 #ifdef OGL_RENDERER

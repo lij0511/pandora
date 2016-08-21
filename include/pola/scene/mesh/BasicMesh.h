@@ -8,7 +8,7 @@
 #ifndef BASICMESH_H_
 #define BASICMESH_H_
 
-#include "pola/scene/mesh/Mesh.h"
+#include "pola/scene/mesh/IMesh.h"
 #include "pola/graphic/geometries/Geometry3D.h"
 #include "pola/graphic/geometries/Geometry2D.h"
 
@@ -18,7 +18,7 @@ namespace scene {
 /*
  *
  */
-class BasicMesh: public Mesh {
+class BasicMesh: public IMesh {
 public:
 	BasicMesh();
 	BasicMesh(graphic::Geometry* geometry);

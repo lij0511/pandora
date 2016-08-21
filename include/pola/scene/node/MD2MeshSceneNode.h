@@ -21,7 +21,7 @@ public:
 
 	void setAnimationType(MD2_ANIMATION_TYPE type);
 
-	virtual Mesh* mesh();
+	virtual IMesh* mesh();
 
 	virtual void update(p_nsecs_t timeMs);
 

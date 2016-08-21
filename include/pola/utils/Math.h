@@ -12,8 +12,12 @@
 #ifndef POLA_MATH_H_
 #define POLA_MATH_H_
 
+#define POLA_MIN(a, b) (a < b ? a : b)
+#define POLA_MAX(a, b) (a > b ? a : b)
+
 namespace pola {
 namespace utils {
+
 
 
 inline double random(double start = 0, double end = 1) {

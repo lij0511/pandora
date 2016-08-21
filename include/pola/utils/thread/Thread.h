@@ -66,7 +66,7 @@ inline Thread::~Thread() {
 	pthread_cond_destroy(&cond);
 }
 
-void Thread::start() {
+inline void Thread::start() {
 	pthread_mutex_lock(&mutex);
 	pthread_attr_t attr;
 	pthread_attr_init (&attr);
@@ -80,7 +80,10 @@ void Thread::start() {
 }
 
 inline void Thread::run() {
-	// XX do job
+	// XXX do job
+	{
+		// MessageLoop
+	}
 
 	pthread_mutex_lock(&mutex);
 	mActive = false;

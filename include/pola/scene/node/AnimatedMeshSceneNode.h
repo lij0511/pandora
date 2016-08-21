@@ -9,20 +9,21 @@
 #define POLA_ANIMATEDMESHSCENENODE_H_
 
 #include "pola/scene/node/MeshSceneNode.h"
+#include "pola/scene/mesh/AnimatedMesh.h"
 
 namespace pola {
 namespace scene {
 
 class AnimatedMeshSceneNode: public MeshSceneNode {
 public:
-	AnimatedMeshSceneNode();
+	AnimatedMeshSceneNode(AnimatedMesh* mesh);
 	virtual ~AnimatedMeshSceneNode();
 
 	void setFrameLoop(int32_t startFrame, int32_t endFrame);
-	void setFramesPerMs(float framesPerMs);
+	void setFramesPerSecond(float fps);
 	void setCurrentFrame(float frame);
 
-	int32_t getCurrentFrame() const;
+	float getCurrentFrame() const;
 	int32_t getStartFrameLoop() const;
 	int32_t getEndFrameLoop() const;
 
@@ -35,7 +36,7 @@ private:
 
 	int32_t mStartFrameLoop;
 	int32_t mEndFrameLoop;
-	float mFramesPerMs;
+	float mFramesPerSecond;
 	float mCurrentFrame;
 
 	p_nsecs_t mLastTimeMs;

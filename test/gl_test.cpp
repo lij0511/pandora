@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 	Material* tm2 = new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2);
 
-	Mesh* meshs;
+	IMesh* meshs;
 	std::vector<MaterialDescription> materials;
 	if (MeshLoader::loadMesh("./res/faerie.md2", meshs, materials)) {
 		for (int i = 0; i < 100; i ++) {

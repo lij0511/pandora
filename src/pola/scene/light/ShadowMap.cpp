@@ -53,7 +53,6 @@ void ShadowMap::renderShadowMap(graphic::GraphicContext* graphic, LightNode* lig
 	graphic::vec3 pos;
 	pos.setFromMatrixPosition(lightNode->getWorldTransform().data);
 	shadowCamera->setPosition(pos);
-	mShadowMapMaterial.setLightPosition(pos);
 	if (light->isDirectionalLight()) {
 		shadowCamera->lookAt(pos + ((graphic::DirectionalLight*) light)->direction);
 	} else if (light->isSpotLight()) {
@@ -73,7 +72,7 @@ void ShadowMap::renderShadowMap(graphic::GraphicContext* graphic, LightNode* lig
 	projectNodes(lightNode->shadowCamera(), mScene);
 
 	for (unsigned i = 0; i < mViewableNodes.size(); i ++) {
-		graphic->setMatrix(graphic::GraphicContext::MODEL, mViewableNodes[i]->getTransform());
+		graphic->setMatrix(graphic::GraphicContext::MODEL, mViewableNodes[i]->getWorldTransform());
 		mViewableNodes[i]->update(timeMs);
 		mViewableNodes[i]->render(graphic, &mShadowMapMaterial, timeMs);
 	}
@@ -87,9 +86,7 @@ void ShadowMap::projectNodes(Camera* shadowCamera, SceneObject* node) {
 	}
 	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
 	if (m != nullptr) {
-		graphic::Box3 boundingBox =  m->mesh()->geometry()->getBoundingBox();
-		boundingBox.applyMatrix(m->getWorldTransform());
-		if (shadowCamera->frustum().intersectsBox(boundingBox)) {
+		if (m->mesh()->intersectsBox(shadowCamera->frustum(), m->getWorldTransform())) {
 			mViewableNodes.push_back(m);
 		}
 	}

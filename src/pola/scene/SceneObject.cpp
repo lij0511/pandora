@@ -69,7 +69,7 @@ void SceneObject::addChild(SceneObject* child) {
 	if (child == this) {
 		return;
 	}
-	if (child->mParent != nullptr) {
+	if (child->mParent != nullptr && child->mParent != this) {
 		child->mParent->removeChild(child);
 	}
 	for (unsigned i = 0; i < mChildren.size(); i ++) {

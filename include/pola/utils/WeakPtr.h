@@ -74,7 +74,14 @@ public:
     inline  T&      operator* () const  { return *get(); }
     inline  T*      operator-> () const { return get();  }
     inline  T*      get() const         { return m_ptr ? m_ptr->get() : nullptr; }
-    inline sp<T> promote() const { return m_ptr ? m_ptr->get() : nullptr; }
+    inline sp<T> promote() const {
+    	if (m_ptr && m_ptr->attempt_refStrong()) {
+    		sp<T> result;
+    		result.set_pointer(m_ptr->get());
+    		return result;
+    	}
+    	return nullptr;
+    }
 
     // Operators
 

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "pola/graphic/math/Matrix4.h"
+#include "pola/graphic/math/Euler.h"
 
 namespace pola {
 namespace graphic {
@@ -295,12 +296,12 @@ void Matrix4::setRotationDegrees(const Vector3& degrees) {
 	setRotationRadians(degrees * M_PI / 180.0f);
 }
 
-void Matrix4::transformVector(Vector3& vec) {
+void Matrix4::transformVector(Vector3& vec) const {
 	Vector3 in = vec;
 	transformVector(in, vec);
 }
 
-void Matrix4::transformVector(const Vector3& in, Vector3& out) {
+void Matrix4::transformVector(const Vector3& in, Vector3& out) const {
 	out.x = in.x*data[0] + in.y*data[4] + in.z*data[8] + data[12];
 	out.y = in.x*data[1] + in.y*data[5] + in.z*data[9] + data[13];
 	out.z = in.x*data[2] + in.y*data[6] + in.z*data[10] + data[14];
@@ -358,6 +359,13 @@ void Matrix4::compose(const Vector3& position, const Quaternion& quaternion, con
 	this->makeRotationFromQuaternion(quaternion);
 	this->setScale(scale);
 	this->setPosition(position);
+}
+
+void Matrix4::compose(const Vector3& position, const Vector3& rotation, const Vector3& scale) {
+	loadIdentity();
+	setRotationRadians(rotation);
+	setScale(scale);
+	setPosition(position);
 }
 
 void Matrix4::decompose(Vector3& position, Quaternion& quaternion, Vector3& scale) {

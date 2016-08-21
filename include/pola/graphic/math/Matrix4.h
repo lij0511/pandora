@@ -131,14 +131,15 @@ public:
 
     void setRotationRadians(const Vector3& radians);
     void setRotationDegrees(const Vector3& degrees);
-    void transformVector(Vector3& vec);
-    void transformVector(const Vector3& in, Vector3& out);
+    void transformVector(Vector3& vec) const;
+    void transformVector(const Vector3& in, Vector3& out) const;
 
     void setPosition(const Vector3& position);
 	void setScale(const Vector3& scale);
 	void makeRotationFromQuaternion(const Quaternion& rotation);
 
     void compose(const Vector3& position, const Quaternion& quaternion, const Vector3& scale);
+    void compose(const Vector3& position, const Vector3& rotation, const Vector3& scale);
     void decompose(Vector3& position, Quaternion& quaternion, Vector3& scale);
     void getRotation(Quaternion& rotation);
 

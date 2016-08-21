@@ -9,6 +9,9 @@
 #include "pola/scene/mesh/MD2MeshLoader.h"
 #include "pola/scene/mesh/MS3DMeshLoader.h"
 #include "pola/scene/mesh/OBJMeshLoader.h"
+#ifdef MESH_LOADER_FBX
+#include "pola/scene/mesh/FBXMeshLoader.h"
+#endif
 #include "pola/io/FileInputStream.h"
 #include "pola/utils/String.h"
 
@@ -27,6 +30,9 @@ static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type)
 		meshLoaders[utils::String("md2")] = new MD2MeshLoader;
 		meshLoaders[utils::String("ms3d")] = new MS3DMeshLoader;
 		meshLoaders[utils::String("obj")] = new OBJMeshLoader;
+#ifdef MESH_LOADER_FBX
+		meshLoaders[utils::String("fbx")] = new FBXMeshLoader;
+#endif
 	}
 
 	std::map<utils::String, MeshLoader*>::iterator iter = meshLoaders.find(type);
@@ -46,17 +52,17 @@ static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type)
 	return nullptr;
 }
 
-bool MeshLoader::loadMesh(const char* meshFile, Mesh*& meshes, std::vector<MaterialDescription>& materials) {
+bool MeshLoader::loadMesh(const char* meshFile, IMesh*& meshes, std::vector<MaterialDescription>& materials) {
 	io::FileInputStream is(meshFile);
 	utils::String type;
 	utils::String s(meshFile);
 	ssize_t index = s.lastIndexOf('.');
 	if (index >= 0 && size_t(index + 1) < s.length()) {
-		type = s.substring(index + 1);
+		type = s.substring(index + 1).lower();
 	}
 	return loadMesh(&is, type, meshes, materials);
 }
-bool MeshLoader::loadMesh(io::InputStream* is, const utils::String& type, Mesh*& meshes, std::vector<MaterialDescription>& materials) {
+bool MeshLoader::loadMesh(io::InputStream* is, const utils::String& type, IMesh*& meshes, std::vector<MaterialDescription>& materials) {
 	MeshLoader* meshLoader = getMeshLoader(is, type);
 	if (meshLoader != nullptr) {
 		return meshLoader->doLoadMesh(is, meshes, materials);

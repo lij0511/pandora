@@ -8,6 +8,8 @@
 #include "pola/scene/Scene.h"
 #include "pola/scene/FPS.h"
 #include "pola/scene/node/MeshSceneNode.h"
+#include "pola/scene/node/MD2MeshSceneNode.h"
+#include "pola/scene/node/NullMeshSceneNode.h"
 #include "pola/utils/Times.h"
 
 // TODO
@@ -57,6 +59,39 @@ void Scene::addCamera(Camera* camera) {
 
 Camera* Scene::getCurrentCamera() const {
 	return mCurrentCamera;
+}
+
+SceneNode* Scene::addMesh(IMesh* mesh, SceneObject* parent) {
+	SceneNode* node = nullptr;
+	if (mesh->geometry() != nullptr) {
+		{
+			MD2AnimatedMesh* md2 = dynamic_cast<MD2AnimatedMesh*>(mesh);
+			if (md2 != nullptr) {
+				node = new MD2MeshSceneNode(md2);
+			}
+		}
+		if (node == nullptr) {
+			AnimatedMesh* animatedMesh = dynamic_cast<AnimatedMesh*>(mesh);
+			if (animatedMesh != nullptr) {
+				node = new AnimatedMeshSceneNode(animatedMesh);
+			}
+		}
+		if (node == nullptr) {
+			node = new MeshSceneNode(mesh);
+		}
+	} else {
+		node = new NullMeshSceneNode(mesh);
+	}
+
+	if (parent != nullptr) {
+		parent->addChild(node);
+	}
+
+	for (unsigned i = 0; i < mesh->getChildCount(); i ++) {
+		addMesh(mesh->getChild(i), node);
+	}
+
+	return node;
 }
 
 void Scene::render() {
@@ -130,9 +165,7 @@ void Scene::projectNodes(SceneObject* node) {
 	}
 	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
 	if (m != nullptr) {
-		graphic::Box3 boundingBox =  m->mesh()->geometry()->getBoundingBox();
-		boundingBox.applyMatrix(m->getWorldTransform());
-		if (mCurrentCamera->frustum().intersectsBox(boundingBox)) {
+		if (m->mesh()->intersectsBox(mCurrentCamera->frustum(), m->getWorldTransform())) {
 			mViewableNodes.push_back(m);
 		}
 	} else {

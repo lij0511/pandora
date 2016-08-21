@@ -16,14 +16,14 @@ namespace pola {
 namespace io {
 
 template<typename TYPE>
-std::vector<TYPE> copyStreamToVector(InputStream* is) {
-	std::vector<TYPE> vector;
+bool copyStreamToVector(InputStream* is, std::vector<TYPE> vector) {
+	vector.clear();
 	size_t length = is->getLength();
 	size_t position = is->getPosition();
 	if (length > 0 && position < length) {
 		length = length - position;
 		vector.resize(length / sizeof(TYPE));
-		size_t len = is->read(vector.editArray(), length);
+		size_t len = is->read(vector.data(), length);
 		if (len < length) {
 			vector.resize(len / sizeof(TYPE));
 		}
@@ -34,7 +34,7 @@ std::vector<TYPE> copyStreamToVector(InputStream* is) {
 			vector.push_back(*((TYPE*) ch));
 		}
 	}
-	return vector;
+	return !vector.empty();
 }
 
 }

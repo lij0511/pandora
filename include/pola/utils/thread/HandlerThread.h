@@ -20,10 +20,10 @@ public:
 	HandlerThread(int priority, bool joinable);
 	virtual ~HandlerThread();
 
-	void start() override;
+	virtual void start();
 	void stop();
 
-	void run() override;
+	virtual void run() override;
 	sp<Looper> getLooper();
 
 private:

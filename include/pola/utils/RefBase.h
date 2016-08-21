@@ -29,67 +29,56 @@ template<typename T> class RefBase {
 public:
 
 	virtual ~RefBase() {
-		if (m_weakref) {
-			m_weakref->clear();
-			m_weakref = nullptr;
-		}
+		m_weakref->m_ref = nullptr;
 	}
 
 	inline void ref() {
-		++ m_refCount;
+		++ m_weakref->m_strongrefCount;
+		m_weakref->ref_weak();
 #ifdef DEBUG_RP
-		int count = m_refCount;
-		LOGI("ref refCount=%d\n", count);
+		int count = m_weakref->m_strongrefCount;
+		LOGI("this=%p, ref refCount=%d\n", this, count);
 #endif
 	}
 	inline void deref() {
 #ifdef DEBUG_RP
-		int count = m_refCount - 1;
-		LOGI("deref refCount=%d\n", count);
+		int count = m_weakref->m_strongrefCount - 1;
+		LOGI("this=%p, deref refCount=%d\n", this, count);
 #endif
-		if ((-- m_refCount) <= 0) {
+		if ((-- m_weakref->m_strongrefCount) <= 0) {
+			m_weakref->m_ref = nullptr;
 			delete static_cast<T*>(this);
 		}
+		m_weakref->deref_weak();
 	}
 
 	inline int32_t getStrongCount() const {
-		return m_refCount;
+		return m_weakref->m_strongrefCount;
 	}
 
 	inline weakref_impl<T>* get_weak_impl() {
-		if (!m_weakref) {
-			m_weakref = new weakref_impl<T>(this);
-		}
 		return m_weakref;
 	}
 
 protected:
-	RefBase() : m_refCount(0), m_weakref(nullptr) {};
+	RefBase() : m_weakref(new weakref_impl<T>(this)) {};
 
 private:
 
 	template<typename Y> friend class weakref_impl;
 
-	atomic_int m_refCount;
 	weakref_impl<T>* m_weakref;
 };
 
 template<typename T> class weakref_impl {
 public:
-	weakref_impl(RefBase<T>* ref) : m_weakrefCount(0), m_ref(ref) {
+	weakref_impl(RefBase<T>* ref) : m_strongrefCount(0), m_weakrefCount(0), m_ref(ref) {
 	}
 
 	virtual ~weakref_impl() {
 	}
 
-	void clear() {
-		m_ref = nullptr;
-		if (m_weakrefCount <= 0) {
-			delete this;
-		}
-	}
-
-	T* get() {
+	inline T* get() {
 		if (m_ref) {
 			return static_cast<T*>(m_ref);
 		} else {
@@ -112,11 +101,26 @@ public:
 		LOGI("deref_weak refCount=%d\n", count);
 #endif
 		if ((-- m_weakrefCount) <= 0) {
-			delete this;
+			if (m_ref) {
+			} else {
+				delete this;
+			}
 		}
 	}
 
+	inline bool attempt_refStrong() {
+		ref_weak();
+		bool r = (++ m_strongrefCount) > 1;
+		if (!r) {
+			deref_weak();
+		}
+		return r;
+	}
+
 private:
+	template<typename Y> friend class RefBase;
+
+	atomic_int m_strongrefCount;
 	atomic_int m_weakrefCount;
 	RefBase<T>* m_ref;
 };

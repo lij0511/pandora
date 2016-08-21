@@ -11,7 +11,7 @@
 #include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/material/Material.h"
 #include "pola/scene/node/SceneNode.h"
-#include "pola/scene/mesh/Mesh.h"
+#include "pola/scene/mesh/IMesh.h"
 
 #include <vector>
 
@@ -20,19 +20,21 @@ namespace scene {
 
 class MeshSceneNode: public SceneNode {
 public:
-	MeshSceneNode();
+	MeshSceneNode(IMesh* mesh);
 	virtual ~MeshSceneNode();
 
-	void setMaterial(uint32_t index, graphic::Material* material);
+	void setMaterial(uint16_t index, graphic::Material* material);
 
-	virtual Mesh* mesh() = 0;
-	virtual graphic::Material* material(uint32_t index) const;
+	virtual IMesh* mesh();
+	virtual graphic::Material* material(uint16_t index) const;
 
 	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
 	virtual void render(graphic::GraphicContext* graphic, graphic::Material* m, p_nsecs_t timeMs);
 
 protected:
 	std::vector<graphic::Material*> mMaterials;
+
+	IMesh* mMesh;
 
 };
 

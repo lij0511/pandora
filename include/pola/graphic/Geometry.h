@@ -11,6 +11,7 @@
 #include "pola/graphic/Vertex.h"
 #include "pola/graphic/math/Box3.h"
 #include "pola/utils/TypeHelpers.h"
+#include "pola/utils/RefBase.h"
 
 #include <vector>
 
@@ -22,7 +23,7 @@ namespace graphic {
 #define FLAG_GEOMETRY_UV 0x0002
 #define FLAG_GEOMETRY_COLOR 0x0004
 
-class Geometry {
+class Geometry : public pola::utils::RefBase<Geometry> {
 public:
 	enum Type {
 		GEOMETRY_2D,

@@ -75,7 +75,9 @@ bool MD2MeshLoader::available(io::InputStream* is) {
 	return accept;
 }
 
-bool MD2MeshLoader::doLoadMesh(io::InputStream* is, Mesh*& meshes, std::vector<MaterialDescription>& materials) {
+bool MD2MeshLoader::doLoadMesh(io::InputStream* is, IMesh*& meshes, std::vector<MaterialDescription>& materials) {
+	materials.clear();
+
 	MD2Header header;
 	is->read(&header, sizeof(MD2Header));
 
@@ -119,6 +121,8 @@ bool MD2MeshLoader::doLoadMesh(io::InputStream* is, Mesh*& meshes, std::vector<M
 	for (int32_t i = 0; i < header.numFrames; ++i) {
 
 		is->read(frame, header.frameSize);
+
+		LOGD("FrameName=%s", frame->name);
 
 		// save keyframe scale and translation
 		FrameTransform* frameTransforms = mesh->frameTransforms.data();

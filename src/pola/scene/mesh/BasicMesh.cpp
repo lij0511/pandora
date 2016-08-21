@@ -11,13 +11,15 @@ namespace pola {
 namespace scene {
 
 BasicMesh::BasicMesh() : mGeometry(new graphic::Geometry3D) {
+	mGeometry->ref();
 }
 
 BasicMesh::BasicMesh(graphic::Geometry* geometry) : mGeometry(geometry) {
+	mGeometry->ref();
 }
 
 BasicMesh::~BasicMesh() {
-	delete mGeometry;
+	mGeometry->deref();
 }
 
 graphic::Geometry* BasicMesh::geometry() {

@@ -11,9 +11,9 @@
 #include "pola/io/FileInputStream.h"
 #include "pola/scene/mesh/MeshLoader.h"
 #include "pola/scene/mesh/MD2AnimatedMesh.h"
-#include "pola/scene/node/MD2MeshSceneNode.h"
-#include "pola/scene/node/BasicMeshSceneNode.h"
+#include "pola/scene/node/SceneNode.h"
 #include "pola/scene/mesh/BasicMesh.h"
+#include "pola/scene/mesh/SkinnedMesh.h"
 #include "pola/graphic/material/LambertMaterial.h"
 #include "pola/graphic/material/PhongMaterial.h"
 #include "pola/graphic/geometries/SphereGeometry.h"
@@ -45,47 +45,54 @@ int main(int argc, char *argv[]) {
 
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 
-	 Mesh* meshs = nullptr;
+	 IMesh* meshs = nullptr;
 	 std::vector<MaterialDescription> materials;
 	if (MeshLoader::loadMesh("./res/ratamahatta.md2", meshs, materials)) {
-		MD2MeshSceneNode* node = new MD2MeshSceneNode((MD2AnimatedMesh*) meshs);
-		node->setPosition(graphic::vec3(-100, 0, 0));
-		node->setMaterial(0, tm1);
+		SceneNode* n = scene->addMesh(meshs, scene);
+		n->setPosition(graphic::vec3(-100, 0, 0));
+		n->setMaterial(0, tm1);
 		materials.clear();
 		if (MeshLoader::loadMesh("./res/weapon.md2", meshs, materials)) {
-			MD2MeshSceneNode* weaponNode = new MD2MeshSceneNode((MD2AnimatedMesh*) meshs);
+			SceneNode* weaponNode = scene->addMesh(meshs, n);
 			weaponNode->setMaterial(0, new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture("./res/weapon.png")));
-			node->addChild(weaponNode);
+			n->addChild(weaponNode);
 		}
-		scene->addChild(node);
 	}
 
 	materials.clear();
 	if (MeshLoader::loadMesh("./res/monster.ms3d", meshs, materials)) {
-		BasicMeshSceneNode* n = new  BasicMeshSceneNode(meshs);
+		SceneNode* n = scene->addMesh(meshs, scene);
 		for (unsigned i = 0; i < materials.size(); i ++) {
 			const MaterialDescription& mate = materials[i];
 			std::string texName = "./res/";
 			texName += mate.texture;
 			n->setMaterial(i, new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture(texName.c_str())));
 		}
-//		n->setPosition(graphic::vec3(150, 0, 0));
-		n->setScale(graphic::vec3(10, 10, 10));
-		scene->addChild(n);
+	}
+
+	materials.clear();
+	if (MeshLoader::loadMesh("./res/fbx/test.fbx", meshs, materials)) {
+		SceneNode* n = scene->addMesh(meshs, scene);
+		n->setScale({0.1f, 0.1f, 0.1f});
+		n->setPosition(graphic::vec3(- 50, 0, 0));
+		for (unsigned i = 0; i < materials.size(); i ++) {
+			const MaterialDescription& mate = materials[i];
+			std::string texName = "./res/";
+			texName += mate.texture;
+			n->setMaterial(i, new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture(texName.c_str())));
+		}
 	}
 
 	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
 //	BasicMesh* m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
-	BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+	SceneNode* node = scene->addMesh(m, scene);
 	node->setMaterial(0, new LambertMaterial({1.0f, 1.0f, 1.0f}));
 	node->setPosition(graphic::vec3(50, 0, 0));
-	scene->addChild(node);
 
 	m = new BasicMesh(new CubeGeometry(60.f, 60.f, 60.f));
-	node = new BasicMeshSceneNode(m);
+	node = scene->addMesh(m, scene);
 	node->setMaterial(0, new LambertMaterial({1.0f, 1.0f, 1.0f}));
 	node->setPosition(graphic::vec3(100, 0, 0));
-	scene->addChild(node);
 
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));

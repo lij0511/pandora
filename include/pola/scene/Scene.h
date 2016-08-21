@@ -39,6 +39,8 @@ public:
 	void addCamera(Camera* camera);
 	Camera* getCurrentCamera() const;
 
+	SceneNode* addMesh(IMesh* mesh, SceneObject* parent = nullptr);
+
 	void render();
 
 	graphic::GraphicContext* graphic() const;

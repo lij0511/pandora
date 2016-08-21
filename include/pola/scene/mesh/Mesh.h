@@ -1,43 +1,43 @@
 /*
  * Mesh.h
  *
- *  Created on: 2016年5月19日
+ *  Created on: 2016年8月19日
  *      Author: lijing
  */
 
 #ifndef POLA_MESH_H_
 #define POLA_MESH_H_
 
-#include "pola/utils/RefBase.h"
-#include "pola/graphic/Geometry.h"
+#include "pola/graphic/geometries/Geometry3D.h"
+#include "pola/graphic/geometries/Geometry2D.h"
+
+#include "pola/scene/mesh/IMesh.h"
+#include "pola/scene/mesh/Skeleton.h"
+
+#include "pola/scene/animation/Animations.h"
 
 namespace pola {
 namespace scene {
 
-class Mesh : public utils::RefBase<Mesh> {
+/*
+ *
+ */
+class Mesh: public IMesh {
 public:
-	struct Group {
-		uint32_t start;
-		uint32_t end;
-		uint32_t materialId;
-	};
-
 	Mesh();
 	virtual ~Mesh();
 
-	virtual graphic::Geometry* geometry() = 0;
-
-	void addGroup(uint32_t start, uint32_t end, uint32_t materialId);
-	void addGroup(const Group& group);
-
-	uint8_t groupCount() const;
-	Group group(uint8_t index) const;
+	virtual graphic::Geometry* geometry();
 
 private:
-	std::vector<Group> mGroups;
+	graphic::Geometry* mGeometry;
+
+	Skeleton* mSkeleton;
+
+	pola::utils::sp<Animations> mAnimations;
 };
 
-}
-}
+} /* namespace scene */
+} /* namespace pola */
 
 #endif /* POLA_MESH_H_ */

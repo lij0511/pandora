@@ -10,7 +10,8 @@
 namespace pola {
 namespace scene {
 
-MeshSceneNode::MeshSceneNode() {
+MeshSceneNode::MeshSceneNode(IMesh* mesh) : mMesh(mesh) {
+	mMesh->ref();
 }
 
 MeshSceneNode::~MeshSceneNode() {
@@ -18,9 +19,10 @@ MeshSceneNode::~MeshSceneNode() {
 		(*iter)->deref();
 	}
 	mMaterials.clear();
+	mMesh->deref();
 }
 
-void MeshSceneNode::setMaterial(uint32_t index, graphic::Material* material) {
+void MeshSceneNode::setMaterial(uint16_t index, graphic::Material* material) {
 	if (index > mMaterials.size()) {
 		index = 0;
 	}
@@ -40,7 +42,11 @@ void MeshSceneNode::setMaterial(uint32_t index, graphic::Material* material) {
 	}
 }
 
-graphic::Material* MeshSceneNode::material(uint32_t index) const {
+IMesh* MeshSceneNode::mesh() {
+	return mMesh;
+}
+
+graphic::Material* MeshSceneNode::material(uint16_t index) const {
 	if (mMaterials.empty()) return nullptr;
 	return index < mMaterials.size() ? mMaterials[index] : mMaterials[0];
 }
@@ -49,14 +55,14 @@ void MeshSceneNode::render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
 	render(graphic, nullptr, timeMs);
 }
 void MeshSceneNode::render(graphic::GraphicContext* graphic, graphic::Material* m, p_nsecs_t timeMs) {
-	Mesh* ms = mesh();
+	IMesh* ms = mesh();
 	if (ms->groupCount() > 0) {
 		for (unsigned i = 0; i < ms->groupCount(); i ++) {
-			Mesh::Group group = ms->group(i);
+			IMesh::Group group = ms->group(i);
 			graphic->renderGeometry(ms->geometry(), group.start, group.end, m != nullptr ? m : material(group.materialId));
 		}
 	} else {
-		graphic->renderGeometry(ms->geometry(), 0, 0, m != nullptr ? m : material(0));
+		graphic->renderGeometry(ms->geometry(), 0, 0, m != nullptr ? m : material(ms->materialId()));
 	}
 }
 

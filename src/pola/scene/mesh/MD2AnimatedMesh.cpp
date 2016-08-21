@@ -214,10 +214,11 @@ static const MD2AnimationType MD2AnimationTypeList[21] = {
 
 MD2AnimatedMesh::MD2AnimatedMesh() :
 	mCurentFrame(-1), mStartFrameLoop(-1), mEndFrameLoop(-1), mGeometry(new graphic::Geometry3D) {
+	mGeometry->ref();
 }
 
 MD2AnimatedMesh::~MD2AnimatedMesh() {
-	delete mGeometry;
+	mGeometry->deref();
 }
 
 void MD2AnimatedMesh::getFrameLoop(MD2_ANIMATION_TYPE animationType, int32_t& outBegin, int32_t& outEnd, int32_t& outFPS) const {

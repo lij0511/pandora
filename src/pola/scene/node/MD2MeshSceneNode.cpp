@@ -10,8 +10,9 @@
 namespace pola {
 namespace scene {
 
-MD2MeshSceneNode::MD2MeshSceneNode(MD2AnimatedMesh* mesh) : mMesh(mesh) {
+MD2MeshSceneNode::MD2MeshSceneNode(MD2AnimatedMesh* mesh) : AnimatedMeshSceneNode(mesh), mMesh(mesh) {
 	setFrameLoop(0, mMesh->getFrameCount());
+	setFramesPerSecond(25.f);
 }
 
 MD2MeshSceneNode::~MD2MeshSceneNode() {
@@ -24,10 +25,10 @@ void MD2MeshSceneNode::setAnimationType(MD2_ANIMATION_TYPE type) {
 	int32_t begin, end, fps;
 	mMesh->getFrameLoop(type, begin, end, fps);
 	setFrameLoop(begin, end);
-	setFramesPerMs((float) fps / 1000.0f);
+	setFramesPerSecond((float) fps);
 }
 
-Mesh* MD2MeshSceneNode::mesh() {
+IMesh* MD2MeshSceneNode::mesh() {
 	return mMesh;
 }
 

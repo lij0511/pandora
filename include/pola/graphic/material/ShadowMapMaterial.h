@@ -21,16 +21,10 @@ public:
 	ShadowMapMaterial();
 	virtual ~ShadowMapMaterial();
 
-	void setLightPosition(const vec3& lightPos);
-
-	virtual void bind(GraphicContext* graphic, Program* program);
-
 protected:
 	virtual const utils::String generateVertexShader();;
 	virtual const utils::String generateFragmentShader();
 
-private:
-	vec3 mLightPosition;
 };
 
 } /* namespace graphic */

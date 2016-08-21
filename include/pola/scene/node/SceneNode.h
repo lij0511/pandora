@@ -27,7 +27,15 @@ public:
 	SceneNode();
 	virtual ~SceneNode();
 
+	virtual void setMaterial(uint16_t index, graphic::Material* material);
+
 	virtual void update(p_nsecs_t timeMs);
+
+	void setEnable(bool enable);
+	bool isEnable() const;
+
+private:
+	bool mEnable;
 };
 
 } /* namespace scene */

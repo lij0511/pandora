@@ -7,7 +7,9 @@
 
 #include "pola/scene/mesh/SkinnedMesh.h"
 #include "pola/scene/mesh/MS3DMeshLoader.h"
+#include "pola/utils/Math.h"
 #include "pola/log/Log.h"
+
 
 namespace pola {
 namespace scene {
@@ -89,7 +91,9 @@ bool MS3DMeshLoader::available(io::InputStream* is) {
 	return true;
 }
 
-bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vector<MaterialDescription>& outMaterials) {
+bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& outMeshes, std::vector<MaterialDescription>& outMaterials) {
+	outMaterials.clear();
+
 	MS3DHeader header;
 	is->read(&header, sizeof(MS3DHeader));
 	if (strncmp(header.id, "MS3D000000", 10 ) != 0 ) {
@@ -135,7 +139,6 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vect
 	is->read(&numMaterials, sizeof(uint16_t));
 	LOGW("numMaterials=%u", numMaterials);
 	if (numMaterials > 0) {
-		outMaterials.clear();
 		MS3DMaterial* materials = new MS3DMaterial[numMaterials];
 		is->read(materials, sizeof(MS3DMaterial) * numMaterials);
 		for (unsigned i = 0; i < numMaterials; i ++) {
@@ -153,14 +156,15 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vect
 
 	float fps = 1.f;
 	float time = 0.f;
-	int32_t frameCount = 0;
+	int32_t fc = 0;
 	is->read(&fps, sizeof(float));
 	is->read(&time, sizeof(float));
-	is->read(&frameCount, sizeof(int32_t));
+	is->read(&fc, sizeof(int32_t));
 	if (fps < 1.f) fps = 1.f;
-	LOGD("fps=%f, time=%f, frameCount=%d", fps, time, frameCount);
+	LOGD("fps=%f, time=%f, frameCount=%d", fps, time, fc);
 
 	SkinnedMesh* mesh = new SkinnedMesh;
+	mesh->setFramesPerSecond(fps);
 
 	uint16_t numJoints = 0;
 	is->read(&numJoints, sizeof(uint16_t));
@@ -168,33 +172,40 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vect
 	if (numJoints > 0) {
 		MS3DJointInfo jointInfo;
 		std::vector<MS3DKeyFrame> keyFrames;
+		uint32_t frameCount = 0;
 		for (unsigned i = 0; i < numJoints; i ++) {
 			is->read(&jointInfo, sizeof(MS3DJointInfo));
+			frameCount = POLA_MAX(frameCount, jointInfo.numRotationFrames);
+			frameCount = POLA_MAX(frameCount, jointInfo.numTranslationFrames);
 			SkinnedMesh::Joint* joint = mesh->addJoint();
 			joint->name = jointInfo.name;
 			joint->parentName = jointInfo.parent;
 			joint->parent = nullptr;
-			graphic::Euler(jointInfo.rotation.x, jointInfo.rotation.z, jointInfo.rotation.z).getQuaternion(joint->rotation);
+			joint->transform.setRotationRadians(jointInfo.rotation);
+			joint->transform.setPosition(jointInfo.position);
+			joint->transform.getRotation(joint->rotation);
 			joint->position = jointInfo.position;
 			joint->scale = {1.f, 1.f, 1.f};
-			joint->transform.compose(joint->position, joint->rotation, joint->scale);
 			keyFrames.resize(jointInfo.numRotationFrames);
 			is->read(keyFrames.data(), sizeof(MS3DKeyFrame) * jointInfo.numRotationFrames);
 			for (unsigned frame = 0; frame < jointInfo.numRotationFrames; frame ++) {
+				graphic::mat4 tmpMatrix;
+				tmpMatrix.setRotationRadians(keyFrames[frame].param);
+				tmpMatrix = joint->transform * tmpMatrix;
 				graphic::quat4 q;
-				graphic::Euler(keyFrames[frame].param).getQuaternion(q);
+				tmpMatrix.getRotation(q);
 				joint->rotationKeyFrames.push_back({keyFrames[frame].time * fps - 1, q});
 			}
 
 			keyFrames.resize(jointInfo.numTranslationFrames);
 			is->read(keyFrames.data(), sizeof(MS3DKeyFrame) * jointInfo.numTranslationFrames);
 			for (unsigned frame = 0; frame < jointInfo.numTranslationFrames; frame ++) {
-				joint->positionKeyFrames.push_back({keyFrames[frame].time * fps - 1, keyFrames[frame].param});
+				joint->positionKeyFrames.push_back({keyFrames[frame].time * fps - 1, joint->position + keyFrames[frame].param});
 			}
 			LOGD("joint=%s, parent=%s, numRotationFrames=%u, numTranslationFrames=%u", jointInfo.name, jointInfo.parent, jointInfo.numRotationFrames, jointInfo.numTranslationFrames);
 
 		}
-
+		mesh->setFrameCount(frameCount);
 	}
 
 	graphic::Geometry3D* geometry = (graphic::Geometry3D*) mesh->localGeometry();
@@ -221,6 +232,19 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, Mesh*& outMeshes, std::vect
 			*(uvs ++) = {triangles[triangleIndices[j]].uv[0][0], triangles[triangleIndices[j]].uv[1][0]};
 			*(uvs ++) = {triangles[triangleIndices[j]].uv[0][1], triangles[triangleIndices[j]].uv[1][1]};
 			*(uvs ++) = {triangles[triangleIndices[j]].uv[0][2], triangles[triangleIndices[j]].uv[1][2]};
+
+			if (vertices[triangles[triangleIndices[j]].vertexIndices[0]].bone >= 0) {
+				SkinnedMesh::Joint* joint = mesh->getJoint(vertices[triangles[triangleIndices[j]].vertexIndices[0]].bone);
+				joint->vertices.push_back({counter + j * 3, 1.f});
+			}
+			if (vertices[triangles[triangleIndices[j]].vertexIndices[1]].bone >= 0) {
+				SkinnedMesh::Joint* joint = mesh->getJoint(vertices[triangles[triangleIndices[j]].vertexIndices[1]].bone);
+				joint->vertices.push_back({counter + j * 3 + 1, 1.f});
+			}
+			if (vertices[triangles[triangleIndices[j]].vertexIndices[2]].bone >= 0) {
+				SkinnedMesh::Joint* joint = mesh->getJoint(vertices[triangles[triangleIndices[j]].vertexIndices[2]].bone);
+				joint->vertices.push_back({counter + j * 3 + 2, 1.f});
+			}
 		}
 		counter += groups[i].numTriangles * 3;
 		delete triangleIndices;

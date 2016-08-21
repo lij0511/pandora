@@ -55,6 +55,9 @@ public:
 		graphic::quat4 rotation;
 		graphic::mat4 transform;
 		graphic::mat4 absoluteTransform;
+		graphic::mat4 absoluteTransformInverse;
+		graphic::mat4 animationTransform;
+		graphic::mat4 absoluteAnimationTransform;
 
 		std::vector<PositionKeyFrame> positionKeyFrames;
 		std::vector<ScaleKeyFrame> scaleKeyFrames;
@@ -68,8 +71,18 @@ public:
 
 	graphic::Geometry3D* localGeometry();
 	Joint* addJoint();
+	Joint* getJoint(unsigned index) const;
 
 	void finalize();
+
+	virtual void updateMeshBuffer(float frame, int32_t startFrameLoop, int32_t endFrameLoop);
+
+private:
+	void buildTransforms(Joint* joint = nullptr);
+	void buildAnimationTransforms(float frame, Joint* joint = nullptr);
+	void skinMesh();
+	void skinJoint(Joint* joint);
+
 private:
 	bool mFinalized;
 	graphic::Geometry3D* mLocalGeometry;
