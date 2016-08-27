@@ -91,19 +91,20 @@ bool MS3DMeshLoader::available(io::InputStream* is) {
 	return true;
 }
 
-bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& outMeshes, std::vector<MaterialDescription>& outMaterials) {
-	outMaterials.clear();
+pola::utils::sp<MeshLoader::Result> MS3DMeshLoader::doLoadMesh(io::InputStream* is) {
 
 	MS3DHeader header;
 	is->read(&header, sizeof(MS3DHeader));
 	if (strncmp(header.id, "MS3D000000", 10 ) != 0 ) {
 		LOGE("MS3D Loader: Wrong file header\n");
-		return false;
+		return nullptr;
 	}
 	if (header.version < 3 || header.version > 4) {
 		LOGE("Only Milkshape3D version 3 and 4 (1.3 to 1.8) is supported. Loading failed. version is %d\n", header.version);
-		return false;
+		return nullptr;
 	}
+
+	pola::utils::sp<MeshLoader::Result> result = new Result;
 
 	uint16_t numVertices = 0;
 	is->read(&numVertices, sizeof(uint16_t));
@@ -149,7 +150,7 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& outMeshes, std::vec
 			material.emissive = {materials[i].emissive[0], materials[i].emissive[1], materials[i].emissive[2], materials[i].emissive[3]};
 			material.shininess = materials[i].shininess;
 			material.texture = materials[i].texture;
-			outMaterials.push_back(material);
+			result->materials.push_back(material);
 			LOGD("materialName=%s, texture=%s", materials[i].name, materials[i].texture);
 		}
 	}
@@ -261,8 +262,9 @@ bool MS3DMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& outMeshes, std::vec
 	geometry->computeBoundingBox();
 	geometryM->setBoundingBox(geometry->getBoundingBox());
 	mesh->finalize();
-	outMeshes = mesh;
-	return true;
+
+	result->mesh = mesh;
+	return result;
 }
 
 } /* namespace scene */

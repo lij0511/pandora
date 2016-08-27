@@ -14,7 +14,7 @@ namespace pola {
 namespace graphic {
 
 /*
- *
+ * TODO VertexBuffer(VBO) is NEEDED.
  */
 class Geometry3D : public Geometry {
 public:
@@ -50,6 +50,8 @@ public:
 	void addColor(const pola::graphic::FColor4& cor);
 
 	virtual void computeBoundingBox();
+
+	virtual Geometry* clone();
 
 	/* Declare for Buffered Objects */
 	virtual bool bufferd();

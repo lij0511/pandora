@@ -16,27 +16,36 @@
 namespace pola {
 namespace scene {
 
+class Mesh;
+
 /*
  *
  */
 class Animation : public pola::utils::RefBase<Animation> {
 public:
+	template<typename T>
+	struct KeyFrame {
+		float frameTime;
+		T frameData;
+	};
+
 	Animation(const std::string& name);
 	virtual ~Animation();
 
 	const std::string& name() const;
 
-	float getFramesPerSecond() const;
-	void setFramesPerSecond(float fps);
-
 	virtual uint16_t getFrameCount() const = 0;
 
-private:
+	virtual void applyFrame(float frameTime, pola::scene::Mesh* mesh) = 0;
+
+	float getDuration() const;
+
+protected:
 	std::string mName;
-	float mFramesPerSecond;
+	float mDuration;
 };
 
-inline Animation::Animation(const std::string& name) : mName(name), mFramesPerSecond(25.f) {
+inline Animation::Animation(const std::string& name) : mName(name), mDuration(0.f) {
 }
 inline Animation::~Animation() {
 }
@@ -45,11 +54,8 @@ inline const std::string& Animation::name() const {
 	return mName;
 }
 
-inline float Animation::getFramesPerSecond() const {
-	return mFramesPerSecond;
-}
-inline void Animation::setFramesPerSecond(float fps) {
-	mFramesPerSecond = fps;
+inline float Animation::getDuration() const {
+	return mDuration;
 }
 
 } /* namespace scene */

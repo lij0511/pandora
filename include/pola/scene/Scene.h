@@ -13,7 +13,7 @@
 #include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/Color.h"
 #include "pola/scene/FPS.h"
-#include "pola/scene/node/MeshSceneNode.h"
+#include "pola/scene/node/IMeshSceneNode.h"
 #include "pola/scene/light/LightNode.h"
 #include "pola/scene/light/ShadowMap.h"
 #include "pola/scene/camera/Camera.h"
@@ -59,7 +59,7 @@ private:
 	int32_t mHeight;
 	graphic::FColor4 mClearColor;
 
-	std::vector<MeshSceneNode*> mViewableNodes;
+	std::vector<IMeshSceneNode*> mViewableNodes;
 	std::vector<LightNode*> mLightNodes;
 
 	Camera* mCurrentCamera;

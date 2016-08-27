@@ -101,6 +101,16 @@ struct Vector2 {
 	float dot(const Vector2& v) const {
 		return x * v.x + y * v.y;
 	}
+
+	//! Creates an interpolated vector between this vector and another vector.
+	/** \param other The other vector to interpolate with.
+	\param d Interpolation value between 0.0f (all the other vector) and 1.0f (all this vector).
+	Note that this is the opposite direction of interpolation to getInterpolated_quadratic()
+	\return An interpolated vector.  This vector is not modified. */
+	Vector2 getInterpolated(const Vector2& other, float d) const {
+		const float inv = 1.0 - d;
+		return Vector2((other.x*inv + x*d), (other.y*inv + y*d));
+	}
 };
 
 struct Vector3 {

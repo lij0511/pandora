@@ -11,6 +11,7 @@
 #include "pola/graphic/math/Vector.h"
 #include "pola/graphic/math/Matrix4.h"
 #include "pola/graphic/math/Quaternion.h"
+#include "pola/utils/RefBase.h"
 
 #include <vector>
 #include <string>
@@ -40,7 +41,7 @@ protected:
 	graphic::vec3 mScale;
 };
 
-class Skeleton {
+class Skeleton : public pola::utils::RefBase<Skeleton> {
 public:
 	Skeleton();
 	virtual ~Skeleton();

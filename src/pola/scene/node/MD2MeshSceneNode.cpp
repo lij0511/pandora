@@ -12,7 +12,8 @@ namespace scene {
 
 MD2MeshSceneNode::MD2MeshSceneNode(MD2AnimatedMesh* mesh) : AnimatedMeshSceneNode(mesh), mMesh(mesh) {
 	setFrameLoop(0, mMesh->getFrameCount());
-	setFramesPerSecond(25.f);
+	setFramesPerSecond(25);
+	setAnimationType(MD2_AT_STAND);
 }
 
 MD2MeshSceneNode::~MD2MeshSceneNode() {

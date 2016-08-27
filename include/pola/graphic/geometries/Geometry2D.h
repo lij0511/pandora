@@ -42,6 +42,8 @@ public:
 
 	virtual void computeBoundingBox();
 
+	virtual Geometry* clone();
+
 protected:
 	std::vector<pola::graphic::vec2> mPositions;
 	std::vector<pola::graphic::vec2> mUvs;

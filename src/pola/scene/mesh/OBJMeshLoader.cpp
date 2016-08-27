@@ -95,7 +95,8 @@ bool OBJMeshLoader::available(io::InputStream* is) {
 }
 
 // TODO
-bool OBJMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& meshes, std::vector<MaterialDescription>& materials) {
+pola::utils::sp<MeshLoader::Result> OBJMeshLoader::doLoadMesh(io::InputStream* is) {
+
 	io::InputStreamReader isReader(is);
 	io::BufferedReader reader(&isReader);
 
@@ -182,8 +183,10 @@ bool OBJMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& meshes, std::vector<
 		matchResult = nullptr;
 	}
 	geometry->setBoundingBox(boundingBox);
-	meshes = new BasicMesh(geometry);
-	return true;
+
+	pola::utils::sp<MeshLoader::Result> result = new Result;
+	result->mesh = new BasicMesh(geometry);
+	return result;
 }
 
 } /* namespace scene */

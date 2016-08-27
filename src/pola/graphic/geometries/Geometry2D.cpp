@@ -99,5 +99,15 @@ void Geometry2D::computeBoundingBox() {
 	mBoundingBox.setFromPoints(positions(), positionCount());
 }
 
+Geometry* Geometry2D::clone() {
+	Geometry2D* geometry = new Geometry2D;
+	geometry->mPositions.insert(geometry->mPositions.end(), mPositions.begin(), mPositions.end());
+	geometry->mUvs.insert(geometry->mUvs.end(), mUvs.begin(), mUvs.end());
+	geometry->mColors.insert(geometry->mColors.end(), mColors.begin(), mColors.end());
+	geometry->mIndices.insert(geometry->mIndices.end(), mIndices.begin(), mIndices.end());
+	geometry->mBoundingBox = mBoundingBox;
+	return geometry;
+}
+
 } /* namespace graphic */
 } /* namespace pola */

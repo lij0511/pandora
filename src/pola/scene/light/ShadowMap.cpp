@@ -84,7 +84,7 @@ void ShadowMap::projectNodes(Camera* shadowCamera, SceneObject* node) {
 	if (node == nullptr) {
 		return;
 	}
-	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
+	IMeshSceneNode* m = dynamic_cast<IMeshSceneNode*>(node);
 	if (m != nullptr) {
 		if (m->mesh()->intersectsBox(shadowCamera->frustum(), m->getWorldTransform())) {
 			mViewableNodes.push_back(m);

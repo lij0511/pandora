@@ -25,12 +25,18 @@ namespace scene {
 class Mesh: public IMesh {
 public:
 	Mesh();
+	Mesh(graphic::Geometry3D* geometry);
 	virtual ~Mesh();
 
 	virtual graphic::Geometry* geometry();
 
+	void setAnimations(Animations* animations);
+	Animations* getAnimations() const;
+	virtual bool hasAnimation() const;
+	virtual Mesh* clone();
+
 private:
-	graphic::Geometry* mGeometry;
+	pola::utils::sp<graphic::Geometry> mGeometry;
 
 	Skeleton* mSkeleton;
 

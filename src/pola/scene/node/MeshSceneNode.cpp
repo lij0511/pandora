@@ -1,7 +1,7 @@
 /*
  * MeshSceneNode.cpp
  *
- *  Created on: 2016年5月23日
+ *  Created on: 2016年8月24日
  *      Author: lijing
  */
 
@@ -10,7 +10,17 @@
 namespace pola {
 namespace scene {
 
-MeshSceneNode::MeshSceneNode(IMesh* mesh) : mMesh(mesh) {
+MeshSceneNode::MeshSceneNode(Mesh* mesh) {
+	if (mesh->getAnimations() != nullptr) {
+		mAnimation = mesh->getAnimations()->getAnimation(0);
+		if (mAnimation != nullptr && mesh->getStrongCount() > 0) {
+			mesh = mesh->clone();
+		}
+		if (mAnimation != nullptr) {
+			mDuration = mAnimation->getDuration();
+		}
+	}
+	mMesh = mesh;
 	mMesh->ref();
 }
 
@@ -51,14 +61,41 @@ graphic::Material* MeshSceneNode::material(uint16_t index) const {
 	return index < mMaterials.size() ? mMaterials[index] : mMaterials[0];
 }
 
+void MeshSceneNode::update(p_nsecs_t timeMs) {
+	if (mAnimation != nullptr && animate(timeMs)) {
+		mAnimation->applyFrame(mCurrentFrame, mMesh);
+	}
+}
+
+void MeshSceneNode::setAnimation(unsigned index) {
+	Animations* animations = mMesh->getAnimations();
+	if (animations != nullptr) {
+		Animation* animation = animations->getAnimation(index);
+		if (animation != nullptr) {
+			mAnimation = animation;
+			mDuration = mAnimation->getDuration();
+		}
+	}
+}
+void MeshSceneNode::setAnimation(const std::string& name) {
+	Animations* animations = mMesh->getAnimations();
+	if (animations != nullptr) {
+		Animation* animation = animations->findAnimation(name);
+		if (animation != nullptr) {
+			mAnimation = animation;
+			mDuration = mAnimation->getDuration();
+		}
+	}
+}
+
 void MeshSceneNode::render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) {
 	render(graphic, nullptr, timeMs);
 }
 void MeshSceneNode::render(graphic::GraphicContext* graphic, graphic::Material* m, p_nsecs_t timeMs) {
-	IMesh* ms = mesh();
+	Mesh* ms = mMesh;
 	if (ms->groupCount() > 0) {
 		for (unsigned i = 0; i < ms->groupCount(); i ++) {
-			IMesh::Group group = ms->group(i);
+			Mesh::Group group = ms->group(i);
 			graphic->renderGeometry(ms->geometry(), group.start, group.end, m != nullptr ? m : material(group.materialId));
 		}
 	} else {

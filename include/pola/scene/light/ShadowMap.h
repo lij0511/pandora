@@ -11,7 +11,7 @@
 #include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/material/ShadowMapMaterial.h"
 #include "pola/scene/light/LightNode.h"
-#include "pola/scene/node/MeshSceneNode.h"
+#include "pola/scene/node/IMeshSceneNode.h"
 
 #include "pola/utils/Times.h"
 
@@ -43,7 +43,7 @@ private:
 
 	graphic::ShadowMapMaterial mShadowMapMaterial;
 
-	std::vector<MeshSceneNode*> mViewableNodes;
+	std::vector<IMeshSceneNode*> mViewableNodes;
 };
 
 } /* namespace scene */

@@ -65,6 +65,12 @@ SceneNode* Scene::addMesh(IMesh* mesh, SceneObject* parent) {
 	SceneNode* node = nullptr;
 	if (mesh->geometry() != nullptr) {
 		{
+			Mesh* m = dynamic_cast<Mesh*>(mesh);
+			if (m != nullptr) {
+				node = new MeshSceneNode(m);
+			}
+		}
+		if (node == nullptr) {
 			MD2AnimatedMesh* md2 = dynamic_cast<MD2AnimatedMesh*>(mesh);
 			if (md2 != nullptr) {
 				node = new MD2MeshSceneNode(md2);
@@ -77,7 +83,7 @@ SceneNode* Scene::addMesh(IMesh* mesh, SceneObject* parent) {
 			}
 		}
 		if (node == nullptr) {
-			node = new MeshSceneNode(mesh);
+			node = new AbsMeshSceneNode(mesh);
 		}
 	} else {
 		node = new NullMeshSceneNode(mesh);
@@ -85,10 +91,6 @@ SceneNode* Scene::addMesh(IMesh* mesh, SceneObject* parent) {
 
 	if (parent != nullptr) {
 		parent->addChild(node);
-	}
-
-	for (unsigned i = 0; i < mesh->getChildCount(); i ++) {
-		addMesh(mesh->getChild(i), node);
 	}
 
 	return node;
@@ -163,7 +165,7 @@ void Scene::projectNodes(SceneObject* node) {
 	if (mCurrentCamera == nullptr || node == nullptr) {
 		return;
 	}
-	MeshSceneNode* m = dynamic_cast<MeshSceneNode*>(node);
+	IMeshSceneNode* m = dynamic_cast<IMeshSceneNode*>(node);
 	if (m != nullptr) {
 		if (m->mesh()->intersectsBox(mCurrentCamera->frustum(), m->getWorldTransform())) {
 			mViewableNodes.push_back(m);

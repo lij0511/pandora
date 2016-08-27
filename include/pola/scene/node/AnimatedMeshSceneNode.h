@@ -8,13 +8,13 @@
 #ifndef POLA_ANIMATEDMESHSCENENODE_H_
 #define POLA_ANIMATEDMESHSCENENODE_H_
 
-#include "pola/scene/node/MeshSceneNode.h"
+#include "pola/scene/node/AbsMeshSceneNode.h"
 #include "pola/scene/mesh/AnimatedMesh.h"
 
 namespace pola {
 namespace scene {
 
-class AnimatedMeshSceneNode: public MeshSceneNode {
+class AnimatedMeshSceneNode: public AbsMeshSceneNode {
 public:
 	AnimatedMeshSceneNode(AnimatedMesh* mesh);
 	virtual ~AnimatedMeshSceneNode();

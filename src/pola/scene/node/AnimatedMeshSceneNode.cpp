@@ -11,7 +11,7 @@
 namespace pola {
 namespace scene {
 
-AnimatedMeshSceneNode::AnimatedMeshSceneNode(AnimatedMesh* mesh) : MeshSceneNode(mesh),
+AnimatedMeshSceneNode::AnimatedMeshSceneNode(AnimatedMesh* mesh) : AbsMeshSceneNode(mesh),
 	mStartFrameLoop(0), mEndFrameLoop(mesh->getFrameCount()), mFramesPerSecond(mesh->getFramesPerSecond()), mCurrentFrame(0), mLastTimeMs(0) {
 }
 

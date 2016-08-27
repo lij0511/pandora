@@ -14,7 +14,8 @@
 #include "pola/scene/mesh/MeshLoader.h"
 #include "pola/scene/mesh/MD2AnimatedMesh.h"
 #include "pola/scene/node/MD2MeshSceneNode.h"
-#include "pola/scene/node/BasicMeshSceneNode.h"
+#include "pola/scene/node/IMeshSceneNode.h"
+#include "pola/scene/node/MeshSceneNode.h"
 #include "pola/scene/mesh/BasicMesh.h"
 #include "pola/graphic/material/LambertMaterial.h"
 #include "pola/graphic/material/PhongMaterial.h"
@@ -49,62 +50,51 @@ int main(int argc, char *argv[]) {
 //	scene->environment()->addLight(new DirectionalLight({1.f, 0.f, 0.f}, {1.f, 1.f, 1.f}));
 //	scene->addChild(new LightNode(dlight));
 	scene->addChild(new LightNode(plight));
-	scene->addChild(new LightNode(new PointLight({0.f, 0.f, 0.f}, 500, {0.f, 1.f, 0.f})));
+	scene->addChild(new LightNode(new PointLight({0.f, 0.f, 0.f}, 500, {1.f, 1.f, 1.f})));
 
 	Material* m1 = new LambertMaterial({1.f, 1.f, 1.f});
-	Material* m2 = new PhongMaterial({1.f, 0.f, 0.f});
+	Material* m2 = new LambertMaterial({1.f, 0.f, 0.f});
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
-	Material* tm2 = new PhongMaterial({1.0f, 1.0f, 1.0f}, texture2);
+	Material* tm2 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture2);
 
-	IMesh* meshs;
-	std::vector<MaterialDescription> materials;
-	if (MeshLoader::loadMesh("./res/faerie.md2", meshs, materials)) {
+	MeshLoader::Result result;
+	if (MeshLoader::loadMesh("./res/faerie.md2", result)) {
 		for (int i = 0; i < 100; i ++) {
-			MD2MeshSceneNode* node = new MD2MeshSceneNode((MD2AnimatedMesh*) meshs);
+			MeshSceneNode* node = (MeshSceneNode*) scene->addMesh(result.mesh, scene);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setMaterial(0, tm1);
-			int ani = random(0, MD2_AT_COUNT + 3);
-			if (ani < MD2_AT_COUNT) {
-				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
-			}
-			scene->addChild(node);
+			int ani = random(0, 25);
+			node->setAnimation(ani);
 		}
 	}
-	materials.clear();
-	if (MeshLoader::loadMesh("./res/sydney.md2", meshs, materials)) {
+	if (MeshLoader::loadMesh("./res/sydney.md2", result)) {
 		for (int i = 0; i < 100; i ++) {
-			MD2MeshSceneNode* node = new MD2MeshSceneNode((MD2AnimatedMesh*) meshs);
+			MeshSceneNode* node = (MeshSceneNode*) scene->addMesh(result.mesh, scene);
 			node->setMaterial(0, tm2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-			int ani = random(0, MD2_AT_COUNT + 3);
-			if (ani < MD2_AT_COUNT) {
-				node->setAnimationType((MD2_ANIMATION_TYPE) ani);
-			}
-			scene->addChild(node);
+			int ani = random(0, 25);
+			node->setAnimation(ani);
 		}
 	}
-	materials.clear();
-	if (MeshLoader::loadMesh("./res/tree.obj", meshs, materials)) {
+	if (MeshLoader::loadMesh("./res/tree.obj", result)) {
 		for (int i = 0; i < 100; i ++) {
-			BasicMeshSceneNode* node = new BasicMeshSceneNode((BasicMesh*) meshs);
+			SceneNode* node = scene->addMesh(result.mesh, scene);
 			node->setMaterial(0, m1);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setScale({80, 80, 80});
-			scene->addChild(node);
 		}
 	}
 
 	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
 	for (int i = 0; i < 100; i ++) {
-		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+		SceneNode* node = scene->addMesh(m, scene);
 		node->setMaterial(0, m1);
 		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
-		scene->addChild(node);
 	}
 
 	m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
 	for (int i = 0; i < 100; i ++) {
-		BasicMeshSceneNode* node = new BasicMeshSceneNode(m);
+		SceneNode* node = scene->addMesh(m, scene);
 		node->setMaterial(0, m1);
 		node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 		scene->addChild(node);
@@ -119,9 +109,8 @@ int main(int argc, char *argv[]) {
 	scene->addCamera(camera);
 
 	BasicMesh* light = new BasicMesh(new SphereGeometry(5.f, 4, 4));
-	BasicMeshSceneNode* lightNode = new BasicMeshSceneNode(light);
+	SceneNode* lightNode = scene->addMesh(light, scene);
 	lightNode->setMaterial(0, new Material({1.f, 1.f, 1.f, 1.f}));
-	scene->addChild(lightNode);
 
 	int x = 0;
 	while (device->run()) {

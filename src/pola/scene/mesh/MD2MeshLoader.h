@@ -20,7 +20,7 @@ public:
 
 protected:
 	virtual bool available(io::InputStream* is);
-	virtual bool doLoadMesh(io::InputStream* is, IMesh*& meshes, std::vector<MaterialDescription>& materials);
+	virtual pola::utils::sp<MeshLoader::Result> doLoadMesh(io::InputStream* is);
 };
 
 } /* namespace scene */

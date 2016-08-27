@@ -47,6 +47,8 @@ public:
 	const Box3& getBoundingBox() const;
 	virtual void computeBoundingBox() = 0;
 
+	virtual Geometry* clone() = 0;
+
 protected:
 	void setIndicesCapacity(size_t size);
 protected:

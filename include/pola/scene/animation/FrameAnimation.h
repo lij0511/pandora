@@ -8,32 +8,39 @@
 #ifndef POLA_FRAMEANIMATION_H_
 #define POLA_FRAMEANIMATION_H_
 
-#include "pola/scene/animation/Animation.h"
 #include "pola/graphic/math/Vector.h"
+#include "pola/scene/animation/Animation.h"
 
 #include <vector>
 
 namespace pola {
 namespace scene {
 
+class Mesh;
+
 /*
  *
  */
 class FrameAnimation: public Animation {
 public:
+	struct KeyFrameData {
+		std::vector<graphic::vec3> positions;
+		std::vector<graphic::vec3> normals;
+		std::vector<graphic::vec2> uvs;
+	};
+
 	FrameAnimation(const std::string& name);
 	virtual ~FrameAnimation();
 
 	virtual uint16_t getFrameCount() const;
 
-	std::vector<graphic::vec3>& positions();
-	std::vector<graphic::vec3>& normals();
-	std::vector<graphic::vec2>& uvs();
+	KeyFrameData& addKeyFrame(float frameTime);
+	void addKeyFrame(float frameTime, const KeyFrameData& frameData);
+
+	virtual void applyFrame(float frameTime, pola::scene::Mesh* mesh);
 
 private:
-	std::vector<graphic::vec3> mPositions;
-	std::vector<graphic::vec3> mNormals;
-	std::vector<graphic::vec2> mUvs;
+	std::vector<KeyFrame<KeyFrameData> > mKeyFrames;
 };
 
 } /* namespace scene */

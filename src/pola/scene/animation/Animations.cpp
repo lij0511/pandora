@@ -25,6 +25,13 @@ Animation* Animations::findAnimation(const std::string& name) const {
 	return nullptr;
 }
 
+Animation* Animations::getAnimation(unsigned index) const {
+	if (index < mAnimations.size()) {
+		return mAnimations[index];
+	}
+	return nullptr;
+}
+
 void Animations::addAnimation(Animation* animation) {
 	for (unsigned i = 0; i < mAnimations.size(); i ++) {
 		if (animation->name() == mAnimations[i]->name()) {
@@ -38,6 +45,10 @@ void Animations::addAnimation(Animation* animation) {
 	}
 	animation->ref();
 	mAnimations.push_back(animation);
+}
+
+size_t Animations::getAnimationCount() const {
+	return mAnimations.size();
 }
 
 } /* namespace scene */

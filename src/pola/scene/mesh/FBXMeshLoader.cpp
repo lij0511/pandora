@@ -6,7 +6,7 @@
  */
 
 #include "pola/scene/mesh/FBXMeshLoader.h"
-#include "pola/scene/mesh/BasicMesh.h"
+#include "pola/scene/mesh/Mesh.h"
 #include "pola/log/Log.h"
 
 #include <fbxsdk.h>
@@ -242,28 +242,27 @@ public:
 
 class FBXProcessor {
 public:
-	FBXProcessor(FbxManager* fbxManager, IMesh*& meshes, std::vector<MaterialDescription>& materials);
+	FBXProcessor(FbxManager* fbxManager, MeshLoader::Result* result);
 
 	void process(FbxNode* lNode);
-	void process(FbxNode* lNode, IMesh* parent, int depth);
+	void process(FbxNode* lNode, MeshLoader::Result* result, int depth);
 
-	IMesh* processMesh(FbxNode* node);
+	MeshLoader::Result* processMesh(FbxNode* node);
 
 	FbxManager* mFbxManager;
-	IMesh* mMeshes;
-	std::vector<MaterialDescription>& mMaterials;
+	MeshLoader::Result* mResult;
 
 };
 
-FBXProcessor::FBXProcessor(FbxManager* fbxManager, IMesh*& meshes, std::vector<MaterialDescription>& materials) :
-		mFbxManager(fbxManager), mMeshes(meshes), mMaterials(materials) {
+FBXProcessor::FBXProcessor(FbxManager* fbxManager, MeshLoader::Result* result) :
+		mFbxManager(fbxManager), mResult(result) {
 }
 
 void FBXProcessor::process(FbxNode* node) {
-	process(node, mMeshes, 0);
+	process(node, mResult, 0);
 }
 
-void FBXProcessor::process(FbxNode* node, IMesh* parent, int depth) {
+void FBXProcessor::process(FbxNode* node, MeshLoader::Result* parent, int depth) {
 	FbxNodeAttribute::EType lAttributeType;
 	if (node->GetNodeAttribute() == NULL) {
 		LOGW("NULL Node Attribute");
@@ -273,10 +272,10 @@ void FBXProcessor::process(FbxNode* node, IMesh* parent, int depth) {
 		default:
 			break;
 		case FbxNodeAttribute::eMesh:
-			IMesh* mesh = processMesh(node);
-			if (mesh != nullptr) {
-				parent->addChild(mesh);
-				parent = mesh;
+			MeshLoader::Result* result = processMesh(node);
+			if (result != nullptr) {
+				parent->children.push_back(result);
+				parent = result;
 			}
 			break;
 		}
@@ -287,7 +286,7 @@ void FBXProcessor::process(FbxNode* node, IMesh* parent, int depth) {
 	}
 }
 
-IMesh* FBXProcessor::processMesh(FbxNode* node) {
+MeshLoader::Result* FBXProcessor::processMesh(FbxNode* node) {
 	FbxMesh* fbxMesh = node->GetMesh();
 	if (fbxMesh == nullptr) return nullptr;
 	if (!fbxMesh->IsTriangleMesh()) {
@@ -295,16 +294,18 @@ IMesh* FBXProcessor::processMesh(FbxNode* node) {
 		fbxMesh = (FbxMesh*) converter.Triangulate(fbxMesh, true);
 	}
 
+	MeshLoader::Result* result = new MeshLoader::Result;
+
 	graphic::mat4 m;
 	m.compose(graphic::vec3(node->LclTranslation.Get()[0], node->LclTranslation.Get()[2], node->LclTranslation.Get()[1]),
 			graphic::vec3(node->LclRotation.Get()[0], node->LclRotation.Get()[2], node->LclRotation.Get()[1]),
 			graphic::vec3(node->LclScaling.Get()[0], node->LclScaling.Get()[2], node->LclScaling.Get()[1]));
 
-	IMesh* mesh = new BasicMesh;
+	IMesh* mesh = new Mesh;
 	graphic::Geometry3D* geometry = (graphic::Geometry3D*) mesh->geometry();
 
 	int triangleCount = fbxMesh->GetPolygonCount();
-//	LOGD("processMesh triangleCount=%d", triangleCount);
+	LOGD("processMesh triangleCount=%d", triangleCount);
 	geometry->alloc(triangleCount * 3);
 	graphic::vec3* positions = geometry->positions();
 
@@ -321,7 +322,57 @@ IMesh* FBXProcessor::processMesh(FbxNode* node) {
 		m.transformVector(positions[i * 3 + 2]);
 	}
 	geometry->computeBoundingBox();
-	return mesh;
+
+	FbxLayerElementArrayTemplate<int>* pMaterialIndices;
+	FbxGeometryElement::EMappingMode   materialMappingMode = FbxGeometryElement::eNone;
+	if(fbxMesh->GetElementMaterial()) {
+		pMaterialIndices    = &fbxMesh->GetElementMaterial()->GetIndexArray();
+		materialMappingMode = fbxMesh->GetElementMaterial()->GetMappingMode();
+		if (pMaterialIndices) {
+			switch(materialMappingMode) {
+			case FbxGeometryElement::eByPolygon: {
+				if (pMaterialIndices->GetCount() == triangleCount) {
+					for (int triangleIndex = 0; triangleIndex < triangleCount;
+							++triangleIndex) {
+						int materialIndex = pMaterialIndices->GetAt(
+								triangleIndex);
+					}
+				}
+				LOGD("eByPolygon");
+				break;
+			}
+			case FbxGeometryElement::eAllSame: {
+				int lMaterialIndex = pMaterialIndices->GetAt(0);
+				LOGD("eAllSame");
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	}
+
+	int materialCount;
+	materialCount = node->GetMaterialCount();
+	for(int materialIndex = 0 ; materialIndex < materialCount ; materialIndex++) {
+		FbxSurfaceMaterial* pSurfaceMaterial = node->GetMaterial(materialIndex);
+		int textureLayerIndex;
+		for(textureLayerIndex = 0 ; textureLayerIndex < FbxLayerElement::sTypeTextureCount ; ++textureLayerIndex) {
+			FbxProperty pProperty = pSurfaceMaterial->FindProperty(FbxLayerElement::sTextureChannelNames[textureLayerIndex]);
+			if (pProperty.IsValid()) {
+				int textureCount = pProperty.GetSrcObjectCount(FbxCriteria::ObjectType(FbxFileTexture::ClassId));
+				for(int j = 0 ; j < textureCount ; ++j) {
+					FbxFileTexture* pTexture = FbxCast<FbxFileTexture>(pProperty.GetSrcObject(FbxCriteria::ObjectType(FbxFileTexture::ClassId), j));
+					if (pTexture) {
+						LOGD("texture=%s    %s", pTexture->GetFileName(), FbxLayerElement::sTextureChannelNames[textureLayerIndex]);
+					}
+				}
+			}
+		}
+	}
+
+	result->mesh = mesh;
+	return result;
 }
 
 FBXMeshLoader::FBXMeshLoader() {
@@ -334,8 +385,7 @@ bool FBXMeshLoader::available(io::InputStream* is) {
 	return false;
 }
 
-bool FBXMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& meshes, std::vector<MaterialDescription>& materials) {
-	materials.clear();
+pola::utils::sp<MeshLoader::Result> FBXMeshLoader::doLoadMesh(io::InputStream* is) {
 
 	FbxManager* lSdkManager = NULL;
 	FbxScene* lScene = NULL;
@@ -348,20 +398,29 @@ bool FBXMeshLoader::doLoadMesh(io::InputStream* is, IMesh*& meshes, std::vector<
 	MyFbxReader fbxReader(lSdkManager, is);
 	lResult = LoadScene(lSdkManager, lScene, &fbxReader);
 	if (!lResult) {
-		return false;
+		DestroySdkObjects(lSdkManager, false);
+		return nullptr;
 	}
 
 	FbxNode* lNode = lScene->GetRootNode();
 
+	int numStacks = lScene->GetSrcObjectCount(FbxCriteria::ObjectType(FbxAnimStack::ClassId));
+	LOGD("numStacks=%d", numStacks);
+
 	// TODO
 	IMesh* mesh = new NullMesh;
-	FBXProcessor processor(lSdkManager, mesh, materials);
+	pola::utils::sp<MeshLoader::Result> result = new Result;
+	result->mesh = mesh;
+	FBXProcessor processor(lSdkManager, result.get());
 	if (lNode != nullptr) {
 		processor.process(lNode);
 	}
-
-	meshes = mesh;
-	return true;
+	DestroySdkObjects(lSdkManager, true);
+	if (result->children.empty()) {
+		delete mesh;
+		return nullptr;
+	}
+	return result;
 }
 
 } /* namespace scene */

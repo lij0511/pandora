@@ -125,6 +125,17 @@ void Geometry3D::computeBoundingBox() {
 	mBoundingBox.setFromPoints(positions(), positionCount());
 }
 
+Geometry* Geometry3D::clone() {
+	Geometry3D* geometry = new Geometry3D;
+	geometry->mPositions.insert(geometry->mPositions.end(), mPositions.begin(), mPositions.end());
+	geometry->mNormals.insert(geometry->mNormals.end(), mNormals.begin(), mNormals.end());
+	geometry->mUvs.insert(geometry->mUvs.end(), mUvs.begin(), mUvs.end());
+	geometry->mColors.insert(geometry->mColors.end(), mColors.begin(), mColors.end());
+	geometry->mIndices.insert(geometry->mIndices.end(), mIndices.begin(), mIndices.end());
+	geometry->mBoundingBox = mBoundingBox;
+	return geometry;
+}
+
 bool Geometry3D::bufferd() {
 	return false;
 }

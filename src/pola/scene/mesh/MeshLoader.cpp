@@ -21,7 +21,6 @@
 namespace pola {
 namespace scene {
 
-
 static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type) {
 	static std::map<utils::String, MeshLoader*> meshLoaders;
 	static bool initialed = false;
@@ -52,7 +51,7 @@ static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type)
 	return nullptr;
 }
 
-bool MeshLoader::loadMesh(const char* meshFile, IMesh*& meshes, std::vector<MaterialDescription>& materials) {
+pola::utils::sp<MeshLoader::Result> MeshLoader::loadMesh(const char* meshFile) {
 	io::FileInputStream is(meshFile);
 	utils::String type;
 	utils::String s(meshFile);
@@ -60,14 +59,15 @@ bool MeshLoader::loadMesh(const char* meshFile, IMesh*& meshes, std::vector<Mate
 	if (index >= 0 && size_t(index + 1) < s.length()) {
 		type = s.substring(index + 1).lower();
 	}
-	return loadMesh(&is, type, meshes, materials);
+	return loadMesh(&is, type);
 }
-bool MeshLoader::loadMesh(io::InputStream* is, const utils::String& type, IMesh*& meshes, std::vector<MaterialDescription>& materials) {
+pola::utils::sp<MeshLoader::Result> MeshLoader::loadMesh(io::InputStream* is, const utils::String& type) {
+
 	MeshLoader* meshLoader = getMeshLoader(is, type);
 	if (meshLoader != nullptr) {
-		return meshLoader->doLoadMesh(is, meshes, materials);
+		return meshLoader->doLoadMesh(is);
 	}
-	return false;
+	return nullptr;
 }
 
 }
