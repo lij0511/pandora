@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 	Material* tm2 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture2);
 
-	MeshLoader::Result result;
+	MeshLoader::MeshInfo result;
 	if (MeshLoader::loadMesh("./res/faerie.md2", result)) {
 		for (int i = 0; i < 100; i ++) {
 			MeshSceneNode* node = (MeshSceneNode*) scene->addMesh(result.mesh, scene);

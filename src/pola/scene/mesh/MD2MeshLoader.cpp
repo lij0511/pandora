@@ -279,7 +279,7 @@ bool MD2MeshLoader::available(io::InputStream* is) {
 	return accept;
 }
 
-pola::utils::sp<MeshLoader::Result> MD2MeshLoader::doLoadMesh(io::InputStream* is) {
+pola::utils::sp<MeshLoader::MeshInfo> MD2MeshLoader::doLoadMesh(io::InputStream* is) {
 
 #if !defined(USE_MD2_MESH)
 	MD2Header header;
@@ -391,7 +391,7 @@ pola::utils::sp<MeshLoader::Result> MD2MeshLoader::doLoadMesh(io::InputStream* i
 	delete[] triangles;
 	delete[] textureCoords;
 
-	pola::utils::sp<MeshLoader::Result> result = new Result;
+	pola::utils::sp<MeshLoader::MeshInfo> result = new MeshInfo;
 	result->mesh = mesh;
 	return result;
 
@@ -493,7 +493,7 @@ pola::utils::sp<MeshLoader::Result> MD2MeshLoader::doLoadMesh(io::InputStream* i
 
 	delete[] triangles;
 	delete[] textureCoords;
-	pola::utils::sp<MeshLoader::Result> result = new Result;
+	pola::utils::sp<MeshLoader::MeshInfo> result = new MeshInfo;
 	result->mesh = mesh;
 	return result;
 #endif

@@ -95,7 +95,7 @@ bool OBJMeshLoader::available(io::InputStream* is) {
 }
 
 // TODO
-pola::utils::sp<MeshLoader::Result> OBJMeshLoader::doLoadMesh(io::InputStream* is) {
+pola::utils::sp<MeshLoader::MeshInfo> OBJMeshLoader::doLoadMesh(io::InputStream* is) {
 
 	io::InputStreamReader isReader(is);
 	io::BufferedReader reader(&isReader);
@@ -184,7 +184,7 @@ pola::utils::sp<MeshLoader::Result> OBJMeshLoader::doLoadMesh(io::InputStream* i
 	}
 	geometry->setBoundingBox(boundingBox);
 
-	pola::utils::sp<MeshLoader::Result> result = new Result;
+	pola::utils::sp<MeshLoader::MeshInfo> result = new MeshInfo;
 	result->mesh = new BasicMesh(geometry);
 	return result;
 }

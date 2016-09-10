@@ -6,6 +6,7 @@
  */
 
 #include "pola/utils/thread/MessageQueue.h"
+#include "pola/utils/thread/Handler.h"
 
 #include "pola/log/Log.h"
 
@@ -29,7 +30,8 @@ static const int EPOLL_MAX_EVENTS = 5;
 
 MessageQueue::MessageQueue() : mMessages(nullptr),
 		mBlocked(true),
-		mQuitting(false) {
+		mQuitting(false),
+		mIdling(false) {
 	int wakeFds[2];
 	int result = pipe(wakeFds);
 	LOG_FATAL_IF((result != 0), "Could not create wake pipe.  errno=%d\n", errno);
@@ -66,9 +68,19 @@ void MessageQueue::pollOnce(p_nsecs_t timeoutMillis) {
 	if (timeoutMillis < 0) {
 		timeoutMillis = LLONG_MAX;
 	}
+
+	// We are about to idle.
+	mIdling = true;
+
 	static struct epoll_event eventItems[EPOLL_MAX_EVENTS];
 	// Not support other event yet.
 	epoll_wait(mEpollFd, eventItems, EPOLL_MAX_EVENTS, timeoutMillis);
+
+	mIdling = false;
+}
+
+bool MessageQueue::isIdling() const {
+	return mIdling;
 }
 
 void MessageQueue::wake() {
@@ -78,7 +90,7 @@ void MessageQueue::wake() {
 	} while (nWrite == -1 && errno == EINTR);
 }
 
-void MessageQueue::removeMessages(Handler* h, int what) {
+void MessageQueue::removeMessages(sp<Handler> h, int what) {
 	if (h == nullptr) {
 		return;
 	}
@@ -110,7 +122,7 @@ void MessageQueue::removeMessages(Handler* h, int what) {
 	pthread_mutex_unlock(&mutex);
 }
 
-void MessageQueue::removeMessages(Handler* h, Task* task) {
+void MessageQueue::removeMessages(sp<Handler> h, Task* task) {
 	if (h == nullptr) {
 		return;
 	}
@@ -142,7 +154,7 @@ void MessageQueue::removeMessages(Handler* h, Task* task) {
 	pthread_mutex_unlock(&mutex);
 }
 
-void MessageQueue::removeMessages(Handler* h) {
+void MessageQueue::removeMessages(sp<Handler> h) {
 	if (h == nullptr) {
 		return;
 	}
@@ -175,9 +187,7 @@ void MessageQueue::removeMessages(Handler* h) {
 }
 
 bool MessageQueue::enqueueMessage(Message* msg, p_nsecs_t when) {
-	if (!msg->target) {
-		throw "Message must have a target.";
-	}
+	LOG_FATAL_IF(msg->target == NULL, "Message must have a target.");
 	pthread_mutex_lock(&mutex);
 	{
 		if (mQuitting) {

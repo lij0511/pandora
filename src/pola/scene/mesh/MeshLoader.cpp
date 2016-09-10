@@ -51,7 +51,7 @@ static MeshLoader* getMeshLoader(io::InputStream* is, const utils::String& type)
 	return nullptr;
 }
 
-pola::utils::sp<MeshLoader::Result> MeshLoader::loadMesh(const char* meshFile) {
+pola::utils::sp<MeshLoader::MeshInfo> MeshLoader::loadMesh(const char* meshFile) {
 	io::FileInputStream is(meshFile);
 	utils::String type;
 	utils::String s(meshFile);
@@ -61,7 +61,7 @@ pola::utils::sp<MeshLoader::Result> MeshLoader::loadMesh(const char* meshFile) {
 	}
 	return loadMesh(&is, type);
 }
-pola::utils::sp<MeshLoader::Result> MeshLoader::loadMesh(io::InputStream* is, const utils::String& type) {
+pola::utils::sp<MeshLoader::MeshInfo> MeshLoader::loadMesh(io::InputStream* is, const utils::String& type) {
 
 	MeshLoader* meshLoader = getMeshLoader(is, type);
 	if (meshLoader != nullptr) {

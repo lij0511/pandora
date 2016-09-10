@@ -46,9 +46,7 @@ sp<Looper> Looper::myLooper() {
 
 void Looper::prepare() {
 	sp<Looper> looper = myLooper();
-	if (looper != NULL) {
-		throw "Only one Looper may be created per thread";
-	}
+	LOG_FATAL_IF(looper != NULL, "Only one Looper may be created per thread");
 	looper = new Looper();
 	looper->ref();
 	pthread_setspecific(gTLSKey, looper.get());

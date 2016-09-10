@@ -45,23 +45,23 @@ int main(int argc, char *argv[]) {
 
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 
-	 pola::utils::sp<MeshLoader::Result> result;
+	 pola::utils::sp<MeshLoader::MeshInfo> result;
 	if ((result = MeshLoader::loadMesh("./res/ratamahatta.md2")) != nullptr) {
-		SceneNode* n = scene->addMesh(result->mesh, scene);
-		SceneNode* node = scene->addMesh(result->mesh, scene);
+		SceneNode* n = scene->addMesh(result->mesh.get(), scene);
+		SceneNode* node = scene->addMesh(result->mesh.get(), scene);
 		node->setPosition(graphic::vec3(0, 0, 20));
 		node->setMaterial(0, tm1);
 		n->setPosition(graphic::vec3(-100, 0, 0));
 		n->setMaterial(0, tm1);
 		if ((result = MeshLoader::loadMesh("./res/weapon.md2")) != nullptr) {
-			SceneNode* weaponNode = scene->addMesh(result->mesh, n);
+			SceneNode* weaponNode = scene->addMesh(result->mesh.get(), n);
 			weaponNode->setMaterial(0, new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture("./res/weapon.png")));
 			n->addChild(weaponNode);
 		}
 	}
 
 	if ((result = MeshLoader::loadMesh("./res/monster.ms3d")) != nullptr) {
-		SceneNode* n = scene->addMesh(result->mesh, scene);
+		SceneNode* n = scene->addMesh(result->mesh.get(), scene);
 		for (unsigned i = 0; i < result->materials.size(); i ++) {
 			const MaterialDescription& mate = result->materials[i];
 			std::string texName = "./res/";
@@ -69,10 +69,9 @@ int main(int argc, char *argv[]) {
 			n->setMaterial(i, new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture(texName.c_str())));
 		}
 	}
-
-	if ((result = MeshLoader::loadMesh("./res/fbx/ExportScene04.fbx")) != nullptr) {
-		SceneNode* n = scene->addMesh(result->mesh, scene);
-		n->setScale({0.1f, 0.1f, 0.1f});
+	if ((result = MeshLoader::loadMesh("./res/fbx/nvhai.FBX")) != nullptr) {
+		SceneNode* n = scene->addMesh(result->mesh.get(), scene);
+//		n->setScale({0.1f, 0.1f, 0.1f});
 		n->setPosition(graphic::vec3(- 50, 0, 0));
 		for (unsigned i = 0; i < result->materials.size(); i ++) {
 			const MaterialDescription& mate = result->materials[i];
@@ -81,7 +80,7 @@ int main(int argc, char *argv[]) {
 			n->setMaterial(i, new LambertMaterial({1.0f, 1.0f, 1.0f}, scene->graphic()->loadTexture(texName.c_str())));
 		}
 		for (unsigned i = 0; i < result->children.size(); i ++) {
-			SceneNode* node = scene->addMesh(result->children[i]->mesh, n);
+			SceneNode* node = scene->addMesh(result->children[i]->mesh.get(), n);
 			for (unsigned j = 0; i < result->children[i]->materials.size(); j ++) {
 				const MaterialDescription& mate = result->children[i]->materials[j];
 				std::string texName = "./res/";
@@ -90,7 +89,6 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
-
 	BasicMesh* m = new BasicMesh(new SphereGeometry(30.f, 20, 20));
 //	BasicMesh* m = new BasicMesh(new CubeGeometry(30.f, 30.f, 30.f));
 	SceneNode* node = scene->addMesh(m, scene);
@@ -108,7 +106,6 @@ int main(int argc, char *argv[]) {
 	camera->setCameraController(new DefaultCameraController(camera));
 	camera->setPosition(vec3(0, 0, 100));
 	scene->addCamera(camera);
-
 	while (device->run()) {
 		scene->render();
 

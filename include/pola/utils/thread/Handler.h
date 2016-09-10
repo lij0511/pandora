@@ -15,7 +15,7 @@
 namespace pola {
 namespace utils {
 
-class Handler {
+class Handler : public RefBase<Handler> {
 
 public:
 
@@ -48,6 +48,7 @@ private:
 
 	pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 	pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+
 };
 }
 }

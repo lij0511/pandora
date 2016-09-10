@@ -18,6 +18,10 @@ SkinnedMesh::SkinnedMesh() : mFinalized(false), mLocalGeometry(new graphic::Geom
 SkinnedMesh::~SkinnedMesh() {
 	mGeometry->deref();
 	mLocalGeometry->deref();
+	for(std::vector<Joint*>::iterator iter = mAllJoints.begin(); iter != mAllJoints.end(); iter ++) {
+		delete *iter;
+	}
+	mAllJoints.clear();
 }
 
 graphic::Geometry* SkinnedMesh::geometry() {

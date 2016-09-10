@@ -363,7 +363,7 @@ void Matrix4::compose(const Vector3& position, const Quaternion& quaternion, con
 
 void Matrix4::compose(const Vector3& position, const Vector3& rotation, const Vector3& scale) {
 	loadIdentity();
-	setRotationRadians(rotation);
+	setRotationDegrees(rotation);
 	setScale(scale);
 	setPosition(position);
 }

@@ -27,10 +27,12 @@ public:
 
 	void quit(bool safe);
 
-	void removeMessages(Handler* h, int what);
-	void removeMessages(Handler* h, Task* task);
-	void removeMessages(Handler* h);
+	void removeMessages(sp<Handler> h, int what);
+	void removeMessages(sp<Handler> h, Task* task);
+	void removeMessages(sp<Handler> h);
 	bool enqueueMessage(Message* msg, p_nsecs_t when);
+
+	bool isIdling() const;
 
 private:
 	int mWakeReadPipeFd;  // immutable
@@ -43,6 +45,8 @@ private:
 	Message* mMessages;
 	bool mBlocked;
 	bool mQuitting;
+
+	bool mIdling;
 
 	pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 };

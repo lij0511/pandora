@@ -9,6 +9,7 @@
 #define POLA_HANDLERTHREAD_H_
 
 #include "pola/utils/thread/Thread.h"
+#include "pola/utils/thread/Handler.h"
 #include "pola/utils/thread/Looper.h"
 
 namespace pola {

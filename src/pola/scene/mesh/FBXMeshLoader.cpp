@@ -14,6 +14,8 @@
 namespace pola {
 namespace scene {
 
+static pola::graphic::mat4 FLIP_MAT = pola::graphic::mat4(pola::graphic::vec3(0.f, 0.f, 0.f), pola::graphic::vec3(- 90.f, 0.f, 0.f), pola::graphic::vec3(1.f, -1.f, 1.f));
+
 #ifdef IOS_REF
 	#undef  IOS_REF
 	#define IOS_REF (*(pManager->GetIOSettings()))
@@ -242,51 +244,33 @@ public:
 
 class FBXProcessor {
 public:
-	FBXProcessor(FbxManager* fbxManager, MeshLoader::Result* result);
+	FBXProcessor(FbxManager* fbxManager, FbxScene* fbxScene, MeshLoader::MeshInfo* result);
 
-	void process(FbxNode* lNode);
-	void process(FbxNode* lNode, MeshLoader::Result* result, int depth);
+	void process();
 
-	MeshLoader::Result* processMesh(FbxNode* node);
+	MeshLoader::MeshInfo* processMesh(FbxNode* node);
 
 	FbxManager* mFbxManager;
-	MeshLoader::Result* mResult;
+	FbxScene* mFbxScene;
+	MeshLoader::MeshInfo* mResult;
 
 };
 
-FBXProcessor::FBXProcessor(FbxManager* fbxManager, MeshLoader::Result* result) :
-		mFbxManager(fbxManager), mResult(result) {
+FBXProcessor::FBXProcessor(FbxManager* fbxManager, FbxScene* fbxScene, MeshLoader::MeshInfo* result) :
+		mFbxManager(fbxManager), mFbxScene(fbxScene), mResult(result) {
 }
 
-void FBXProcessor::process(FbxNode* node) {
-	process(node, mResult, 0);
-}
-
-void FBXProcessor::process(FbxNode* node, MeshLoader::Result* parent, int depth) {
-	FbxNodeAttribute::EType lAttributeType;
-	if (node->GetNodeAttribute() == NULL) {
-		LOGW("NULL Node Attribute");
-	} else {
-		lAttributeType = (node->GetNodeAttribute()->GetAttributeType());
-		switch (lAttributeType) {
-		default:
-			break;
-		case FbxNodeAttribute::eMesh:
-			MeshLoader::Result* result = processMesh(node);
-			if (result != nullptr) {
-				parent->children.push_back(result);
-				parent = result;
-			}
-			break;
+void FBXProcessor::process() {
+	int meshCount = mFbxScene->GetSrcObjectCount(FbxCriteria::ObjectType(FbxMesh::ClassId));
+	for (int meshIndex = 0; meshIndex < meshCount; meshIndex ++) {
+		MeshLoader::MeshInfo* result = processMesh(FbxCast<FbxMesh>(mFbxScene->GetSrcObject(FbxCriteria::ObjectType(FbxMesh::ClassId), meshIndex))->GetNode());
+		if (result != nullptr) {
+			mResult->children.push_back(result);
 		}
 	}
-	for (int i = 0; i < node->GetChildCount(); i++) {
-		FbxNode* child = node->GetChild(i);
-		process(child, parent, depth + 1);
-	}
 }
 
-MeshLoader::Result* FBXProcessor::processMesh(FbxNode* node) {
+MeshLoader::MeshInfo* FBXProcessor::processMesh(FbxNode* node) {
 	FbxMesh* fbxMesh = node->GetMesh();
 	if (fbxMesh == nullptr) return nullptr;
 	if (!fbxMesh->IsTriangleMesh()) {
@@ -294,12 +278,13 @@ MeshLoader::Result* FBXProcessor::processMesh(FbxNode* node) {
 		fbxMesh = (FbxMesh*) converter.Triangulate(fbxMesh, true);
 	}
 
-	MeshLoader::Result* result = new MeshLoader::Result;
+	MeshLoader::MeshInfo* result = new MeshLoader::MeshInfo;
 
 	graphic::mat4 m;
-	m.compose(graphic::vec3(node->LclTranslation.Get()[0], node->LclTranslation.Get()[2], node->LclTranslation.Get()[1]),
-			graphic::vec3(node->LclRotation.Get()[0], node->LclRotation.Get()[2], node->LclRotation.Get()[1]),
-			graphic::vec3(node->LclScaling.Get()[0], node->LclScaling.Get()[2], node->LclScaling.Get()[1]));
+	m.compose(graphic::vec3(node->LclTranslation.Get()[0], node->LclTranslation.Get()[1], node->LclTranslation.Get()[2]),
+			graphic::vec3(node->LclRotation.Get()[0], node->LclRotation.Get()[1], node->LclRotation.Get()[2]),
+			graphic::vec3(node->LclScaling.Get()[0], node->LclScaling.Get()[1], node->LclScaling.Get()[2]));
+	m = FLIP_MAT * m;
 
 	IMesh* mesh = new Mesh;
 	graphic::Geometry3D* geometry = (graphic::Geometry3D*) mesh->geometry();
@@ -311,14 +296,14 @@ MeshLoader::Result* FBXProcessor::processMesh(FbxNode* node) {
 
 	FbxVector4* pCtrlPoint = fbxMesh->GetControlPoints();
 	for (int i = 0; i < triangleCount; ++i) {
-		int ctrlPointIndex = fbxMesh->GetPolygonVertex(i , 0);
-		positions[i * 3] = {pCtrlPoint[ctrlPointIndex][0], pCtrlPoint[ctrlPointIndex][2], pCtrlPoint[ctrlPointIndex][1]};
+		int ctrlPointIndex = fbxMesh->GetPolygonVertex(i , 2);
+		positions[i * 3] = {pCtrlPoint[ctrlPointIndex][0], pCtrlPoint[ctrlPointIndex][1], pCtrlPoint[ctrlPointIndex][2]};
 		m.transformVector(positions[i * 3]);
-		ctrlPointIndex = fbxMesh->GetPolygonVertex(i , 2);
-		positions[i * 3 + 1] = {pCtrlPoint[ctrlPointIndex][0], pCtrlPoint[ctrlPointIndex][2], pCtrlPoint[ctrlPointIndex][1]};
-		m.transformVector(positions[i * 3 + 1]);
 		ctrlPointIndex = fbxMesh->GetPolygonVertex(i , 1);
-		positions[i * 3 + 2] = {pCtrlPoint[ctrlPointIndex][0], pCtrlPoint[ctrlPointIndex][2], pCtrlPoint[ctrlPointIndex][1]};
+		positions[i * 3 + 1] = {pCtrlPoint[ctrlPointIndex][0], pCtrlPoint[ctrlPointIndex][1], pCtrlPoint[ctrlPointIndex][2]};
+		m.transformVector(positions[i * 3 + 1]);
+		ctrlPointIndex = fbxMesh->GetPolygonVertex(i , 0);
+		positions[i * 3 + 2] = {pCtrlPoint[ctrlPointIndex][0], pCtrlPoint[ctrlPointIndex][1], pCtrlPoint[ctrlPointIndex][2]};
 		m.transformVector(positions[i * 3 + 2]);
 	}
 	geometry->computeBoundingBox();
@@ -371,6 +356,24 @@ MeshLoader::Result* FBXProcessor::processMesh(FbxNode* node) {
 		}
 	}
 
+	int skinCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
+	LOGD("skinCount=%d", skinCount);
+	for (int skinIndex = 0; skinIndex < skinCount; skinIndex ++) {
+		FbxSkin* skinDeformer = FbxCast<FbxSkin>(fbxMesh->GetDeformer(skinIndex, FbxDeformer::eSkin));
+		int clusterCount = skinDeformer->GetClusterCount();
+		LOGD("clusterCount=%d", clusterCount);
+		for (int clusterIndex = 0; clusterIndex < clusterCount; clusterIndex ++) {
+			FbxCluster* cluster = skinDeformer->GetCluster(clusterIndex);
+			LOGD("cluster=%s", cluster->GetLink()->GetName());
+			if (cluster->GetLink()->GetParent() != nullptr) {
+				LOGD("  cluster parent=%s", cluster->GetLink()->GetParent()->GetName());
+			}
+		}
+	}
+
+	int boneCount = mFbxScene->GetSrcObjectCount(FbxCriteria::ObjectType(FbxSkeleton::ClassId));
+	LOGD("boneCount=%d", boneCount);
+
 	result->mesh = mesh;
 	return result;
 }
@@ -385,7 +388,7 @@ bool FBXMeshLoader::available(io::InputStream* is) {
 	return false;
 }
 
-pola::utils::sp<MeshLoader::Result> FBXMeshLoader::doLoadMesh(io::InputStream* is) {
+pola::utils::sp<MeshLoader::MeshInfo> FBXMeshLoader::doLoadMesh(io::InputStream* is) {
 
 	FbxManager* lSdkManager = NULL;
 	FbxScene* lScene = NULL;
@@ -402,22 +405,14 @@ pola::utils::sp<MeshLoader::Result> FBXMeshLoader::doLoadMesh(io::InputStream* i
 		return nullptr;
 	}
 
-	FbxNode* lNode = lScene->GetRootNode();
-
-	int numStacks = lScene->GetSrcObjectCount(FbxCriteria::ObjectType(FbxAnimStack::ClassId));
-	LOGD("numStacks=%d", numStacks);
-
-	// TODO
 	IMesh* mesh = new NullMesh;
-	pola::utils::sp<MeshLoader::Result> result = new Result;
+	pola::utils::sp<MeshLoader::MeshInfo> result = new MeshInfo;
 	result->mesh = mesh;
-	FBXProcessor processor(lSdkManager, result.get());
-	if (lNode != nullptr) {
-		processor.process(lNode);
-	}
+	FBXProcessor processor(lSdkManager, lScene, result.get());
+	processor.process();
+
 	DestroySdkObjects(lSdkManager, true);
 	if (result->children.empty()) {
-		delete mesh;
 		return nullptr;
 	}
 	return result;

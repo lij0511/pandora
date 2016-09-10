@@ -91,7 +91,7 @@ bool MS3DMeshLoader::available(io::InputStream* is) {
 	return true;
 }
 
-pola::utils::sp<MeshLoader::Result> MS3DMeshLoader::doLoadMesh(io::InputStream* is) {
+pola::utils::sp<MeshLoader::MeshInfo> MS3DMeshLoader::doLoadMesh(io::InputStream* is) {
 
 	MS3DHeader header;
 	is->read(&header, sizeof(MS3DHeader));
@@ -104,7 +104,7 @@ pola::utils::sp<MeshLoader::Result> MS3DMeshLoader::doLoadMesh(io::InputStream* 
 		return nullptr;
 	}
 
-	pola::utils::sp<MeshLoader::Result> result = new Result;
+	pola::utils::sp<MeshLoader::MeshInfo> result = new MeshInfo;
 
 	uint16_t numVertices = 0;
 	is->read(&numVertices, sizeof(uint16_t));

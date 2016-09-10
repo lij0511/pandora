@@ -35,6 +35,14 @@ public:
         load(v);
     }
 
+    Matrix4(const Vector3& position, const Vector3& rotation, const Vector3& scale) {
+    	compose(position, rotation, scale);
+    }
+
+    Matrix4(const Vector3& position, const Quaternion& quaternion, const Vector3& scale) {
+    	compose(position, quaternion, scale);
+    }
+
     float operator[](int index) const {
         return data[index];
     }

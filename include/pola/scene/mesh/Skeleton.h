@@ -24,21 +24,22 @@ struct VertexWeight {
 	float weight;
 };
 
-class Bone {
+class Joint {
 public:
-	Bone(std::string name);
-	virtual ~Bone();
+	Joint();
+	Joint(const std::string& name);
+	virtual ~Joint();
 
-protected:
-	std::string mName;
-	Bone* mParent;
-	std::vector<Bone*> mChildren;
+	std::string name;
+	std::string parentName;
+	Joint* parent;
+	std::vector<Joint*> children;
 
 	std::vector<VertexWeight> vertices;
 
-	graphic::vec3 mPosition;
-	graphic::quat4 mRotation;
-	graphic::vec3 mScale;
+	graphic::vec3 position;
+	graphic::quat4 rotation;
+	graphic::vec3 scale;
 };
 
 class Skeleton : public pola::utils::RefBase<Skeleton> {
@@ -46,9 +47,15 @@ public:
 	Skeleton();
 	virtual ~Skeleton();
 
+	Joint* addJoint();
+	Joint* getJoint(unsigned index) const;
+
+	void finalize();
+
 private:
-	std::vector<Bone*> mBones;
-	std::vector<Bone*> mAllBones;
+	bool mFinalized;
+	std::vector<Joint*> mJoints;
+	std::vector<Joint*> mAllJoints;
 };
 
 } /* namespace scene */

@@ -32,21 +32,21 @@ struct MaterialDescription {
 class MeshLoader {
 public:
 
-	class Result : public pola::utils::RefBase<Result> {
+	class MeshInfo : public pola::utils::RefBase<MeshInfo> {
 	public:
-		IMesh* mesh;
+		pola::utils::sp<IMesh> mesh;
 		std::vector<MaterialDescription> materials;
-		std::vector<pola::utils::sp<Result>> children;
+		std::vector<pola::utils::sp<MeshInfo>> children;
 	};
 
 	virtual ~MeshLoader() {};
 
-	static pola::utils::sp<Result> loadMesh(const char* meshFile);
-	static pola::utils::sp<Result> loadMesh(io::InputStream* is, const utils::String& type);
+	static pola::utils::sp<MeshInfo> loadMesh(const char* meshFile);
+	static pola::utils::sp<MeshInfo> loadMesh(io::InputStream* is, const utils::String& type);
 
 	virtual bool available(io::InputStream* is) = 0;
 protected:
-	virtual pola::utils::sp<Result> doLoadMesh(io::InputStream* is) = 0;
+	virtual pola::utils::sp<MeshInfo> doLoadMesh(io::InputStream* is) = 0;
 };
 
 } /* namespace scene */

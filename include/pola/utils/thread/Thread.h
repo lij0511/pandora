@@ -9,6 +9,7 @@
 #define POLA_THREAD_H_
 
 #include <pthread.h>
+#include "pola/utils/Functional.h"
 
 namespace pola {
 namespace utils {
@@ -16,6 +17,7 @@ namespace utils {
 class Thread {
 public:
 	Thread();
+	Thread(Closure* task);
 	Thread(int priority, bool joinable);
 	virtual ~Thread();
 	virtual void start();
@@ -34,6 +36,7 @@ private:
 	int mPriority;
 	bool mJoinable;
 
+	Closure* mTask;
 protected:
 	pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 	pthread_cond_t  cond = PTHREAD_COND_INITIALIZER;
@@ -51,14 +54,24 @@ inline Thread::Thread()
 	: mActive(false)
 	, mId(-1)
 	, mPriority(0)
-	, mJoinable(false) {
+	, mJoinable(false)
+	, mTask(nullptr) {
+}
+
+inline Thread::Thread(Closure* task)
+	: mActive(false)
+	, mId(-1)
+	, mPriority(0)
+	, mJoinable(false)
+	, mTask(task) {
 }
 
 inline Thread::Thread(int priority, bool joinable)
 	: mActive(false)
 	, mId(-1)
 	, mPriority(priority)
-	, mJoinable(joinable) {
+	, mJoinable(joinable)
+	, mTask(nullptr) {
 }
 
 inline Thread::~Thread() {
@@ -80,9 +93,11 @@ inline void Thread::start() {
 }
 
 inline void Thread::run() {
-	// XXX do job
+	// do job
 	{
-		// MessageLoop
+		if (mTask != nullptr) {
+			(*mTask)();
+		}
 	}
 
 	pthread_mutex_lock(&mutex);
