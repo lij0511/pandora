@@ -10,9 +10,7 @@
 
 #include "pola/input/KeyEvent.h"
 #include "pola/input/MouseEvent.h"
-#include "pola/graphic/math/Matrix4.h"
-#include "pola/graphic/math/Vector.h"
-#include "pola/graphic/math/Frustum.h"
+#include "pola/graphic/math/Math.h"
 #include "pola/scene/SceneObject.h"
 #include "pola/scene/camera/CameraController.h"
 

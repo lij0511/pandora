@@ -8,14 +8,14 @@
 #ifndef POLA_HANDLER_H_
 #define POLA_HANDLER_H_
 
-#include "pola/utils/thread/Task.h"
+#include "pola/utils/thread/AbsMessageHandler.h"
 #include "pola/utils/thread/Looper.h"
 #include "pola/utils/Times.h"
 
 namespace pola {
 namespace utils {
 
-class Handler : public RefBase<Handler> {
+class Handler : public AbsMessageHandler {
 
 public:
 
@@ -30,10 +30,10 @@ public:
 
 	bool postAndWait(Task* task);
 
-	bool sendMessage(int what, int arg1 = 0, int arg2 = 0) {
-		return sendMessageDelayed(what, arg1, arg2, 0);
+	bool sendMessage(int what, int arg1 = 0, int arg2 = 0, void* obj = NULL) {
+		return sendMessageDelayed(what, arg1, arg2, NULL, 0);
 	}
-	bool sendMessageDelayed(int what, int arg1 = 0, int arg2 = 0, p_nsecs_t delayMillis = 0);
+	bool sendMessageDelayed(int what, int arg1 = 0, int arg2 = 0, void* obj = NULL, p_nsecs_t delayMillis = 0);
 
 	void removeTask(Task* task);
 	void removeMessages(int what);
@@ -42,6 +42,7 @@ public:
 	void dispatchMessage(Message* msg);
 
 	virtual void handleMessage(Message* msg);
+	virtual void handleRecycleMessage(Message* msg);
 
 private:
 	sp<Looper> mLooper;

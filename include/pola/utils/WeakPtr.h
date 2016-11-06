@@ -20,7 +20,7 @@ inline bool operator _op_ (const wp<T>& o) const {              \
     return m_ptr _op_ o.m_ptr;                                  \
 }                                                               \
 inline bool operator _op_ (const T* o) const {                  \
-    return m_ptr _op_ o;                                        \
+    return get() _op_ o;                                        \
 }                                                               \
 template<typename U>                                            \
 inline bool operator _op_ (const wp<U>& o) const {              \
@@ -28,7 +28,7 @@ inline bool operator _op_ (const wp<U>& o) const {              \
 }                                                               \
 template<typename U>                                            \
 inline bool operator _op_ (const U* o) const {                  \
-    return m_ptr _op_ o;                                        \
+    return get() _op_ o;                                        \
 }                                                               \
 inline bool operator _op_ (const sp<T>& o) const {              \
     return get() _op_ o.m_ptr;                                  \
@@ -109,6 +109,8 @@ wp<T>::wp(T* other)
     if (other) {
         m_ptr = other->get_weak_impl();
 		m_ptr->ref_weak();
+    } else {
+    	m_ptr = nullptr;
     }
 }
 

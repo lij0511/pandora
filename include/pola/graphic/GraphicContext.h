@@ -14,7 +14,6 @@
 #include "pola/graphic/GraphicParameter.h"
 #include "pola/graphic/geometries/Geometry2D.h"
 #include "pola/graphic/geometries/Geometry3D.h"
-#include "pola/graphic/math/Matrix4.h"
 #include "pola/graphic/light/Lights.h"
 #include "pola/graphic/Texture.h"
 #include "pola/graphic/RenderTarget.h"

@@ -35,7 +35,7 @@ protected:
 
 private:
 
-	Looper();
+	Looper(bool quitAllowed);
 
 	static void initTLSKey();
 	static void threadDestructor(void *st);

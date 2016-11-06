@@ -6,7 +6,6 @@
  */
 
 #include "pola/utils/thread/MessageQueue.h"
-#include "pola/utils/thread/Handler.h"
 
 #include "pola/log/Log.h"
 
@@ -22,13 +21,26 @@
 namespace pola {
 namespace utils {
 
+// --- SimpleLooperCallback ---
+SimpleLooperCallback::SimpleLooperCallback(Looper_callbackFunc callback) :
+        mCallback(callback) {
+}
+
+SimpleLooperCallback::~SimpleLooperCallback() {
+}
+
+int SimpleLooperCallback::handleEvent(int fd, int events, void* data) {
+    return mCallback(fd, events, data);
+}
+
 // Hint for number of file descriptors to be associated with the epoll instance.
 static const int EPOLL_SIZE_HINT = 8;
 
 // Maximum number of file descriptors for which to retrieve poll events each iteration.
 static const int EPOLL_MAX_EVENTS = 5;
 
-MessageQueue::MessageQueue() : mMessages(nullptr),
+MessageQueue::MessageQueue(bool quitAllowed) : mResponseIndex(0), mMessages(NULL),
+		mQuitAllowed(quitAllowed),
 		mBlocked(true),
 		mQuitting(false),
 		mIdling(false) {
@@ -38,7 +50,6 @@ MessageQueue::MessageQueue() : mMessages(nullptr),
 
 	mWakeReadPipeFd = wakeFds[0];
 	mWakeWritePipeFd = wakeFds[1];
-
 	result = fcntl(mWakeReadPipeFd, F_SETFL, O_NONBLOCK);
 	LOG_FATAL_IF((result != 0), "Could not make wake read pipe non-blocking.  errno=%d",
 			errno);
@@ -61,22 +72,212 @@ MessageQueue::MessageQueue() : mMessages(nullptr),
 }
 
 MessageQueue::~MessageQueue() {
-	pthread_mutex_destroy(&mutex);
+	quit(false);
 }
 
-void MessageQueue::pollOnce(p_nsecs_t timeoutMillis) {
+int MessageQueue::addFd(int fd, int ident, int events, Looper_callbackFunc callback, void* data) {
+    return addFd(fd, ident, events, callback ? new SimpleLooperCallback(callback) : NULL, data);
+}
+
+int MessageQueue::addFd(int fd, int ident, int events, const sp<LooperCallback>& callback, void* data) {
+#if DEBUG_CALLBACKS
+	LOGI("%p ~ addFd - fd=%d, ident=%d, events=0x%x, callback=%p, data=%p", this, fd, ident,
+            events, callback.get(), data);
+#endif
+
+    if (callback == NULL) {
+        /*if (!mAllowNonCallbacks) {
+            ALOGE("Invalid attempt to set NULL callback but not allowed for this looper.");
+            return -1;
+        }*/
+
+        if (ident < 0) {
+            LOGE("Invalid attempt to set NULL callback with ident < 0.");
+            return -1;
+        }
+    } else {
+        ident = LOOPER_POLL_CALLBACK;
+    }
+
+    int epollEvents = 0;
+    if (events & LOOPER_EVENT_INPUT) epollEvents |= EPOLLIN;
+    if (events & LOOPER_EVENT_OUTPUT) epollEvents |= EPOLLOUT;
+
+    { // acquire lock
+        AutoMutex _l(mLock);
+
+        Request request;
+        request.fd = fd;
+        request.ident = ident;
+        request.callback = callback;
+        request.data = data;
+
+        struct epoll_event eventItem;
+        memset(& eventItem, 0, sizeof(epoll_event)); // zero out unused members of data field union
+        eventItem.events = epollEvents;
+        eventItem.data.fd = fd;
+
+        std::map<int, Request>::iterator result = mRequests.find(fd);
+        if (result == mRequests.end()) {
+            int epollResult = epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, & eventItem);
+            if (epollResult < 0) {
+                LOGE("Error adding epoll events for fd %d, errno=%d", fd, errno);
+                return -1;
+            }
+            mRequests[fd] = request;
+        } else {
+            int epollResult = epoll_ctl(mEpollFd, EPOLL_CTL_MOD, fd, & eventItem);
+            if (epollResult < 0) {
+                LOGE("Error modifying epoll events for fd %d, errno=%d", fd, errno);
+                return -1;
+            }
+            mRequests[fd] = request;
+        }
+    } // release lock
+    return 1;
+}
+
+int MessageQueue::removeFd(int fd) {
+#if DEBUG_CALLBACKS
+	LOGI("%p ~ removeFd - fd=%d", this, fd);
+#endif
+
+    { // acquire lock
+        AutoMutex _l(mLock);
+        std::map<int, Request>::iterator result = mRequests.find(fd);
+		if (result == mRequests.end()) {
+            return 0;
+        }
+
+        int epollResult = epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
+        if (epollResult < 0) {
+            LOGE("Error removing epoll events for fd %d, errno=%d", fd, errno);
+            return -1;
+        }
+
+        mRequests.erase(result);
+    } // release lock
+    return 1;
+}
+
+int MessageQueue::pollOnce(p_nsecs_t timeoutMillis) {
 	if (timeoutMillis < 0) {
 		timeoutMillis = LLONG_MAX;
 	}
+
+	// Poll.
+	int result = LOOPER_POLL_WAKE;
+	mResponses.clear();
+	mResponseIndex = 0;
 
 	// We are about to idle.
 	mIdling = true;
 
 	static struct epoll_event eventItems[EPOLL_MAX_EVENTS];
 	// Not support other event yet.
-	epoll_wait(mEpollFd, eventItems, EPOLL_MAX_EVENTS, timeoutMillis);
+	int eventCount = epoll_wait(mEpollFd, eventItems, EPOLL_MAX_EVENTS, timeoutMillis);
 
 	mIdling = false;
+
+	// Acquire lock.
+	mLock.lock();
+
+	// Check for poll error.
+	if (eventCount < 0) {
+		if (errno == EINTR) {
+			goto Done;
+		}
+		LOGW("Poll failed with an unexpected error, errno=%d", errno);
+		result = LOOPER_POLL_ERROR;
+		goto Done;
+	}
+
+	// Check for poll timeout.
+	if (eventCount == 0) {
+#if DEBUG_POLL_AND_WAKE
+		LOGI("%p ~ pollOnce - timeout", this);
+#endif
+		result = LOOPER_POLL_TIMEOUT;
+		goto Done;
+	}
+
+    // Handle all events.
+#if DEBUG_POLL_AND_WAKE
+	LOGI("%p ~ pollOnce - handling events from %d fds", this, eventCount);
+#endif
+
+    for (int i = 0; i < eventCount; i++) {
+        int fd = eventItems[i].data.fd;
+        uint32_t epollEvents = eventItems[i].events;
+        if (fd == mWakeReadPipeFd) {
+            if (epollEvents & EPOLLIN) {
+                awoken();
+            } else {
+                LOGW("Ignoring unexpected epoll events 0x%x on wake read pipe.", epollEvents);
+            }
+        } else {
+        	std::map<int, Request>::iterator requestIter = mRequests.find(fd);
+            if (requestIter != mRequests.end()) {
+                int events = 0;
+                if (epollEvents & EPOLLIN) events |= LOOPER_EVENT_INPUT;
+                if (epollEvents & EPOLLOUT) events |= LOOPER_EVENT_OUTPUT;
+                if (epollEvents & EPOLLERR) events |= LOOPER_EVENT_ERROR;
+                if (epollEvents & EPOLLHUP) events |= LOOPER_EVENT_HANGUP;
+                pushResponse(events, requestIter->second);
+            } else {
+                LOGW("Ignoring unexpected epoll events 0x%x on fd %d that is "
+                        "no longer registered.", epollEvents, fd);
+            }
+        }
+    }
+
+Done: ;
+
+	// Release lock.
+    mLock.unlock();
+
+	// Invoke all response callbacks.
+	for (size_t i = 0; i < mResponses.size(); i++) {
+		Response& response = mResponses[i];
+		if (response.request.ident == LOOPER_POLL_CALLBACK) {
+			int fd = response.request.fd;
+			int events = response.events;
+			void* data = response.request.data;
+#if DEBUG_POLL_AND_WAKE || DEBUG_CALLBACKS
+			LOGI("%p ~ pollOnce - invoking fd event callback %p: fd=%d, events=0x%x, data=%p",
+					this, response.request.callback.get(), fd, events, data);
+#endif
+			int callbackResult = response.request.callback->handleEvent(fd, events, data);
+			if (callbackResult == 0) {
+				removeFd(fd);
+			}
+			// Clear the callback reference in the response structure promptly because we
+			// will not clear the response vector itself until the next poll.
+			response.request.callback.clear();
+			result = LOOPER_POLL_CALLBACK;
+		}
+	}
+
+	return result;
+}
+
+void MessageQueue::awoken() {
+#if DEBUG_POLL_AND_WAKE
+	LOGI("%p ~ awoken", this);
+#endif
+
+    char buffer[16];
+    ssize_t nRead;
+    do {
+        nRead = read(mWakeReadPipeFd, buffer, sizeof(buffer));
+    } while ((nRead == -1 && errno == EINTR) || nRead == sizeof(buffer));
+}
+
+void MessageQueue::pushResponse(int events, const Request& request) {
+    Response response;
+    response.events = events;
+    response.request = request;
+    mResponses.push_back(response);
 }
 
 bool MessageQueue::isIdling() const {
@@ -90,18 +291,21 @@ void MessageQueue::wake() {
 	} while (nWrite == -1 && errno == EINTR);
 }
 
-void MessageQueue::removeMessages(sp<Handler> h, int what) {
+void MessageQueue::removeMessages(sp<AbsMessageHandler> h, int what) {
 	if (h == nullptr) {
 		return;
 	}
 
-	pthread_mutex_lock(&mutex);
+	AutoMutex _l(mMessageLock);
 	Message* p = mMessages;
 
 	// Remove all messages at front.
 	while (p != nullptr && p->target == h && p->what == what) {
 		Message* n = p->next;
 		mMessages = n;
+		if (p->target != nullptr) {
+			p->target->handleRecycleMessage(p);
+		}
 		delete p;
 		p = n;
 	}
@@ -112,6 +316,9 @@ void MessageQueue::removeMessages(sp<Handler> h, int what) {
 		if (n != nullptr) {
 			if (n->target == h && n->what == what) {
 				Message* nn = n->next;
+				if (n->target != nullptr) {
+					n->target->handleRecycleMessage(n);
+				}
 				delete n;
 				p->next = nn;
 				continue;
@@ -119,21 +326,23 @@ void MessageQueue::removeMessages(sp<Handler> h, int what) {
 		}
 		p = n;
 	}
-	pthread_mutex_unlock(&mutex);
 }
 
-void MessageQueue::removeMessages(sp<Handler> h, Task* task) {
+void MessageQueue::removeMessages(sp<AbsMessageHandler> h, Task* task) {
 	if (h == nullptr) {
 		return;
 	}
 
-	pthread_mutex_lock(&mutex);
+	AutoMutex _l(mMessageLock);
 	Message* p = mMessages;
 
 	// Remove all messages at front.
 	while (p != nullptr && p->target == h && p->task == task) {
 		Message* n = p->next;
 		mMessages = n;
+		if (p->target != nullptr) {
+			p->target->handleRecycleMessage(p);
+		}
 		delete p;
 		p = n;
 	}
@@ -144,6 +353,9 @@ void MessageQueue::removeMessages(sp<Handler> h, Task* task) {
 		if (n != nullptr) {
 			if (n->target == h && p->task == task) {
 				Message* nn = n->next;
+				if (n->target != nullptr) {
+					n->target->handleRecycleMessage(n);
+				}
 				delete n;
 				p->next = nn;
 				continue;
@@ -151,21 +363,23 @@ void MessageQueue::removeMessages(sp<Handler> h, Task* task) {
 		}
 		p = n;
 	}
-	pthread_mutex_unlock(&mutex);
 }
 
-void MessageQueue::removeMessages(sp<Handler> h) {
+void MessageQueue::removeMessages(sp<AbsMessageHandler> h) {
 	if (h == nullptr) {
 		return;
 	}
 
-	pthread_mutex_lock(&mutex);
+	AutoMutex _l(mMessageLock);
 	Message* p = mMessages;
 
 	// Remove all messages at front.
 	while (p != nullptr && p->target == h) {
 		Message* n = p->next;
 		mMessages = n;
+		if (p->target != nullptr) {
+			p->target->handleRecycleMessage(p);
+		}
 		delete p;
 		p = n;
 	}
@@ -176,6 +390,9 @@ void MessageQueue::removeMessages(sp<Handler> h) {
 		if (n != nullptr) {
 			if (n->target == h) {
 				Message* nn = n->next;
+				if (n->target != nullptr) {
+					n->target->handleRecycleMessage(n);
+				}
 				delete n;
 				p->next = nn;
 				continue;
@@ -183,12 +400,11 @@ void MessageQueue::removeMessages(sp<Handler> h) {
 		}
 		p = n;
 	}
-	pthread_mutex_unlock(&mutex);
 }
 
 bool MessageQueue::enqueueMessage(Message* msg, p_nsecs_t when) {
 	LOG_FATAL_IF(msg->target == NULL, "Message must have a target.");
-	pthread_mutex_lock(&mutex);
+	AutoMutex _l(mMessageLock);
 	{
 		if (mQuitting) {
 			LOGE("sending message to a Handler on a dead thread\n");
@@ -222,7 +438,6 @@ bool MessageQueue::enqueueMessage(Message* msg, p_nsecs_t when) {
 			wake();
 		}
 	}
-	pthread_mutex_unlock(&mutex);
 	return true;
 }
 
@@ -232,7 +447,7 @@ Message* MessageQueue::next() {
 		pollOnce(nextPollTimeoutMillis);
 
 		Message* msg = nullptr;
-		pthread_mutex_lock(&mutex);
+		AutoMutex _l(mMessageLock);
 		{
 			// Try to retrieve the next message.  Return if found.
 			const p_nsecs_t now = uptimeMillis();
@@ -247,7 +462,6 @@ Message* MessageQueue::next() {
 					mBlocked = false;
 					mMessages = msg->next;
 					msg->next = nullptr;
-					pthread_mutex_unlock(&mutex);
 					return msg;
 				}
 			} else {
@@ -255,11 +469,9 @@ Message* MessageQueue::next() {
 			}
 
 			if (mQuitting) {
-				pthread_mutex_unlock(&mutex);
 				return nullptr;
 			}
 		}
-		pthread_mutex_unlock(&mutex);
 		mBlocked = true;
 	}
 
@@ -267,9 +479,9 @@ Message* MessageQueue::next() {
 }
 
 void MessageQueue::quit(bool safe) {
-	pthread_mutex_lock(&mutex);
+	LOG_FATAL_IF(!mQuitAllowed, "Main thread not allowed to quit.");
+	AutoMutex _l(mMessageLock);
 	if (mQuitting) {
-		pthread_mutex_unlock(&mutex);
 		return;
 	}
 	mQuitting = true;
@@ -303,6 +515,9 @@ RemoveAllFutureMessagesLocked:
 				do {
 					p = n;
 					n = p->next;
+					if (p->target != nullptr) {
+						p->target->handleRecycleMessage(p);
+					}
 					delete p;
 				} while (n);
 			}
@@ -315,6 +530,9 @@ RemoveAllMessagesLocked:
 		Message* p = mMessages;
 		while (p) {
 			Message* n = p->next;
+			if (p->target != nullptr) {
+				p->target->handleRecycleMessage(p);
+			}
 			delete p;
 			p = n;
 		}
@@ -323,7 +541,6 @@ RemoveAllMessagesLocked:
 
 Done:
 	wake();
-	pthread_mutex_unlock(&mutex);
 }
 
 }

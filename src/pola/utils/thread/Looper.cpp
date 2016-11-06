@@ -6,7 +6,6 @@
  */
 
 #include "pola/utils/thread/Looper.h"
-#include "pola/utils/thread/Handler.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +18,7 @@ namespace utils {
 static pthread_once_t gTLSOnce = PTHREAD_ONCE_INIT;
 static pthread_key_t gTLSKey = 0;
 
-Looper::Looper() {
+Looper::Looper(bool quitAllowed) : mQueue(quitAllowed) {
 }
 
 Looper::~Looper() {
@@ -47,7 +46,7 @@ sp<Looper> Looper::myLooper() {
 void Looper::prepare() {
 	sp<Looper> looper = myLooper();
 	LOG_FATAL_IF(looper != NULL, "Only one Looper may be created per thread");
-	looper = new Looper();
+	looper = new Looper(true);
 	looper->ref();
 	pthread_setspecific(gTLSKey, looper.get());
 }

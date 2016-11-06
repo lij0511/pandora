@@ -11,7 +11,7 @@
 #include "pola/graphic/gl/GL.h"
 #include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/material/Material.h"
-#include "pola/graphic/math/Matrix4.h"
+#include "pola/graphic/math/Math.h"
 #include "pola/graphic/gl/GLTexture.h"
 #include "pola/graphic/gl/GLCaches.h"
 #include "pola/graphic/gl/GLRenderTarget.h"

@@ -9,7 +9,7 @@
 #define POLA_GEOMETRY_H_
 
 #include "pola/graphic/Vertex.h"
-#include "pola/graphic/math/Box3.h"
+#include "pola/graphic/math/Math.h"
 #include "pola/utils/TypeHelpers.h"
 #include "pola/utils/RefBase.h"
 

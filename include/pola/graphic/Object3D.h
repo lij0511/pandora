@@ -8,11 +8,7 @@
 #ifndef POLA_OBJECT3D_H_
 #define POLA_OBJECT3D_H_
 
-#include "pola/graphic/math/Vector.h"
-#include "pola/graphic/math/Quaternion.h"
-#include "pola/graphic/math/Euler.h"
-#include "pola/graphic/math/Matrix4.h"
-#include "pola/graphic/math/Box3.h"
+#include "pola/graphic/math/Math.h"
 
 namespace pola {
 namespace graphic {

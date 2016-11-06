@@ -9,7 +9,6 @@
 #define POLA_GRAPHIC_VECTOR_H_
 
 #include <cmath>
-#include "pola/graphic/math/Quaternion.h"
 #include "pola/utils/TypeHelpers.h"
 
 namespace pola {
@@ -111,6 +110,33 @@ struct Vector2 {
 		const float inv = 1.0 - d;
 		return Vector2((other.x*inv + x*d), (other.y*inv + y*d));
 	}
+
+	/** equals to Vector2(0,0) */
+	static const Vector2 ZERO;
+	/** equals to Vector2(1,1) */
+	static const Vector2 ONE;
+	/** equals to Vector2(1,0) */
+	static const Vector2 UNIT_X;
+	/** equals to Vector2(0,1) */
+	static const Vector2 UNIT_Y;
+	/** equals to Vector2(0.5, 0.5) */
+	static const Vector2 ANCHOR_MIDDLE;
+	/** equals to Vector2(0, 0) */
+	static const Vector2 ANCHOR_BOTTOM_LEFT;
+	/** equals to Vector2(0, 1) */
+	static const Vector2 ANCHOR_TOP_LEFT;
+	/** equals to Vector2(1, 0) */
+	static const Vector2 ANCHOR_BOTTOM_RIGHT;
+	/** equals to Vector2(1, 1) */
+	static const Vector2 ANCHOR_TOP_RIGHT;
+	/** equals to Vector2(1, 0.5) */
+	static const Vector2 ANCHOR_MIDDLE_RIGHT;
+	/** equals to Vector2(0, 0.5) */
+	static const Vector2 ANCHOR_MIDDLE_LEFT;
+	/** equals to Vector2(0.5, 1) */
+	static const Vector2 ANCHOR_MIDDLE_TOP;
+	/** equals to Vector2(0.5, 0) */
+	static const Vector2 ANCHOR_MIDDLE_BOTTOM;
 };
 
 struct Vector3 {
@@ -122,6 +148,12 @@ struct Vector3 {
     	this->x = x;
     	this->y = y;
     	this->z = z;
+    }
+
+    void set(float xx, float yy, float zz) {
+    	x = xx;
+    	y = yy;
+    	z = zz;
     }
 
     float lengthSquared() const {
@@ -246,8 +278,8 @@ struct Vector3 {
 		z = fmaxf(z, v.z);
 	}
 
-	void applyQuaternion(const Quaternion& q) {
-		float qx = q.x, qy = q.y, qz = q.z, qw = q.w;
+	void applyQuaternion(float xx, float yy, float zz, float ww) {
+		float qx = xx, qy = yy, qz = zz, qw = ww;
 
 		// calculate quat * vector
 
@@ -312,10 +344,165 @@ struct Vector3 {
 		return angle;
 	}
 
+	/** equals to Vector3(0,0,0) */
+	static const Vector3 ZERO;
+	/** equals to Vector3(1,1,1) */
+	static const Vector3 ONE;
+	/** equals to Vector3(1,0,0) */
+	static const Vector3 UNIT_X;
+	/** equals to Vector3(0,1,0) */
+	static const Vector3 UNIT_Y;
+	/** equals to Vector3(0,0,1) */
+	static const Vector3 UNIT_Z;
+};
+
+struct Vector4 {
+    float x;
+    float y;
+    float z;
+    float w;
+
+    Vector4(float x = 0, float y = 0, float z = 0, float w = 0) {
+    	this->x = x;
+    	this->y = y;
+    	this->z = z;
+    	this->w = w;
+    }
+
+    float lengthSquared() const {
+		return x * x + y * y + z * z + w * w;
+	}
+
+    float length() const {
+		return sqrt(x * x + y * y + z * z + w * w);
+	}
+
+	void operator+=(const Vector4& v) {
+		x += v.x;
+		y += v.y;
+		z += v.z;
+		w += v.w;
+	}
+
+	void operator-=(const Vector4& v) {
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+		w -= v.w;
+	}
+
+	void operator+=(const float v) {
+		x += v;
+		y += v;
+		z += v;
+		w += v;
+	}
+
+	void operator-=(const float v) {
+		x -= v;
+		y -= v;
+		z -= v;
+		w -= v;
+	}
+
+	void operator/=(float s) {
+		x /= s;
+		y /= s;
+		z /= s;
+		w /= s;
+	}
+
+	void operator*=(float s) {
+		x *= s;
+		y *= s;
+		z *= s;
+		w *= s;
+	}
+
+    Vector4 operator+(const Vector4& v) const {
+        return (Vector4){x + v.x, y + v.y, z + v.z, w + v.w};
+    }
+
+    Vector4 operator-(const Vector4& v) const {
+        return (Vector4){x - v.x, y - v.y, z - v.z, w - v.w};
+    }
+
+    Vector4 operator/(float s) const {
+        return (Vector4){x / s, y / s, z / s, w / s};
+    }
+
+    Vector4 operator*(float s) const {
+        return (Vector4){x * s, y * s, z * s, w * s};
+    }
+
+    bool operator==(const Vector4& v) {
+		return x == v.x && y == v.y && z == v.z && w == v.w;
+	}
+
+	bool operator!=(const Vector4& v) {
+		return !(*this == v);
+	}
+
+    void normalize() {
+    	float len = lengthSquared();
+    	if (len == 0.0f || len == 1.0f) {
+    		return;
+    	}
+		float s = 1.0f / sqrt(len);
+		x *= s;
+		y *= s;
+		z *= s;
+		w *= s;
+	}
+
+    Vector4 copyNormalized() const {
+    	Vector4 v = {x, y, z, w};
+		v.normalize();
+		return v;
+	}
+
+	void negate() {
+		x = - x;
+		y = - y;
+		z = - z;
+		w = - w;
+	}
+
+	float dot(const Vector4& vector) const {
+		return x * vector.x + y * vector.y + z * vector.z + w * vector.w;
+	}
+
+	void min(const Vector4& v) {
+		x = fminf(x, v.x);
+		y = fminf(y, v.y);
+		z = fminf(z, v.z);
+		w = fminf(w, v.w);
+	}
+
+	void max(const Vector4& v) {
+		x = fmaxf(x, v.x);
+		y = fmaxf(y, v.y);
+		z = fmaxf(z, v.z);
+		w = fmaxf(w, v.w);
+	}
+
+	/** equals to Vector4(0,0,0,0) */
+	static const Vector4 ZERO;
+	/** equals to Vector4(1,1,1,1) */
+	static const Vector4 ONE;
+	/** equals to Vector4(1,0,0,0) */
+	static const Vector4 UNIT_X;
+	/** equals to Vector4(0,1,0,0) */
+	static const Vector4 UNIT_Y;
+	/** equals to Vector4(0,0,1,0) */
+	static const Vector4 UNIT_Z;
+	/** equals to Vector4(0,0,0,1) */
+	static const Vector4 UNIT_W;
 };
 
 typedef Vector2 vec2;
 typedef Vector3 vec3;
+typedef Vector4 vec4;
 
 typedef Vector2 Point2F;
 typedef Vector3 Point3F;

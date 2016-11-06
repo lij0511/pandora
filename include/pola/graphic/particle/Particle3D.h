@@ -8,8 +8,7 @@
 #ifndef POLA_PARTICLE3D_H_
 #define POLA_PARTICLE3D_H_
 
-#include "pola/graphic/math/Vector.h"
-#include "pola/graphic/math/Quaternion.h"
+#include "pola/graphic/math/Math.h"
 #include "pola/graphic/Color.h"
 
 namespace pola {
@@ -24,7 +23,7 @@ public:
 
 	vec3 position;
 	quat4 orientation;
-	FColor4 color;
+	vec4 color;
 	vec2 uv_lb;
 	vec2 uv_tr;
 

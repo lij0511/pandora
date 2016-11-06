@@ -121,8 +121,10 @@ sp<T>::sp(const sp<U>& other)
 
 template<typename T>
 sp<T>::~sp() {
-    if (m_ptr)
-        m_ptr->deref();
+    if (m_ptr) {
+    	m_ptr->deref();
+
+    }
 }
 
 template<typename T>

@@ -8,10 +8,7 @@
 #ifndef POLA_SCENENODE_H_
 #define POLA_SCENENODE_H_
 
-#include "pola/graphic/math/Vector.h"
-#include "pola/graphic/math/Quaternion.h"
-#include "pola/graphic/math/Euler.h"
-#include "pola/graphic/math/Matrix4.h"
+#include "pola/graphic/math/Math.h"
 #include "pola/graphic/GraphicContext.h"
 
 #include "pola/scene/SceneObject.h"

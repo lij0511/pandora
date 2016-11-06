@@ -8,7 +8,7 @@
 #ifndef POLA_FRAMEANIMATION_H_
 #define POLA_FRAMEANIMATION_H_
 
-#include "pola/graphic/math/Vector.h"
+#include "pola/graphic/math/Math.h"
 #include "pola/scene/animation/Animation.h"
 
 #include <vector>

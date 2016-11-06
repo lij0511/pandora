@@ -10,8 +10,7 @@
 
 #include "pola/graphic/Color.h"
 #include "pola/graphic/RenderTarget.h"
-#include "pola/graphic/math/Vector.h"
-#include "pola/graphic/math/Matrix4.h"
+#include "pola/graphic/math/Math.h"
 
 namespace pola {
 namespace graphic {

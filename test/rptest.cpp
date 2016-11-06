@@ -16,6 +16,8 @@
 #include "pola/utils/thread/HandlerThread.h"
 #include "pola/utils/thread/FunctionalTask.h"
 
+#include <functional>
+
 using namespace pola;
 using namespace pola::utils;
 
@@ -36,11 +38,12 @@ sp<RpTest> getSp() {
 	return tmp;
 }
 
-void test1() {
+void test1(int hehe) {
 	sp<RpTest> tmp;
 	for (unsigned i = 0; i < 1000; i ++) {
 		tmp = ssss;
 	}
+	printf("test1 %d\n", hehe);
 }
 
 void test2() {
@@ -52,17 +55,20 @@ void test2() {
 }
 
 int main() {
+	Looper::prepare();
 
 	HandlerThread* t1 = new HandlerThread();
 	t1->start();
 	HandlerThread* t2 = new HandlerThread();
 	t2->start();
 
-	Handler h1(t1->getLooper());
-	Handler h2(t2->getLooper());
+	sp<Handler> h1 = new Handler(t1->getLooper());
+	sp<Handler> h2 = new Handler(Looper::myLooper());
 
-	h1.postDelayed(new pola::utils::FunctionalTask(pola::utils::bind(test1)), 1000);
-	h2.post(new pola::utils::FunctionalTask(pola::utils::bind(test2)));
+	h1->postDelayed(new pola::utils::FunctionalTask(pola::utils::bind(test1, 30)), 1000);
+	h2->post(new pola::utils::FunctionalTask(pola::utils::bind(test2)));
+	h2->postDelayed(new pola::utils::FunctionalTask(pola::utils::bind(test2)), 3000);
+	h2->postDelayed(new pola::utils::FunctionalTask(pola::utils::bind(test2)), 5000);
 
-	while(1){}
+	Looper::myLooper()->loop();
 }

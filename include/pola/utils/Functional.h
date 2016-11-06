@@ -9,7 +9,6 @@
 #define POLA_FUNCTIONAL_H_
 
 #include "pola/utils/RefBase.h"
-#include "pola/utils/WeakPtr.h"
 
 namespace pola {
 namespace utils {
@@ -157,8 +156,8 @@ public:
 
     R operator()(const wp<C>& c)
     {
-        C* obj = c.get();
-        if (!obj)
+        sp<C> obj = c.promote();
+        if (obj == nullptr)
             return R();
         return (obj->*m_function)();
     }
@@ -184,8 +183,8 @@ public:
 
     R operator()(const wp<C>& c, P1 p1)
     {
-        C* obj = c.get();
-        if (!obj)
+    	sp<C> obj = c.promote();
+		if (obj == nullptr)
             return R();
         return (obj->*m_function)(p1);
     }
@@ -211,8 +210,8 @@ public:
 
     R operator()(const wp<C>& c, P1 p1, P2 p2)
     {
-        C* obj = c.get();
-        if (!obj)
+    	sp<C> obj = c.promote();
+		if (obj == nullptr)
             return R();
         return (obj->*m_function)(p1, p2);
     }
@@ -238,8 +237,8 @@ public:
 
     R operator()(const wp<C>& c, P1 p1, P2 p2, P3 p3)
     {
-        C* obj = c.get();
-        if (!obj)
+    	sp<C> obj = c.promote();
+		if (obj == nullptr)
             return R();
         return (obj->*m_function)(p1, p2, p3);
     }
@@ -265,8 +264,8 @@ public:
 
     R operator()(const wp<C>& c, P1 p1, P2 p2, P3 p3, P4 p4)
     {
-        C* obj = c.get();
-        if (!obj)
+    	sp<C> obj = c.promote();
+		if (obj == nullptr)
             return R();
         return (obj->*m_function)(p1, p2, p3, p4);
     }
@@ -292,8 +291,8 @@ public:
 
     R operator()(const wp<C>& c, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
     {
-        C* obj = c.get();
-        if (!obj)
+    	sp<C> obj = c.promote();
+		if (obj == nullptr)
             return R();
         return (obj->*m_function)(p1, p2, p3, p4, p5);
     }

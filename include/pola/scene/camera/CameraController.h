@@ -11,9 +11,7 @@
 #include "pola/input/KeyEvent.h"
 #include "pola/input/MouseEvent.h"
 #include "pola/utils/Times.h"
-#include "pola/graphic/math/Matrix4.h"
-#include "pola/graphic/math/Euler.h"
-#include "pola/graphic/math/Vector.h"
+#include "pola/graphic/math/Math.h"
 #include "pola/scene/SceneObject.h"
 
 namespace pola {

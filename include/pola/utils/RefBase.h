@@ -45,11 +45,14 @@ public:
 		int count = m_weakref->m_strongrefCount - 1;
 		LOGI("this=%p, deref refCount=%d\n", this, count);
 #endif
-		if ((-- m_weakref->m_strongrefCount) <= 0) {
-			m_weakref->m_ref = nullptr;
-			delete static_cast<T*>(this);
+		int32_t c = -- m_weakref->m_strongrefCount;
+		if (c <= 0) {
+			m_weakref->m_ref = NULL;
 		}
 		m_weakref->deref_weak();
+		if (c <= 0) {
+			delete static_cast<T*>(this);
+		}
 	}
 
 	inline int32_t getStrongCount() const {
@@ -90,7 +93,7 @@ public:
 		++ m_weakrefCount;
 #ifdef DEBUG_RP
 		int count = m_weakrefCount;
-		LOGI("ref_weak refCount=%d\n", count);
+		LOGI("this=%p, ref_weak refCount=%d\n", this, count);
 #endif
 		return this;
 	}
@@ -98,13 +101,10 @@ public:
 	inline void deref_weak() {
 #ifdef DEBUG_RP
 		int count = m_weakrefCount - 1;
-		LOGI("deref_weak refCount=%d\n", count);
+		LOGI("this=%p, deref_weak refCount=%d\n", this, count);
 #endif
 		if ((-- m_weakrefCount) <= 0) {
-			if (m_ref) {
-			} else {
-				delete this;
-			}
+			delete this;
 		}
 	}
 

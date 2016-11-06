@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#include "pola/graphic/math/Vector.h"
+#include "pola/graphic/math/Math.h"
 #include "pola/graphic/Color.h"
 
 namespace pola {

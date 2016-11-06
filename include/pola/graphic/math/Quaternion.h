@@ -26,6 +26,25 @@ struct Quaternion {
 		this->w = w;
 	}
 
+	void set(float xx, float yy, float zz, float ww) {
+		x = xx;
+		y = yy;
+		z = zz;
+		w = ww;
+	}
+
+	void set(const vec3& axis, float angle) {
+		float halfAngle = angle * 0.5f;
+		float sinHalfAngle = sinf(halfAngle);
+
+		vec3 normal(axis);
+		normal.normalize();
+		x = normal.x * sinHalfAngle;
+		y = normal.y * sinHalfAngle;
+		z = normal.z * sinHalfAngle;
+		w = cosf(halfAngle);
+	}
+
 	float lengthSquared() const {
 		return x * x + y * y + z * z + w * w;
 	}

@@ -38,11 +38,12 @@ bool Handler::postAndWait(Task* task) {
 	}
 }
 
-bool Handler::sendMessageDelayed(int what, int arg1, int arg2, p_nsecs_t delayMillis) {
-	return mLooper->mQueue.enqueueMessage(new Message(this, what, arg1, arg2), uptimeMillis() + delayMillis);
+bool Handler::sendMessageDelayed(int what, int arg1, int arg2, void* obj, p_nsecs_t delayMillis) {
+	return mLooper->mQueue.enqueueMessage(new Message(this, what, arg1, arg2, obj), uptimeMillis() + delayMillis);
 }
 
 void Handler::removeTask(Task* task) {
+	mLooper->mQueue.removeMessages(this, task);
 }
 
 void Handler::removeMessages(int what) {
@@ -62,6 +63,9 @@ void Handler::dispatchMessage(Message* msg) {
 }
 
 void Handler::handleMessage(Message* msg) {
+}
+
+void Handler::handleRecycleMessage(Message* msg) {
 }
 
 }

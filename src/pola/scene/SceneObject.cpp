@@ -117,7 +117,7 @@ void SceneObject::translateOnAxis(const graphic::vec3& axis, float d) {
 	graphic::vec3 v = axis;
 	graphic::quat4 quat;
 	mRotation.getQuaternion(quat);
-	v.applyQuaternion(quat);
+	v.applyQuaternion(quat.x, quat.y, quat.z, quat.w);
 	mPosition += (v * d);
 	onPropertyChange();
 }
