@@ -30,7 +30,7 @@ namespace pola {
 namespace graphic {
 
 // Constants
-const Vec3 PUOnPositionObserver::DEFAULT_POSITION_THRESHOLD(0, 0, 0);
+const vec3 PUOnPositionObserver::DEFAULT_POSITION_THRESHOLD(0, 0, 0);
 
 //-----------------------------------------------------------------------
 PUOnPositionObserver::PUOnPositionObserver(void) : 

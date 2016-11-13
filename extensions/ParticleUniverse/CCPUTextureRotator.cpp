@@ -50,12 +50,14 @@ PUTextureRotator::~PUTextureRotator(void)
 {
     if (_dynRotation)
     {
-        CC_SAFE_DELETE(_dynRotation);
+        delete _dynRotation;
+        _dynRotation = nullptr;
     }
 
     if (_dynRotationSpeed)
     {
-        CC_SAFE_DELETE(_dynRotationSpeed);
+    	delete _dynRotationSpeed;
+    	_dynRotationSpeed = nullptr;
     }
 }
 //-----------------------------------------------------------------------
@@ -77,7 +79,10 @@ PUDynamicAttribute* PUTextureRotator::getRotation(void) const
 void PUTextureRotator::setRotation(PUDynamicAttribute* dynRotation)
 {
     if (_dynRotation)
-        CC_SAFE_DELETE(_dynRotation);
+    {
+    	delete _dynRotation;
+    	_dynRotation = nullptr;
+    }
 
     _dynRotation = dynRotation;
 }
@@ -90,7 +95,10 @@ PUDynamicAttribute* PUTextureRotator::getRotationSpeed(void) const
 void PUTextureRotator::setRotationSpeed(PUDynamicAttribute* dynRotationSpeed)
 {
     if (_dynRotationSpeed)
-        CC_SAFE_DELETE(_dynRotationSpeed);
+    {
+    	delete _dynRotationSpeed;
+    	_dynRotationSpeed = nullptr;
+    }
 
     _dynRotationSpeed = dynRotationSpeed;
 }

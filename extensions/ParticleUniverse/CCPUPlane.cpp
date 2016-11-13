@@ -41,7 +41,7 @@ PUPlane::PUPlane (const PUPlane& rhs)
 	d = rhs.d;
 }
 //-----------------------------------------------------------------------
-PUPlane::PUPlane (const Vec3& rkNormal, float fConstant)
+PUPlane::PUPlane (const vec3& rkNormal, float fConstant)
 {
 	normal = rkNormal;
 	d = -fConstant;
@@ -52,18 +52,18 @@ PUPlane::PUPlane (float a, float b, float c, float _d)
 {
 }
 //-----------------------------------------------------------------------
-PUPlane::PUPlane (const Vec3& rkNormal, const Vec3& rkPoint)
+PUPlane::PUPlane (const vec3& rkNormal, const vec3& rkPoint)
 {
 	redefine(rkNormal, rkPoint);
 }
 //-----------------------------------------------------------------------
-PUPlane::PUPlane (const Vec3& rkPoint0, const Vec3& rkPoint1,
-			  const Vec3& rkPoint2)
+PUPlane::PUPlane (const vec3& rkPoint0, const vec3& rkPoint1,
+			  const vec3& rkPoint2)
 {
 	redefine(rkPoint0, rkPoint1, rkPoint2);
 }
 //-----------------------------------------------------------------------
-float PUPlane::getDistance (const Vec3& rkPoint) const
+float PUPlane::getDistance (const vec3& rkPoint) const
 {
 	return normal.dot(rkPoint) + d;
 }
@@ -111,23 +111,23 @@ float PUPlane::getDistance (const Vec3& rkPoint) const
 //	return Plane::BOTH_SIDE;
 //}
 //-----------------------------------------------------------------------
-void PUPlane::redefine(const Vec3& rkPoint0, const Vec3& rkPoint1,
-					 const Vec3& rkPoint2)
+void PUPlane::redefine(const vec3& rkPoint0, const vec3& rkPoint1,
+					 const vec3& rkPoint2)
 {
-	Vec3 kEdge1 = rkPoint1 - rkPoint0;
-	Vec3 kEdge2 = rkPoint2 - rkPoint0;
-	Vec3::cross(kEdge1, kEdge2, &normal);
+	vec3 kEdge1 = rkPoint1 - rkPoint0;
+	vec3 kEdge2 = rkPoint2 - rkPoint0;
+	normal = kEdge1.copyCross(kEdge2);
 	normal.normalize();
 	d = -normal.dot(rkPoint0);
 }
 //-----------------------------------------------------------------------
-void PUPlane::redefine(const Vec3& rkNormal, const Vec3& rkPoint)
+void PUPlane::redefine(const vec3& rkNormal, const vec3& rkPoint)
 {
 	normal = rkNormal;
 	d = -rkNormal.dot(rkPoint);
 }
 //-----------------------------------------------------------------------
-Vec3 PUPlane::projectVector(const Vec3& p) const
+vec3 PUPlane::projectVector(const vec3& p) const
 {
 	// We know plane normal is unit length, so use simple method
 	//Matrix3 xform;
@@ -141,16 +141,16 @@ Vec3 PUPlane::projectVector(const Vec3& p) const
 	//xform[2][1] = -normal.z * normal.y;
 	//xform[2][2] = 1.0f - normal.z * normal.z;
 
-	Mat4 xform;
-	xform.m[0] = 1.0f - normal.x * normal.x;
-	xform.m[1] = -normal.x * normal.y;
-	xform.m[2] = -normal.x * normal.z;
-	xform.m[4] = -normal.y * normal.x;
-	xform.m[5] = 1.0f - normal.y * normal.y;
-	xform.m[6] = -normal.y * normal.z;
-	xform.m[8] = -normal.z * normal.x;
-	xform.m[9] = -normal.z * normal.y;
-	xform.m[10] = 1.0f - normal.z * normal.z;
+	mat4 xform;
+	xform.data[0] = 1.0f - normal.x * normal.x;
+	xform.data[1] = -normal.x * normal.y;
+	xform.data[2] = -normal.x * normal.z;
+	xform.data[4] = -normal.y * normal.x;
+	xform.data[5] = 1.0f - normal.y * normal.y;
+	xform.data[6] = -normal.y * normal.z;
+	xform.data[8] = -normal.z * normal.x;
+	xform.data[9] = -normal.z * normal.y;
+	xform.data[10] = 1.0f - normal.z * normal.z;
 	return xform * p;
 
 }

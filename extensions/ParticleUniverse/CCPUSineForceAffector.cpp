@@ -59,7 +59,7 @@ void PUSineForceAffector::preUpdateAffector(float deltaTime)
 
         if (_frequencyMin != _frequencyMax)
         {
-            _frequency = cocos2d::random(_frequencyMin, _frequencyMax);
+            _frequency = pola::random(_frequencyMin, _frequencyMax);
         }
     }
 }

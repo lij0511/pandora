@@ -83,10 +83,10 @@ struct PUParticle3D : public Particle3D
         PEF_COLLIDED = 1<<2
     };
 
-    Ref *particleEntityPtr;
+    void *particleEntityPtr;
     PUEmitter* parentEmitter;
 
-    Ref *visualData;
+    void *visualData;
 
     ParticleType particleType;
     // Values that are assigned as soon as the particle is emitted (non-transformed)

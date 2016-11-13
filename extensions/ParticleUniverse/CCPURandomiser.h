@@ -28,7 +28,6 @@
 #define __CC_PU_PARTICLE_3D_RANDOMISER_H__
 
 #include "CCPUAffector.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -37,7 +36,7 @@ class  PURandomiser : public PUAffector
 {
 public:
     // Constants
-    static const Vec3 DEFAULT_MAX_DEVIATION;
+    static const vec3 DEFAULT_MAX_DEVIATION;
     static const float DEFAULT_TIME_STEP;
     static const bool DEFAULT_RANDOM_DIRECTION;
 
@@ -73,7 +72,7 @@ public:
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:	
+public:
     PURandomiser(void);
     virtual ~PURandomiser(void);
 

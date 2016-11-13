@@ -49,11 +49,11 @@ public:
 
     /** Returns a list with positions
     */
-    const std::vector<Vec3>& getPositions(void) const;
+    const std::vector<vec3>& getPositions(void) const;
 
     /** Add a new position to this emitter
     */
-    void addPosition(const Vec3& position);
+    void addPosition(const vec3& position);
 
     /** Remove all positions from this emitter
     */
@@ -74,12 +74,12 @@ public:
     virtual PUPositionEmitter* clone() override;
     virtual void copyAttributesTo (PUEmitter* emitter) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUPositionEmitter(void);
     virtual ~PUPositionEmitter(void) {};
 
 protected:
-    std::vector<Vec3> _positionList;
+    std::vector<vec3> _positionList;
     bool _randomized;
     size_t _index;
 

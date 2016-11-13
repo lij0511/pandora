@@ -52,7 +52,7 @@ public:
     unsigned int line;
     PUAbstractNodeType type;
     PUAbstractNode *parent;
-    Ref *context;
+    void *context;
     
     //contextd//
 //    Any context; // A holder for translation context data

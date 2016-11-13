@@ -24,7 +24,7 @@
  ****************************************************************************/
 
 #include "CCPUSimpleSpline.h"
-#include "base/ccMacros.h"
+#include "pola/log/Log.h"
 
 namespace pola {
 namespace graphic {
@@ -33,22 +33,22 @@ PUSimpleSpline::PUSimpleSpline()
 {
     // Set up matrix
     // Hermite polynomial
-    _coeffs.m[0] = 2;
-    _coeffs.m[1] = -2;
-    _coeffs.m[2] = 1;
-    _coeffs.m[3] = 1;
-    _coeffs.m[4] = -3;
-    _coeffs.m[5] = 3;
-    _coeffs.m[6] = -2;
-    _coeffs.m[7] = -1;
-    _coeffs.m[8] = 0;
-    _coeffs.m[9] = 0;
-    _coeffs.m[10] = 1;
-    _coeffs.m[11] = 0;
-    _coeffs.m[12] = 1;
-    _coeffs.m[13] = 0;
-    _coeffs.m[14] = 0;
-    _coeffs.m[15] = 0;
+    _coeffs.data[0] = 2;
+    _coeffs.data[1] = -2;
+    _coeffs.data[2] = 1;
+    _coeffs.data[3] = 1;
+    _coeffs.data[4] = -3;
+    _coeffs.data[5] = 3;
+    _coeffs.data[6] = -2;
+    _coeffs.data[7] = -1;
+    _coeffs.data[8] = 0;
+    _coeffs.data[9] = 0;
+    _coeffs.data[10] = 1;
+    _coeffs.data[11] = 0;
+    _coeffs.data[12] = 1;
+    _coeffs.data[13] = 0;
+    _coeffs.data[14] = 0;
+    _coeffs.data[15] = 0;
 
     _autoCalc = true;
 }
@@ -57,7 +57,7 @@ PUSimpleSpline::~PUSimpleSpline()
 {
 }
 //---------------------------------------------------------------------
-void PUSimpleSpline::addPoint(const Vec3& p)
+void PUSimpleSpline::addPoint(const vec3& p)
 {
     _points.push_back(p);
     if (_autoCalc)
@@ -66,7 +66,7 @@ void PUSimpleSpline::addPoint(const Vec3& p)
     }
 }
 //---------------------------------------------------------------------
-Vec3 PUSimpleSpline::interpolate(float t) const
+vec3 PUSimpleSpline::interpolate(float t) const
 {
     // Currently assumes points are evenly spaced, will cause velocity
     // change where this is not the case
@@ -83,10 +83,10 @@ Vec3 PUSimpleSpline::interpolate(float t) const
 
 }
 //---------------------------------------------------------------------
-Vec3 PUSimpleSpline::interpolate(unsigned int fromIndex, float t) const
+vec3 PUSimpleSpline::interpolate(unsigned int fromIndex, float t) const
 {
     // Bounds check
-    CCASSERT (fromIndex < _points.size(), "fromIndex out of bounds");
+    LOG_FATAL_IF(fromIndex >= _points.size(), "fromIndex out of bounds");
 
     if ((fromIndex + 1) == _points.size())
     {
@@ -111,37 +111,37 @@ Vec3 PUSimpleSpline::interpolate(unsigned int fromIndex, float t) const
     float t2, t3;
     t2 = t * t;
     t3 = t2 * t;
-    Vec4 powers(t3, t2, t, 1);
+    vec4 powers(t3, t2, t, 1);
 
 
     // Algorithm is ret = powers * mCoeffs * Matrix4(point1, point2, tangent1, tangent2)
-    const Vec3& point1 = _points[fromIndex];
-    const Vec3& point2 = _points[fromIndex+1];
-    const Vec3& tan1 = _tangents[fromIndex];
-    const Vec3& tan2 = _tangents[fromIndex+1];
-    Mat4 pt;
+    const vec3& point1 = _points[fromIndex];
+    const vec3& point2 = _points[fromIndex+1];
+    const vec3& tan1 = _tangents[fromIndex];
+    const vec3& tan2 = _tangents[fromIndex+1];
+    mat4 pt;
 
-    pt.m[0] = point1.x;
-    pt.m[1] = point1.y;
-    pt.m[2] = point1.z;
-    pt.m[3] = 1.0f;
-    pt.m[4] = point2.x;
-    pt.m[5] = point2.y;
-    pt.m[6] = point2.z;
-    pt.m[7] = 1.0f;
-    pt.m[8] = tan1.x;
-    pt.m[9] = tan1.y;
-    pt.m[10] = tan1.z;
-    pt.m[11] = 1.0f;
-    pt.m[12] = tan2.x;
-    pt.m[13] = tan2.y;
-    pt.m[14] = tan2.z;
-    pt.m[15] = 1.0f;
+    pt.data[0] = point1.x;
+    pt.data[1] = point1.y;
+    pt.data[2] = point1.z;
+    pt.data[3] = 1.0f;
+    pt.data[4] = point2.x;
+    pt.data[5] = point2.y;
+    pt.data[6] = point2.z;
+    pt.data[7] = 1.0f;
+    pt.data[8] = tan1.x;
+    pt.data[9] = tan1.y;
+    pt.data[10] = tan1.z;
+    pt.data[11] = 1.0f;
+    pt.data[12] = tan2.x;
+    pt.data[13] = tan2.y;
+    pt.data[14] = tan2.z;
+    pt.data[15] = 1.0f;
 
-    Vec4 ret = pt * _coeffs * powers;
+    vec4 ret = pt * _coeffs * powers;
 
 
-    return Vec3(ret.x, ret.y, ret.z);
+    return vec3(ret.x, ret.y, ret.z);
 
 
 
@@ -219,9 +219,9 @@ void PUSimpleSpline::recalcTangents(void)
 
 }
 //---------------------------------------------------------------------
-const Vec3& PUSimpleSpline::getPoint(unsigned short index) const
+const vec3& PUSimpleSpline::getPoint(unsigned short index) const
 {
-    CCASSERT (index < _points.size(), "Point index is out of bounds!!");
+	LOG_FATAL_IF (index >= _points.size(), "Point index is out of bounds!!");
 
     return _points[index];
 }
@@ -237,9 +237,9 @@ void PUSimpleSpline::clear(void)
     _tangents.clear();
 }
 //---------------------------------------------------------------------
-void PUSimpleSpline::updatePoint(unsigned short index, const Vec3& value)
+void PUSimpleSpline::updatePoint(unsigned short index, const vec3& value)
 {
-    CCASSERT (index < _points.size(),  "Point index is out of bounds!!");
+	LOG_FATAL_IF (index >= _points.size(),  "Point index is out of bounds!!");
 
     _points[index] = value;
     if (_autoCalc)

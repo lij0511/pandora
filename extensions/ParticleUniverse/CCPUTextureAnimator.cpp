@@ -113,7 +113,7 @@ void PUTextureAnimator::initParticleForEmission(PUParticle3D* particle)
     // Set first image
     if (_startRandom)
     {
-        particle->textureCoordsCurrent = (unsigned short)cocos2d::random((float)_textureCoordsStart, (float)_textureCoordsEnd + 0.999f);
+        particle->textureCoordsCurrent = (unsigned short) pola::random((float)_textureCoordsStart, (float)_textureCoordsEnd + 0.999f);
     }
     else
     {
@@ -213,7 +213,7 @@ void PUTextureAnimator::determineNextTextureCoords(PUParticle3D* visualParticle)
     case TAT_RANDOM:
         {
             // Generate a random texcoord index
-            visualParticle->textureCoordsCurrent = (unsigned short)cocos2d::random((float)_textureCoordsStart, (float)_textureCoordsEnd + 0.999f);
+            visualParticle->textureCoordsCurrent = (unsigned short) pola::random((float)_textureCoordsStart, (float)_textureCoordsEnd + 0.999f);
         }
         break;
     }

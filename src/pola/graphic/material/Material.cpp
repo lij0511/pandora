@@ -24,8 +24,7 @@ namespace graphic {
 Material::Material(const FColor4& color, Texture* textureMap)
 	: mColor(color), mTextureMap(textureMap) {
 	mBlendEnable = false;
-	mBlendFuncSrc = FACTOR_ONE;
-	mBlendFuncDst = FACTOR_ONE_MINUS_SRC_ALPHA;
+	mBlendFunc = {FACTOR_ONE, FACTOR_ONE_MINUS_SRC_ALPHA};
 }
 
 Material::~Material() {

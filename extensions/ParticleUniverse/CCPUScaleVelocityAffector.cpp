@@ -45,7 +45,8 @@ PUScaleVelocityAffector::~PUScaleVelocityAffector(void)
 {
     if (_dynScaleVelocity)
     {
-        CC_SAFE_DELETE(_dynScaleVelocity);
+    	delete _dynScaleVelocity;
+        _dynScaleVelocity = nullptr;
     }
 }
 //-----------------------------------------------------------------------
@@ -66,7 +67,7 @@ void PUScaleVelocityAffector::updatePUAffector( PUParticle3D *particle, float de
             ds = deltaTime * _dynamicAttributeHelper.calculate(_dynScaleVelocity, particle->timeFraction);
         }
         float length = particle->direction.length(); // Use length for a better delta direction value
-        Vec3 calculated = particle->direction;
+        vec3 calculated = particle->direction;
         calculated.x += ds * (particle->direction.x / length);
         calculated.y += ds * (particle->direction.y / length);
         calculated.z += ds * (particle->direction.z / length);
@@ -90,7 +91,10 @@ void PUScaleVelocityAffector::updatePUAffector( PUParticle3D *particle, float de
 void PUScaleVelocityAffector::setDynScaleVelocity(PUDynamicAttribute* dynScaleVelocity)
 {
     if (_dynScaleVelocity)
-        CC_SAFE_DELETE(_dynScaleVelocity);
+    {
+    	delete _dynScaleVelocity;
+    	_dynScaleVelocity = nullptr;
+    }
 
     _dynScaleVelocity = dynScaleVelocity;
 }
@@ -99,7 +103,11 @@ void PUScaleVelocityAffector::resetDynScaleVelocity(bool resetToDefault)
 {
     if (resetToDefault)
     {
-        CC_SAFE_DELETE(_dynScaleVelocity);
+    	if (_dynScaleVelocity)
+		{
+			delete _dynScaleVelocity;
+			_dynScaleVelocity = nullptr;
+		}
         _dynScaleVelocity = new (std::nothrow) PUDynamicAttributeFixed();
         (static_cast<PUDynamicAttributeFixed*>(_dynScaleVelocity))->setValue(DEFAULT_VELOCITY_SCALE);
     }

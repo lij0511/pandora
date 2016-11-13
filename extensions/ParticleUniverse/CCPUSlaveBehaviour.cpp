@@ -24,7 +24,6 @@
  ****************************************************************************/
 
 #include "CCPUSlaveBehaviour.h"
-#include "base/ccMacros.h"
 
 namespace pola {
 namespace graphic {

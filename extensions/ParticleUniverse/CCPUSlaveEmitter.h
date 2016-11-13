@@ -86,7 +86,7 @@ public:
     virtual PUSlaveEmitter* clone() override;
     virtual void copyAttributesTo (PUEmitter* emitter) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUSlaveEmitter(void);
     virtual ~PUSlaveEmitter(void){};
 
@@ -95,8 +95,8 @@ protected:
     PUParticle3D* _masterParticle;
     std::string _masterTechniqueName;
     std::string _masterEmitterName;
-    Vec3 _masterPosition;
-    Vec3 _masterDirection;
+    vec3 _masterPosition;
+    vec3 _masterDirection;
     bool _masterEmitterNameSet;
 };
 } /* namespace graphic */

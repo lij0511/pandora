@@ -26,9 +26,7 @@
 #ifndef __CC_PU_PARTICLE_3D_SPHERE_H__
 #define __CC_PU_PARTICLE_3D_SPHERE_H__
 
-#include "base/CCRef.h"
-#include "math/CCMath.h"
-#include "3d/CCAABB.h"
+#include "pola/graphic/math/Math.h"
 #include <vector>
 
 namespace pola {
@@ -43,7 +41,7 @@ class PUSphere
 {
 protected:
     float _radius;
-    Vec3 _center;
+    vec3 _center;
 public:
     /** Standard constructor - creates a unit sphere around the origin.*/
     PUSphere();
@@ -51,7 +49,7 @@ public:
         @param center The center point of the sphere.
         @param radius The radius of the sphere.
     */
-    PUSphere(const Vec3& center, float radius);
+    PUSphere(const vec3& center, float radius);
 
     /** Returns the radius of the sphere. */
     float getRadius(void) const { return _radius; }
@@ -60,10 +58,10 @@ public:
     void setRadius(float radius) { _radius = radius; }
 
     /** Returns the center point of the sphere. */
-    const Vec3& getCenter(void) const { return _center; }
+    const vec3& getCenter(void) const { return _center; }
 
     /** Sets the center point of the sphere. */
-    void setCenter(const Vec3& center) { _center = center; }
+    void setCenter(const vec3& center) { _center = center; }
 
     /** Returns whether or not this sphere intersects another sphere. */
     bool intersects(const PUSphere& s) const
@@ -81,7 +79,7 @@ public:
     //	return Math::intersects(*this, plane);
     //}
     /** Returns whether or not this sphere intersects a point. */
-    bool intersects(const Vec3& v) const
+    bool intersects(const vec3& v) const
     {
         return ((v - _center).lengthSquared() <= _radius * _radius);
     }

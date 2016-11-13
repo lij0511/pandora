@@ -30,7 +30,7 @@ namespace pola {
 namespace graphic {
 
 // Constants
-const Vec3 PUVortexAffector::DEFAULT_ROTATION_VECTOR(0, 0, 0);
+const vec3 PUVortexAffector::DEFAULT_ROTATION_VECTOR(0, 0, 0);
 const float PUVortexAffector::DEFAULT_ROTATION_SPEED = 1.0f;
 
 //-----------------------------------------------------------------------
@@ -46,16 +46,17 @@ PUVortexAffector::~PUVortexAffector(void)
 {
     if (_dynRotationSpeed)
     {
-        CC_SAFE_DELETE(_dynRotationSpeed);
+    	delete _dynRotationSpeed;
+    	_dynRotationSpeed = nullptr;
     }
 }
 //-----------------------------------------------------------------------
-const Vec3& PUVortexAffector::getRotationVector(void) const
+const vec3& PUVortexAffector::getRotationVector(void) const
 {
     return _rotationVector;
 }
 //-----------------------------------------------------------------------
-void PUVortexAffector::setRotationVector(const Vec3& rotationVector)
+void PUVortexAffector::setRotationVector(const vec3& rotationVector)
 {
     _rotationVector = rotationVector;
 }
@@ -68,7 +69,10 @@ PUDynamicAttribute* PUVortexAffector::getRotationSpeed(void) const
 void PUVortexAffector::setRotationSpeed(PUDynamicAttribute* dynRotationSpeed)
 {
     if (_dynRotationSpeed)
-        CC_SAFE_DELETE(_dynRotationSpeed);
+    {
+    	delete _dynRotationSpeed;
+    	_dynRotationSpeed = nullptr;
+    }
 
     _dynRotationSpeed = dynRotationSpeed;
 }
@@ -90,9 +94,9 @@ void PUVortexAffector::updatePUAffector( PUParticle3D *particle, float deltaTime
 
         // Rotate position, direction and orientation (visible particle only) and compensate for the affector position
         // Also take the affect specialisation into account
-        Mat4 rotMat;
-        Mat4::createRotation(_rotation, &rotMat);
-        Vec3 local = particle->position - _derivedPosition;
+        mat4 rotMat;
+        rotMat.makeRotationFromQuaternion(_rotation);
+        vec3 local = particle->position - _derivedPosition;
         particle->position = _derivedPosition + rotMat * local;
         particle->direction = rotMat * particle->direction;
         particle->orientation = _rotation * particle->orientation;
@@ -105,9 +109,11 @@ void PUVortexAffector::preUpdateAffector( float deltaTime )
 
     if (sys)
     {
-        Mat4 rotMat;
-        Mat4::createRotation(sys->getDerivedOrientation(), &rotMat);
-        _rotation.set(rotMat * _rotationVector, float(calculateRotationSpeed() * deltaTime));
+        mat4 rotMat;
+        rotMat.makeRotationFromQuaternion(sys->getDerivedOrientation());
+        vec3 rotationV;
+        rotMat.transformVector(_rotationVector, rotationV);
+        _rotation.set(rotationV, float(calculateRotationSpeed() * deltaTime));
     }
     else
     {

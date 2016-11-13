@@ -28,7 +28,6 @@
 #define __CC_PU_PARTICLE_3D_VELOCITY_MATCHING_AFFECTOR_H__
 
 #include "CCPUAffector.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -58,7 +57,7 @@ public:
     /** @copydoc ParticleAffector::_unprepare */
     //virtual void _unprepare(ParticleTechnique* particleTechnique);
 
-CC_CONSTRUCTOR_ACCESS:	
+public:
     PUVelocityMatchingAffector(void);
     virtual ~PUVelocityMatchingAffector(void);
         

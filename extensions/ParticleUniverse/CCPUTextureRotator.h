@@ -29,7 +29,6 @@
 
 #include "CCPUAffector.h"
 #include "CCPUDynamicAttribute.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -84,7 +83,7 @@ public:
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:	
+public:
     PUTextureRotator(void);
     virtual ~PUTextureRotator(void);
 

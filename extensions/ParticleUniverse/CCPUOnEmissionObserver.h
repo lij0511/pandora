@@ -26,8 +26,7 @@
 #ifndef __CC_PU_PARTICLE_3D_ON_EMISSION_OBSERVER_H__
 #define __CC_PU_PARTICLE_3D_ON_EMISSION_OBSERVER_H__
 
-#include "base/CCRef.h"
-#include "math/CCMath.h"
+#include "pola/graphic/math/Math.h"
 #include "CCPUObserver.h"
 #include <vector>
 #include <string>
@@ -46,7 +45,7 @@ public:
     */
     virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUOnEmissionObserver(void) : PUObserver()
     {
     }

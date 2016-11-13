@@ -36,7 +36,7 @@ LOCAL_CPPFLAGS += -DPOLA_GL -DPOLA_LINUX_X11
 LOCAL_CPPFLAGS += -DMESH_LOADER_FBX
 
 LOCAL_SRC_FILES := $(shell find src/ -name '*.cpp')
-#LOCAL_SRC_FILES += $(shell find extensions/ParticleUniverse/ -name '*.cpp')
+LOCAL_SRC_FILES += $(shell find extensions/ParticleUniverse/ -name '*.cpp')
 include third_party/third_party.mk
 
 LOCAL_MODULE := libpola

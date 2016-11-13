@@ -28,7 +28,6 @@
 #define __CC_PU_PARTICLE_3D_SINE_FORCE_AFFECTOR_H__
 
 #include "CCPUBaseForceAffector.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -57,7 +56,7 @@ public:
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:	
+public:
     PUSineForceAffector(void);
     virtual ~PUSineForceAffector(void);
 

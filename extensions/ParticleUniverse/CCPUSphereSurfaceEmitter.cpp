@@ -53,14 +53,14 @@ void PUSphereSurfaceEmitter::initParticlePosition(PUParticle3D* particle)
 {
     // Generate a random unit vector to calculate a point on the sphere. This unit vector is
     // also used as direction vector if mAutoDirection has been set.
-    _randomVector.set(CCRANDOM_MINUS1_1(), CCRANDOM_MINUS1_1(), CCRANDOM_MINUS1_1());
+    _randomVector.set(pola::rand_minus1_1(), pola::rand_minus1_1(), pola::rand_minus1_1());
     _randomVector.normalize();
     //ParticleSystem* sys = mParentTechnique->getParentSystem();
     //if (sys)
     {
-        Mat4 rotMat;
-        Mat4::createRotation(static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedOrientation(), &rotMat);
-        particle->position = getDerivedPosition() + rotMat * (Vec3(_emitterScale.x * _randomVector.x, _emitterScale.y * _randomVector.y, _emitterScale.z * _randomVector.z) * _radius);
+        mat4 rotMat;
+        rotMat.makeRotationFromQuaternion(static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedOrientation());
+        particle->position = getDerivedPosition() + rotMat * (vec3(_emitterScale.x * _randomVector.x, _emitterScale.y * _randomVector.y, _emitterScale.z * _randomVector.z) * _radius);
     }
     //else
     //{

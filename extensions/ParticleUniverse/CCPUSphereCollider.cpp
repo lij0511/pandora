@@ -66,7 +66,7 @@ void PUSphereCollider::setInnerCollision(bool innerCollision)
     _innerCollision = innerCollision;
 }
 //-----------------------------------------------------------------------
-void PUSphereCollider::calculateDirectionAfterCollision(PUParticle3D* particle, Vec3 distance, float distanceLength)
+void PUSphereCollider::calculateDirectionAfterCollision(PUParticle3D* particle, vec3 distance, float distanceLength)
 {
     switch (_collisionType)
     {
@@ -112,7 +112,7 @@ void PUSphereCollider::updatePUAffector( PUParticle3D *particle, float deltaTime
         //PUParticle3D *particle = iter;
         _predictedPosition = particle->position + _velocityScale * particle->direction;
         bool collision = false;
-        Vec3 distance = particle->position - _derivedPosition;
+        vec3 distance = particle->position - _derivedPosition;
         float distanceLength = distance.length();
         float scaledRadius = 0.3333f * (_affectorScale.x + _affectorScale.y + _affectorScale.z) * _radius; // Scaling changed in V 1.3.1
 
@@ -145,7 +145,7 @@ void PUSphereCollider::updatePUAffector( PUParticle3D *particle, float deltaTime
                 //// Validate for a box-sphere intersection
                 //if (particle->particleType != Particle::PT_VISUAL)
                 //	break;
-                AABB box;
+                Box3 box;
                 populateAlignedBox(box,
                     particle->position, 
                     particle->width, 

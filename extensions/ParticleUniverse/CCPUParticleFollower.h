@@ -28,7 +28,6 @@
 #define __CC_PU_PARTICLE_3D_PARTICLE_FOLLOWER_H__
 
 #include "CCPUAffector.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -57,14 +56,14 @@ public:
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUParticleFollower(void);
     virtual ~PUParticleFollower(void);
 
 protected:
     float _minDistance;
     float _maxDistance;
-    Vec3 _positionPreviousParticle;
+    vec3 _positionPreviousParticle;
     bool _first;
 };
 } /* namespace graphic */

@@ -71,17 +71,17 @@ inline void PUTriangle::calculateSurfaceNormal (void)
         v3 = Vector3(x3, y3, z3)
         n = (v2-v1)x(v3-v1), where the 'x' is the cross product
     */
-    vec3::cross(v2-v1, v3-v1, &surfaceNormal);
+    surfaceNormal = (v2 - v1).copyCross(v3 - v1);
     surfaceNormal.normalize();
 }
 //-----------------------------------------------------------------------
 inline void PUTriangle::calculateEdgeNormals (void)
 {
-    vec3::cross(v1, v2, &en1);
+    en1 = v1.copyCross(v2);
     en1.normalize();
-    vec3::cross(v2, v3, &en2);
+    en2 = v2.copyCross(v3);
     en2.normalize();
-    vec3::cross(v3, v1, &en3);
+    en3 = v3.copyCross(v1);
     en3.normalize();
 }
 //-----------------------------------------------------------------------
@@ -96,8 +96,8 @@ const vec3 PUTriangle::getRandomTrianglePosition (void)
     // in triangle ABC: the reflection step a=1-a; b=1-b gives a point (a,b) uniformly distributed in the 
     // triangle (0,0)(1,0)(0,1), which is then mapped affinely to ABC. Now you have barycentric coordinates 
     // a,b,c. Compute your point P = aA + bB + cC.
-    float a = CCRANDOM_0_1();
-    float b = CCRANDOM_0_1();
+    float a = pola::rand_0_1();
+    float b = pola::rand_0_1();
     if (a + b > 1)
     {
         a = 1 - a;
@@ -109,11 +109,11 @@ const vec3 PUTriangle::getRandomTrianglePosition (void)
 //-----------------------------------------------------------------------
 const PUTriangle::PositionAndNormal PUTriangle::getRandomEdgePositionAndNormal (void)
 {
-    float mult = CCRANDOM_0_1();
-    float randomVal = CCRANDOM_0_1() * 3.0f;
+    float mult = pola::rand_0_1();
+    float randomVal = pola::rand_0_1() * 3.0f;
     PositionAndNormal pAndN;
-    pAndN.position.setZero();
-    pAndN.normal.setZero();
+    pAndN.position = vec3::ZERO;
+    pAndN.normal = vec3::ZERO;
     if (randomVal < 1)
     {
         pAndN.position.set(v2.x + mult*(v1.x - v2.x), v2.y + mult*(v1.y - v2.y), v2.z + mult*(v1.z - v2.z));
@@ -139,10 +139,10 @@ const PUTriangle::PositionAndNormal PUTriangle::getRandomEdgePositionAndNormal (
 //-----------------------------------------------------------------------
 const PUTriangle::PositionAndNormal PUTriangle::getRandomVertexAndNormal (void)
 {
-    float randomVal = CCRANDOM_0_1() * 3.0f;
+    float randomVal = pola::rand_0_1() * 3.0f;
     PositionAndNormal pAndN;
-    pAndN.position.setZero();
-    pAndN.normal.setZero();
+    pAndN.position = vec3::ZERO;
+    pAndN.normal = vec3::ZERO;
 
     if (randomVal < 1)
     {
@@ -193,8 +193,8 @@ inline float MeshInfo::getGaussianRandom (float high, float cutoff)
     unsigned int max = 0;
     do
     {
-        x1 = CCRANDOM_0_1();
-        x2 = CCRANDOM_0_1();
+        x1 = pola::rand_0_1();
+        x2 = pola::rand_0_1();
         w = x1 * x1 + x2 * x2;
 
         // Prevent infinite loop
@@ -225,7 +225,7 @@ size_t MeshInfo::getRandomTriangleIndex()
         index = (size_t)getGaussianRandom((float)_triangles.size() - 1);
     }
     else
-        index = (size_t)(CCRANDOM_0_1() * (float)(_triangles.size() - 1));
+        index = (size_t)(pola::rand_0_1() * (float)(_triangles.size() - 1));
 
     return index;
 }
@@ -235,8 +235,8 @@ const PUTriangle::PositionAndNormal MeshInfo::getRandomPositionAndNormal (const 
 {
     PUTriangle triangle = getTriangle(triangleIndex);
     PUTriangle::PositionAndNormal pAndN;
-    pAndN.position.setZero();
-    pAndN.normal.setZero();
+    pAndN.position= vec3::ZERO;
+    pAndN.normal = vec3::ZERO;
     if (mDistribution == MSD_HOMOGENEOUS || mDistribution == MSD_HETEROGENEOUS_1 || mDistribution == MSD_HETEROGENEOUS_2)
     {
         pAndN.position = triangle.getRandomTrianglePosition();
@@ -420,7 +420,9 @@ PUMeshSurfaceEmitter::~PUMeshSurfaceEmitter(void)
 {
     if (_meshInfo)
     {
-        CC_SAFE_DELETE(_meshInfo);
+//        CC_SAFE_DELETE(_meshInfo);
+    	delete _meshInfo;
+    	_meshInfo = nullptr;
     }
 }
 //-----------------------------------------------------------------------
@@ -443,8 +445,8 @@ void PUMeshSurfaceEmitter::unPrepare()
 void PUMeshSurfaceEmitter::initParticlePosition(PUParticle3D* particle)
 {
     PUTriangle::PositionAndNormal pAndN;
-    pAndN.position.setZero();
-    pAndN.normal.setZero();
+    pAndN.position = vec3::ZERO;
+    pAndN.normal = vec3::ZERO;
     _directionSet = false;
 
     if (_meshInfo && _meshInfo->getTriangleCount())
@@ -460,8 +462,8 @@ void PUMeshSurfaceEmitter::initParticlePosition(PUParticle3D* particle)
                 // Set position and direction of the particle
                 //if (sys)
                 {
-                    Mat4 rotMat;
-                    Mat4::createRotation(static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedOrientation(), &rotMat);
+                    mat4 rotMat;
+                    rotMat.makeRotationFromQuaternion(static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedOrientation());
                     particle->position = _derivedPosition + rotMat * vec3(_emitterScale.x * pAndN.position.x, _emitterScale.y * pAndN.position.y, _emitterScale.z * pAndN.position.z);
                 }
                 //else
@@ -490,8 +492,8 @@ void PUMeshSurfaceEmitter::initParticlePosition(PUParticle3D* particle)
             // Set position of the particle
             //if (sys)
             {
-                Mat4 rotMat;
-                Mat4::createRotation(static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedOrientation(), &rotMat);
+                mat4 rotMat;
+                rotMat.makeRotationFromQuaternion(static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedOrientation());
                 particle->position = _derivedPosition + rotMat * vec3(_emitterScale.x * pAndN.position.x, _emitterScale.y * pAndN.position.y, _emitterScale.z * pAndN.position.z);
             }
             //else
@@ -564,7 +566,8 @@ void PUMeshSurfaceEmitter::build(void)
     // Delete the mesh info if already existing
     if (_meshInfo)
     {
-        CC_SAFE_DELETE(_meshInfo);
+    	delete _meshInfo;
+    	_meshInfo = nullptr;
     }
 
     // Generate meshinfo.

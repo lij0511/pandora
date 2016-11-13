@@ -30,7 +30,7 @@ namespace pola {
 namespace graphic {
 
 // Constants
-const Vec3 PURandomiser::DEFAULT_MAX_DEVIATION(0, 0, 0);
+const vec3 PURandomiser::DEFAULT_MAX_DEVIATION(0, 0, 0);
 const float PURandomiser::DEFAULT_TIME_STEP = 0.0f;
 const bool PURandomiser::DEFAULT_RANDOM_DIRECTION = true;
 
@@ -125,9 +125,9 @@ void PURandomiser::updatePUAffector( PUParticle3D *particle, float deltaTime )
             if (_randomDirection)
             {
                 // Random direction: Change the direction after each update
-                particle->direction.add(CCRANDOM_MINUS1_1() * _maxDeviationX,
-                    CCRANDOM_MINUS1_1() * _maxDeviationY,
-                    CCRANDOM_MINUS1_1() * _maxDeviationZ);
+                particle->direction += vec3(pola::rand_minus1_1() * _maxDeviationX,
+                		pola::rand_minus1_1() * _maxDeviationY,
+						pola::rand_minus1_1() * _maxDeviationZ);
             }
             else
             {
@@ -136,9 +136,9 @@ void PURandomiser::updatePUAffector( PUParticle3D *particle, float deltaTime )
                     return;
 
                 // Random position: Add the position deviation after each update
-                particle->position.add(CCRANDOM_MINUS1_1() * _maxDeviationX * _affectorScale.x,
-                    CCRANDOM_MINUS1_1() * _maxDeviationY * _affectorScale.y,
-                    CCRANDOM_MINUS1_1() * _maxDeviationZ * _affectorScale.z);
+                particle->position += (pola::rand_minus1_1() * _maxDeviationX * _affectorScale.x,
+                		pola::rand_minus1_1() * _maxDeviationY * _affectorScale.y,
+						pola::rand_minus1_1() * _maxDeviationZ * _affectorScale.z);
             }
         }
     }

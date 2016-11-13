@@ -55,7 +55,7 @@ void PUOnRandomObserver::updateObserver(PUParticle3D *particle, float deltaTime,
 //-----------------------------------------------------------------------
 bool PUOnRandomObserver::observe (PUParticle3D* particle, float timeElapsed)
 {
-    return (CCRANDOM_0_1() > _threshold);
+    return (pola::rand_0_1() > _threshold);
 }
 
 PUOnRandomObserver* PUOnRandomObserver::create()

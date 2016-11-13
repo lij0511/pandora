@@ -29,7 +29,6 @@
 
 #include "CCPUBaseCollider.h"
 #include "CCPUPlane.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -38,20 +37,20 @@ class  PUPlaneCollider : public PUBaseCollider
 {
 public:
     // Constants
-    static const Vec3 DEFAULT_NORMAL;
+    static const vec3 DEFAULT_NORMAL;
 
     static PUPlaneCollider* create();
 
-    virtual void notifyRescaled(const Vec3& scale) override;
+    virtual void notifyRescaled(const vec3& scale) override;
     virtual void updatePUAffector(PUParticle3D *particle, float deltaTime) override;
 
     /** Returns the normal of the plane
     */
-    const Vec3 getNormal(void) const;
+    const vec3 getNormal(void) const;
 
     /** Sets the normal of the plane
     */
-    void setNormal(const Vec3& normal);
+    void setNormal(const vec3& normal);
 
     /** 
     */
@@ -59,13 +58,13 @@ public:
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:	
+public:
     PUPlaneCollider(void);
     virtual ~PUPlaneCollider(void);
 
 protected:
-    Vec3 _normal;
-    Vec3 _predictedPosition;
+    vec3 _normal;
+    vec3 _predictedPosition;
     PUPlane _plane;
 };
 } /* namespace graphic */

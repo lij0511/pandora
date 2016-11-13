@@ -40,7 +40,7 @@ PUPathFollower::~PUPathFollower( void )
 }
 
 //-----------------------------------------------------------------------
-void PUPathFollower::addPoint(const Vec3& point)
+void PUPathFollower::addPoint(const vec3& point)
 {
     _spline.addPoint(point);
 }
@@ -63,8 +63,8 @@ void PUPathFollower::updatePUAffector( PUParticle3D *particle, float deltaTime )
             float timeFraction = timeLeft / particle->totalTimeToLive;
             float timeFractionPlusDelta = (timeLeft + deltaTime ) / particle->totalTimeToLive;
             timeFractionPlusDelta = timeFractionPlusDelta < 1.0f ? timeFractionPlusDelta : 1.0f;
-            Vec3 inter = _spline.interpolate(timeFractionPlusDelta) - _spline.interpolate(timeFraction);
-            particle->position.add(_affectorScale.x * inter.x, _affectorScale.y * inter.y, _affectorScale.z * inter.z);
+            vec3 inter = _spline.interpolate(timeFractionPlusDelta) - _spline.interpolate(timeFraction);
+            particle->position += vec3(_affectorScale.x * inter.x, _affectorScale.y * inter.y, _affectorScale.z * inter.z);
         }
     }
 }

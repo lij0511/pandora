@@ -26,8 +26,7 @@
 #ifndef __CC_PU_PARTICLE_3D_ON_QUOTA_OBSERVER_H__
 #define __CC_PU_PARTICLE_3D_ON_QUOTA_OBSERVER_H__
 
-#include "base/CCRef.h"
-#include "math/CCMath.h"
+#include "pola/graphic/math/Math.h"
 #include "CCPUObserver.h"
 #include <vector>
 #include <string>
@@ -49,7 +48,7 @@ public:
     /** @copydoc ParticleObserver::_notifyStart */
     virtual void postUpdateObserver(float deltaTime) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUOnQuotaObserver(void) : PUObserver(),
         _result(false)
     {

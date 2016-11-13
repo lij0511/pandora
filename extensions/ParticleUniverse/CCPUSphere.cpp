@@ -34,7 +34,7 @@ PUSphere::PUSphere()
 
 }
 
-PUSphere::PUSphere( const Vec3& center, float radius )
+PUSphere::PUSphere( const vec3& center, float radius )
 : _radius(radius)
 , _center(center)
 {
@@ -43,7 +43,7 @@ PUSphere::PUSphere( const Vec3& center, float radius )
 
 void PUSphere::merge( const PUSphere& oth )
 {
-    Vec3 diff =  oth.getCenter() - _center;
+    vec3 diff =  oth.getCenter() - _center;
     float lengthSq = diff.lengthSquared();
     float radiusDiff = oth.getRadius() - _radius;
 
@@ -63,7 +63,7 @@ void PUSphere::merge( const PUSphere& oth )
 
     float length = lengthSq * lengthSq;
 
-    Vec3 newCenter;
+    vec3 newCenter;
     float newRadius;
     if ((length + oth.getRadius()) > _radius) 
     {

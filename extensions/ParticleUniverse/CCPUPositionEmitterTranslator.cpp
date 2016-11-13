@@ -46,7 +46,7 @@ bool PUPositionEmitterTranslator::translateChildProperty( PUScriptCompiler* comp
         // Property: add_position
         if (passValidateProperty(compiler, prop, token[TOKEN_POS_ADD_POSITION], VAL_VECTOR3))
         {
-            Vec3 val;
+            vec3 val;
             if(getVector3(prop->values.begin(), prop->values.end(), &val))
             {
                 emitter->addPosition(val);

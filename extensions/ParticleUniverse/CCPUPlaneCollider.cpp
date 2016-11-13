@@ -30,7 +30,7 @@ namespace pola {
 namespace graphic {
 
 // Constants
-const Vec3 PUPlaneCollider::DEFAULT_NORMAL(0, 0, 0);
+const vec3 PUPlaneCollider::DEFAULT_NORMAL(0, 0, 0);
 
 //-----------------------------------------------------------------------
 PUPlaneCollider::PUPlaneCollider(void) : 
@@ -43,18 +43,18 @@ PUPlaneCollider::~PUPlaneCollider( void )
 
 }
 //-----------------------------------------------------------------------
-const Vec3 PUPlaneCollider::getNormal(void) const
+const vec3 PUPlaneCollider::getNormal(void) const
 {
     return _normal;
 }
 //-----------------------------------------------------------------------
-void PUPlaneCollider::setNormal(const Vec3& normal)
+void PUPlaneCollider::setNormal(const vec3& normal)
 {
     _normal = normal;
     _plane.redefine(_normal, getDerivedPosition()); // Changed in 1.3.1
 }
 //-----------------------------------------------------------------------
-void PUPlaneCollider::notifyRescaled(const Vec3& scale)
+void PUPlaneCollider::notifyRescaled(const vec3& scale)
 {
     // Function added in 1.3.1
     _plane.redefine(_normal, getDerivedPosition());
@@ -127,7 +127,7 @@ void PUPlaneCollider::updatePUAffector( PUParticle3D *particle, float deltaTime 
         case PUBaseCollider::IT_BOX:
             {
 
-                AABB box;
+                Box3 box;
                 populateAlignedBox(box,
                     particle->position, 
                     particle->width, 

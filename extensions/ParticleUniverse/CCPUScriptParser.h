@@ -33,7 +33,6 @@
 #include <map>
 
 
-#include "base/CCRef.h"
 #include "CCPUScriptLexer.h"
 
 namespace pola {

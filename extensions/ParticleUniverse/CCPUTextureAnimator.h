@@ -28,7 +28,6 @@
 #define __CC_PU_PARTICLE_3D_TEXTURE_ANIMATOR_H__
 
 #include "CCPUAffector.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -88,7 +87,7 @@ public:
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:	
+public:
     PUTextureAnimator(void);
     virtual ~PUTextureAnimator(void);
 

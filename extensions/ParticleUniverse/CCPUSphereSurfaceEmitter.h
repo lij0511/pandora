@@ -55,13 +55,13 @@ public:
     virtual PUSphereSurfaceEmitter* clone() override;
     virtual void copyAttributesTo (PUEmitter* emitter) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUSphereSurfaceEmitter(void);
     virtual ~PUSphereSurfaceEmitter(void) {};
 
 protected:
     float _radius;
-    Vec3 _randomVector;
+    vec3 _randomVector;
 
 };
 } /* namespace graphic */

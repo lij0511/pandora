@@ -22,7 +22,7 @@
 #include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/Color.h"
 #include "pola/graphic/Texture.h"
-#include "pola/graphic/Blend.h"
+#include "pola/graphic/BlendFunc.h"
 
 namespace pola {
 namespace graphic {
@@ -57,8 +57,7 @@ protected:
 
 public:
 	bool mBlendEnable;
-	BlendFactor mBlendFuncSrc;
-	BlendFactor mBlendFuncDst;
+	BlendFunc mBlendFunc;
 };
 
 } /* namespace graphic */

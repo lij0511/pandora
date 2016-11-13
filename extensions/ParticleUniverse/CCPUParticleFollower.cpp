@@ -77,7 +77,7 @@ void PUParticleFollower::updatePUAffector( PUParticle3D *particle, float deltaTi
         {
             // Change in V 1.3.1
             // Only proceed if it isn the first one. Compensate for scaling.
-            float distance = (particle->position).distance(_positionPreviousParticle);
+            float distance = (_positionPreviousParticle - particle->position).length();
             float avgScale = 0.3333f * (_affectorScale.x + _affectorScale.y + _affectorScale.z);
             float scaledMinDistance = avgScale * _minDistance;
             if (distance > scaledMinDistance && distance < avgScale * _maxDistance)

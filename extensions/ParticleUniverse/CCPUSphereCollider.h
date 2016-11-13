@@ -29,7 +29,6 @@
 
 #include "CCPUBaseCollider.h"
 #include "CCPUSphere.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -67,18 +66,18 @@ public:
 
     /** 
     */
-    void calculateDirectionAfterCollision(PUParticle3D* particle, Vec3 distance, float distanceLength);
+    void calculateDirectionAfterCollision(PUParticle3D* particle, vec3 distance, float distanceLength);
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:	
+public:
     PUSphereCollider(void);
     virtual ~PUSphereCollider(void);
 
 protected:
     float _radius;
     PUSphere _sphere;
-    Vec3 _predictedPosition;
+    vec3 _predictedPosition;
     bool _innerCollision;
 };
 } /* namespace graphic */

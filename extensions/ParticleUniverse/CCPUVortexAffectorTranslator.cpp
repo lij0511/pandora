@@ -46,7 +46,7 @@ bool PUVortexAffectorTranslator::translateChildProperty( PUScriptCompiler* compi
         // Property: rotation_axis
         if (passValidateProperty(compiler, prop, token[TOKEN_ROTATION_AXIS], VAL_VECTOR3))
         {
-            Vec3 val;
+            vec3 val;
             if(getVector3(prop->values.begin(), prop->values.end(), &val))
             {
                 affector->setRotationVector(val);
@@ -59,7 +59,7 @@ bool PUVortexAffectorTranslator::translateChildProperty( PUScriptCompiler* compi
         // Property: vortex_aff_vector (deprecated and replaced by 'rotation_axis')
         if (passValidateProperty(compiler, prop, token[TOKEN_VORTEX_ROTATION_VECTOR], VAL_VECTOR3))
         {
-            Vec3 val;
+            vec3 val;
             if(getVector3(prop->values.begin(), prop->values.end(), &val))
             {
                 affector->setRotationVector(val);

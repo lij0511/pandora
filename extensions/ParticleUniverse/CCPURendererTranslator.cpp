@@ -182,7 +182,7 @@ void PURendererTranslator::translate(PUScriptCompiler* compiler, PUAbstractNode 
                         // Property: common_direction
                         if (passValidateProperty(compiler, prop, token[TOKEN_BILLBOARD_COMMON_DIRECTION], VAL_VECTOR3))
                         {
-                            Vec3 val;
+                            vec3 val;
                             if(getVector3(prop->values.begin(), prop->values.end(), &val))
                             {
                                 static_cast<PUParticle3DQuadRender *>(_renderer)->setCommonDirection(val);
@@ -194,7 +194,7 @@ void PURendererTranslator::translate(PUScriptCompiler* compiler, PUAbstractNode 
                         // Property: common_up_vector
                         if (passValidateProperty(compiler, prop, token[TOKEN_BILLBOARD_COMMON_UP_VECTOR], VAL_VECTOR3))
                         {
-                            Vec3 val;
+                            vec3 val;
                             if(getVector3(prop->values.begin(), prop->values.end(), &val))
                             {
                                 static_cast<PUParticle3DQuadRender *>(_renderer)->setCommonUp(val);
@@ -552,7 +552,7 @@ void PURendererTranslator::translate(PUScriptCompiler* compiler, PUAbstractNode 
                         // Property: initial_colour
                         if (passValidateProperty(compiler, prop, token[TOKEN_INITIAL_COLOUR], VAL_COLOURVALUE))
                         {
-                            Vec4 val;
+                            vec4 val;
                             if(getVector4(prop->values.begin(), prop->values.end(), &val))
                             {
                                 static_cast<PURibbonTrailRender *>(_renderer)->setInitialColor(val);
@@ -564,7 +564,7 @@ void PURendererTranslator::translate(PUScriptCompiler* compiler, PUAbstractNode 
                         // Property: ribbontrail_initial_colour (deprecated and replaced by 'initial_colour')
                         if (passValidateProperty(compiler, prop, token[TOKEN_RIBBONTRAIL_INITIAL_COLOUR], VAL_COLOURVALUE))
                         {
-                            Vec4 val;
+                            vec4 val;
                             if(getVector4(prop->values.begin(), prop->values.end(), &val))
                             {
                                 static_cast<PURibbonTrailRender *>(_renderer)->setInitialColor(val);

@@ -49,12 +49,12 @@ void PUPositionEmitter::setRandomized(bool randomized)
     _randomized = randomized;
 }
 //-----------------------------------------------------------------------
-const std::vector<Vec3>& PUPositionEmitter::getPositions(void) const
+const std::vector<vec3>& PUPositionEmitter::getPositions(void) const
 {
     return _positionList;
 }
 //-----------------------------------------------------------------------
-void PUPositionEmitter::addPosition(const Vec3& position)
+void PUPositionEmitter::addPosition(const vec3& position)
 {
     _positionList.push_back(position);
 }
@@ -108,12 +108,12 @@ void PUPositionEmitter::initParticlePosition(PUParticle3D* particle)
     */
     if (_randomized)
     {
-        size_t i = (size_t)(CCRANDOM_0_1() * (_positionList.size() - 1));
-        particle->position = getDerivedPosition() + Vec3(_emitterScale.x * _positionList[i].x, _emitterScale.y * _positionList[i].y, _emitterScale.z * _positionList[i].z);
+        size_t i = (size_t)(pola::rand_0_1() * (_positionList.size() - 1));
+        particle->position = getDerivedPosition() + vec3(_emitterScale.x * _positionList[i].x, _emitterScale.y * _positionList[i].y, _emitterScale.z * _positionList[i].z);
     }
     else if (_index < _positionList.size())
     {
-        particle->position = getDerivedPosition() + Vec3(_emitterScale.x * _positionList[_index].x, _emitterScale.y * _positionList[_index].y, _emitterScale.z * _positionList[_index].z);
+        particle->position = getDerivedPosition() + vec3(_emitterScale.x * _positionList[_index].x, _emitterScale.y * _positionList[_index].y, _emitterScale.z * _positionList[_index].z);
         _index++;
     }
 

@@ -46,7 +46,7 @@ bool PUPathFollowerTranslator::translateChildProperty( PUScriptCompiler* compile
         // Property: path_follower_point
         if (passValidateProperty(compiler, prop, token[TOKEN_PATH_POINT], VAL_VECTOR3))
         {
-            Vec3 val;
+            vec3 val;
             if(getVector3(prop->values.begin(), prop->values.end(), &val))
             {
                 affector->addPoint(val);

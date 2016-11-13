@@ -47,7 +47,7 @@ bool PUPlaneColliderTranslator::translateChildProperty( PUScriptCompiler* compil
         // Property: normal
         if (passValidateProperty(compiler, prop, token[TOKEN_NORMAL], VAL_VECTOR3))
         {
-            Vec3 val;
+            vec3 val;
             if(getVector3(prop->values.begin(), prop->values.end(), &val))
             {
                 affector->setNormal(val);
@@ -60,7 +60,7 @@ bool PUPlaneColliderTranslator::translateChildProperty( PUScriptCompiler* compil
         // Property: plane_collider_normal (deprecated and replaced by 'normal')
         if (passValidateProperty(compiler, prop, token[TOKEN_PLANECOLL_NORMAL], VAL_VECTOR3))
         {
-            Vec3 val;
+            vec3 val;
             if(getVector3(prop->values.begin(), prop->values.end(), &val))
             {
                 affector->setNormal(val);

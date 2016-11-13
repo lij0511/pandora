@@ -26,8 +26,7 @@
 #ifndef __CC_PU_PARTICLE_3D_SLAVE_BEHAVIOUR_H__
 #define __CC_PU_PARTICLE_3D_SLAVE_BEHAVIOUR_H__
 
-#include "base/CCRef.h"
-#include "math/CCMath.h"
+#include "pola/graphic/math/Math.h"
 #include "CCPUParticleSystem3D.h"
 #include "CCPUBehaviour.h"
 #include <vector>
@@ -54,7 +53,7 @@ public:
     virtual PUSlaveBehaviour* clone() override;
     virtual void copyAttributesTo (PUBehaviour* behaviour) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUSlaveBehaviour();
     virtual ~PUSlaveBehaviour();
 };

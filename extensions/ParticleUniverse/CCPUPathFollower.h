@@ -29,7 +29,6 @@
 
 #include "CCPUAffector.h"
 #include "CCPUSimpleSpline.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -43,7 +42,7 @@ public:
     virtual void updatePUAffector(PUParticle3D *particle, float deltaTime) override;
     /** 
     */
-    void addPoint(const Vec3& point);
+    void addPoint(const vec3& point);
 
     /** Clear all points
     */
@@ -55,11 +54,11 @@ public:
                 
     /** 
     */
-    const Vec3& getPoint(unsigned short index) const {return _spline.getPoint(index);};
+    const vec3& getPoint(unsigned short index) const {return _spline.getPoint(index);};
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUPathFollower(void);
     virtual ~PUPathFollower(void);
 

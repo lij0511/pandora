@@ -99,7 +99,7 @@ bool PUScriptTranslator::getString( const PUAbstractNode &node, std::string *res
 
 bool PUScriptTranslator::getVector2(PUAbstractNodeList::const_iterator i,
                                   PUAbstractNodeList::const_iterator end,
-                                  Vec2* result,
+                                  vec2* result,
                                   int maxEntries)
 {
     int n = 0;
@@ -131,7 +131,7 @@ bool PUScriptTranslator::getVector2(PUAbstractNodeList::const_iterator i,
 //-------------------------------------------------------------------------
 bool PUScriptTranslator::getVector3(PUAbstractNodeList::const_iterator i,
                                   PUAbstractNodeList::const_iterator end,
-                                  Vec3* result,
+                                  vec3* result,
                                   int maxEntries)
 {
     int n = 0;
@@ -166,7 +166,7 @@ bool PUScriptTranslator::getVector3(PUAbstractNodeList::const_iterator i,
 //-------------------------------------------------------------------------
 bool PUScriptTranslator::getVector4(PUAbstractNodeList::const_iterator i,
                                   PUAbstractNodeList::const_iterator end,
-                                  Vec4* result,
+                                  vec4* result,
                                   int maxEntries)
 {
     int n = 0;
@@ -407,7 +407,7 @@ bool PUScriptTranslator::passValidatePropertyValidBool(PUScriptCompiler* compile
 bool PUScriptTranslator::passValidatePropertyValidVector2(PUScriptCompiler* compiler, 
                                                         PUPropertyAbstractNode* prop)
 {
-    Vec2 val;
+    vec2 val;
     if(getVector2(prop->values.begin(), prop->values.end(), &val))
     {
         return true;
@@ -421,7 +421,7 @@ bool PUScriptTranslator::passValidatePropertyValidVector2(PUScriptCompiler* comp
 bool PUScriptTranslator::passValidatePropertyValidVector3(PUScriptCompiler* compiler, 
                                                         PUPropertyAbstractNode* prop)
 {
-    Vec3 val;
+    vec3 val;
     if(getVector3(prop->values.begin(), prop->values.end(), &val))
     {
         return true;
@@ -435,7 +435,7 @@ bool PUScriptTranslator::passValidatePropertyValidVector3(PUScriptCompiler* comp
 bool PUScriptTranslator::passValidatePropertyValidVector4(PUScriptCompiler* compiler, 
                                                         PUPropertyAbstractNode* prop)
 {
-    Vec4 val;
+    vec4 val;
     if(getVector4(prop->values.begin(), prop->values.end(), &val))
     {
         return true;

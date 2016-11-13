@@ -29,7 +29,6 @@
 
 #include "CCPUAffector.h"
 #include "CCPUDynamicAttribute.h"
-#include "base/ccTypes.h"
 
 namespace pola {
 namespace graphic {
@@ -38,7 +37,7 @@ class  PUVortexAffector : public PUAffector
 {
 public:
     // Constants
-    static const Vec3 DEFAULT_ROTATION_VECTOR;
+    static const vec3 DEFAULT_ROTATION_VECTOR;
     static const float DEFAULT_ROTATION_SPEED;
 
     static PUVortexAffector* create();
@@ -47,11 +46,11 @@ public:
     virtual void updatePUAffector(PUParticle3D *particle, float deltaTime) override;
     /** 
     */
-    const Vec3& getRotationVector(void) const;
+    const vec3& getRotationVector(void) const;
 
     /** 
     */
-    void setRotationVector(const Vec3& rotationVector);
+    void setRotationVector(const vec3& rotationVector);
 
     /** 
     */
@@ -63,7 +62,7 @@ public:
 
     virtual void copyAttributesTo (PUAffector* affector) override;
 
-CC_CONSTRUCTOR_ACCESS:	      
+public:
     PUVortexAffector(void);
     virtual ~PUVortexAffector(void);
 
@@ -74,7 +73,7 @@ protected:
     float calculateRotationSpeed(void);
 
 protected:
-    Vec3 _rotationVector;
+    vec3 _rotationVector;
     Quaternion _rotation;
     PUDynamicAttribute* _dynRotationSpeed;
     PUDynamicAttributeHelper _dynamicAttributeHelper;

@@ -26,7 +26,6 @@
 #ifndef __CC_PU_PARTICLE_3D_TRANSLATE_MANAGER_H__
 #define __CC_PU_PARTICLE_3D_TRANSLATE_MANAGER_H__
 
-#include "base/CCRef.h"
 #include "CCPUParticleSystem3DTranslator.h"
 #include "CCPUTechniqueTranslator.h"
 #include "CCPURendererTranslator.h"
@@ -76,7 +75,7 @@ public:
     virtual PUScriptTranslator* getTranslator(PUAbstractNode *node);
 
     
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUTranslateManager();
     virtual ~PUTranslateManager();
 };

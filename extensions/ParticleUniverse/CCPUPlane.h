@@ -26,9 +26,7 @@
 #ifndef __CC_PU_PARTICLE_3D_PLANE_H__
 #define __CC_PU_PARTICLE_3D_PLANE_H__
 
-#include "base/CCRef.h"
-#include "math/CCMath.h"
-#include "3d/CCAABB.h"
+#include "pola/graphic/math/Math.h"
 #include <vector>
 
 namespace pola {
@@ -51,12 +49,12 @@ public:
     PUPlane ();
     PUPlane (const PUPlane& rhs);
     /** Construct a plane through a normal, and a distance to move the plane along the normal.*/
-    PUPlane (const Vec3& rkNormal, float fConstant);
+    PUPlane (const vec3& rkNormal, float fConstant);
 	/** Construct a plane using the 4 constants directly **/
 	PUPlane (float a, float b, float c, float d);
-    PUPlane (const Vec3& rkNormal, const Vec3& rkPoint);
-    PUPlane (const Vec3& rkPoint0, const Vec3& rkPoint1,
-        const Vec3& rkPoint2);
+    PUPlane (const vec3& rkNormal, const vec3& rkPoint);
+    PUPlane (const vec3& rkPoint0, const vec3& rkPoint1,
+        const vec3& rkPoint2);
 
     /** The "positive side" of the plane is the half space to which the
         plane normal points. The "negative side" is the other half
@@ -97,14 +95,14 @@ public:
         The absolute value of the return value is the true distance only
         when the plane normal is a unit length vector.
     */
-    float getDistance (const Vec3& rkPoint) const;
+    float getDistance (const vec3& rkPoint) const;
 
     /** Redefine this plane based on 3 points. */
-    void redefine(const Vec3& rkPoint0, const Vec3& rkPoint1,
-        const Vec3& rkPoint2);
+    void redefine(const vec3& rkPoint0, const vec3& rkPoint1,
+        const vec3& rkPoint2);
 
 	/** Redefine this plane based on a normal and a point. */
-	void redefine(const Vec3& rkNormal, const Vec3& rkPoint);
+	void redefine(const vec3& rkNormal, const vec3& rkPoint);
 
 	/** Project a vector onto the plane. 
 	@remarks This gives you the element of the input vector that is perpendicular 
@@ -113,7 +111,7 @@ public:
 		from the original vector, since parallel + perpendicular = original.
 	@param v The input vector
 	*/
-	Vec3 projectVector(const Vec3& v) const;
+	vec3 projectVector(const vec3& v) const;
 
     /** Normalises the plane.
         @remarks
@@ -126,7 +124,7 @@ public:
     */
     float normalize(void);
 
-	Vec3 normal;
+	vec3 normal;
     float d;
 
     /// Comparison operator

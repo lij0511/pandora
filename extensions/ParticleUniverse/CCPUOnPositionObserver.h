@@ -26,8 +26,7 @@
 #ifndef __CC_PU_PARTICLE_3D_ON_POSITION_OBSERVER_H__
 #define __CC_PU_PARTICLE_3D_ON_POSITION_OBSERVER_H__
 
-#include "base/CCRef.h"
-#include "math/CCMath.h"
+#include "pola/graphic/math/Math.h"
 #include "CCPUObserver.h"
 #include <vector>
 #include <string>
@@ -41,7 +40,7 @@ class PUOnPositionObserver : public PUObserver
 {
 public:
     // Constants
-    static const Vec3 DEFAULT_POSITION_THRESHOLD;
+    static const vec3 DEFAULT_POSITION_THRESHOLD;
 
     static PUOnPositionObserver* create();
 
@@ -87,7 +86,7 @@ public:
 
     virtual void copyAttributesTo (PUObserver* observer) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUOnPositionObserver(void);
     virtual ~PUOnPositionObserver(void) {};
 

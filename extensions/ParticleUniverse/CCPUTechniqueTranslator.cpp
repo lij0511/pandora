@@ -93,7 +93,7 @@ void PUTechniqueTranslator::translate(PUScriptCompiler* compiler, PUAbstractNode
                 // Property: position
                 if (passValidateProperty(compiler, prop, token[TOKEN_POSITION], VAL_VECTOR3))
                 {
-                    Vec3 val;
+                    vec3 val;
                     if(getVector3(prop->values.begin(), prop->values.end(), &val))
                     {
                         _system->setPosition3D(val);

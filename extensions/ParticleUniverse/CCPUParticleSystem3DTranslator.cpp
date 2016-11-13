@@ -159,7 +159,7 @@ void PUParticleSystem3DTranslator::translate(PUScriptCompiler* compiler, PUAbstr
                     // Property: scale
                     if (passValidateProperty(compiler, prop, token[TOKEN_PS_SCALE], VAL_VECTOR3))
                     {
-                        Vec3 val;
+                        vec3 val;
                         if(getVector3(prop->values.begin(), prop->values.end(), &val))
                         {
                             _system->setScaleX(val.x);

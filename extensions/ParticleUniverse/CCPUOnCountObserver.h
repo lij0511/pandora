@@ -26,8 +26,7 @@
 #ifndef __CC_PU_PARTICLE_3D_ON_COUNT_OBSERVER_H__
 #define __CC_PU_PARTICLE_3D_ON_COUNT_OBSERVER_H__
 
-#include "base/CCRef.h"
-#include "math/CCMath.h"
+#include "pola/graphic/math/Math.h"
 #include "CCPUObserver.h"
 #include <vector>
 #include <string>
@@ -72,7 +71,7 @@ public:
 
     virtual void copyAttributesTo (PUObserver* observer) override;
 
-CC_CONSTRUCTOR_ACCESS:
+public:
     PUOnCountObserver(void);
     virtual ~PUOnCountObserver(void) {};
 };

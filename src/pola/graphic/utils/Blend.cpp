@@ -20,7 +20,7 @@ static inline unsigned saturated_add(unsigned a, unsigned b) {
     return sum;
 }
 
-typedef uint32_t (*BlendFunc)(uint32_t src, uint32_t dst);
+typedef uint32_t (*BlendProc)(uint32_t src, uint32_t dst);
 
 uint32_t ClearFunc(uint32_t src, uint32_t dst) {
 	return 0;
@@ -122,7 +122,7 @@ uint32_t ModulateFunc(uint32_t src, uint32_t dst) {
 }
 
 uint32_t blend(uint32_t src, uint32_t dst, BlendMode mode) {
-	static BlendFunc gBlendFuncs[] = {
+	static BlendProc gBlendFuncs[] = {
 			ClearFunc,
 			SrcFunc,
 			DstFunc,
@@ -138,7 +138,7 @@ uint32_t blend(uint32_t src, uint32_t dst, BlendMode mode) {
 			PlusFunc,
 			ModulateFunc,
 	};
-	BlendFunc func = gBlendFuncs[mode];
+	BlendProc func = gBlendFuncs[mode];
 	return func(src, dst);
 }
 
