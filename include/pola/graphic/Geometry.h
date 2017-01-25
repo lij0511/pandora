@@ -23,7 +23,7 @@ namespace graphic {
 #define FLAG_GEOMETRY_UV 0x0002
 #define FLAG_GEOMETRY_COLOR 0x0004
 
-class Geometry : public pola::utils::RefBase<Geometry> {
+class Geometry : public pola::utils::RefBase {
 public:
 	enum Type {
 		GEOMETRY_2D,

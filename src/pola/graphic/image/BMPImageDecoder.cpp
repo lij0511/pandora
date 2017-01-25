@@ -110,7 +110,7 @@ static int calcShiftLeft(uint32_t mask) {
   return ret;
 }
 
-static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
+static void doRLEDecode(BMPHeader& header, io::InputStream* is, Image* bitmap,
 		uint8_t* color_table) {
 	static const uint8_t RLE_ESCAPE = 0;
 	static const uint8_t RLE_EOL = 0;
@@ -193,7 +193,7 @@ static void doRLEDecode(BMPHeader& header, io::InputStream* is, Bitmap* bitmap,
 }
 
 static void doStandardDecode(BMPHeader& header, io::InputStream* is,
-		Bitmap* bitmap, uint8_t* color_table) {
+		Image* bitmap, uint8_t* color_table) {
 	uint32_t redBits_ = 0x7c00;
 	uint32_t greenBits_ = 0x03e0;
 	uint32_t blueBits_ = 0x001f;
@@ -297,7 +297,7 @@ BMPImageDecoder::BMPImageDecoder() {
 BMPImageDecoder::~BMPImageDecoder() {
 }
 
-bool BMPImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat preFormat) {
+bool BMPImageDecoder::decode(io::InputStream* is, Image*& bitmap, PixelFormat preFormat) {
 	BMPHeader header;
 	is->read(&header, sizeof(BMPHeader));
 	LOGD("id=%x, FileSize=%u, Reserved=%u, BitmapDataOffset=%u, BitmapHeaderSize=%u, Width=%u, Height=%u, Planes=%u, BPP=%u, Compression=%u, BitmapDataSize=%u, PixelPerMeterX=%u, PixelPerMeterY=%u, Colors=%u, ImportantColors=%u\n",
@@ -341,7 +341,7 @@ bool BMPImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat p
 	}
 
 	if (bitmap == nullptr) {
-		bitmap = Bitmap::create();
+		bitmap = Image::create();
 	}
 	bitmap->set(header.Width, header.Height, format);
 

@@ -8,22 +8,32 @@
 #ifndef POLA_PARTICLE3DEMITTER_H_
 #define POLA_PARTICLE3DEMITTER_H_
 
+#include "pola/utils/RefBase.h"
+#include "pola/graphic/particle/Particle3D.h"
+
 namespace pola {
 namespace graphic {
+
+class Particle3DSystem;
 
 /*
  *
  */
-class Particle3DEmitter {
+class Particle3DEmitter : public pola::utils::RefBase {
+	friend class Particle3DSystem;
 public:
 	Particle3DEmitter();
 	virtual ~Particle3DEmitter();
+
+	virtual void updateEmitter(Particle3D* particle, float deltaTime);
 
 	virtual void emit(int count) = 0;
 
 	void setEnable(bool enable);
 	bool isEnable() const;
-private:
+protected:
+	Particle3DSystem* _particleSystem;
+
 	bool mEnable;
 };
 

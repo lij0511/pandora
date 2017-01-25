@@ -46,7 +46,7 @@ bool LightNode::isSpotLight() const {
 }
 
 bool LightNode::updateTransform() {
-	bool r = SceneObject::updateTransform();
+	bool r = SceneNode::updateTransform();
 	if (r) {
 		if (!mLight->castShadow) {
 			mShadowCamera->requestPropertyChange();

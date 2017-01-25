@@ -8,7 +8,7 @@
 #ifndef POLA_IMAGEDECODER_H_
 #define POLA_IMAGEDECODER_H_
 
-#include "pola/graphic/Bitmap.h"
+#include "pola/graphic/Image.h"
 #include "pola/io/InputStream.h"
 
 namespace pola {
@@ -19,7 +19,7 @@ public:
 	ImageDecoder();
 	virtual ~ImageDecoder();
 
-	virtual bool decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat format = PixelFormat::UNKONWN) = 0;
+	virtual bool decode(io::InputStream* is, Image*& bitmap, PixelFormat format = PixelFormat::UNKONWN) = 0;
 
 	static ImageDecoder* Factory(io::InputStream* is);
 

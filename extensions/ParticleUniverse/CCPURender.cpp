@@ -69,7 +69,7 @@ PUParticle3DQuadRender* PUParticle3DQuadRender::create(const std::string& texFil
     return ret;
 }
 
-void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem)
+void PUParticle3DQuadRender::render(Renderer* renderer, const mat4 &transform, Particle3DSystem* particleSystem)
 {
     //batch and generate draw
     const ParticlePool &particlePool = particleSystem->getParticlePool();
@@ -390,7 +390,7 @@ void PUParticle3DQuadRender::determineUVCoords( PUParticle3D *particle )
     particle->rt_uv = particle->lb_uv + Vec2(_textureCoordsColStep, _textureCoordsRowStep);
 }
 
-void PUParticle3DQuadRender::fillVertex( unsigned short index, const Vec3 &pos, const Vec4 &color, const Vec2 &uv )
+void PUParticle3DQuadRender::fillVertex( unsigned short index, const vec3 &pos, const vec4 &color, const vec2 &uv )
 {
     _vertices[index].position = pos;
     _vertices[index].color = color;
@@ -443,7 +443,7 @@ PUParticle3DModelRender* PUParticle3DModelRender::create( const std::string& mod
     return ret;
 }
 
-void PUParticle3DModelRender::render( Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem )
+void PUParticle3DModelRender::render( Renderer* renderer, const Mat4 &transform, Particle3DSystem* particleSystem )
 {
     if (!_isVisible)
         return;
@@ -631,7 +631,7 @@ PUParticle3DBoxRender* PUParticle3DBoxRender::create( const std::string &texFile
     return ret;
 }
 
-void PUParticle3DBoxRender::render( Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem )
+void PUParticle3DBoxRender::render( Renderer* renderer, const mat4 &transform, Particle3DSystem* particleSystem )
 {
     //batch and generate draw
     const ParticlePool &particlePool = particleSystem->getParticlePool();
@@ -811,7 +811,7 @@ PUSphereRender* PUSphereRender::create( const std::string &texFile)
     return ret;
 }
 
-void PUSphereRender::render( Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem )
+void PUSphereRender::render( Renderer* renderer, const Mat4 &transform, Particle3DSystem* particleSystem )
 {
     //batch and generate draw
     const ParticlePool &particlePool = particleSystem->getParticlePool();

@@ -105,7 +105,7 @@ typedef int (*Looper_callbackFunc)(int fd, int events, void* data);
 /**
  * A looper callback.
  */
-class LooperCallback : public RefBase<LooperCallback> {
+class LooperCallback : public RefBase {
 public:
     virtual ~LooperCallback() { }
 

@@ -27,7 +27,7 @@
 namespace pola {
 namespace graphic {
 
-class Material : public utils::RefBase<Material> {
+class Material : public utils::RefBase {
 public:
 	Material(const FColor4& color = {1.f, 1.f, 1.f, 1.f}, Texture* textureMap = nullptr);
 	virtual ~Material();

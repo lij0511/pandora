@@ -20,7 +20,7 @@ namespace scene {
 /*
  *
  */
-class Animations : public pola::utils::RefBase<Animations> {
+class Animations : public pola::utils::RefBase {
 public:
 	Animations();
 	virtual ~Animations();

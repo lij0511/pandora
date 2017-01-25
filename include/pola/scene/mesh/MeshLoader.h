@@ -32,7 +32,7 @@ struct MaterialDescription {
 class MeshLoader {
 public:
 
-	class MeshInfo : public pola::utils::RefBase<MeshInfo> {
+	class MeshInfo : public pola::utils::RefBase {
 	public:
 		pola::utils::sp<IMesh> mesh;
 		std::vector<MaterialDescription> materials;

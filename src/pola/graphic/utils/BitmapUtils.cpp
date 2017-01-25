@@ -5,17 +5,17 @@
  *      Author: lijing
  */
 
-#include "BitmapUtils.h"
 #include "pola/graphic/Color.h"
 #include "ColorPriv.h"
 
 #include <string.h>
 #include <stdio.h>
+#include "ImageUtils.h"
 
 namespace pola {
 namespace graphic {
 
-bool clearBitmap(Bitmap& bitmap, uint32_t color) {
+bool clearBitmap(Image& bitmap, uint32_t color) {
 	uint32_t width = bitmap.getWidth();
 	uint32_t height = bitmap.getHeight();
 	if (width == 0 || height == 0) {
@@ -70,7 +70,7 @@ bool clearBitmap(Bitmap& bitmap, uint32_t color) {
 	return true;
 }
 
-void blit_nearest(const Bitmap& src, Bitmap& dst) {
+void blit_nearest(const Image& src, Image& dst) {
 	uint32_t swidth = src.getWidth();
 	uint32_t sheight = src.getHeight();
 	uint32_t dwidth = dst.getWidth();
@@ -109,7 +109,7 @@ void blit_nearest(const Bitmap& src, Bitmap& dst) {
 	}
 }
 
-void blit_bilinear(const Bitmap& src, Bitmap& dst) {
+void blit_bilinear(const Image& src, Image& dst) {
 
 	uint32_t swidth = src.getWidth();
 	uint32_t sheight = src.getHeight();
@@ -167,7 +167,7 @@ void blit_bilinear(const Bitmap& src, Bitmap& dst) {
 	}
 }
 
-bool scaleBitmap(const Bitmap& src, Bitmap*& dst, float scaleW, float scaleH, BitmapScaleMode scaleMode) {
+bool scaleBitmap(const Image& src, Image*& dst, float scaleW, float scaleH, BitmapScaleMode scaleMode) {
 	uint32_t width = src.getWidth();
 	uint32_t height = src.getHeight();
 	PixelFormat format = src.getFormat();
@@ -180,7 +180,7 @@ bool scaleBitmap(const Bitmap& src, Bitmap*& dst, float scaleW, float scaleH, Bi
 		return false;
 	}
 	if (dst == nullptr) {
-		dst = Bitmap::create();
+		dst = Image::create();
 	}
 	if (width == dstWidth && height == dstHeight) {
 		dst->set(dstWidth, dstHeight, format, src.pixels());

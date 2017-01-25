@@ -10,7 +10,7 @@
 namespace pola {
 namespace scene {
 
-Camera::Camera() : SceneObject(), mWidth(1), mHeight(1), mUp({0, 1, 0}), mCameraDirty(true), mController(nullptr) {
+Camera::Camera() : SceneNode(), mWidth(1), mHeight(1), mUp({0, 1, 0}), mCameraDirty(true), mController(nullptr) {
 }
 
 Camera::~Camera() {
@@ -94,7 +94,7 @@ graphic::mat4 Camera::getProjection() const {
 }
 
 void Camera::onPropertyChange() {
-	SceneObject::onPropertyChange();
+	SceneNode::onPropertyChange();
 	mCameraDirty = true;
 }
 

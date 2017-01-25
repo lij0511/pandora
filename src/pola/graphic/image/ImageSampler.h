@@ -8,7 +8,7 @@
 #ifndef POLA_IMAGESAMPLER_H_
 #define POLA_IMAGESAMPLER_H_
 
-#include "pola/graphic/Bitmap.h"
+#include "pola/graphic/Image.h"
 
 namespace pola {
 namespace graphic {

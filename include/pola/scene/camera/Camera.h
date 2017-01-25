@@ -11,13 +11,13 @@
 #include "pola/input/KeyEvent.h"
 #include "pola/input/MouseEvent.h"
 #include "pola/graphic/math/Math.h"
-#include "pola/scene/SceneObject.h"
+#include "pola/scene/node/SceneNode.h"
 #include "pola/scene/camera/CameraController.h"
 
 namespace pola {
 namespace scene {
 
-class Camera : public SceneObject {
+class Camera : public SceneNode {
 public:
 	Camera();
 	virtual ~Camera();

@@ -10,10 +10,14 @@
 namespace pola {
 namespace graphic {
 
-Particle3DEmitter::Particle3DEmitter() : mEnable(true) {
+Particle3DEmitter::Particle3DEmitter() : _particleSystem(nullptr), mEnable(true) {
 }
 
 Particle3DEmitter::~Particle3DEmitter() {
+	_particleSystem = nullptr;
+}
+
+void Particle3DEmitter::updateEmitter(Particle3D* particle, float deltaTime) {
 }
 
 void Particle3DEmitter::setEnable(bool enable) {

@@ -8,9 +8,9 @@
 #ifndef POLA_GRAPHIC_GLTEXTURE_H_
 #define POLA_GRAPHIC_GLTEXTURE_H_
 
+#include "pola/graphic/Image.h"
 #include "pola/graphic/gl/GL.h"
 #include "pola/graphic/Texture.h"
-#include "pola/graphic/Bitmap.h"
 
 namespace pola {
 namespace graphic {
@@ -21,7 +21,7 @@ namespace graphic {
 class GLTexture: public Texture {
 public:
 	GLTexture();
-	GLTexture(Bitmap* bitmap);
+	GLTexture(Image* bitmap);
 	virtual ~GLTexture();
 
 	void deleteTexture();
@@ -41,7 +41,7 @@ public:
 
 	bool releaseBitmap;
 
-	Bitmap* mBitmap;
+	Image* mBitmap;
 
 	virtual bool generateTexture(bool useBitmap = true);
 

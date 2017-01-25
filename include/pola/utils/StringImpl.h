@@ -17,7 +17,7 @@ namespace utils {
 
 class String;
 
-class StringImpl : public RefBase<StringImpl> {
+class StringImpl : public RefBase {
 private:
 	friend class String;
 	StringImpl();

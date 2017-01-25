@@ -1,15 +1,16 @@
 /*
- * Bitmap.cpp
+ * Image.cpp
  *
  *  Created on: 2015年12月3日
  *      Author: lijing
  */
 
+#include "pola/graphic/Image.h"
+
 #include <string.h>
 
-#include "pola/graphic/Bitmap.h"
-#include "utils/BitmapUtils.h"
 #include "utils/ColorPriv.h"
+#include "utils/ImageUtils.h"
 
 namespace pola {
 namespace graphic {
@@ -20,7 +21,7 @@ static uint32_t rowBytesAlign(uint32_t w, uint32_t bytesPerPixel) {
 	return widthInBytes + ((align - (widthInBytes % align))) % align;
 }
 
-Bitmap::Bitmap(uint32_t w, uint32_t h, PixelFormat format) :
+Image::Image(uint32_t w, uint32_t h, PixelFormat format) :
 	mWidth(w),
 	mHeight(h),
 	mFormat(format),
@@ -31,7 +32,7 @@ Bitmap::Bitmap(uint32_t w, uint32_t h, PixelFormat format) :
 	mRowBytes = rowBytesAlign(mWidth, bytesPerPixel());
 	mData = new unsigned char[rowBytes() * mHeight];
 }
-Bitmap::Bitmap() :
+Image::Image() :
 	mWidth(0),
 	mHeight(0),
 	mFormat(UNKONWN),
@@ -42,7 +43,7 @@ Bitmap::Bitmap() :
 	mRowBytes(0)
 {
 }
-Bitmap::Bitmap(const Bitmap& other) :
+Image::Image(const Image& other) :
 	mWidth(0),
 	mHeight(0),
 	mFormat(UNKONWN),
@@ -53,18 +54,18 @@ Bitmap::Bitmap(const Bitmap& other) :
 	mRowBytes(0) {
 }
 
-Bitmap& Bitmap::operator=(const Bitmap& other) {
+Image& Image::operator=(const Image& other) {
 	return *this;
 }
 
-Bitmap::~Bitmap() {
+Image::~Image() {
 	if (mData) {
 		delete mData;
 		mData = nullptr;
 	}
 }
 
-uint32_t Bitmap::getByteCountPerPixel(PixelFormat format) {
+uint32_t Image::getByteCountPerPixel(PixelFormat format) {
 	int c;
 	switch (format) {
 	case PixelFormat::ALPHA8:
@@ -86,26 +87,26 @@ uint32_t Bitmap::getByteCountPerPixel(PixelFormat format) {
 	return c;
 }
 
-uint32_t Bitmap::getWidth() const {
+uint32_t Image::getWidth() const {
 	return mWidth;
 };
-uint32_t Bitmap::getHeight() const {
+uint32_t Image::getHeight() const {
 	return mHeight;
 };
-PixelFormat Bitmap::getFormat() const {
+PixelFormat Image::getFormat() const {
 	return mFormat;
 };
-uint32_t Bitmap::bytesPerPixel() const {
+uint32_t Image::bytesPerPixel() const {
 	return getByteCountPerPixel(mFormat);
 }
-uint32_t Bitmap::rowBytes() const {
+uint32_t Image::rowBytes() const {
 	return mRowBytes;
 }
-uint32_t Bitmap::getByteCount() const {
+uint32_t Image::getByteCount() const {
 	return rowBytes() * getHeight();
 }
 
-void Bitmap::recycle() {
+void Image::recycle() {
 	if (!mRecycled) {
 		mRecycled = true;
 		if (mData) {
@@ -115,36 +116,36 @@ void Bitmap::recycle() {
 	}
 }
 
-bool Bitmap::isRecycled() const {
+bool Image::isRecycled() const {
 	return mRecycled;
 }
 
-bool Bitmap::hasAlpha() const {
+bool Image::hasAlpha() const {
 	return mHasAlpha;
 }
 
-void Bitmap::setHasAlpha(bool hasAlpha) {
+void Image::setHasAlpha(bool hasAlpha) {
 	mHasAlpha = hasAlpha;
 }
 
-unsigned char* Bitmap::pixels() const {
+unsigned char* Image::pixels() const {
 	notifyPixelsChanged();
 	return mData;
 }
 
-bool Bitmap::isEmpty() const {
+bool Image::isEmpty() const {
 	return mWidth <= 0 || mHeight <= 0;
 }
 
-Bitmap* Bitmap::create(uint32_t w, uint32_t h, PixelFormat format) {
-	return new Bitmap(w, h, format);
+Image* Image::create(uint32_t w, uint32_t h, PixelFormat format) {
+	return new Image(w, h, format);
 }
 
-Bitmap* Bitmap::create() {
-	return new Bitmap();
+Image* Image::create() {
+	return new Image();
 }
 
-void Bitmap::set(uint32_t w, uint32_t h, PixelFormat format, uint8_t* pixels) {
+void Image::set(uint32_t w, uint32_t h, PixelFormat format, uint8_t* pixels) {
 	mWidth = w;
 	mHeight = h;
 	mFormat = format;
@@ -166,15 +167,15 @@ void Bitmap::set(uint32_t w, uint32_t h, PixelFormat format, uint8_t* pixels) {
 	notifyPixelsChanged();
 }
 
-uint32_t Bitmap::getGenerationID() const {
+uint32_t Image::getGenerationID() const {
 		return mGenerationID;
 }
 
-void Bitmap::notifyPixelsChanged() const {
+void Image::notifyPixelsChanged() const {
 	++ mGenerationID;
 }
 
-uint32_t Bitmap::getPixel(uint32_t x, uint32_t y) const {
+uint32_t Image::getPixel(uint32_t x, uint32_t y) const {
 	if (x >= mWidth || y >= mHeight) {
 		return 0;
 	}
@@ -203,7 +204,7 @@ uint32_t Bitmap::getPixel(uint32_t x, uint32_t y) const {
 	return color;
 }
 
-void Bitmap::putPixel(uint32_t x, uint32_t y, uint32_t color) {
+void Image::putPixel(uint32_t x, uint32_t y, uint32_t color) {
 	if (x >= mWidth || y >= mHeight) {
 		return;
 	}
@@ -233,7 +234,7 @@ void Bitmap::putPixel(uint32_t x, uint32_t y, uint32_t color) {
 	notifyPixelsChanged();
 }
 
-bool Bitmap::scale(Bitmap*& dst, float scaleW, float scaleH) {
+bool Image::scale(Image*& dst, float scaleW, float scaleH) {
 	return scaleBitmap(*this, dst, scaleW, scaleH);
 }
 

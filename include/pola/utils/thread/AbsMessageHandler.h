@@ -18,7 +18,7 @@ class Message;
 /*
  *
  */
-class AbsMessageHandler: public RefBase<AbsMessageHandler> {
+class AbsMessageHandler: public RefBase {
 public:
 	AbsMessageHandler();
 	virtual ~AbsMessageHandler();

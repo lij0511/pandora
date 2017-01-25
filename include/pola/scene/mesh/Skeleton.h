@@ -40,7 +40,7 @@ public:
 	graphic::vec3 scale;
 };
 
-class Skeleton : public pola::utils::RefBase<Skeleton> {
+class Skeleton : public pola::utils::RefBase {
 public:
 	Skeleton();
 	virtual ~Skeleton();

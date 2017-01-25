@@ -35,7 +35,7 @@ GLTexture::GLTexture() : Texture(), id(0), blend(false),
         mipMap(false), releaseBitmap(true), mBitmap(nullptr) {
 }
 
-GLTexture::GLTexture(Bitmap* bitmap) : Texture(), id(0), blend(false),
+GLTexture::GLTexture(Image* bitmap) : Texture(), id(0), blend(false),
         mipMap(false), releaseBitmap(true), mBitmap(bitmap) {
 	if (bitmap != nullptr) {
 		width = bitmap->getWidth();

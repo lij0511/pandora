@@ -20,7 +20,7 @@ public:
 	PNGImageDecoder();
 	virtual ~PNGImageDecoder();
 
-	virtual bool decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat format = PixelFormat::UNKONWN);
+	virtual bool decode(io::InputStream* is, Image*& bitmap, PixelFormat format = PixelFormat::UNKONWN);
 
 	static bool decodeable(io::InputStream* is);
 

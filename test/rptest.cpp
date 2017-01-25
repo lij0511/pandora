@@ -21,7 +21,7 @@
 using namespace pola;
 using namespace pola::utils;
 
-class RpTest : public RefBase<RpTest> {
+class RpTest : public RefBase {
 public:
 	RpTest() { c = 100;};
 	~RpTest() {

@@ -7,6 +7,7 @@
 
 #include <unistd.h>
 
+#include "../include/pola/graphic/ImageFactory.h"
 #include "pola/scene/camera/OrthoCamera.h"
 #include "pola/scene/camera/PerspectiveCamera.h"
 #include "pola/scene/camera/DefaultCameraController.h"
@@ -22,7 +23,6 @@
 #include "pola/graphic/geometries/SphereGeometry.h"
 #include "pola/graphic/geometries/CubeGeometry.h"
 #include "pola/graphic/geometries/RectangleGeometry.h"
-#include "pola/graphic/BitmapFactory.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -38,14 +38,14 @@ int main(int argc, char *argv[]) {
 	Camera* camera = new OrthoCamera(0, 13000,  0, 900, -1000.f, 1000.f);
 //	Camera* camera = new PerspectiveCamera();
 
-	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/workspace/webcore/ws/test.png");
+	graphic::Image* b = graphic::ImageFactory::decodeFile("/home/lijing/work/workspace/webcore/ws/test.png");
 //	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/cyclone/src/0.png"/*, Bitmap::Format::ALPHA8*/);
 //	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("./res/faerie2.bmp");
 //	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/cyclone/src/pageloaderror.png");
 	GLTexture* t = new GLTexture(b);
 	GLTexture* t2 = nullptr;
 
-	graphic::Bitmap* c = nullptr;
+	graphic::Image* c = nullptr;
 	if (b->scale(c, 2.f, 2.f)) {
 		t2 = new GLTexture(c);
 	}

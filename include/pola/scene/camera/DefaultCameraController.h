@@ -35,8 +35,8 @@ private:
 	int32_t mAnimatingFlag;
 	p_nsecs_t mLastAnimatingTime;
 
-	utils::sp<SceneObject> mPitch;
-	utils::sp<SceneObject> mYaw;
+	utils::sp<SceneNode> mPitch;
+	utils::sp<SceneNode> mYaw;
 };
 
 } /* namespace scene */

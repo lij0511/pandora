@@ -10,7 +10,12 @@
 namespace pola {
 namespace graphic {
 
-Particle3DAffector::Particle3DAffector() {
+void Particle3DAffector::updateAffector(Particle3D* particle, float deltaTime) {
+}
+
+Particle3DAffector::Particle3DAffector()
+: _particleSystem(nullptr)
+, _isEnabled(true) {
 }
 
 Particle3DAffector::~Particle3DAffector() {

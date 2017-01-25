@@ -6,7 +6,8 @@
  */
 
 #include "pola/graphic/gl/GLGraphicContext.h"
-#include "pola/graphic/BitmapFactory.h"
+
+#include "../../../../include/pola/graphic/ImageFactory.h"
 #include "pola/graphic/gl/GLShaderLib.h"
 
 namespace pola {
@@ -275,7 +276,7 @@ void GLGraphicContext::renderGeometry(Geometry3D* geometry, uint32_t start, uint
 }
 
 Texture* GLGraphicContext::doLoadTexture(io::InputStream* is) {
-	Bitmap* bitmap = BitmapFactory::decodeStream(is);
+	Image* bitmap = ImageFactory::decodeStream(is);
 	if (bitmap == nullptr) {
 		return nullptr;
 	}

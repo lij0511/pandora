@@ -6,19 +6,19 @@
  */
 
 #include "pola/utils/Times.h"
-#include "pola/graphic/BitmapFactory.h"
 #include "pola/utils/String.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include "../include/pola/graphic/ImageFactory.h"
 
 using namespace pola;
 
 int main(int argc, char *argv[]) {
 
-	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/cyclone/src/screensaver/screensaver1.jpg");
+	graphic::Image* b = graphic::ImageFactory::decodeFile("/home/lijing/work/cyclone/src/screensaver/screensaver1.jpg");
 //	graphic::Bitmap* b = graphic::BitmapFactory::decodeFile("/home/lijing/work/workspace/irrlicht-1.8.3/media/007shot.jpg");
 //	printf("%p\n", b);
 //	return 1;
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	closedir(dp);*/
-	graphic::Bitmap* c = nullptr;
+	graphic::Image* c = nullptr;
 	if (b->scale(c, 1.f, 0.5f)) {
 		printf("bw=%u, bh=%u\n", b->getWidth(), b->getHeight());
 		printf("cw=%u, ch=%u\n", c->getWidth(), c->getHeight());

@@ -61,7 +61,7 @@ Camera* Scene::getCurrentCamera() const {
 	return mCurrentCamera;
 }
 
-SceneNode* Scene::addMesh(IMesh* mesh, SceneObject* parent) {
+SceneNode* Scene::addMesh(IMesh* mesh, SceneNode* parent) {
 	SceneNode* node = nullptr;
 	if (mesh->geometry() != nullptr) {
 		{
@@ -161,20 +161,17 @@ bool Scene::dispatchMouseEvent(input::MouseEvent& mouseEvent) {
 	return false;
 }
 
-void Scene::projectNodes(SceneObject* node) {
+void Scene::projectNodes(SceneNode* node) {
 	if (mCurrentCamera == nullptr || node == nullptr) {
 		return;
 	}
-	IMeshSceneNode* m = dynamic_cast<IMeshSceneNode*>(node);
-	if (m != nullptr) {
-		if (m->mesh()->intersectsBox(mCurrentCamera->frustum(), m->getWorldTransform())) {
-			mViewableNodes.push_back(m);
-		}
+	node->updateTransform();
+	LightNode* light = dynamic_cast<LightNode*>(node);
+	if (light != nullptr) {
+		mLightNodes.push_back(light);
 	} else {
-		node->updateTransform();
-		LightNode* light = dynamic_cast<LightNode*>(node);
-		if (light != nullptr) {
-			mLightNodes.push_back(light);
+		if (node != nullptr && node->viewable(mCurrentCamera->frustum())) {
+			mViewableNodes.push_back(node);
 		}
 	}
 	for (unsigned i = 0; i < node->getChildCount(); i ++) {

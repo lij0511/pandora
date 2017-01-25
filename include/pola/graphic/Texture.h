@@ -10,7 +10,7 @@
 
 #define MAX_TEXTURE_UNITS_COUNT 8
 
-#include "pola/graphic/Bitmap.h"
+#include "pola/graphic/Image.h"
 
 namespace pola {
 namespace graphic {

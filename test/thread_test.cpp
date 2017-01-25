@@ -29,7 +29,7 @@ void test() {
 int main(int argc, char *argv[]) {
 	pola::utils::Looper::prepare();
 	handler()->sendMessage(5);
-	handler()->sendMessageDelayed(6, 1, 2, 4000);
+	handler()->sendMessageDelayed(6, 1, 2, NULL, 4000);
 
 	handler()->postDelayed(new pola::utils::FunctionalTask(pola::utils::bind(test)), 2000);
 

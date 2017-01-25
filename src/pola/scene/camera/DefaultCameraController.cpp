@@ -24,8 +24,8 @@ const static int FLAG_MOUSE_BUTTON_RIGHT = 0x100;
 
 DefaultCameraController::DefaultCameraController(Camera* camera)
 	: CameraController(camera), mMoveSpeed(0.05f), mRotateSpeed(0.0005f), mAnimatingFlag(0), mLastAnimatingTime(0) {
-	mPitch = new SceneObject;
-	mYaw = new SceneObject;
+	mPitch = new SceneNode;
+	mYaw = new SceneNode;
 }
 
 DefaultCameraController::~DefaultCameraController() {

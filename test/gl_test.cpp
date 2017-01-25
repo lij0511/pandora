@@ -5,6 +5,7 @@
  *      Author: lijing
  */
 
+#include "../include/pola/graphic/ImageFactory.h"
 #include "pola/scene/camera/OrthoCamera.h"
 #include "pola/scene/camera/PerspectiveCamera.h"
 #include "pola/scene/camera/DefaultCameraController.h"
@@ -23,7 +24,6 @@
 #include "pola/graphic/geometries/SphereGeometry.h"
 #include "pola/graphic/geometries/CubeGeometry.h"
 #include "pola/graphic/geometries/RectangleGeometry.h"
-#include "pola/graphic/BitmapFactory.h"
 
 using namespace pola;
 using namespace pola::utils;
@@ -57,28 +57,28 @@ int main(int argc, char *argv[]) {
 	Material* tm1 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture);
 	Material* tm2 = new LambertMaterial({1.0f, 1.0f, 1.0f}, texture2);
 
-	MeshLoader::MeshInfo result;
-	if (MeshLoader::loadMesh("./res/faerie.md2", result)) {
+	pola::utils::sp<MeshLoader::MeshInfo> result;
+	if ((result = MeshLoader::loadMesh("./res/faerie.md2")) != nullptr) {
 		for (int i = 0; i < 100; i ++) {
-			MeshSceneNode* node = (MeshSceneNode*) scene->addMesh(result.mesh, scene);
+			MeshSceneNode* node = (MeshSceneNode*) scene->addMesh(result->mesh.get(), scene);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setMaterial(0, tm1);
 			int ani = random(0, 25);
 			node->setAnimation(ani);
 		}
 	}
-	if (MeshLoader::loadMesh("./res/sydney.md2", result)) {
+	if ((result = MeshLoader::loadMesh("./res/sydney.md2")) != nullptr) {
 		for (int i = 0; i < 100; i ++) {
-			MeshSceneNode* node = (MeshSceneNode*) scene->addMesh(result.mesh, scene);
+			MeshSceneNode* node = (MeshSceneNode*) scene->addMesh(result->mesh.get(), scene);
 			node->setMaterial(0, tm2);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			int ani = random(0, 25);
 			node->setAnimation(ani);
 		}
 	}
-	if (MeshLoader::loadMesh("./res/tree.obj", result)) {
+	if ((result = MeshLoader::loadMesh("./res/tree.obj")) != nullptr) {
 		for (int i = 0; i < 100; i ++) {
-			SceneNode* node = scene->addMesh(result.mesh, scene);
+			SceneNode* node = scene->addMesh(result->mesh.get(), scene);
 			node->setMaterial(0, m1);
 			node->setPosition(graphic::vec3(random(-500, 500), random(-500, 500), random(-500, 500)));
 			node->setScale({80, 80, 80});

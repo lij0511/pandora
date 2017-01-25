@@ -15,7 +15,7 @@
 namespace pola {
 namespace scene {
 
-class IMesh : public utils::RefBase<IMesh> {
+class IMesh : public utils::RefBase {
 public:
 	struct Group {
 		uint32_t start;

@@ -149,7 +149,7 @@ static void convert_CMYK_to_RGB(unsigned char* scanline, unsigned char* output, 
     }
 }
 
-bool JPEGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat preFormat) {
+bool JPEGImageDecoder::decode(io::InputStream* is, Image*& bitmap, PixelFormat preFormat) {
 	JPEGAutoClean autoClean;
 	struct jpeg_decompress_struct  cinfo;
 
@@ -189,7 +189,7 @@ bool JPEGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat 
 	}
 
 	if (bitmap == nullptr) {
-		bitmap = Bitmap::create();
+		bitmap = Image::create();
 	}
 	bitmap->set(cinfo.output_width, cinfo.output_height, preFormat);
 	uint32_t rowBytes = bitmap->rowBytes();
@@ -214,7 +214,7 @@ bool JPEGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat 
 			jpeg_read_scanlines(&cinfo, &rowptr, 1);
 			if (tmp != nullptr) {
 				convert_CMYK_to_RGB(rowptr, tmp, cinfo.output_width);
-				sampler->sampleScanline(srcRow, tmp, cinfo.output_width, Bitmap::getByteCountPerPixel(format));
+				sampler->sampleScanline(srcRow, tmp, cinfo.output_width, Image::getByteCountPerPixel(format));
 			} else {
 				convert_CMYK_to_RGB(rowptr, srcRow, cinfo.output_width);
 			}
@@ -227,12 +227,12 @@ bool JPEGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat 
 		}
 	} else {
 		ImageSampler sampler(format, preFormat);
-		size_t rowSize = sizeof(uint8_t) * Bitmap::getByteCountPerPixel(format) * cinfo.output_width;
+		size_t rowSize = sizeof(uint8_t) * Image::getByteCountPerPixel(format) * cinfo.output_width;
 		uint8_t* rowptr = (uint8_t*) malloc(rowSize);
 		JSAMPLE* jsample = (JSAMPLE*) rowptr;
 		while (cinfo.output_scanline < cinfo.output_height) {
 			jpeg_read_scanlines(&cinfo, &jsample, 1);
-			sampler.sampleScanline(srcRow, rowptr, cinfo.output_width, Bitmap::getByteCountPerPixel(format));
+			sampler.sampleScanline(srcRow, rowptr, cinfo.output_width, Image::getByteCountPerPixel(format));
 			srcRow += rowBytes;
 		}
 		free(rowptr);

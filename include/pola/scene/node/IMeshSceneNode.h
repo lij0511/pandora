@@ -23,9 +23,17 @@ public:
 
 	virtual IMesh* mesh() = 0;
 
-	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs) = 0;
-	virtual void render(graphic::GraphicContext* graphic, graphic::Material* m, p_nsecs_t timeMs) = 0;
+	virtual bool viewable(const graphic::Frustum& frustum);
+
 };
+
+inline bool IMeshSceneNode::viewable(const graphic::Frustum& frustum) {
+	IMesh* m = mesh();
+	if (m != nullptr) {
+		return m->intersectsBox(frustum, getWorldTransform());
+	}
+	return false;
+}
 
 } /* namespace scene */
 } /* namespace pola */

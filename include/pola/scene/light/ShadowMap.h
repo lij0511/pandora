@@ -11,7 +11,7 @@
 #include "pola/graphic/GraphicContext.h"
 #include "pola/graphic/material/ShadowMapMaterial.h"
 #include "pola/scene/light/LightNode.h"
-#include "pola/scene/node/IMeshSceneNode.h"
+#include "pola/scene/node/SceneNode.h"
 
 #include "pola/utils/Times.h"
 
@@ -36,14 +36,14 @@ private:
 
 	void renderShadowMap(graphic::GraphicContext* graphic, LightNode* lightNode, p_nsecs_t timeMs);
 
-	void projectNodes(Camera* shadowCamera, SceneObject*);
+	void projectNodes(Camera* shadowCamera, SceneNode*);
 
 private:
 	Scene* mScene;
 
 	graphic::ShadowMapMaterial mShadowMapMaterial;
 
-	std::vector<IMeshSceneNode*> mViewableNodes;
+	std::vector<SceneNode*> mViewableNodes;
 };
 
 } /* namespace scene */

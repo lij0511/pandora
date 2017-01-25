@@ -80,15 +80,12 @@ void ShadowMap::renderShadowMap(graphic::GraphicContext* graphic, LightNode* lig
 	mViewableNodes.clear();
 }
 
-void ShadowMap::projectNodes(Camera* shadowCamera, SceneObject* node) {
+void ShadowMap::projectNodes(Camera* shadowCamera, SceneNode* node) {
 	if (node == nullptr) {
 		return;
 	}
-	IMeshSceneNode* m = dynamic_cast<IMeshSceneNode*>(node);
-	if (m != nullptr) {
-		if (m->mesh()->intersectsBox(shadowCamera->frustum(), m->getWorldTransform())) {
-			mViewableNodes.push_back(m);
-		}
+	if (node != nullptr && node->viewable(shadowCamera->frustum())) {
+		mViewableNodes.push_back(node);
 	}
 	for (unsigned i = 0; i < node->getChildCount(); i ++) {
 		projectNodes(shadowCamera, node->getChild(i));

@@ -100,6 +100,25 @@ int main(int argc, char *argv[]) {
 	node->setMaterial(0, new LambertMaterial({1.0f, 1.0f, 1.0f}));
 	node->setPosition(graphic::vec3(100, 0, 0));
 
+	/*yunos::graphics::VPath path;
+	path.moveTo(0, 0);
+	path.quadTo(300, 0, 0, 300);
+
+//	path.lineTo(100, 0);
+//	path.lineTo(100, 200);
+//	path.lineTo(0, 200);
+	path.close();
+	Geometry2D* g = new Geometry2D();
+	yunos::graphics::VVertexBuffer vb;
+	yunos::graphics::VPathTessellator::tessellatePath(path, yunos::graphics::VPathTessellator::PaintInfo(), vb);
+	for (unsigned i = 0; i < vb.vertices.size(); i ++) {
+		g->addPosition(vec2(vb.vertices[i].x, vb.vertices[i].y));
+		printf("%f %f\n", vb.vertices[i].x, vb.vertices[i].y);
+	}
+	m = new BasicMesh(g);
+	node = scene->addMesh(m, scene);
+	node->setMaterial(0, new Material());
+	node->setPosition(graphic::vec3(0, 0, 50));*/
 
 //	scene->addCamera(new PerspectiveCameraFPS({0, 0, 1}, {0, 0, 0}));
 	Camera* camera = new PerspectiveCamera();

@@ -5,18 +5,15 @@
  *      Author: lijing
  */
 
-#include "Particle3DRender.h"
+#include "pola/graphic/particle/Particle3DRender.h"
 
 namespace pola {
 namespace graphic {
 
 Particle3DRender::Particle3DRender() {
-	// TODO Auto-generated constructor stub
-
 }
 
 Particle3DRender::~Particle3DRender() {
-	// TODO Auto-generated destructor stub
 }
 
 } /* namespace graphic */

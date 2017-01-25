@@ -315,7 +315,7 @@ template<typename T> struct ParamStorageTraits<sp<T> > {
     static T* unwrap(const StorageType& value) { return value.get(); }
 };
 
-class FunctionImplBase : public RefBase<FunctionImplBase> {
+class FunctionImplBase : public RefBase {
 public:
     virtual ~FunctionImplBase() { }
 };

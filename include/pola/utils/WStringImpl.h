@@ -25,7 +25,7 @@ class WString;
 /*
  *
  */
-class WStringImpl: public RefBase<WStringImpl> {
+class WStringImpl: public RefBase {
 private:
 	friend class WString;
 	WStringImpl();

@@ -1,12 +1,12 @@
 /*
- * Bitmap.h
+ * Image.h
  *
  *  Created on: 2015年12月3日
  *      Author: lijing
  */
 
-#ifndef POLA_BITMAP_H_
-#define POLA_BITMAP_H_
+#ifndef POLA_IMAGE_H_
+#define POLA_IMAGE_H_
 
 #include <stdint.h>
 #include "pola/graphic/PixelFormat.h"
@@ -14,12 +14,12 @@
 namespace pola {
 namespace graphic {
 
-class Bitmap {
+class Image {
 public:
 
 	static uint32_t getByteCountPerPixel(PixelFormat format);
 
-	virtual ~Bitmap();
+	virtual ~Image();
 
 	uint32_t getWidth() const;
 	uint32_t getHeight() const;
@@ -39,9 +39,9 @@ public:
 
 	bool isEmpty() const;
 
-	static Bitmap* create(uint32_t w, uint32_t h, PixelFormat format);
-	static Bitmap* create();
-	Bitmap();
+	static Image* create(uint32_t w, uint32_t h, PixelFormat format);
+	static Image* create();
+	Image();
 
 	void set(uint32_t w, uint32_t h, PixelFormat format, uint8_t* pixels = nullptr);
 
@@ -52,13 +52,13 @@ public:
 	uint32_t getPixel(uint32_t x, uint32_t y) const;
 	void putPixel(uint32_t x, uint32_t y, uint32_t color);
 
-	bool scale(Bitmap*& dst, float scaleW, float scaleH);
+	bool scale(Image*& dst, float scaleW, float scaleH);
 
 protected:
-	Bitmap(uint32_t w, uint32_t h, PixelFormat format);
+	Image(uint32_t w, uint32_t h, PixelFormat format);
 private:
-	Bitmap& operator=(const Bitmap& other);
-	Bitmap(const Bitmap& other);
+	Image& operator=(const Image& other);
+	Image(const Image& other);
 
 	uint32_t mWidth;
 	uint32_t mHeight;
@@ -73,4 +73,4 @@ private:
 }
 }
 
-#endif /* POLA_BITMAP_H_ */
+#endif /* POLA_IMAGE_H_ */

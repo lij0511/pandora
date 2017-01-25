@@ -56,7 +56,7 @@ static int read_user_chunk(png_structp png_ptr, png_unknown_chunkp chunk) {
             1 : -1;
 }
 
-bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat preFormat) {
+bool PNGImageDecoder::decode(io::InputStream* is, Image*& bitmap, PixelFormat preFormat) {
 	png_structp png_ptr;
 	png_infop info_ptr;
 
@@ -161,7 +161,7 @@ bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat p
 	}
 
 	if (bitmap == nullptr) {
-		bitmap = Bitmap::create();
+		bitmap = Image::create();
 	}
 	bitmap->set(origWidth, origHeight, preFormat);
 
@@ -184,7 +184,7 @@ bool PNGImageDecoder::decode(io::InputStream* is, Bitmap*& bitmap, PixelFormat p
 			for (png_uint_32 y = 0; y < origHeight; y++) {
 				png_read_rows(png_ptr, &rowptr, png_bytepp_NULL, 1);
 
-				hasAlpha |= sampler.sampleScanline(bmRow, rowptr, origWidth, Bitmap::getByteCountPerPixel(format));
+				hasAlpha |= sampler.sampleScanline(bmRow, rowptr, origWidth, Image::getByteCountPerPixel(format));
 
 				bmRow += bitmap->rowBytes();
 			}

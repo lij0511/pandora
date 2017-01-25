@@ -19,7 +19,7 @@
 namespace pola {
 namespace utils {
 
-class Looper : public RefBase<Looper> {
+class Looper : public RefBase {
 public:
 	~Looper();
 

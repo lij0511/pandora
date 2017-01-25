@@ -21,7 +21,7 @@ class Mesh;
 /*
  *
  */
-class Animation : public pola::utils::RefBase<Animation> {
+class Animation : public pola::utils::RefBase {
 public:
 	template<typename T>
 	struct KeyFrame {

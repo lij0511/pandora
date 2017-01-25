@@ -12,6 +12,9 @@
 #include "pola/graphic/particle/Particle3DEmitter.h"
 #include "pola/graphic/particle/Particle3DAffector.h"
 #include "pola/graphic/particle/Particle3DRender.h"
+#include "pola/graphic/BlendFunc.h"
+#include "pola/scene/node/SceneNode.h"
+
 
 #include <list>
 
@@ -108,7 +111,7 @@ typedef DataPool<Particle3D> ParticlePool;
 /*
  *
  */
-class Particle3DSystem {
+class Particle3DSystem : public pola::scene::SceneNode {
 public:
 	enum class State {
 		STOP,
@@ -122,12 +125,12 @@ public:
 	/**
 	 * override function
 	 */
-	virtual void setBlendFunc(const BlendFunc &blendFunc) override;
+	virtual void setBlendFunc(const BlendFunc &blendFunc);
 
 	/**
 	 * override function
 	 */
-	virtual const BlendFunc &getBlendFunc() const override;
+	virtual const BlendFunc &getBlendFunc() const;
 
 	/**
 	 * set emitter for particle system, can set your own particle emitter
@@ -140,7 +143,7 @@ public:
 	/**
 	* return particle render
 	*/
-	Particle3DRender* getRender(){ return _render; }
+	Particle3DRender* getRender(){ return _render.get(); }
 	/**
 	 * add particle affector
 	 */
@@ -204,11 +207,14 @@ public:
 	 */
 	bool isEnabled(void) const { return _isEnabled; }
 
+	virtual void update(p_nsecs_t timeMs);
+	virtual void render(graphic::GraphicContext* graphic, p_nsecs_t timeMs);
+
 protected:
 	State                            _state;
-	Particle3DEmitter*               _emitter;
+	pola::utils::sp<Particle3DEmitter>               _emitter;
 	std::vector<Particle3DAffector*> _affectors;
-	Particle3DRender*                _render;
+	pola::utils::sp<Particle3DRender>                _render;
 
 	//particles
 	ParticlePool                     _particlePool;
@@ -219,6 +225,8 @@ protected:
 
 	bool _keepLocal;
 	bool _isEnabled;
+
+	p_nsecs_t _lastUpdateTimeMs;
 };
 
 } /* namespace graphic */

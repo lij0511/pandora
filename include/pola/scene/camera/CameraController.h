@@ -12,7 +12,7 @@
 #include "pola/input/MouseEvent.h"
 #include "pola/utils/Times.h"
 #include "pola/graphic/math/Math.h"
-#include "pola/scene/SceneObject.h"
+#include "pola/scene/node/SceneNode.h"
 
 namespace pola {
 namespace scene {
@@ -22,7 +22,7 @@ class Camera;
 /*
  *
  */
-class CameraController : public SceneObject  {
+class CameraController : public SceneNode  {
 public:
 	CameraController(Camera* camera);
 	virtual ~CameraController();
