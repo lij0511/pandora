@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-#include "../include/pola/graphic/ImageFactory.h"
+#include "pola/graphic/ImageFactory.h"
 
 using namespace pola;
 

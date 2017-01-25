@@ -7,7 +7,7 @@
 
 #include <unistd.h>
 
-#include "../include/pola/graphic/ImageFactory.h"
+#include "pola/graphic/ImageFactory.h"
 #include "pola/scene/camera/OrthoCamera.h"
 #include "pola/scene/camera/PerspectiveCamera.h"
 #include "pola/scene/camera/DefaultCameraController.h"
